@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd         
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd         
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd         
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd         
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+
+	<util:map id="payboxServices">
+
+		<entry key="compte_paybox_prod">
+
+			<bean class="org.esupportail.pay.services.PayBoxService">
+
+				<property name="mailFrom" value="${email.from}" />
+
+				<property name="site" value="${paybox.prod.site}" />
+				<property name="rang" value="${paybox.prod.rang}" />
+				<property name="identifiant" value="${paybox.prod.identifiant}" />
+				<property name="devise" value="${paybox.prod.devise}" />
+				<property name="reponseServerUrl" value="${esup-pay.url}" />
+				<property name="payboxActionUrls">
+					<list>
+						<value>https://tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi
+						</value>
+						<value>https://tpeweb1.paybox.com/cgi/MYchoix_pagepaiement.cgi
+						</value>
+					</list>
+				</property>
+				<property name="derPayboxPublicKeyFile" value="META-INF/security/paybox-pubkey.der" />
+
+				<property name="hashService">
+
+					<bean class="org.esupportail.pay.services.HashService">
+
+						<property name="hmacKey"
+							value="${paybox.prod.hmacKey}"></property>
+
+					</bean>
+
+				</property>
+
+			</bean>
+
+		</entry>
+
+		<entry key="compte_paybox_test">
+
+			<bean class="org.esupportail.pay.services.PayBoxService">
+			
+				<property name="mailFrom" value="${email.from}" />
+
+				<property name="site" value="1999888" />
+				<property name="rang" value="32" />
+				<property name="identifiant" value="107904482" />
+				<property name="devise" value="978" />
+				<property name="reponseServerUrl" value="${esup-pay.url}" />
+				<property name="payboxActionUrls">
+					<list>
+						<value>https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi
+						</value>
+						<value>https://tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi
+						</value>
+						<value>https://tpeweb1.paybox.com/cgi/MYchoix_pagepaiement.cgi
+						</value>
+					</list>
+				</property>
+				<property name="derPayboxPublicKeyFile" value="META-INF/security/paybox-pubkey.der" />
+
+				<property name="hashService">
+
+					<bean class="org.esupportail.pay.services.HashService">
+
+						<property name="hmacKey"
+							value="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"></property>
+
+					</bean>
+
+				</property>
+
+			</bean>
+
+		</entry>
+
+
+	</util:map>
+
+
+</beans>

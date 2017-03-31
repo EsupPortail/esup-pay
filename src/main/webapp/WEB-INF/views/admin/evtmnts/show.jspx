@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <c:set value="${pageContext.response.locale.language}" var="locale"/>
+    <page:show create="false" delete="false" id="ps_org_esupportail_pay_domain_PayEvtMontant" list="false" object="${payevtmontant}" path="/admin/evtmnts" update="true" z="user-managed">
+        <div class="col-lg-1">
+            <spring:url value="/admin/evts/${payevtmontant.evt.id}/logo" var="logoUrl"/>
+            <img src="${logoUrl}" title="logo"/>
+        </div>
+        <div class="col-lg-3">
+            <field:display field="evt" id="s_org_esupportail_pay_domain_PayEvtMontant_evt" object="${payevtmontant}" render="false" z="user-managed"/>
+            <field:display field="description" id="s_org_esupportail_pay_domain_PayEvtMontant_description" object="${payevtmontant}" render="false" z="user-managed"/>
+            <field:display field="title" id="s_org_esupportail_pay_domain_PayEvtMontant_title" object="${payevtmontant}" render="false" z="user-managed"/>
+            <field:display field="help" id="s_org_esupportail_pay_domain_PayEvtMontant_help" object="${payevtmontant}" render="false" z="user-managed"/>
+            <field:display field="field1Label" id="s_org_esupportail_pay_domain_PayEvtMontant_field1Label" object="${payevtmontant}" render="false" z="user-managed"/>
+            <field:display field="field2Label" id="s_org_esupportail_pay_domain_PayEvtMontant_field2Label" object="${payevtmontant}" render="false" z="user-managed"/>
+            <h4>
+                <spring:message code="form_title" htmlEscape="false"/>
+            </h4>
+            <c:forEach items="${payevtmontant.title.labelLocales}" var="labelLocales">
+                <div>
+                    <label>${labelLocales.key} : </label>
+                    <span>${labelLocales.value.translation}</span>
+                </div>
+            </c:forEach>
+        </div>
+        <div class="col-lg-5">
+            <h4>
+                <spring:message code="form_description" htmlEscape="false"/>
+            </h4>
+            <c:forEach items="${payevtmontant.description.labelLocales}" var="labelLocales">
+                <div>
+                    <label>${labelLocales.key} : </label>
+                    <span>${labelLocales.value.translation}</span>
+                </div>
+            </c:forEach>
+            <h4>
+                <spring:message code="form_help" htmlEscape="false"/>
+            </h4>
+            <c:forEach items="${payevtmontant.help.labelLocales}" var="labelLocales">
+                <div>
+                    <label>${labelLocales.key} : </label>
+                    <span>${labelLocales.value.translation}</span>
+                </div>
+            </c:forEach>
+            <h4>
+                <spring:message code="form_field1" htmlEscape="false"/>
+            </h4>
+            <c:forEach items="${payevtmontant.field1Label.labelLocales}" var="labelLocales">
+                <div>
+                    <label>${labelLocales.key} : </label>
+                    <span>${labelLocales.value.translation}</span>
+                </div>
+            </c:forEach>
+            <h4>
+                <spring:message code="form_field2" htmlEscape="false"/>
+            </h4>
+            <c:forEach items="${payevtmontant.field2Label.labelLocales}" var="labelLocales">
+                <div>
+                    <label>${labelLocales.key} : </label>
+                    <span>${labelLocales.value.translation}</span>
+                </div>
+            </c:forEach>
+        </div>
+    </page:show>
+    <page:show id="ps_org_esupportail_pay_domain_PayEvtMontant" object="${payevtmontant}" path="/admin/evtmnts" z="P6O15JmJEuoVOLwCHHqURFGEimE=">
+        <field:display field="evt" id="s_org_esupportail_pay_domain_PayEvtMontant_evt" object="${payevtmontant}" z="6GsGp/NLquAvtXmRoqKeRr6UTMo="/>
+        <field:display field="title" id="s_org_esupportail_pay_domain_PayEvtMontant_title" object="${payevtmontant}" z="gMl6yOanpLn07mSLpTOSNo9tvsE="/>
+        <field:display field="description" id="s_org_esupportail_pay_domain_PayEvtMontant_description" object="${payevtmontant}" z="bj822mn3qXLUvFNnv1L2JdQw3Mw="/>
+        <field:display field="help" id="s_org_esupportail_pay_domain_PayEvtMontant_help" object="${payevtmontant}" z="zwyu2QwCygwg5l/kUsefT9bDTQ4="/>
+        <field:display field="field1Label" id="s_org_esupportail_pay_domain_PayEvtMontant_field1Label" object="${payevtmontant}" z="oejAUxfQkIJIg4UMHyZ0u1nfKwc="/>
+        <field:display field="field2Label" id="s_org_esupportail_pay_domain_PayEvtMontant_field2Label" object="${payevtmontant}" z="EcR0DkVt0NZu30QO/PJBHWy2W7Q="/>
+        <field:display field="dbleMontant" id="s_org_esupportail_pay_domain_PayEvtMontant_dbleMontant" object="${payevtmontant}" z="QQkvwHQ/p19SKDnr9KjyO67EmoE="/>
+        <field:display field="urlId" id="s_org_esupportail_pay_domain_PayEvtMontant_urlId" object="${payevtmontant}" z="sIguFjWZxEuGFcFzCf1VNeHb/x4="/>
+        <field:display field="freeAmount" id="s_org_esupportail_pay_domain_PayEvtMontant_freeAmount" object="${payevtmontant}" z="dUocVdIuJdhuIApSLzvUff6uIbE="/>
+        <field:display field="sciencesconf" id="s_org_esupportail_pay_domain_PayEvtMontant_sciencesconf" object="${payevtmontant}" z="vz4sPk84l6SL+kLy3XE7ABX0FSQ="/>
+        <field:display field="addPrefix" id="s_org_esupportail_pay_domain_PayEvtMontant_addPrefix" object="${payevtmontant}" z="wS9dsIEYzlKDqHRxAJfEJamevko="/>
+    </page:show>
+</div>

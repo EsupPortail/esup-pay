@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" id="listEvts" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <c:set value="true" var="isAdmin"/>
+    </sec:authorize>
+    <spring:url value="/admin/evts?form" var="create_url"/>
+    <c:set value="${pageContext.response.locale.language}" var="locale"/>
+    <c:set var="url">
+        <spring:message code="evts_url" htmlEscape="false"/>
+    </c:set>
+    <c:set var="responsables">
+        <spring:message code="evts_responsables" htmlEscape="false"/>
+    </c:set>
+    <c:set var="lecteurs">
+        <spring:message code="evts_lecteurs" htmlEscape="false"/>
+    </c:set>
+    <c:set var="compte">
+        <spring:message code="evts_compte" htmlEscape="false"/>
+    </c:set>
+    <spring:message code="menu_item_payevt_new_label" htmlEscape="false" var="typeName"/>
+    <spring:message arguments="${typeName}" code="global_menu_new" htmlEscape="false" var="tooltipMsg"/>
+    <sec:authorize access="hasRole('ROLE_ADMIN')">
+	    <a class="btn btn-success btn-circle absButton" data-toggle="tooltip" href="${create_url}" title="${tooltipMsg}">
+	        <span class="glyphicon glyphicon-plus">
+	            <!--  -->
+	        </span>
+	    </a>
+	</sec:authorize>
+    <page:list id="pl_org_esupportail_pay_domain_PayEvt" items="${payevts}" z="2binAjPu7rMtIW9u3f35f6Sa+FY=">
+        <table:table create="${isAdmin}" data="${payevts}" delete="false" id="l_org_esupportail_pay_domain_PayEvt" path="/admin/evts" update="false" z="user-managed" >
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_urlId" property="urlId" render="false" z="user-managed"/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_title" property="title.labelLocales['fr'].translation" z="user-managed"/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_webSiteUrl" label="${url}" property="webSiteUrl" z="XqrbNdhxzecutFAqW1oXdp6ZidE="/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_managersEmail" property="managersEmail" render="false" z="user-managed"/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_logoFile" property="logoFile" render="false" z="user-managed"/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_mailSubject" property="mailSubject" render="false" z="user-managed"/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_respLogins" label="${responsables}" property="respLoginsStr"/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_logins"  property="logins" z="user-managed"/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_viewerLogins2Add" label="${lecteurs}" property="viewerLogins2Add" z="user-managed"/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_payServiceKey" label="${compte}" property="payboxServiceKey" z="Qwz7qh7neZ8wDSVF5T/7tI/Zjdo="/>
+        </table:table>
+    </page:list>
+</div>

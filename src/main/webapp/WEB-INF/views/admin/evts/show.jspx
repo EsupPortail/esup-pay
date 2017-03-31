@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" 
+xmlns:spring="http://www.springframework.org/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0" id="showEvts">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <c:set value="true" var="isAdmin"/>
+    </sec:authorize>
+    <sec:authorize access="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')">
+        <c:set value="true" var="canUpdate"/>
+    </sec:authorize>
+    
+    <div class="col-lg-1">
+    	<spring:url value="/admin/evts/${payEvt.id}/logo" var="logoUrl"/>
+    	<img src="${logoUrl}" title="logo" class="img-responsive"/>
+    </div>
+    
+    <div class="col-lg-3">
+	    <div class="well">
+		    <c:if test="${canUpdate}">
+		    	 <spring:url value="/admin/evts/${payEvt.id}" var="update_form_url">
+		            <spring:param name="form" />
+		         </spring:url>
+		         <a href="${update_form_url}" class="btn btn-warning">Modifier</a>
+		    </c:if>
+		    <br /><br />
+		    <page:show create="false" delete="${isAdmin and empty payevtmontants}" id="ps_org_esupportail_pay_domain_payevt" list="false" object="${payEvt}" path="/admin/evts" update="false " z="user-managed">
+		        <field:display field="webSiteUrl" id="s_org_esupportail_pay_domain_payevt_webSiteUrl" object="${payEvt}" z="kz1h5qI4d2x2XYzeU07q7+RVXRk="/>
+		        <field:display field="urlId" id="s_org_esupportail_pay_domain_payevt_urlId" object="${payEvt}" z="s7novZJxF32fiExpfcF6bMM0egs="/>
+		        <field:display field="managersEmail" id="s_org_esupportail_pay_domain_payevt_managersEmail" object="${payEvt}" z="bwEfbBcVGOhWPzsraL9Ili9kpA0="/>
+		        <field:display field="mailSubject" id="s_org_esupportail_pay_domain_payevt_mailSubject" object="${payEvt}" z="+LHr7Epi5+K1YzTz+jo8/RyS/ek="/>
+		        <field:display field="payboxCommandPrefix" id="s_org_esupportail_pay_domain_payevt_payCommandPrefix" object="${payEvt}" z="KQMKBPx7ZrihJrJGteLcFGPAQzI="/>
+		        <field:display field="logoFile" id="s_org_esupportail_pay_domain_payevt_logoFile" object="${payEvt}" render="false" z="user-managed"/>
+		        <dl>
+		            <dt><spring:message code="form_login_managers" htmlEscape="false" /></dt>
+		            <dd>
+		                <ul>
+		                    <c:forEach items="${payEvt.respLogins}" var="respLogin">
+		                        <li>${respLogin.login}</li>
+		                    </c:forEach>
+		                </ul>
+		            </dd>
+		        </dl>
+		        <dl>
+		            <dt><spring:message code="form_login_readers" htmlEscape="false" /></dt>
+		            <dd>
+		                <ul>
+		                    <c:forEach items="${payEvt.viewerLogins}" var="viewerLogin">
+		                        <li>${viewerLogin.login}</li>
+		                    </c:forEach>
+		                </ul>
+		            </dd>
+		        </dl>
+		        <field:display field="logins" id="s_org_esupportail_pay_domain_payevt_logins" object="${payEvt}" render="false" z="user-managed"/>
+		        <field:display field="viewerLogins2Add" id="s_org_esupportail_pay_domain_payevt_viewerLogins2Add" object="${payEvt}" render="false" z="user-managed"/>
+		        <field:display field="respLogins" id="s_org_esupportail_pay_domain_payevt_respLogins" object="${payEvt}" render="false" z="user-managed"/>
+		        <field:display field="viewerLogins" id="s_org_esupportail_pay_domain_payevt_viewerLogins" object="${payEvt}" render="false" z="user-managed"/>
+		        <field:display field="payboxServiceKey" id="s_org_esupportail_pay_domain_payevt_payServiceKey" object="${payEvt}" z="iLPzqQrQ4vshxe1X3nJRiRwb6b4="/>
+		        <h4><spring:message code="form_title" htmlEscape="false" /></h4>
+		        <c:forEach items="${payEvt.title.labelLocales}" var="labelLocales">
+		            <div>
+		                <label>${labelLocales.key} : </label>
+		                <span>${labelLocales.value.translation}</span>
+		            </div>
+		        </c:forEach>
+		        <h4><spring:message code="form_amount_description" htmlEscape="false" /></h4>
+		        <c:forEach items="${payEvt.defaultMntDescription.labelLocales}" var="labelLocales">
+		            <div>
+		                <label>${labelLocales.key} : </label>
+		                <span>${labelLocales.value.translation}</span>
+		            </div>
+		        </c:forEach>
+		        <field:display field="title" id="s_org_esupportail_pay_domain_payevt_title" object="${payEvt}" render="false" z="user-managed"/>
+		        <field:display field="defaultMntDescription" id="s_org_esupportail_pay_domain_payevt_defaultMntDescription" object="${payEvt}" render="false" z="user-managed"/>
+		    </page:show>
+	    </div>
+    </div>
+    
+    <div class="col-lg-8">
+    	<div class="well">
+		    <spring:url value="/admin/evts/${payEvt.id}/fees" var="feesURL"/>
+		    <a class="btn btn-success" href="${feesURL}"><spring:message code="form_done_transaction" htmlEscape="false" /></a>
+		    <hr/>
+		    <spring:url value="/evts/${payEvt.urlId}/" var="urlLinkPrefix"/>
+		    <page:list id="pl_org_esupportail_pay_domain_payevtmontant" items="${payevtmontants}">
+		        <table:table create="false" data="${payevtmontants}" delete="${canUpdate}" id="l_org_esupportail_pay_domain_payevtmontant" path="/admin/evtmnts" update="${canUpdate}" view="false">
+					<table:column id="c_org_esupportail_pay_domain_payevtmontant_title" property="title.labelLocales['fr'].translation"/>
+		            <table:column id="c_org_esupportail_pay_domain_payevtmontant_dbleMontant" property="dbleMontant"/>
+		            <table:column id="c_org_esupportail_pay_domain_payevtmontant_freeAmount" property="freeAmount"/>
+		            <table:column id="c_org_esupportail_pay_domain_payevtmontant_sciencesconf" property="sciencesconf"/>
+		            <table:column id="c_org_esupportail_pay_domain_payevtmontant_urlId" link="true" linkPrefix="${urlLinkPrefix}" property="urlId"/>
+		        </table:table>
+		        <c:if test="${canUpdate}">
+		            <div>
+		                <span class="new">
+		                    <spring:url value="/admin/evtmnts?form&amp;evtId=${payEvt.id}" var="newMontantURL"/>
+		                    <a class="btn btn-primary" href="${newMontantURL}"><spring:message code="form_create_amount" htmlEscape="false" /></a>
+		                </span>
+		            </div>
+		        </c:if>
+		    </page:list>
+	    </div>
+    </div>
+    
+</div>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0"  id="anonymeEvtmnt">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<spring:message code="label_fee_index" htmlEscape="false" var="title"/>
+	
+	<script type="text/javascript">
+		var pay_registration_fees_validator_notempty = '<spring:message code="NotEmpty"/>';
+		var pay_registration_fees_validator_mail_message = '<spring:message code="pay_registration_fees_validator_mail_message"/>';
+		var pay_registration_fees_validator_mail_notempty = '<spring:message code="pay_registration_fees_validator_mail_notempty"/>';
+		var pay_registration_fees_validator_amount = '<spring:message code="pay_registration_fees_validator_amount"/>';
+	</script>
+	
+	<c:set var="locale" value="${pageContext.response.locale.language}"/>
+	
+	<div class="container">
+	
+		<div class="row">			
+			<c:if test="${not payevtmontant.freeAmount}">
+				<div class="col-lg-12">
+					<h2>${payevtmontant.description.labelLocales[locale]} : ${payevtmontant.dbleMontant} Euros</h2>
+				</div>
+			</c:if>
+		</div>
+			
+		<div class="row">
+		
+			<div class="panel panel-primary">	
+		
+			<spring:url value="" var="formPath" />
+	
+				<div class="panel-heading">
+					<h4>${payevtmontant.help.labelLocales[locale]}</h4>
+				</div>
+	
+				<form:form method="POST" action="${formPath}" id="registerForm" class="panel-body">
+					<c:if test="${payevtmontant.freeAmount}">
+						<div class="form-group">
+							<label for="amount"><spring:message code="amount"/></label>
+							<input name="amount" class="form-control" type="text" />
+						</div>
+					</c:if>
+
+					<div class="form-group">
+						<label for="mail"><spring:message code="pay_registration_fees_mail"/></label>
+						<spring:message code="pay_registration_fees_mail_hint" var="mailHint"/>
+						<input name="mail" class="form-control" type="text" placeholder="${mailHint}"/>
+					</div>
+					
+					<div class="form-group">
+						<label for="field1" class="control-label">${payevtmontant.field1Label.labelLocales[locale]}</label>
+						<input name="field1" class="form-control" type="text"/>
+					</div>
+
+					<div class="form-group">
+						<label for="field2" class="control-label">${payevtmontant.field2Label.labelLocales[locale]}</label>
+						<input name="field2" class="form-control" type="text"/>
+					</div>
+
+					<div class="form-group">
+						<button type="submit" class="btn btn-success"><spring:message code="pay_registration_fees_validate"/></button>
+					</div>
+				</form:form>
+			</div>
+			
+		</div>
+		
+	</div>
+</div>
+
+
+
+
+

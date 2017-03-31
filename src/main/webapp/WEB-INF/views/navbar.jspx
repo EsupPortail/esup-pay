@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" 
+    xmlns:sec="http://www.springframework.org/security/tags"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags" class="navbar-default navbar-inverse navbar-fixed-top">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<spring:url value="/j_spring_cas_security_logout" var="logoutUrl" />
+	<spring:eval expression="@propertyConfigurer.getProperty('institute.logo-navbar.url')" var="logo_url" />
+	<spring:url var="logo" value="${logo_url}" />
+	<div class="row">
+		<spring:message code="application_name" htmlEscape="false" var="app_name" />
+	
+		<sec:authorize access="isAuthenticated()">
+			<c:set var="userName">
+			        <sec:authentication property="principal.username" htmlEscape="false"/>
+			</c:set>
+			<c:choose>
+				<c:when	test="${active eq 'su'}">
+					<c:set var="actif" value="su" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="actif" value="notsu" />
+				</c:otherwise>
+		    </c:choose>
+		    <spring:message code="pay_logout" htmlEscape="false" var="pay_logout_message" arguments="${userName}" />
+		    <spring:message code="pay_home" htmlEscape="false" var="pay_home" />
+			<menu:menu logoAppUrl="${logo}" appName="${app_name}" id="_navbar" labelRightButton="${pay_logout}" urlRightButton="${logoutUrl}" iconRightButton="off">
+		        <menu:item id="home" label="${pay_home}" url="/admin"  activeMenu="${actif=='notsu'}"/>
+		        <sec:authorize access="hasRole('ROLE_SU')">
+		        	<menu:item id="su" label="SU" url="/admin/su" activeMenu="${actif=='su'}" />
+		        </sec:authorize>
+			</menu:menu>
+		</sec:authorize>
+			
+		<sec:authorize access="hasRole('ROLE_PREVIOUS_ADMINISTRATOR')">
+			<spring:url value="/logout/impersonate" var="su_exit_url" />
+			<ul class="nav navbar-nav navbar-right supervisor-nav">
+				<li><a href="${su_exit_url}" class="btn btn-warning"><spring:message code="button_exit_su" htmlEscape="false" /></a></li>
+			</ul>
+		</sec:authorize>
+	</div>
+</div>

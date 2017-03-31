@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns:sec="http://www.springframework.org/schema/security" xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd                 
+							http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd                 
+							http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd	
+							http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+                
+    <!-- The controllers are autodetected POJOs labeled with the @Controller annotation. -->
+    <context:component-scan base-package="org.esupportail.pay" use-default-filters="false">
+        <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+    </context:component-scan>
+    
+    <!-- Turns on support for mapping requests to Spring MVC @Controller methods
+         Also registers default Formatters and Validators for use across all @Controllers -->
+    <mvc:annotation-driven conversion-service="applicationConversionService"/>
+    
+
+    <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
+    <mvc:resources location="/, classpath:/META-INF/web-resources/" mapping="/resources/**"/>
+
+    <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource 
+    requests to the container's default Servlet -->
+    <mvc:default-servlet-handler/>
+
+    <!-- Register "global" interceptor beans to apply to all registered HandlerMappings -->
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.theme.ThemeChangeInterceptor"/>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="lang"/>
+    </mvc:interceptors>
+
+    <!-- Selects a static view for rendering without the need for an explicit controller -->
+    <mvc:view-controller path="/resourceNotFound" />
+    <mvc:view-controller path="/dataAccessFailure"/>
+    <mvc:view-controller path="/denied"/>
+    
+    <bean id="webExpressionHandler" 
+    	class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+    		<property name="permissionEvaluator" ref="payPermissionEvaluator"/>
+	</bean>
+
+    <!-- Resolves localized messages*.properties and application.properties files in the application to allow for internationalization. 
+    The messages*.properties files translate Roo generated messages which are part of the admin interface, the 
+    application.properties resource bundle localizes all application specific messages such as entity names and menu items. -->
+    <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource" p:basenames="WEB-INF/i18n/messages,WEB-INF/i18n/application,WEB-INF/i18n/pay" p:fallbackToSystemLocale="false" p:cacheSeconds="10"/>
+
+    <!-- Store preferred language configuration in a cookie -->
+    <bean class="org.springframework.web.servlet.i18n.CookieLocaleResolver" id="localeResolver" p:cookieName="locale" p:defaultLocale="fr"/>
+
+    <!-- Resolves localized <theme_name>.properties files in the classpath to allow for theme support -->
+    <bean class="org.springframework.ui.context.support.ResourceBundleThemeSource" id="themeSource"/>
+
+    <!-- Store preferred theme configuration in a cookie -->
+    <bean class="org.springframework.web.servlet.theme.CookieThemeResolver" id="themeResolver" p:cookieName="theme" p:defaultThemeName="standard"/>
+
+    <!-- This bean resolves specific types of exceptions to corresponding logical - view names for error views. 
+    The default behaviour of DispatcherServlet - is to propagate all exceptions to the servlet 
+    container: this will happen - here with all other types of exceptions. -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" p:defaultErrorView="uncaughtException">
+        <property name="exceptionMappings">
+            <props>
+                <prop key=".DataAccessException">dataAccessFailure</prop>
+                <prop key=".NoSuchRequestHandlingMethodException">resourceNotFound</prop>
+                <prop key=".TypeMismatchException">resourceNotFound</prop>
+                <prop key=".MissingServletRequestParameterException">resourceNotFound</prop>
+                <prop key=".EntityNotFoundException">resourceNotFound</prop>        
+            </props>
+        </property>
+    </bean>
+
+    <!-- Enable this for integration of file upload functionality -->
+    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"/>
+<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="tilesViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
+  </bean>
+    <bean class="org.springframework.web.servlet.view.tiles2.TilesConfigurer" id="tilesConfigurer">
+    <property name="definitions">
+      <list>
+        <value>/WEB-INF/layouts/layouts.xml</value>
+        <!-- Scan views directory for Tiles configurations -->
+        <value>/WEB-INF/views/**/views.xml</value>
+      </list>
+    </property>
+  </bean>
+<bean class="org.esupportail.pay.web.ApplicationConversionServiceFactoryBean" id="applicationConversionService"/>
+
+	<!-- enable support for Expression-based annotations in Spring Security -->
+	<sec:global-method-security pre-post-annotations="enabled">
+		<sec:expression-handler ref="expressionHandler" />
+	</sec:global-method-security>
+	
+    <mvc:interceptors>
+        <bean class="org.esupportail.pay.web.ConfigInterceptor" autowire="constructor" />
+    </mvc:interceptors>
+
+</beans>

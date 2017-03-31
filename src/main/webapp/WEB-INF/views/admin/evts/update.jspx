@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" xmlns:spring-form="http://www.springframework.org/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <c:set value="true" var="isAdmin"/>
+    </sec:authorize>
+    <div class="col-lg-3">
+	    <div class="well">
+		    <form:create id="fu_org_esupportail_pay_domain_payevt_logoFile" modelAttribute="uploadFile" multipart="true" path="${payEvt.id}/addLogoFile" save_button="Sauver">
+		    	<fieldset>
+		            <legend><spring:message code="form_logo" htmlEscape="false" /></legend>
+			        <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="required" type="file" />
+			        <br />
+			        <spring:url value="/admin/evts/${payEvt.id}/logo" var="logoUrl"/>
+			        <img src="${logoUrl}" title="logo"/>
+			   </fieldset>
+		    </form:create>
+	    </div>
+    </div>
+    
+    <div class="col-lg-9">
+    <form:update id="fu_org_esupportail_pay_domain_payevt" modelAttribute="payEvt" path="/admin/evts" versionField="Version" z="965yhNcSLZ/Xg1mj2ncBQ3Wjpb4=">
+    	<div class="row">
+	        <div class="col-lg-7">
+		        <div class="well">
+			        <field:input field="webSiteUrl" id="c_org_esupportail_pay_domain_payevt_webSiteUrl" z="user-managed" cssClass="form-control"/>
+			        <field:input field="urlId" id="c_org_esupportail_pay_domain_payevt_urlId" readonly="${not isAdmin}" z="user-managed" cssClass="form-control"/>
+			        <field:input field="managersEmail" id="c_org_esupportail_pay_domain_payevt_managersEmail" z="user-managed" cssClass="form-control"/>
+			        <field:input field="mailSubject" id="c_org_esupportail_pay_domain_payevt_mailSubject" z="user-managed" cssClass="form-control"/>
+			        <field:input field="payboxCommandPrefix" id="c_org_esupportail_pay_domain_payevt_payCommandPrefix" readonly="${not isAdmin}" cssClass="form-control" z="user-managed"/>
+			        <c:if test="${not isAdmin}">
+			            <field:input field="payboxServiceKey" id="c_org_esupportail_pay_domain_payevt_payServiceKey" readonly="${not isAdmin}" z="user-managed"/>
+			        </c:if>
+			        <c:if test="${isAdmin}">
+			            <field:select field="payboxServiceKey" id="c_org_esupportail_pay_domain_payevt_payServiceKey" items="${payboxServiceKeys}" multiple="false" path="payboxServiceKey" size="1" z="PspASXhnOzA5WtaPmRfUJTsNMQ0="/>
+			        </c:if>
+		        </div>
+	        </div>
+	        <div class="col-lg-5">
+		        <div class="well">
+			        <field:simple field="respLogins" id="c_org_esupportail_pay_domain_payevt_respLogins" messageCode="entity_reference_not_managed" messageCodeAttribute="Resp Login" render="false" z="user-managed"/>
+			        <fieldset>
+			            <legend><spring:message code="form_login_managers" htmlEscape="false" /><a class="btn btn-xs btn-info" href="#" id="AddMoreLogins">
+			                   <span class="glyphicon glyphicon-plus" aria-hidden="true"><!--  --></span>
+			             </a></legend>
+			             <div id="respLogins">
+			                <c:forEach items="${payEvt.logins}" var="respLogin">
+			                    <div class="input-group">
+			                        <input class="respLogin autocompleteLogin form-control" name="logins" type="text" value="${respLogin}"/>
+			                        <span class="input-group-addon">
+				                        <a class="btn btn-xs btn-danger removeclass" href="#">
+				                             <span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
+				                        </a>
+			                        </span>
+			                    </div>
+			                </c:forEach>
+			                <spring-form:errors cssClass="errors" id="_logins_error_id" path="logins"/>
+			              </div>
+			        </fieldset>
+			        <br />
+			        <fieldset>
+			            <legend><spring:message code="form_login_readers" htmlEscape="false" /><a class="btn btn-xs btn-info" href="#" id="AddMoreViewerLogins">
+			                  <span class="glyphicon glyphicon-plus" aria-hidden="true"><!--  --></span>
+			            </a></legend>
+			
+						<div id="viewerLogins">
+			               <c:forEach items="${payEvt.viewerLogins2Add}" var="viewerLogin">
+			                   <div class="input-group">
+			                       <input class="viewerLogin autocompleteLogin form-control" name="viewerLogins2Add" type="text" value="${viewerLogin}"/>
+			                       <span class="input-group-addon">
+				                       <a class="btn btn-xs btn-danger removeclass" href="#">
+				                           <span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
+				                       </a>
+			                       </span>
+			                  </div>
+			                </c:forEach>
+			                <spring-form:errors cssClass="errors" id="_viewerLogins2Add_error_id" path="viewerLogins2Add"/>
+			            </div>
+			        </fieldset>
+			        <field:simple field="viewerLogins" id="c_org_esupportail_pay_domain_payevt_viewerLogins" messageCode="entity_reference_not_managed" messageCodeAttribute="Resp Login" render="false" z="user-managed"/>
+			        <field:input field="logins" id="c_org_esupportail_pay_domain_payevt_logins" render="false" z="user-managed"/>
+			        <field:input field="viewerLogins2Add" id="c_org_esupportail_pay_domain_payevt_viewerLogins2Add" render="false" z="user-managed"/>
+			        <field:select field="title" id="c_org_esupportail_pay_domain_payevt_title" itemValue="id" items="${labels}" path="/labels" render="false" z="user-managed"/>
+			        <field:select field="defaultMntDescription" id="c_org_esupportail_pay_domain_payevt_defaultMntDescription" itemValue="id" items="${labels}" path="/labels" render="false" z="user-managed"/>
+			        <fieldset>
+				        <legend><spring:message code="form_title" htmlEscape="false" /></legend>
+					        <c:forEach items="${payEvt.title.labelLocales}" var="labelLocales">
+					        	<div class="form-group">
+					            	<label>${labelLocales.key}</label>
+					            	<input class="form-control " name="title.labelLocales['${labelLocales.key}'].translation" value="${labelLocales.value.translation}"/>
+					            </div>
+					        </c:forEach>
+			        </fieldset>
+			        <fieldset>
+			        	<legend><spring:message code="form_payment_legend" htmlEscape="false" /></legend>
+				        <c:forEach items="${payEvt.defaultMntDescription.labelLocales}" var="labelLocales">
+				        	<div class="form-group">
+				            	<label>${labelLocales.key}</label>
+				            	<c:if test="${not isAdmin}">
+				            		<input readonly="readonly" class="form-control" name="defaultMntDescription.labelLocales['${labelLocales.key}'].translation" value="${labelLocales.value.translation}"/>
+				            	</c:if>
+				            	<c:if test="${isAdmin}">
+				            		<input class="form-control" name="defaultMntDescription.labelLocales['${labelLocales.key}'].translation" value="${labelLocales.value.translation}"/>
+				            	</c:if>
+				            </div>
+				        </c:forEach>
+			        </fieldset>
+		        </div>
+	        </div>
+        </div>
+    </form:update>
+    </div>
+</div>

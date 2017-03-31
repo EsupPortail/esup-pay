@@ -1,0 +1,53 @@
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<header id="overview"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<div class="container">
+		<div class="row">
+			<spring:url var="banner" value="/logo/${payevt.urlId}"/>
+			<spring:url var="home" value="${payevt.webSiteUrl}" />
+			<spring:message code="application_name" htmlEscape="false" var="app_name" />
+			<c:set var="locale" value="${pageContext.response.locale.language}"/>
+			<c:set var="title" value="${payevt.title.labelLocales[locale]}"/>
+			<c:set var="subTitle" value="${payevtmontant.title.labelLocales[locale]}"/>
+			<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12" id="logoDiv">
+				<a href="${home}" title="${title}">
+					<img src="${banner}" class="img-responsive"/>			
+				</a>
+			</div>
+			<div class="col-lg-8 col-md-9 col-sm-9 col-xs-12">
+				<h1>${title}<br /> <small>${subTitle}</small></h1>
+			</div>
+			<div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
+				<spring:eval expression="@propertyConfigurer.getProperty('institute.logo.url')" var="logo_url" />
+				<spring:url var="logo" value="${logo_url}" />
+				<spring:eval expression="@propertyConfigurer.getProperty('institute.name')" var="logo_title" />
+				<spring:eval expression="@propertyConfigurer.getProperty('institute.href')" var="logo_href" />
+				<a href="${logo_href}" name="${logo_title}"
+					title="${logo_title}"><img src="${logo}"/></a>
+			</div>
+		</div>
+	</div>
+</header>

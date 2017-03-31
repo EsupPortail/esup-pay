@@ -1,0 +1,28 @@
+.navbar,
+#menu,
+.help,
+#footer,
+small#mention-legale,
+#demat-legende
+{
+display: none;
+}
+
+table, th, td
+{
+  border-collapse:collapse;
+  border: 1px solid black;
+  width:100%;
+  text-align:left;
+  background-color: #fff;
+}
+td
+{
+border: 1px solid grey;
+}
+
+
+/* Fix bootstrap link url print */
+ a[href]:after {
+    content: "";
+  }

@@ -1,0 +1,241 @@
+body {
+padding-top: 60px;
+padding-bottom: 60px;
+}
+
+label {
+margin-bottom: 5px;
+font-weight: 700;
+}
+
+fieldset {
+margin-top: 10px;
+margin-bottom: 10px;
+}
+
+fieldset ul {
+list-style-type: none;
+}
+
+fieldset ul li label {
+margin-bottom: 0;
+}
+
+fieldset ul li {
+margin-top: 5px;
+}
+
+fieldset legend {
+margin-bottom: 0;
+}
+
+table tbody tr:nth-child(odd){background:#FAFAFA;}
+table td{border-top:0px !important; border-right:1px solid #fff !important;}
+table tbody tr:nth-child(even){background:#EFEFEF; }
+thead, thead a, thead a:hover{background-color: #2980B9; color: white;}
+
+h1 small{
+	margin-left: 2px;
+}
+.row{
+	margin-left: 0;
+	margin-right: 0;
+}
+.ui-autocomplete-input {
+margin-bottom: 0 !important;
+}
+
+.navbar-right .btn{
+	margin-right: 20px;
+}
+
+.navbar-fixed-top .nav>li>a {
+	font-weight: bold;
+}
+
+.navbar-nav a.btn-success {
+    line-height: 10px;
+    color: white !important;
+    margin-top: 4px;
+    white-space: pre-wrap;
+    margin-left: 20px;
+}
+
+.sorting {
+	padding-right: 20px;
+	background: url("images/sort_both.png") no-repeat center right;
+}
+
+.sorting_asc {
+	padding-right: 20px;
+	background: url("images/sort_asc.png") no-repeat center right;
+}
+
+.sorting_desc {
+	padding-right: 20px;
+	background: url("images/sort_desc.png") no-repeat center right;
+}
+
+.panel .form-control {
+display: block;
+width: 100%;
+height: 34px;
+padding: 6px 12px;
+font-size: 14px;
+line-height: 1.428571429;
+color: #555;
+background-color: #fff;
+background-image: none;
+border: 1px solid #ccc;
+border-radius: 4px;
+-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.errors {
+font-weight: bold;
+color: red;
+padding: 2px 8px;
+margin-top: 2px;
+margin-left: 24px;
+}
+
+.supervisor-nav {
+margin-top: -50px;
+}
+
+.supervisor-nav li a.btn-warning {
+color: black;
+font-weight: bold;
+background-color: #F89406 !important;
+}
+
+#_title_ps_org_esupportail_pay_domain_PayboxEvt_id {
+padding-bottom: 40px;
+}
+
+.breadcrumb li a {
+text-decoration: underline;	
+}
+#menu .nav li {
+font-weight: bold;	
+}
+
+@media (min-width: 1200px) {
+	#main .bs-docs-sidenav {
+	width: 338px;
+	}
+}
+#footer {
+    text-align: center;
+    background-color: #717574;
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+#footer a {
+color: white;
+text-decoration: underline;	
+}
+
+hr {
+  height: 4px;
+  margin-left: 15px;
+  margin-bottom:-3px;
+}
+.hr-primary{
+  background-image: -webkit-linear-gradient(left, rgba(66,133,244,.8), rgba(66, 133, 244,.6), rgba(0,0,0,0));
+}
+
+.breadcrumb {
+  background: rgba(245, 245, 245, 0); 
+  border: 0px solid rgba(245, 245, 245, 1); 
+  border-radius: 25px; 
+  display: block;
+  margin-bottom: 10px;
+  padding-left: 60px;
+}
+
+.navbar-brand{
+padding: 5px 15px;
+}
+
+header{
+margin-bottom: 50px;
+}
+.jumbotron{
+	margin-top: 40px;
+}
+.btn-circle {
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	padding: 10px 0;
+	font-size: 13px;
+	line-height: 1.428571429;
+	border-radius: 20px;
+}
+.absButton{
+	position: absolute;
+	z-index: 500;
+    top: -42px;
+}
+#listLogs,
+#listEvts{
+	position: relative;
+}
+#listLogs .absButton{
+   top: -45px;
+}
+#AddMoreViewerLogins, #AddMoreLogins{
+	margin-left: 10px;
+}
+.glyphicon-plus{
+	padding-left: 1px;
+	padding-bottom: 1px;
+}
+.glyphicon-minus{
+	padding-bottom: 1px;
+}
+dl.displayTag  {
+	margin-top: 0;
+	margin-bottom: 20px;
+	border-top: 1px #ccc solid;
+	display: block;
+	vertical-align: middle;
+	padding-top: 10px;
+	margin-bottom: 0;
+	padding-bottom: 10px;
+}
+
+#anonymeEvtmnt .well{
+  margin-top: 20px;
+}
+#logoDiv a{
+    display: block;
+    text-align: center;
+    font-weight: bold;
+}
+@media (max-width: 768px) {
+	#logoDiv .caption{
+		float: left;
+		font-size: 1.5em;
+		margin-left: 15px;
+		vertical-align: middle;
+		display: block;
+		height: 100%;
+	}
+	#logoDiv{
+		padding: 10px;
+	}
+	#logoDiv hr{
+	visibility: hidden;
+	clear: left;
+	}
+}
+
