@@ -59,6 +59,7 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 		Set<GrantedAuthority> extraRoles = new HashSet<GrantedAuthority>();
 
 		for(GrantedAuthority role: roles) {
+			log.debug("Group from LDAP : " + role.getAuthority().replaceAll("ROLE_", ""));
 			if(mappingGroupesRoles != null && mappingGroupesRoles.containsKey(role.getAuthority())) {
 				extraRoles.add(new SimpleGrantedAuthority(mappingGroupesRoles.get(role.getAuthority())));
 			}
@@ -79,6 +80,12 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 		List<RespLogin> viewerLoginList = Arrays.asList(new RespLogin[] {viewerLogin});
 		if(!PayEvt.findPayEvtsByViewerLogins(viewerLoginList).getResultList().isEmpty()) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_VIEWER"));
+		}
+		
+		if(log.isInfoEnabled()) {
+			for(GrantedAuthority role: extraRoles) {
+				log.info("-> Role : " + role.getAuthority().replaceAll("ROLE_", ""));
+			}
 		}
 
 		return extraRoles;
