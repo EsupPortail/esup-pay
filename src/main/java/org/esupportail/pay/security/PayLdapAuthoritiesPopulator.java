@@ -18,12 +18,11 @@
 package org.esupportail.pay.security;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.domain.PayEvt;
@@ -41,7 +40,11 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 	protected Map<String, String> mappingGroupesRoles;
 	
 	public void setMappingGroupesRoles(Map<String, String> mappingGroupesRoles) {
-		this.mappingGroupesRoles = mappingGroupesRoles;
+		// for case insensitive ...
+		this.mappingGroupesRoles = new HashMap<String, String>();
+		for(String ldapGroup : mappingGroupesRoles.keySet()) {
+			this.mappingGroupesRoles.put(ldapGroup.toUpperCase(), mappingGroupesRoles.get(ldapGroup));
+		}
 	}
 	
 	public PayLdapAuthoritiesPopulator(ContextSource contextSource,
