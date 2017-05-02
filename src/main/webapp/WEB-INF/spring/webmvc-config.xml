@@ -87,19 +87,21 @@
     </bean>
 
     <!-- Enable this for integration of file upload functionality -->
-    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"/>
-<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="tilesViewResolver">
-    <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
-  </bean>
+    
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="tilesViewResolver">
+      <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
+    </bean>
+  
     <bean class="org.springframework.web.servlet.view.tiles2.TilesConfigurer" id="tilesConfigurer">
-    <property name="definitions">
+     <property name="definitions">
       <list>
         <value>/WEB-INF/layouts/layouts.xml</value>
         <!-- Scan views directory for Tiles configurations -->
         <value>/WEB-INF/views/**/views.xml</value>
       </list>
-    </property>
-  </bean>
+     </property>
+    </bean>
+  
 <bean class="org.esupportail.pay.web.ApplicationConversionServiceFactoryBean" id="applicationConversionService"/>
 
 	<!-- enable support for Expression-based annotations in Spring Security -->

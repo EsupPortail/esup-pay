@@ -97,4 +97,7 @@
     <bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="mailSender">
         <property name="host" value="${email.host}"/>
     </bean>
+    
+    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="filterMultipartResolver"/>
+        
 </beans>
