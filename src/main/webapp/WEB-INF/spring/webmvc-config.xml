@@ -48,9 +48,9 @@
     </mvc:interceptors>
 
     <!-- Selects a static view for rendering without the need for an explicit controller -->
-    <mvc:view-controller path="/resourceNotFound" />
+    <mvc:view-controller path="/resourceNotFound" status-code="404"/>
     <mvc:view-controller path="/dataAccessFailure"/>
-    <mvc:view-controller path="/denied"/>
+    <mvc:view-controller path="/denied" status-code="403"/>
     
     <bean id="webExpressionHandler" 
     	class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">

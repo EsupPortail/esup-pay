@@ -32,8 +32,8 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 
 	@Override
 	public boolean hasPermission(Authentication auth, Object targetDomainObject, Object permission) {
-
-
+		
+		
 		if(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
 			return true;
 

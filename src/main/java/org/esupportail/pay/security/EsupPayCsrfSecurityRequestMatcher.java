@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
-import org.esupportail.pay.exceptions.EntityNotFoundException;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
 

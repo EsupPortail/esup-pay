@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UncaughtExceptionController {
 
 	
-	
 	/**
 	 * Workaround : <mvc:view-controller path="/uncaughtException"/> ne suffit pas (plus), 
 	 * le content-type n'est plus positionné dans cette version de spring-mvc (4.3.5) :-( 
@@ -35,6 +34,16 @@ public class UncaughtExceptionController {
     public String handelError(final HttpServletResponse response) {
 		 response.setContentType("text/html");
 		 return "uncaughtException";
+    }
+	
+	
+	/**
+	 * Workaround : <mvc:view-controller path="/denied"/> ne fonctionne que pour du GET 
+	 */
+	@RequestMapping(value = "/denied")
+    public String handelErrorDenied(final HttpServletResponse response) {
+		 response.setContentType("text/html");
+		 return "denied";
     }
 	
 }
