@@ -37,6 +37,7 @@ import java.util.TimeZone;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
+import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.PayBoxForm;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
@@ -261,6 +262,8 @@ public class PayBoxService {
                         message += "Firstname : " + txLog.getField1() + "\n";
                         message += "Lastname : " + txLog.getField2() + "\n";
                         message += "Montant : " + txLog.getMontantDevise() + " Euros\n";
+                        message += "Evt : " + txLog.getPayEvtMontant().getEvt().getTitle().getLabelLocales().get(LOCALE_IDS.fr.toString()).getTranslation() + " \n";
+                        message += "Titre du Montant : " + txLog.getPayEvtMontant().getTitle().getLabelLocales().get(LOCALE_IDS.fr.toString()).getTranslation() + " \n";
                         message += "Transaction Paybox : " + idtrans + "\n";
                         message += "Reference : " + reference + "\n";
                         
