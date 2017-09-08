@@ -219,73 +219,75 @@ public class PayBoxService {
     }
 
     public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String signature, String queryString, String ip) {
-        List<PayTransactionLog> txLogs = PayTransactionLog.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
-        boolean newTxLog = txLogs.size() == 0;
-        PayTransactionLog txLog = txLogs.size() > 0 ? txLogs.get(0) : null;
-        if (txLog == null) {
-            txLog = new PayTransactionLog();
-        } else {
-            if (!"00000".equals(txLog.getErreur())) {
-                log.info("This transaction + " + idtrans + " is already OK");
-                return true;
-            }
+        synchronized (idtrans.intern()) {
+	    	List<PayTransactionLog> txLogs = PayTransactionLog.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
+	        boolean newTxLog = txLogs.size() == 0;
+	        PayTransactionLog txLog = txLogs.size() > 0 ? txLogs.get(0) : null;
+	        if (txLog == null) {
+	            txLog = new PayTransactionLog();
+	        } else {
+	            if ("00000".equals(txLog.getErreur())) {
+	                log.info("This transaction + " + idtrans + " is already OK");
+	                return true;
+	            }
+	        }
+	        txLog.setMontant(montant);
+	        txLog.setReference(reference);
+	        txLog.setAuto(auto);
+	        txLog.setErreur(erreur);
+	        txLog.setIdtrans(idtrans);
+	        txLog.setSignature(signature);
+	        txLog.setTransactionDate(new Date());
+	        String uid = reference.split(DELIMITER_REF)[0];
+	
+	
+	            List<EmailFieldsMapReference> emailMapFirstLastNames = EmailFieldsMapReference.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+	            if (!emailMapFirstLastNames.isEmpty()) {
+	                txLog.setField1(emailMapFirstLastNames.get(0).getField1());
+	                txLog.setField2(emailMapFirstLastNames.get(0).getField2());
+	                txLog.setMail(emailMapFirstLastNames.get(0).getMail());
+	                PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
+	                PayEvt evt = evtMontant.getEvt();
+	                txLog.setPayEvtMontant(emailMapFirstLastNames.get(0).getPayEvtMontant());
+	                String numCommandePrefix = evt.getPayboxCommandPrefix();              		
+	                uid = uid.substring(numCommandePrefix.length(), uid.length());
+	                txLog.setUid(uid);
+	            if (this.checkPayboxSignature(queryString, signature)) {
+	                if ("00000".equals(erreur)) {
+	                    try {
+	                        log.info("Transaction : " + reference + " pour un montant de " + montant + " OK !");
+	                        
+	                        String subject = evt.getMailSubject() + txLog.getMail() + " - "  + txLog.getMontantDevise() + " Euros.";
+	                        String mailTo = evt.getManagersEmail();
+	                        String message = "Email : " + txLog.getMail() + "\n";
+	                        message += "Firstname : " + txLog.getField1() + "\n";
+	                        message += "Lastname : " + txLog.getField2() + "\n";
+	                        message += "Montant : " + txLog.getMontantDevise() + " Euros\n";
+	                        message += "Evt : " + txLog.getPayEvtMontant().getEvt().getTitle().getLabelLocales().get(LOCALE_IDS.fr.toString()).getTranslation() + " \n";
+	                        message += "Titre du Montant : " + txLog.getPayEvtMontant().getTitle().getLabelLocales().get(LOCALE_IDS.fr.toString()).getTranslation() + " \n";
+	                        message += "Transaction Paybox : " + idtrans + "\n";
+	                        message += "Reference : " + reference + "\n";
+	                        
+	                        this.sendMessage(mailFrom, subject, mailTo, message);
+	                        
+	                        if (newTxLog) {
+	                            txLog.persist();
+	                        } else {
+	                            txLog.merge();
+	                        }
+	                    } catch (Exception ex) {
+	                        log.error("Exception during sending email ?", ex);
+	                    }
+	                } else {
+	                    log.info("'Erreur' " + erreur + "  (annulation) lors de la transaction paybox : " + reference + " pour un montant de " + montant);
+	                }
+	            } else {
+	                log.error("signature checking of paybox failed, transaction " + txLog + " canceled.");
+	            }
+	            return true;
+	        }    
+	        return false;
         }
-        txLog.setMontant(montant);
-        txLog.setReference(reference);
-        txLog.setAuto(auto);
-        txLog.setErreur(erreur);
-        txLog.setIdtrans(idtrans);
-        txLog.setSignature(signature);
-        txLog.setTransactionDate(new Date());
-        String uid = reference.split(DELIMITER_REF)[0];
-
-
-            List<EmailFieldsMapReference> emailMapFirstLastNames = EmailFieldsMapReference.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
-            if (!emailMapFirstLastNames.isEmpty()) {
-                txLog.setField1(emailMapFirstLastNames.get(0).getField1());
-                txLog.setField2(emailMapFirstLastNames.get(0).getField2());
-                txLog.setMail(emailMapFirstLastNames.get(0).getMail());
-                PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
-                PayEvt evt = evtMontant.getEvt();
-                txLog.setPayEvtMontant(emailMapFirstLastNames.get(0).getPayEvtMontant());
-                String numCommandePrefix = evt.getPayboxCommandPrefix();              		
-                uid = uid.substring(numCommandePrefix.length(), uid.length());
-                txLog.setUid(uid);
-            if (this.checkPayboxSignature(queryString, signature)) {
-                if ("00000".equals(erreur)) {
-                    try {
-                        log.info("Transaction : " + reference + " pour un montant de " + montant + " OK !");
-                        
-                        String subject = evt.getMailSubject() + txLog.getMail() + " - "  + txLog.getMontantDevise() + " Euros.";
-                        String mailTo = evt.getManagersEmail();
-                        String message = "Email : " + txLog.getMail() + "\n";
-                        message += "Firstname : " + txLog.getField1() + "\n";
-                        message += "Lastname : " + txLog.getField2() + "\n";
-                        message += "Montant : " + txLog.getMontantDevise() + " Euros\n";
-                        message += "Evt : " + txLog.getPayEvtMontant().getEvt().getTitle().getLabelLocales().get(LOCALE_IDS.fr.toString()).getTranslation() + " \n";
-                        message += "Titre du Montant : " + txLog.getPayEvtMontant().getTitle().getLabelLocales().get(LOCALE_IDS.fr.toString()).getTranslation() + " \n";
-                        message += "Transaction Paybox : " + idtrans + "\n";
-                        message += "Reference : " + reference + "\n";
-                        
-                        this.sendMessage(mailFrom, subject, mailTo, message);
-                        
-                        if (newTxLog) {
-                            txLog.persist();
-                        } else {
-                            txLog.merge();
-                        }
-                    } catch (Exception ex) {
-                        log.error("Exception during sending email ?", ex);
-                    }
-                } else {
-                    log.info("'Erreur' " + erreur + "  (annulation) lors de la transaction paybox : " + reference + " pour un montant de " + montant);
-                }
-            } else {
-                log.error("signature checking of paybox failed, transaction " + txLog + " canceled.");
-            }
-            return true;
-        }    
-        return false;
     }
 
     public void sendMessage(String mailFrom, String subject, String mailTo, String message) {
