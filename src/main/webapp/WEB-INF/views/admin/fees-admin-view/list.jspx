@@ -22,10 +22,12 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <spring:url value="/resources/images/csv_text.png" var="csvImgUrl"/>
-    <spring:url value="/admin/csv" var="csvUrl"/>
-    <a class="absButton" data-role="button" href="${csvUrl}">
-        <img alt="CSV" src="${csvImgUrl}"/>
-    </a>
+    <c:if test="${listAllTxEvts}">
+	    <spring:url value="/admin/csv" var="csvUrl"/>
+	    <a class="absButton" data-role="button" href="${csvUrl}">
+	        <img alt="CSV" src="${csvImgUrl}"/>
+	    </a>
+    </c:if>
     <page:list id="pl_org_esupportail_pay_domain_PayTransactionLog" items="${paytransactionlogs}" z="DANYIntI/zzAM+J6dMM4ANpLwyY=">
     	<c:set value="listFees" var="idFees"/>
         <c:if test="${not  listAllTxEvts}">
