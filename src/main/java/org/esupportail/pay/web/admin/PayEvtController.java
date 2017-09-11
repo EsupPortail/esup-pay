@@ -18,11 +18,13 @@
 package org.esupportail.pay.web.admin;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.persistence.TypedQuery;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,6 +80,9 @@ public class PayEvtController {
     
     @Resource 
     PayBoxServiceManager payBoxServiceManager;
+    
+    @Resource
+    CsvController csvController;
 	
 	@RequestMapping(value = "/{id}/addLogoFile", method = RequestMethod.POST, produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'manage')")
@@ -305,7 +310,15 @@ public class PayEvtController {
             uiModel.addAttribute("paytransactionlogs", PayTransactionLog.findPayTransactionLogsByPayEvt(payEvt, sortFieldName, sortOrder).getResultList());
         }
         uiModel.addAttribute("payTransactionLog_transactiondate_date_format", DateTimeFormat.patternForStyle("MM", LocaleContextHolder.getLocale()));
-        uiModel.addAttribute("evtTitle", payEvt.getTitle());
+        uiModel.addAttribute("payEvt", payEvt);
         return "admin/fees-admin-view/list";
+    }
+    
+    @PreAuthorize("hasPermission(#id, 'view')")
+    @RequestMapping(value = "/{id}/fees/csv", produces = "text/html")
+    public void csvFees(@PathVariable("id") Long id, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+    	PayEvt payEvt = PayEvt.findPayEvt(id);
+    	TypedQuery<PayTransactionLog> txLogsQuery = PayTransactionLog.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc");
+    	csvController.generateAndReturnCsv(response, txLogsQuery);
     }
 }

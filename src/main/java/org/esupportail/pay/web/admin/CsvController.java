@@ -22,16 +22,14 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.List;
-import java.util.Locale;
 
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.esupportail.pay.domain.PayTransactionLog;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +43,14 @@ public class CsvController {
 	@RequestMapping
     public void getCsv(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
 		
+		TypedQuery<PayTransactionLog> txLogsQuery = PayTransactionLog.findAllPayTransactionLogsQuery("transactionDate", "asc");
+		
+		generateAndReturnCsv(response, txLogsQuery);
+
+    }
+
+	public void generateAndReturnCsv(HttpServletResponse response, TypedQuery<PayTransactionLog> txLogsQuery)
+			throws UnsupportedEncodingException, IOException {
 		StopWatch stopWatch = new StopWatch("Stream - build CSV and send it");
 		stopWatch.start();
 		
@@ -56,8 +62,6 @@ public class CsvController {
 		
 		String csv = "Date transaction,payEvt,payEvtMontant,uid,field1,field2,montant,ID transaction";
 		writer.write(csv);
-
-		TypedQuery<PayTransactionLog> txLogsQuery = PayTransactionLog.findAllPayTransactionLogsQuery("transactionDate", "asc");
 
         int offset = 0;
         int nbLine = 0;
@@ -84,7 +88,6 @@ public class CsvController {
     	log.info("CSV of " + nbLine + " lines sent in " + stopWatch.getTotalTimeSeconds() + " sec.");
 
         writer.close();
-
-    }
+	}
 
 }

@@ -22,18 +22,21 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <spring:url value="/resources/images/csv_text.png" var="csvImgUrl"/>
-    <c:if test="${listAllTxEvts}">
-	    <spring:url value="/admin/csv" var="csvUrl"/>
-	    <a class="absButton" data-role="button" href="${csvUrl}">
-	        <img alt="CSV" src="${csvImgUrl}"/>
-	    </a>
-    </c:if>
+
+	<spring:url value="/admin/csv" var="csvUrl"/>
+	<c:if test="${not listAllTxEvts}">
+		<spring:url value="/admin/evts/${payEvt.id}/fees/csv" var="csvUrl"/>
+	</c:if>
+    <a class="absButton" data-role="button" href="${csvUrl}">
+		  <img alt="CSV" src="${csvImgUrl}"/>
+	</a>
+	
     <page:list id="pl_org_esupportail_pay_domain_PayTransactionLog" items="${paytransactionlogs}" z="DANYIntI/zzAM+J6dMM4ANpLwyY=">
     	<c:set value="listFees" var="idFees"/>
         <c:if test="${not  listAllTxEvts}">
             <c:set value="${pageContext.response.locale.language}" var="locale"/>
             <c:set value="listFees2" var="idFees"/>
-            <h3>${evtTitle.labelLocales['fr'].translation}</h3>
+            <h3>${payEvt.title.labelLocales['fr'].translation}</h3>
         </c:if>
         <div id="${idFees}">
 	        <table:table create="false" data="${paytransactionlogs}" delete="false" id="l_org_esupportail_pay_domain_PayTransactionLog" path="/admin/fees" update="false" z="user-managed">
