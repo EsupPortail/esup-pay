@@ -42,7 +42,7 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 	
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-
+		
 		// we want to add usual model in modelAndView only when needed, ie with
 		// direct html view :
 		// not for download response (for example) because we don't need it
@@ -79,14 +79,7 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 				modelAndView.addObject("subTitle", subTitle);
 				modelAndView.addObject("activeMenu", activeMenu);
 			}
-		}
-		
-		if(request.getParameter("size")!=null) {
-			Integer size = Integer.valueOf(request.getParameter("size"));
-			request.getSession().setAttribute("size_in_session", size);
-		} else if(request.getSession().getAttribute("size_in_session") == null) {
-			request.getSession().setAttribute("size_in_session", new Integer(40));
-		}
+		} 
 	}
 
 }
