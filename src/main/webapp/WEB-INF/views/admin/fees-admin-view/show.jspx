@@ -24,7 +24,6 @@
     <div class="container-fluid">
         <page:show create="false" delete="false" id="ps_org_esupportail_pay_domain_PayTransactionLog" list="false" object="${paytransactionlog}" path="/fees-admin-view" update="false" z="user-managed">
 	        <field:display date="true" dateTimePattern="${payTransactionLog_transactiondate_date_format}" field="transactionDate" id="s_org_esupportail_pay_domain_PayTransactionLog_transactionDate" object="${paytransactionlog}" z="1u0rjlDv3Y7FPENyrpMZDbKhQeU="/>
-	        <field:display field="uid" id="s_org_esupportail_pay_domain_PayTransactionLog_uid" object="${paytransactionlog}" z="W1coXYRuxnErB69G+UUR6GgXtcY="/>
 	        <field:display field="reference" id="s_org_esupportail_pay_domain_PayTransactionLog_reference" object="${paytransactionlog}" z="VkFvFlbx6updh1681D9zUv3G9Bs="/>
 	        <field:display field="montantDevise" id="s_org_esupportail_pay_domain_PayTransactionLog_montant" label="Montant (€)" object="${paytransactionlog}" z="user-managed"/>
 	        <field:display field="auto" id="s_org_esupportail_pay_domain_PayTransactionLog_auto" object="${paytransactionlog}" z="JJ+J3lFNwkrMw4oD1mBi7ou1eoQ="/>

@@ -83,7 +83,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<PayTransactionLog, String> ApplicationConversionServiceFactoryBean.getPayTransactionLogToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<org.esupportail.pay.domain.PayTransactionLog, java.lang.String>() {
             public String convert(PayTransactionLog payboxTransactionLog) {
-                return new StringBuilder().append(payboxTransactionLog.getTransactionDate()).append(' ').append(payboxTransactionLog.getUid()).append(' ').append(payboxTransactionLog.getField1()).append(' ').append(payboxTransactionLog.getField2()).toString();
+                return new StringBuilder().append(payboxTransactionLog.getTransactionDate()).append(' ').append(payboxTransactionLog.getField1()).append(' ').append(payboxTransactionLog.getField2()).toString();
             }
         };
     }

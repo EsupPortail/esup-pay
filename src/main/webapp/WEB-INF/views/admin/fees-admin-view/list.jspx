@@ -43,7 +43,6 @@
 	            <table:column id="s_org_esupportail_pay_domain_PayTransactionLog_evt" label="Evt" property="payEvtMontant.evt.title.labelLocales['fr'].translation" render="${listAllTxEvts}"/>
 	            <table:column id="s_org_esupportail_pay_domain_PayTransactionLog_evt" label="EvtMnt" property="payEvtMontant.title.labelLocales['fr'].translation" render="true"/>
 	            <table:column date="true" dateTimePattern="${payTransactionLog_transactiondate_date_format}" id="c_org_esupportail_pay_domain_PayTransactionLog_transactionDate" property="transactionDate" sort="true" z="user-managed"/>
-	            <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_uid" property="uid" render="false" z="user-managed"/>
 	            <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_reference" property="reference" render="false" z="user-managed"/>
 	            <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_mail" property="mail" sort="true" z="user-managed"/>
 	            <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_montant" label="Montant (€)" property="montantDevise" sort="true" z="user-managed"/>

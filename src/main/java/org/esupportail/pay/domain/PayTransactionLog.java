@@ -43,9 +43,7 @@ public class PayTransactionLog {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "MM")
     private Date transactionDate;
-
-    private String uid;
-
+    
     private String field1;
 
     private String field2;

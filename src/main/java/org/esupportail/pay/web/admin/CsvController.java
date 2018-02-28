@@ -60,7 +60,7 @@ public class CsvController {
         
 		Writer writer = new OutputStreamWriter(response.getOutputStream(), "UTF8");
 		
-		String csv = "Date transaction,payEvt,payEvtMontant,uid,field1,field2,montant,ID transaction";
+		String csv = "Date transaction,payEvt,payEvtMontant,mail,field1,field2,montant,ID transaction";
 		writer.write(csv);
 
         int offset = 0;
@@ -74,7 +74,7 @@ public class CsvController {
 	    		csv = csv + txLog.getTransactionDate() + ",";
 	    		csv = csv + txLog.getPayEvtMontant().getEvt().getTitle().getTranslation(LOCALE_IDS.fr) + ",";
 	    		csv = csv + txLog.getPayEvtMontant().getTitle().getTranslation(LOCALE_IDS.fr) + ",";
-	    		csv = csv + txLog.getUid() + ",";
+	    		csv = csv + txLog.getMail() + ",";
 	    		csv = csv + txLog.getField1() + ",";
 	    		csv = csv + txLog.getField2() + ",";
 	    		csv = csv + txLog.getMontant() + ",";

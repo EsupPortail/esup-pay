@@ -249,9 +249,6 @@ public class PayBoxService {
 	                PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
 	                PayEvt evt = evtMontant.getEvt();
 	                txLog.setPayEvtMontant(emailMapFirstLastNames.get(0).getPayEvtMontant());
-	                String numCommandePrefix = evt.getPayboxCommandPrefix();              		
-	                uid = uid.substring(numCommandePrefix.length(), uid.length());
-	                txLog.setUid(uid);
 	            if (this.checkPayboxSignature(queryString, signature)) {
 	                if ("00000".equals(erreur)) {
 	                    try {
