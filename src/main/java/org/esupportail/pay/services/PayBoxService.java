@@ -260,8 +260,8 @@ public class PayBoxService {
 	                        String subject = evt.getMailSubject() + txLog.getMail() + " - "  + txLog.getMontantDevise() + " Euros.";
 	                        String mailTo = evt.getManagersEmail();
 	                        String message = "Email : " + txLog.getMail() + "\n";
-	                        message += "Firstname : " + txLog.getField1() + "\n";
-	                        message += "Lastname : " + txLog.getField2() + "\n";
+	                        message += txLog.getPayEvtMontant().getField1Label().getTranslation(LOCALE_IDS.fr) + " : " + txLog.getField1() + "\n";
+	                        message += txLog.getPayEvtMontant().getField2Label().getTranslation(LOCALE_IDS.fr) + " : " + txLog.getField2() + "\n";
 	                        message += "Montant : " + txLog.getMontantDevise() + " Euros\n";
 	                        message += "Evt : " + txLog.getPayEvtMontant().getEvt().getTitle().getLabelLocales().get(LOCALE_IDS.fr.toString()).getTranslation() + " \n";
 	                        message += "Titre du Montant : " + txLog.getPayEvtMontant().getTitle().getLabelLocales().get(LOCALE_IDS.fr.toString()).getTranslation() + " \n";
