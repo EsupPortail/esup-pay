@@ -50,7 +50,7 @@ public class PayBoxCallbackController {
         } else {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "text/html; charset=utf-8");
-            return new ResponseEntity<String>("", headers, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<String>("", headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
