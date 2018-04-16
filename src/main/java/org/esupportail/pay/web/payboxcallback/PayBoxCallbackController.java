@@ -43,7 +43,7 @@ public class PayBoxCallbackController {
     public ResponseEntity<java.lang.String> index(@RequestParam String montant, @RequestParam String reference, @RequestParam(required = false) String auto, @RequestParam String erreur, @RequestParam String idtrans, @RequestParam String signature, HttpServletRequest request) {
         String ip = request.getRemoteAddr();
         String queryString = request.getQueryString();
-        if (payBoxServiceManager.payboxCallback(montant, reference, auto, erreur, idtrans, signature, queryString, ip)) {
+        if (payBoxServiceManager.payboxCallback(montant, reference, auto, erreur, idtrans, signature, queryString)) {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "text/html; charset=utf-8");
             return new ResponseEntity<String>("", headers, HttpStatus.OK);

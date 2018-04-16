@@ -218,7 +218,7 @@ public class PayBoxService {
         }
     }
 
-    public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String signature, String queryString, String ip) {
+    public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String signature, String queryString) {
         synchronized (idtrans.intern()) {
 	    	List<PayTransactionLog> txLogs = PayTransactionLog.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
 	        boolean newTxLog = txLogs.size() == 0;

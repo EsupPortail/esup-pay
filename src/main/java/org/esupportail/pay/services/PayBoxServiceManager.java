@@ -75,12 +75,12 @@ public class PayBoxServiceManager {
 
 	public boolean payboxCallback(String montant, String reference,
 			String auto, String erreur, String idtrans, String signature,
-			String queryString, String ip) {
+			String queryString) {
 		List<EmailFieldsMapReference> emailMapFirstLastNames = EmailFieldsMapReference.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt payboxevt = evtMontant.getEvt();
-            return payboxServices.get(payboxevt.getPayboxServiceKey()).payboxCallback(montant, reference, auto, erreur, idtrans, signature, queryString, ip);
+            return payboxServices.get(payboxevt.getPayboxServiceKey()).payboxCallback(montant, reference, auto, erreur, idtrans, signature, queryString);
         }
         log.error("reference ne correspond pas à un montant/evt et donc à un service paybox !? reference : " + reference);
         return false;
