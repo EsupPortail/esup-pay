@@ -159,6 +159,7 @@ public class PayBoxService {
         emailMapFirstLastName.setField2(field2);
         emailMapFirstLastName.setMail(mail);
         emailMapFirstLastName.setPayEvtMontant(payEvtMontant);
+        emailMapFirstLastName.setDateCreated(new Date());
         emailMapFirstLastName.persist();
         
         return payBoxForm;

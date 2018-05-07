@@ -16,8 +16,11 @@
  * limitations under the License.
  */
 package org.esupportail.pay.domain;
+import java.util.Date;
+
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -36,4 +39,6 @@ public class ScienceConfReference {
     private String confid;
 
     private String returnurl;
+    
+    private Date dateCreated;
 }

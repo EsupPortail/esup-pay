@@ -16,7 +16,14 @@
  * limitations under the License.
  */
 package org.esupportail.pay.domain;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+
 import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -38,4 +45,12 @@ public class EmailFieldsMapReference {
     private String field1;
 
     private String field2;
+    
+    private Date dateCreated;
+
+	public static List<EmailFieldsMapReference> findOldEmailFieldsMapReferences() {
+		Query q = entityManager().createQuery("select ref from EmailFieldsMapReference ref where ref.dateCreated is null or ref.dateCreated > :oldDate");
+		q.setParameter("oldDate", Date.from(Instant.now().minus(Duration.ofDays(15))));
+		return q.getResultList();		
+	}
 }

@@ -17,6 +17,7 @@
  */
 package org.esupportail.pay.web.anonyme;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -245,6 +246,7 @@ public class PayController {
         scienceConfReference.setUid(uid);
         scienceConfReference.setReturnurl(returnurl);
         scienceConfReference.setEmailFieldsMapReference(emailFieldsMapReference);
+        scienceConfReference.setDateCreated(new Date());
         scienceConfReference.persist();
 
 	    uiModel.addAttribute("payBoxForm", payBoxForm);
