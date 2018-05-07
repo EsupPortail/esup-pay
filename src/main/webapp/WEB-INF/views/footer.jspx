@@ -40,6 +40,9 @@
 		    <util:language label="French" locale="fr"/>
 		</span>
 		
+		<spring:eval expression="@propertyConfigurer.getProperty('esup-pay.footer-html-add')" var="footer_html_add" />
+		${footer_html_add}
+		
 	</div>
 
 	
