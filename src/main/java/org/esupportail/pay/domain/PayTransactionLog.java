@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 package org.esupportail.pay.domain;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -144,4 +146,10 @@ public class PayTransactionLog {
         }
         return entityManager().createQuery(jpaQuery, PayTransactionLog.class);
     }
+
+	public static List<PayTransactionLog> findOldPayTransactionLogs(long oldDays) {
+		Query q = entityManager().createQuery("select log from PayTransactionLog log where log.transactionDate < :oldDate");
+		q.setParameter("oldDate", Date.from(Instant.now().minus(Duration.ofDays(oldDays))));
+		return q.getResultList();	
+	}
 }

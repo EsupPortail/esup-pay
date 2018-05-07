@@ -48,9 +48,9 @@ public class EmailFieldsMapReference {
     
     private Date dateCreated;
 
-	public static List<EmailFieldsMapReference> findOldEmailFieldsMapReferences() {
-		Query q = entityManager().createQuery("select ref from EmailFieldsMapReference ref where ref.dateCreated is null or ref.dateCreated > :oldDate");
-		q.setParameter("oldDate", Date.from(Instant.now().minus(Duration.ofDays(15))));
+	public static List<EmailFieldsMapReference> findOldEmailFieldsMapReferences(long oldDays) {
+		Query q = entityManager().createQuery("select ref from EmailFieldsMapReference ref where ref.dateCreated is null or ref.dateCreated < :oldDate");
+		q.setParameter("oldDate", Date.from(Instant.now().minus(Duration.ofDays(oldDays))));
 		return q.getResultList();		
 	}
 }
