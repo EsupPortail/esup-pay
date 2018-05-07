@@ -206,7 +206,7 @@ public class PayBoxService {
             byte[] sigBytes = Base64.decodeBase64(signature.getBytes());
             sig.initVerify(payboxPublicKey);
             sig.update(sData.getBytes());
-            boolean signatureOk = true;//sig.verify(sigBytes);
+            boolean signatureOk = sig.verify(sigBytes);
             if (!signatureOk) {
                 log.error("Erreur lors de la vérification de la signature, les données ne correspondent pas.");
                 log.error(sData);
