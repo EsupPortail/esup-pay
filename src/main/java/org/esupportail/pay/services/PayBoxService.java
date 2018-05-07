@@ -150,6 +150,7 @@ public class PayBoxService {
         payBoxForm.setForwardAnnuleUrl(forwardUrl);
         payBoxForm.setForwardEffectueUrl(forwardUrl);
         payBoxForm.setForwardRefuseUrl(forwardUrl);
+        payBoxForm.setOptionalAddedParams(payEvtMontant.getOptionalAddedParams());
         String hMac = hashService.getHMac(payBoxForm.getParamsAsString());
         payBoxForm.setHmac(hMac);
         
@@ -239,8 +240,6 @@ public class PayBoxService {
 	        txLog.setIdtrans(idtrans);
 	        txLog.setSignature(signature);
 	        txLog.setTransactionDate(new Date());
-	        String uid = reference.split(DELIMITER_REF)[0];
-	
 	
 	            List<EmailFieldsMapReference> emailMapFirstLastNames = EmailFieldsMapReference.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
 	            if (!emailMapFirstLastNames.isEmpty()) {

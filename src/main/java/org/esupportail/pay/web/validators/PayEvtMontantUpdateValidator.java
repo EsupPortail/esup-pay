@@ -44,6 +44,11 @@ public class PayEvtMontantUpdateValidator implements Validator {
 		if(evtMontant.getTitle().getTranslation(LOCALE_IDS.fr) == null || evtMontant.getTitle().getTranslation(LOCALE_IDS.fr).isEmpty()) {
 			errors.rejectValue("title", "NotEmpty");
 	    }
+		if(evtMontant.getOptionalAddedParams() != null && !evtMontant.getOptionalAddedParams().isEmpty()) {
+	        if(!PayEvtUpdateValidator.optionalAddedParamsPattern.matcher(evtMontant.getOptionalAddedParams()).matches()) {
+				errors.rejectValue("optionalAddedParams", "optionalAddedParams_not_well_formed");
+	        }
+	    }
 	}
 
 }

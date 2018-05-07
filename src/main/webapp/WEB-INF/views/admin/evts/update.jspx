@@ -54,6 +54,7 @@
 			        <c:if test="${isAdmin}">
 			            <field:select field="payboxServiceKey" id="c_org_esupportail_pay_domain_payevt_payServiceKey" items="${payboxServiceKeys}" multiple="false" path="payboxServiceKey" size="1" z="PspASXhnOzA5WtaPmRfUJTsNMQ0="/>
 			        </c:if>
+			        <field:input field="defaultOptionalAddedParams" id="c_org_esupportail_pay_domain_payevt_defaultOptionalAddedParams" readonly="${not isAdmin}" cssClass="form-control" z="user-managed"/>
 		        </div>
 	        </div>
 	        <div class="col-lg-5">

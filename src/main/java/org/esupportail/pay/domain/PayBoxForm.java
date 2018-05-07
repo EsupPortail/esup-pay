@@ -17,6 +17,8 @@
  */
 package org.esupportail.pay.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -57,6 +59,7 @@ public class PayBoxForm {
 	
 	private String hmac;
 	
+	SortedMap<String, String> optionalAddedParams = new TreeMap<String, String>();
 	
 	public SortedMap<String, String> getOrderedParams() {
 		SortedMap<String, String> params = new TreeMap<String, String>();
@@ -75,6 +78,7 @@ public class PayBoxForm {
 		params.put("PBX_REFUSE", forwardRefuseUrl);
 		params.put("PBX_ANNULE", forwardAnnuleUrl);
 		
+		params.putAll(optionalAddedParams);
 		// params.put("PBX_HMAC", hmac);
 		
 		return params;
@@ -99,5 +103,19 @@ public class PayBoxForm {
 	public String getMontant() {
 		return new Double(new Double(total)/100.0).toString();
 	}
+
+	public void setOptionalAddedParams(String optionalAddedParams2) {
+		if(optionalAddedParams2!=null && !optionalAddedParams2.isEmpty()) {
+			List<String> params = Arrays.asList(optionalAddedParams2.split("&"));
+			for(String param : params) {
+				List<String> paramNameAndValue = Arrays.asList(param.split("="));
+				String paramName = paramNameAndValue.get(0);
+				String paramValue = paramNameAndValue.get(1);
+				this.optionalAddedParams.put(paramName, paramValue);
+			}
+			
+		}
+	}
 	
 }
+

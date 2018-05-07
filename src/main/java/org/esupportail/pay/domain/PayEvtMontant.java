@@ -20,6 +20,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.springframework.roo.addon.javabean.RooJavaBean;
@@ -60,7 +61,8 @@ public class PayEvtMontant {
     
     String addPrefix = "";
     
-    
+    String optionalAddedParams = "";
+       
     public PayEvtMontant() {
 		super();
 		
@@ -93,6 +95,9 @@ public class PayEvtMontant {
 		}
 		if(description.getTranslation(LOCALE_IDS.en).isEmpty()) {
 			description.getLabelLocales().get(LOCALE_IDS.en.toString()).setTranslation(evt.getDefaultMntDescription().getTranslation(LOCALE_IDS.en));
+		}
+		if(optionalAddedParams.isEmpty()) {
+			optionalAddedParams = evt.getDefaultOptionalAddedParams();
 		}
 	}
 

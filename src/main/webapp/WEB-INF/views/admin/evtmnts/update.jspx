@@ -119,6 +119,8 @@ xmlns:springform="http://www.springframework.org/tags/form" version="2.0" id="up
 	        </c:otherwise>
         </c:choose>
         
+        <field:input field="optionalAddedParams" id="c_org_esupportail_pay_domain_payEvtMontant_optionalAddedParams" readonly="${not isAdmin}" cssClass="form-control" z="user-managed"/>
+        
         </div>
         
         <!-- gestion labels - ids -->

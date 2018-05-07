@@ -17,6 +17,8 @@
  */
 package org.esupportail.pay.web.validators;
 
+import java.util.regex.Pattern;
+
 import javax.annotation.Resource;
 
 import org.esupportail.pay.domain.PayEvt;
@@ -28,6 +30,8 @@ import org.springframework.validation.Validator;
 @Service
 public class PayEvtUpdateValidator implements Validator {
 
+	public static Pattern optionalAddedParamsPattern = Pattern.compile("[^=]+=[^\\&]+(\\&[^=]+=[^\\&]+)*");
+	
 	@Resource
 	LdapService ldapService;
 	
@@ -67,6 +71,11 @@ public class PayEvtUpdateValidator implements Validator {
 				}
 			}
 		}
+		if(evt.getDefaultOptionalAddedParams() != null && !evt.getDefaultOptionalAddedParams().isEmpty()) {
+	        if(!optionalAddedParamsPattern.matcher(evt.getDefaultOptionalAddedParams()).matches()) {
+				errors.rejectValue("defaultOptionalAddedParams", "optionalAddedParams_not_well_formed");
+	        }
+	    }
 	}
 
 }

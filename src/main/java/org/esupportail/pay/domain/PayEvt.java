@@ -28,6 +28,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Query;
 import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
+import javax.validation.constraints.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
@@ -75,6 +76,7 @@ public class PayEvt {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     Label defaultMntDescription;
     
+    String defaultOptionalAddedParams = "";
     
     /**
      * pour formulaire web
