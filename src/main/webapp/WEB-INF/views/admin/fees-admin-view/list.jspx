@@ -46,7 +46,7 @@
                 <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_PayEvtMontant" property="payEvtMontant" render="false" z="user-managed"/>
                 <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_field1" property="field1" sort="true" z="user-managed"/>
                 <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_field2" property="field2" sort="true" z="user-managed"/>
-                <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_payEvtMontant" property="payEvtMontant" z="DdZQDfffwlXS/MzqlZ0nOkFgUlw="/>
+                <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_payEvtMontant" property="payEvtMontant" z="user-managed" render="false"/>
                 <table:column id="c_org_esupportail_pay_domain_PayTransactionLog_mailSent" property="mailSent" z="DdZQDfffwlXS/MzqlZ0nOkFgUlw="/>
             </table:table>
         </div>

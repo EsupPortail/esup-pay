@@ -33,7 +33,7 @@
             <field:display field="payEvtMontant" id="s_org_esupportail_pay_domain_PayTransactionLog_PayEvtMontant" object="${paytransactionlog}" render="false" z="user-managed"/>
             <field:display field="field1" id="s_org_esupportail_pay_domain_PayTransactionLog_field1" object="${paytransactionlog}" z="user-managed"/>
             <field:display field="field2" id="s_org_esupportail_pay_domain_PayTransactionLog_field2" object="${paytransactionlog}" z="user-managed"/>
-            <field:display field="payEvtMontant" id="s_org_esupportail_pay_domain_PayTransactionLog_payEvtMontant" object="${paytransactionlog}" z="yJNtgUkH3M1ihgqwL3M60U+e+XQ="/>
+            <field:display field="payEvtMontant" id="s_org_esupportail_pay_domain_PayTransactionLog_payEvtMontant" object="${paytransactionlog}" render="false" z="user-managed"/>
             <field:display field="mailSent" id="s_org_esupportail_pay_domain_PayTransactionLog_mailSent" object="${paytransactionlog}" z="OYHYRni9A3KJ3DVB04FRu72U4Dg="/>
         </page:show>
     </div>
