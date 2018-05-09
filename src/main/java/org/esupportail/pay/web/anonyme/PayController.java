@@ -129,6 +129,11 @@ public class PayController {
 		
     	uiModel.addAttribute("payevt", evts.get(0));
     	uiModel.addAttribute("payevtmontant", evtsMnts.get(0));
+    	
+    	if(!evtsMnts.get(0).getIsEnabled()) {
+    		log.info("PayEvtMontant " + mntUrlId + "in " + evts.get(0) + " found but is not enabled");
+    		return "amountFormDisabled";
+    	}
 	
         return "evtmnt";
     }

@@ -31,7 +31,7 @@ privileged aspect PayEvtMontant_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager PayEvtMontant.entityManager;
     
-    public static final List<String> PayEvtMontant.fieldNames4OrderClauseFilter = java.util.Arrays.asList("evt", "title", "description", "help", "field1Label", "field2Label", "dbleMontant", "urlId", "freeAmount", "sciencesconf", "addPrefix", "optionalAddedParams");
+    public static final List<String> PayEvtMontant.fieldNames4OrderClauseFilter = java.util.Arrays.asList("evt", "title", "description", "help", "field1Label", "field2Label", "dbleMontant", "urlId", "freeAmount", "sciencesconf", "addPrefix", "optionalAddedParams", "isEnabled");
     
     public static final EntityManager PayEvtMontant.entityManager() {
         EntityManager em = new PayEvtMontant().entityManager;

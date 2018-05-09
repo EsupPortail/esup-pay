@@ -33,6 +33,16 @@ xmlns:springform="http://www.springframework.org/tags/form" version="2.0" id="up
     <form:update id="fu_org_esupportail_pay_domain_PayEvtMontant" modelAttribute="payEvtMontant" path="/admin/evtmnts" versionField="Version" z="pRxnnJNCCYUspgP2WmzvXkRoSM4=">
         <input name="evt" type="hidden" value="${payEvtMontant.evt.id}"/>     
         <springform:hidden id="_evt_id" path="evt.id"/>    
+         <c:choose>
+	        <c:when test="${canNtUpdate}">
+	        	<b><spring:message code="label_org_esupportail_pay_domain_payevtmontant_isenabled"/> : ${payEvtMontant.isEnabled}</b>
+	        	<input name="isEnabled" type="hidden" value="${payEvtMontant.isEnabled}"/>
+	        </c:when>
+        	<c:otherwise>
+        		<field:checkbox field="isEnabled" id="c_org_esupportail_pay_domain_PayEvtMontant_isEnabled"/>
+	        </c:otherwise>
+	    </c:choose>
+        
         <field:input readonly="${canNtUpdate}" field="dbleMontant" id="c_org_esupportail_pay_domain_payevtmontant_dbleMontant" validationMessageCode="field_invalid_number" cssClass="form-control" z="fuuvEMPsnqMg3RwY8x8WMvfX50Y="/>
         <field:input field="urlId" id="c_org_esupportail_pay_domain_payevtmontant_urlId" readonly="true" z="user-managed" cssClass="form-control"/>
         <field:select field="title" id="c_org_esupportail_pay_domain_payevtmontant_title" itemValue="id" items="${labels}" path="/labels" render="false" z="user-managed"/>

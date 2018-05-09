@@ -111,6 +111,7 @@ xmlns:spring="http://www.springframework.org/tags" xmlns:table="urn:jsptagdir:/W
 		            <table:column id="c_org_esupportail_pay_domain_payevtmontant_freeAmount" property="freeAmount"/>
 		            <table:column id="c_org_esupportail_pay_domain_payevtmontant_sciencesconf" property="sciencesconf"/>
 		            <table:column id="c_org_esupportail_pay_domain_payevtmontant_urlId" link="true" linkPrefix="${urlLinkPrefix}" property="urlId"/>
+		            <table:column id="c_org_esupportail_pay_domain_PayEvtMontant_isEnabled" property="isEnabled"/>
 		        </table:table>
 		        <c:if test="${canUpdate}">
 		            <div>

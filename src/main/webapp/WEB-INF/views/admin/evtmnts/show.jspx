@@ -81,6 +81,7 @@
                     <span>${labelLocales.value.translation}</span>
                 </div>
             </c:forEach>
+            <field:display field="isEnabled" id="s_org_esupportail_pay_domain_PayEvtMontant_isEnabled" object="${payevtmontant}"/>
         </div>
     </page:show>
     <page:show id="ps_org_esupportail_pay_domain_PayEvtMontant" object="${payevtmontant}" path="/admin/evtmnts" z="P6O15JmJEuoVOLwCHHqURFGEimE=">

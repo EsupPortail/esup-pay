@@ -114,10 +114,6 @@ privileged aspect PayTransactionLog_Roo_JavaBean {
         this.signature = signature;
     }
     
-    public Boolean PayTransactionLog.getMailSent() {
-        return this.mailSent;
-    }
-    
     public void PayTransactionLog.setMailSent(Boolean mailSent) {
         this.mailSent = mailSent;
     }

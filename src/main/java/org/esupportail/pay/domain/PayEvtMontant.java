@@ -62,7 +62,13 @@ public class PayEvtMontant {
     String addPrefix = "";
     
     String optionalAddedParams = "";
-       
+    
+    Boolean isEnabled = true;
+    
+    public Boolean getIsEnabled() {
+        return this.isEnabled == null || this.isEnabled;
+    }
+    
     public PayEvtMontant() {
 		super();
 		

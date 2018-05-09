@@ -65,6 +65,11 @@ public class PayTransactionLog {
     private String signature;
     
     private Boolean mailSent = null;
+    
+    /* pour compatibilité ascendante */
+    public Boolean getMailSent() {
+        return this.mailSent == null || this.mailSent;
+    }
 
     public String getMontantDevise() {
         Double mnt = new Double(montant) / 100.0;

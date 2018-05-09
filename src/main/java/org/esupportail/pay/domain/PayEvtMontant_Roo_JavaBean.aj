@@ -110,4 +110,8 @@ privileged aspect PayEvtMontant_Roo_JavaBean {
         this.optionalAddedParams = optionalAddedParams;
     }
     
+    public void PayEvtMontant.setIsEnabled(Boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
+    
 }
