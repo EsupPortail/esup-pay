@@ -17,17 +17,16 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 
--->
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menuside" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" id="menu">
+--><div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menuside" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" id="menu">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <menu:menu id="_menu" render="false" z="user-managed">
-        <menu:category id="c_payevt" z="0Ok2TBxvxOQWyUlTVzKZGKrx8RY=">
+        <menu:category id="c_payevt" z="user-managed">
             <menu:item id="i_payevt_new" messageCode="global_menu_new" render="false" url="/admin/evts?form" z="user-managed"/>
             <menu:item activeMenu="${activeMenu == 'adminevts' || activeMenu == 'adminevtmnts'}" id="i_payevt_list" label="Liste des évènements Paybox" url="/admin/evts?page=1&amp;size=${empty param.size ? 10 : param.size}" z="user-managed"/>
         </menu:category>
         <sec:authorize access="hasRole('ROLE_ADMIN')">
-            <menu:category id="c_paytransactionlog" z="wN0GFrGC4eaqVIImX2HQuTE+2I0=">
+            <menu:category id="c_paytransactionlog" z="user-managed">
                 <menu:item activeMenu="${activeMenu == 'adminfees'}" id="i_paytransactionlog_list" label="Liste des transactions Paybox" url="/admin/fees?page=1&amp;size=${empty param.size ? 10 : param.size}" z="user-managed"/>
             </menu:category>
         </sec:authorize>
@@ -36,8 +35,8 @@
             <menu:item id="i_controller__admin_evtsindex_id" messageCode="global_generic" url="/admin/evts/index" z="FtAkNoaqtjno5c39psDHXZHz5fk="/>
         </menu:category>
         <menu:category id="c_payevtmontant" render="false" z="user-managed">
-            <menu:item id="i_payevtmontant_new" messageCode="global_menu_new" url="/admin/evtmnts?form" z="Pffls2ZvVgXkx6Vjru88TD1qHGQ="/>
-            <menu:item id="i_payevtmontant_list" messageCode="global_menu_list" url="/admin/evtmnts?page=1&amp;size=${empty param.size ? 10 : param.size}" z="gOgtCluPKXElqZ7a4YhUqofpCJQ="/>
+            <menu:item id="i_payevtmontant_new" messageCode="global_menu_new" url="/admin/evtmnts?form" z="user-managed"/>
+            <menu:item id="i_payevtmontant_list" messageCode="global_menu_list" url="/admin/evtmnts?page=1&amp;size=${empty param.size ? 10 : param.size}" z="user-managed"/>
         </menu:category>
         <menu:category id="c_payevt" z="1l1T+UfHIqzLB63lZVSpLB51oHM=">
             <menu:item id="i_payevt_new" messageCode="global_menu_new" url="/admin/evts?form" z="cGfGEFcqTm3A5Bjo7TLNw0TJ2SY="/>

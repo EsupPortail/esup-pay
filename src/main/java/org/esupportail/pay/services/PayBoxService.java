@@ -251,7 +251,6 @@ public class PayBoxService {
 	                txLog.setPayEvtMontant(emailMapFirstLastNames.get(0).getPayEvtMontant());
 	            if (this.checkPayboxSignature(queryString, signature)) {
 	                if ("00000".equals(erreur)) {
-	                    try {
 	                        log.info("Transaction : " + reference + " pour un montant de " + montant + " OK !");
 	                        
 	                        String subject = evt.getMailSubject() + txLog.getMail() + " - "  + txLog.getMontantDevise() + " Euros.";
@@ -265,16 +264,19 @@ public class PayBoxService {
 	                        message += "Transaction Paybox : " + idtrans + "\n";
 	                        message += "Reference : " + reference + "\n";
 	                        
-	                        this.sendMessage(mailFrom, subject, mailTo, message);
+	                        try {
+	                        	this.sendMessage(mailFrom, subject, mailTo, message);
+	                        	newTxLog.setMailSent(true);
+	                        } catch (Exception ex) {
+		                        log.error("Exception during sending email to : " + mailTo , ex);
+		                        newTxLog.setMailSent(false);
+		                    }
 	                        
 	                        if (newTxLog) {
 	                            txLog.persist();
 	                        } else {
 	                            txLog.merge();
 	                        }
-	                    } catch (Exception ex) {
-	                        log.error("Exception during sending email ?", ex);
-	                    }
 	                } else {
 	                    log.info("'Erreur' " + erreur + "  (annulation) lors de la transaction paybox : " + reference + " pour un montant de " + montant);
 	                }
