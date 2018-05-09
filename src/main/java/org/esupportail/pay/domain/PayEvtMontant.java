@@ -87,9 +87,10 @@ public class PayEvtMontant {
     	return PayTransactionLog.countFindPayTransactionLogsByPayEvtMontant(this) < 1 
     			&& EmailFieldsMapReference.countFindEmailFieldsMapReferencesByPayEvtMontant(this) < 1;
     }
+	
 
-	public void setEvt(PayEvt evt) {
-		this.evt = evt;
+	public void setEvtWithDefaultParametersIfNeeded(PayEvt evt) {
+		this.setEvt(evt);
 		if(description.getTranslation(LOCALE_IDS.fr).isEmpty()) {
 			description.getLabelLocales().get(LOCALE_IDS.fr.toString()).setTranslation(evt.getDefaultMntDescription().getTranslation(LOCALE_IDS.fr));
 		}
@@ -99,6 +100,10 @@ public class PayEvtMontant {
 		if(optionalAddedParams.isEmpty()) {
 			optionalAddedParams = evt.getDefaultOptionalAddedParams();
 		}
+	}
+
+	public void setEvt(PayEvt evt) {
+		this.evt = evt;
 	}
 
 	public void setFreeAmount(Boolean freeAmount) {

@@ -70,7 +70,7 @@ xmlns:springform="http://www.springframework.org/tags/form" version="2.0" id="up
         		<c:forEach items="${payEvtMontant.description.labelLocales}" var="labelLocales">
             		<div class="form-group">
                 		<label>${labelLocales.key} : </label>
-                		<input type="${canNtUpdate ? 'hidden' : 'text'}" class="form-control" name="descriptionlabelLocales['${labelLocales.key}'].translation" value="${labelLocales.value.translation}"/>
+                		<input type="${canNtUpdate ? 'hidden' : 'text'}" class="form-control" name="description.labelLocales['${labelLocales.key}'].translation" value="${labelLocales.value.translation}"/>
             		</div>
         		</c:forEach>
         </fieldset>

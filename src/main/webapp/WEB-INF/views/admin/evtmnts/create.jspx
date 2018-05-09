@@ -65,7 +65,7 @@ version="2.0" id="createEvtmnts">
         		<c:forEach items="${payEvtMontant.description.labelLocales}" var="labelLocales">
             		<div class="form-group">
                 		<label>${labelLocales.key} : </label>
-                		<input class="form-control" name="descriptionlabelLocales['${labelLocales.key}'].translation" value="${labelLocales.value.translation}"/>
+                		<input class="form-control" name="description.labelLocales['${labelLocales.key}'].translation" value="${labelLocales.value.translation}"/>
             		</div>
         		</c:forEach>
         </fieldset>

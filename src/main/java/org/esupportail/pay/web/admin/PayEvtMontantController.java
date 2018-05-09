@@ -58,7 +58,7 @@ public class PayEvtMontantController {
     public String createForm(Model uiModel, @RequestParam(required=true) Long evtId) {
     	PayEvtMontant payEvtMontant = new PayEvtMontant();
     	PayEvt evt =  PayEvt.findPayEvt(evtId);
-    	payEvtMontant.setEvt(evt);
+    	payEvtMontant.setEvtWithDefaultParametersIfNeeded(evt);
         uiModel.addAttribute("payEvtMontant", payEvtMontant);
         return "admin/evtmnts/create";
     }
@@ -74,7 +74,7 @@ public class PayEvtMontantController {
         }
         uiModel.asMap().clear();
         PayEvt evt = PayEvt.findPayEvt(payEvtMontant.getEvt().getId());
-        payEvtMontant.setEvt(evt);
+        payEvtMontant.setEvtWithDefaultParametersIfNeeded(evt);
         
         if(payEvtMontant.getUrlId() == null || payEvtMontant.getUrlId().isEmpty()) {
         	String urlId = urlIdService.generateUrlId4PayEvtMontant(evt, payEvtMontant.getTitle().getTranslation(LOCALE_IDS.en));
