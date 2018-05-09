@@ -18,6 +18,7 @@
 package org.esupportail.pay.security;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,8 @@ import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.ldap.search.LdapUserSearch;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
 
 public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator {
@@ -39,6 +42,10 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 	
 	protected Map<String, String> mappingGroupesRoles;
 	
+	protected LdapUserSearch ldapUserGroupAdminFilterSearch;
+	
+	protected String groupAdminFilter;
+	
 	public void setMappingGroupesRoles(Map<String, String> mappingGroupesRoles) {
 		// for case insensitive ...
 		this.mappingGroupesRoles = new HashMap<String, String>();
@@ -46,18 +53,37 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 			this.mappingGroupesRoles.put(ldapGroup.toUpperCase(), mappingGroupesRoles.get(ldapGroup));
 		}
 	}
-	
+
+	public void setLdapUserGroupAdminFilterSearch(LdapUserSearch ldapUserGroupAdminFilterSearch) {
+		this.ldapUserGroupAdminFilterSearch = ldapUserGroupAdminFilterSearch;
+	}
+
+	public void setGroupAdminFilter(String groupAdminFilter) {
+		this.groupAdminFilter = groupAdminFilter;
+	}
+
 	public PayLdapAuthoritiesPopulator(ContextSource contextSource,
 			String groupSearchBase) {
 		super(contextSource, groupSearchBase);
 	}
-
+	
+	@Override
+	public Set<GrantedAuthority> getGroupMembershipRoles(String userDn, String username) {
+		if (getGroupSearchBase() == null || getGroupSearchBase().isEmpty() || getGroupSearchFilter() == null || getGroupSearchFilter().isEmpty() ) {
+			log.info("Roles from ldap groups not well configured (groupSearchBase, groupSearchFilter) -> no search for this");
+			return new HashSet<GrantedAuthority>();
+		}
+		return super.getGroupMembershipRoles(userDn, username);
+	}
+	
 	@Override
 	 protected Set<GrantedAuthority> getAdditionalRoles(DirContextOperations user, String username) {
 
 		String userDn = user.getNameInNamespace();
 
+		// search groups with groupFilter usually
 		Set<GrantedAuthority> roles = getGroupMembershipRoles(userDn, username);
+		log.info("Roles from ldap groups for " + username + " : " + roles);
 
 		Set<GrantedAuthority> extraRoles = new HashSet<GrantedAuthority>();
 
@@ -65,6 +91,17 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 			log.debug("Group from LDAP : " + role.getAuthority().replaceAll("ROLE_", ""));
 			if(mappingGroupesRoles != null && mappingGroupesRoles.containsKey(role.getAuthority())) {
 				extraRoles.add(new SimpleGrantedAuthority(mappingGroupesRoles.get(role.getAuthority())));
+			}
+		}
+		
+		// add groups found via groupAdminFilter
+		if(groupAdminFilter != null && !groupAdminFilter.isEmpty()) {
+			try {
+				ldapUserGroupAdminFilterSearch.searchForUser(username);
+				extraRoles.add(new SimpleGrantedAuthority("ROLE_SU"));
+				log.info("Role Admin ok for " + username + " with the filter " + groupAdminFilter);
+			} catch(UsernameNotFoundException e) {
+				// User is not admin
 			}
 		}
 		

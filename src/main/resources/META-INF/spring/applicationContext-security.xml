@@ -137,35 +137,49 @@
 		<beans:property name="userDetailsService" ref="ldapUserDetailsService" />
 	</beans:bean>
 
-
+	<beans:bean id="ldapUserSearch"
+		class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+		<beans:constructor-arg>
+			<beans:value>${ldap.peopleSearchBase}</beans:value>
+		</beans:constructor-arg>
+		<beans:constructor-arg>
+			<beans:value>${ldap.peopleSearchFilter}</beans:value>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="ldapContextSource" />
+	</beans:bean>
+			
 	<beans:bean id="ldapUserDetailsService"
 		class="org.springframework.security.ldap.userdetails.LdapUserDetailsService">
-		<beans:constructor-arg>
-			<beans:bean
-				class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
-				<beans:constructor-arg>
-					<beans:value>${ldap.peopleSearchBase}</beans:value>
-				</beans:constructor-arg>
-				<beans:constructor-arg>
-					<beans:value>${ldap.peopleSearchFilter}</beans:value>
-				</beans:constructor-arg>
-				<beans:constructor-arg ref="ldapContextSource" />
-			</beans:bean>
-		</beans:constructor-arg>
+		<beans:constructor-arg ref="ldapUserSearch"/>
 		<beans:constructor-arg ref="payboxLdapAuthoritiesPopulator" />
 	</beans:bean>
 
 
+
+	<beans:bean id="ldapUserGroupAdminFilterSearch"
+		class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+		<beans:constructor-arg>
+			<beans:value>${ldap.peopleSearchBase}</beans:value>
+		</beans:constructor-arg>
+		<beans:constructor-arg>
+			<beans:value>(&amp;(${ldap.peopleSearchFilter})(${ldap.groupAdminFilter:}))</beans:value>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="ldapContextSource" />
+	</beans:bean>
+	
+	
 	<beans:bean id="payboxLdapAuthoritiesPopulator"
 		class="org.esupportail.pay.security.PayLdapAuthoritiesPopulator">
 		<beans:constructor-arg ref="ldapContextSource" />
-		<beans:constructor-arg value="${ldap.groupSearchBase}" />
-		<beans:property name="groupSearchFilter" value="${ldap.groupSearchFilter}"/>
+		<beans:constructor-arg value="${ldap.groupSearchBase:}" />
+		<beans:property name="groupSearchFilter" value="${ldap.groupSearchFilter:}"/>
 		<beans:property name="mappingGroupesRoles">
 			<beans:map>
-				<beans:entry key="ROLE_${ldap.groupAdmin}" value="ROLE_SU" />
+				<beans:entry key="ROLE_${ldap.groupAdmin:}" value="ROLE_SU" />
 			</beans:map>
 		</beans:property>
+		<beans:property name="groupAdminFilter" value="${ldap.groupAdminFilter:}"/>
+		<beans:property name="ldapUserGroupAdminFilterSearch" ref="ldapUserGroupAdminFilterSearch"/>
 	</beans:bean>
 
 
