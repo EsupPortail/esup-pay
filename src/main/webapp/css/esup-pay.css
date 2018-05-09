@@ -98,8 +98,15 @@ transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 font-weight: bold;
 color: red;
 padding: 2px 8px;
-margin-top: 2px;
+margin-top: 0px;
 margin-left: 24px;
+}
+
+div.errors {
+border : 2px solid red;
+padding: 10px;
+margin: 10px;
+text-align: center;
 }
 
 .supervisor-nav {

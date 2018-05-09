@@ -95,5 +95,6 @@
         <field:display field="freeAmount" id="s_org_esupportail_pay_domain_PayEvtMontant_freeAmount" object="${payevtmontant}" z="dUocVdIuJdhuIApSLzvUff6uIbE="/>
         <field:display field="sciencesconf" id="s_org_esupportail_pay_domain_PayEvtMontant_sciencesconf" object="${payevtmontant}" z="vz4sPk84l6SL+kLy3XE7ABX0FSQ="/>
         <field:display field="addPrefix" id="s_org_esupportail_pay_domain_PayEvtMontant_addPrefix" object="${payevtmontant}" z="wS9dsIEYzlKDqHRxAJfEJamevko="/>
+        <field:display field="optionalAddedParams" id="s_org_esupportail_pay_domain_PayEvtMontant_optionalAddedParams" object="${payEvt}"/>
     </page:show>
 </div>

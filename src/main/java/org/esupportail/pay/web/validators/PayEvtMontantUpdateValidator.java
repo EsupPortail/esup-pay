@@ -49,6 +49,9 @@ public class PayEvtMontantUpdateValidator implements Validator {
 				errors.rejectValue("optionalAddedParams", "optionalAddedParams_not_well_formed");
 	        }
 	    }
+		if(evtMontant.getEvt().getDbleMontantMax() != null && evtMontant.getDbleMontant() != null && evtMontant.getDbleMontant() > evtMontant.getEvt().getDbleMontantMax()) {
+			errors.rejectValue("dbleMontant", "dbleMontant_too_high");
+	    }
 	}
 
 }

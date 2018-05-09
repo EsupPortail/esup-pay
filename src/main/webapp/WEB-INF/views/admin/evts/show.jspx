@@ -76,6 +76,8 @@ xmlns:spring="http://www.springframework.org/tags" xmlns:table="urn:jsptagdir:/W
 		        <field:display field="respLogins" id="s_org_esupportail_pay_domain_payevt_respLogins" object="${payEvt}" render="false" z="user-managed"/>
 		        <field:display field="viewerLogins" id="s_org_esupportail_pay_domain_payevt_viewerLogins" object="${payEvt}" render="false" z="user-managed"/>
 		        <field:display field="payboxServiceKey" id="s_org_esupportail_pay_domain_payevt_payServiceKey" object="${payEvt}" z="iLPzqQrQ4vshxe1X3nJRiRwb6b4="/>
+		        <field:display field="defaultOptionalAddedParams" id="s_org_esupportail_pay_domain_payevt_defaultOptionalAddedParams" object="${payEvt}"/>
+		        <field:display field="dbleMontantMax" id="s_org_esupportail_pay_domain_payEvtMontant_dbleMontantMax" object="${payEvt}"/>
 		        <h4><spring:message code="form_title" htmlEscape="false" /></h4>
 		        <c:forEach items="${payEvt.title.labelLocales}" var="labelLocales">
 		            <div>

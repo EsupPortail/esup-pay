@@ -63,17 +63,6 @@ privileged aspect PayEvtMontantController_Roo_Controller {
         return "admin/evtmnts/list";
     }
     
-    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
-    public String PayEvtMontantController.update(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, payEvtMontant);
-            return "admin/evtmnts/update";
-        }
-        uiModel.asMap().clear();
-        payEvtMontant.merge();
-        return "redirect:/admin/evtmnts/" + encodeUrlPathSegment(payEvtMontant.getId().toString(), httpServletRequest);
-    }
-    
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String PayEvtMontantController.updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, PayEvtMontant.findPayEvtMontant(id));

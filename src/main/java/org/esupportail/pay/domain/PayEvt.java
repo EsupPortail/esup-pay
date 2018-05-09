@@ -78,6 +78,8 @@ public class PayEvt {
     
     String defaultOptionalAddedParams = "";
     
+    Double dbleMontantMax;
+    
     /**
      * pour formulaire web
      */

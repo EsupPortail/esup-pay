@@ -42,6 +42,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -135,7 +136,8 @@ public class PayController {
     
     
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.POST)
-    public String form(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, @RequestParam String mail, @RequestParam String field1, @RequestParam String field2, @RequestParam(required=false, value="amount") String amountString) {
+    public String form(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, 
+    		@RequestParam String mail, @RequestParam String field1, @RequestParam String field2, @RequestParam(required=false, value="amount") String amountString) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " form called");
     	
     	if(amountString!=null) {
@@ -180,8 +182,13 @@ public class PayController {
     	}
     	if(amount==null) {
     		uiModel.addAttribute("error", "amount_cant_be_null");
-    		return "redirect:/evts/" + evtUrlId + "/" + mntUrlId;
+    		 return "evtmnt";
     	}
+		if(payevt.getDbleMontantMax() != null && amount > payevt.getDbleMontantMax()) {
+			uiModel.addAttribute("error", "dbleMontant_too_high");
+			log.warn("Try to pay amount too high : " + mail + ", " + field1 + ", " + field2 + ", " + amount);
+			 return "evtmnt";
+	    }
     		
     	PayBoxForm payBoxForm = payBoxServiceManager.getPayBoxForm(payevt, mail, field1, field2, amount, payevtmontant);
 

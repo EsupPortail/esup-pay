@@ -57,6 +57,13 @@
 				</div>
 	
 				<form:form method="POST" action="${formPath}" id="registerForm" class="panel-body">
+				
+					<c:if test="${not empty error}">
+						<div class="errors">
+							<spring:message code="${error}"/>
+						</div>
+					</c:if>
+				
 					<c:if test="${payevtmontant.freeAmount}">
 						<div class="form-group">
 							<label for="amount"><spring:message code="amount"/></label>

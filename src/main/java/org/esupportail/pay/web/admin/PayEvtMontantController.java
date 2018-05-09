@@ -85,6 +85,19 @@ public class PayEvtMontantController {
         return "redirect:/admin/evts/" + encodeUrlPathSegment(evt.getId().toString(), httpServletRequest);
     }
     
+    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    public String update(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	PayEvtMontantUpdateValidator payEvtMontantValidator = new PayEvtMontantUpdateValidator();
+    	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
+    	if (bindingResult.hasErrors()) {
+            populateEditForm(uiModel, payEvtMontant);
+            return "admin/evtmnts/update";
+        }
+        uiModel.asMap().clear();
+        payEvtMontant.merge();
+        return "redirect:/admin/evtmnts/" + encodeUrlPathSegment(payEvtMontant.getId().toString(), httpServletRequest);
+    }
+    
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         return "redirect:/admin/evtmnts/" + id  + "?form";

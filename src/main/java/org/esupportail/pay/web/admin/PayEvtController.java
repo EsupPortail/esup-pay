@@ -43,6 +43,7 @@ import org.esupportail.pay.services.UrlIdService;
 import org.esupportail.pay.web.validators.PayEvtUpdateValidator;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
@@ -83,6 +84,15 @@ public class PayEvtController {
     
     @Resource
     CsvController csvController;
+    
+    Double defaultDbleMontantMax;
+    
+    @Value("${esup-pay.defaultDbleMontantMax:}")
+    public void setDefaultDbleMontantMax(String defaultDbleMontantMaxAsString) {
+    	if(defaultDbleMontantMaxAsString != null && !defaultDbleMontantMaxAsString.isEmpty()) {
+    		defaultDbleMontantMax = Double.valueOf(defaultDbleMontantMaxAsString);
+    	}
+    }
 	
 	@RequestMapping(value = "/{id}/addLogoFile", method = RequestMethod.POST, produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'manage')")
@@ -270,7 +280,9 @@ public class PayEvtController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new PayEvt());
+    	PayEvt payEvt = new PayEvt();
+    	payEvt.setDbleMontantMax(defaultDbleMontantMax);
+        populateEditForm(uiModel, payEvt);
         return "admin/evts/create";
     }
     
