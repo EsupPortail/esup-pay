@@ -266,10 +266,10 @@ public class PayBoxService {
 	                        
 	                        try {
 	                        	this.sendMessage(mailFrom, subject, mailTo, message);
-	                        	newTxLog.setMailSent(true);
+	                        	txLog.setMailSent(true);
 	                        } catch (Exception ex) {
 		                        log.error("Exception during sending email to : " + mailTo , ex);
-		                        newTxLog.setMailSent(false);
+		                        txLog.setMailSent(false);
 		                    }
 	                        
 	                        if (newTxLog) {
