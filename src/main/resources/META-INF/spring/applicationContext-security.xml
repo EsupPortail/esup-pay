@@ -107,6 +107,7 @@
 		<beans:property name="authenticationManager" ref="authenticationManager" />
 		<beans:property name="sessionAuthenticationStrategy"
 			ref="sas" />
+		<beans:property name="filterProcessesUrl" value="/login/cas"/>
 	</beans:bean>
 
 	<beans:bean id="casEntryPoint"
