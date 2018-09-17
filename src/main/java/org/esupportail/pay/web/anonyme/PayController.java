@@ -146,22 +146,17 @@ public class PayController {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " form called");
     	
     	// on supprime les espaces en début et fin, 
-    	// et on supprime les #, caractère spécial dans une url 
-    	// car pouvant être repris dans la reference et donc dans l'url callback paybox
     	if(amountString!=null) {
     		amountString = amountString.trim();
     	}
     	if(mail!=null) {
     		mail = mail.trim();
-    		mail = mail.replaceAll("#", "");
     	}
     	if(field1!=null) {
     		field1 = field1.trim();
-    		field1 = field1.replaceAll("#", "");
     	}
     	if(field2!=null) {
     		field2 = field2.trim();
-    		field2 = field2.replaceAll("#", "");
     	}
     	
     	List<PayEvt> evts = PayEvt.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
