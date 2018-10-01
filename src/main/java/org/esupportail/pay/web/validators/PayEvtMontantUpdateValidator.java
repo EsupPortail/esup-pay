@@ -41,7 +41,7 @@ public class PayEvtMontantUpdateValidator implements Validator {
 		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf() && (evtMontant.getDbleMontant() == null || evtMontant.getDbleMontant() <= 0.0)) {
 			errors.rejectValue("dbleMontant", "MustBePositive");
 	    }
-		if(evtMontant.getTitle().getTranslation(LOCALE_IDS.fr) == null || evtMontant.getTitle().getTranslation(LOCALE_IDS.fr).isEmpty()) {
+		if(evtMontant.getTitle().getTranslation(LOCALE_IDS.en) == null || evtMontant.getTitle().getTranslation(LOCALE_IDS.en).isEmpty()) {
 			errors.rejectValue("title", "NotEmpty");
 	    }
 		if(evtMontant.getOptionalAddedParams() != null && !evtMontant.getOptionalAddedParams().isEmpty()) {
