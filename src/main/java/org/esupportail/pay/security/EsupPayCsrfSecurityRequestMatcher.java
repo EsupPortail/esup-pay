@@ -58,7 +58,7 @@ public class EsupPayCsrfSecurityRequestMatcher implements RequestMatcher {
 	        		return false;
 	        	}
         	} catch(Exception e) {
-        		log.warn("it seems not to be sciencesconf 'redirect post' request even if there is a confid param ... we don't use csrf here");
+        		log.warn("it seems not to be sciencesconf 'redirect post' request even if there is a confid param ... we don't use csrf here", e);
         	}
         }
         
