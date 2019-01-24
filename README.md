@@ -47,7 +47,7 @@ Pour des configurations avancées, il est également possible de modifier les fi
 ## Installation 
 
 ### Pré-requis
-* Java (JDK - JAVA SE 8):  http://www.oracle.com/technetwork/java/javase/downloads/index.html
+* Java OpenJDK 8 : le mieux est de l'installer via le système de paquets de votre linux.
 * Maven (dernière version 3.0.x) : http://maven.apache.org/download.cgi
 * Postgresql (8 ou 9) : le mieux est de l'installer via le système de paquets de votre linux.
 * Tomcat (Tomcat 8)
