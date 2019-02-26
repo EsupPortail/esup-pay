@@ -1,4 +1,5 @@
 ![EsupPay](https://github.com/EsupPortail/esup-pay/raw/master/src/main/webapp/images/credit-card.png)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FEsupPortail%2Fesup-pay.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FEsupPortail%2Fesup-pay?ref=badge_shield)
 
 Application de dématérialisation de paiements en ligne.
 ============================
@@ -133,3 +134,7 @@ CF http://docs.postgresqlfr.org/8.3/lo.html
 
 
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FEsupPortail%2Fesup-pay.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FEsupPortail%2Fesup-pay?ref=badge_large)
