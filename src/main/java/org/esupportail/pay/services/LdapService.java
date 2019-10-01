@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
@@ -36,19 +37,21 @@ public class LdapService {
 	@Resource
 	LdapTemplate ldapTemplate;
 
-	public List<String> searchLogins(String login) {
+	private String ldapAttr;
+
+	public List<String> searchLogins(String login, String ldapAttr) {
+		this.ldapAttr = ldapAttr;
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
-		filter.and(new LikeFilter("uid", login));
-		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {"uid"}, new SimpleLoginAttributMapper());
+		filter.and(new LikeFilter(this.ldapAttr, login));
+		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {this.ldapAttr}, new SimpleLoginAttributMapper());
 	}
-	
 	
 	class SimpleLoginAttributMapper  implements AttributesMapper {
 
 		public String mapFromAttributes(Attributes attrs)
 				throws javax.naming.NamingException {
-			return attrs.get("uid").get().toString();
+			return attrs.get(ldapAttr).get().toString();
 		}
 	}
 }

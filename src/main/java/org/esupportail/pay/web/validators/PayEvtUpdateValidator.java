@@ -59,14 +59,14 @@ public class PayEvtUpdateValidator implements Validator {
 	    }
 		if(evt.getLogins() != null) {
 			for(String login : evt.getLogins()) {
-				if(ldapService.searchLogins(login).size()<1) {
+				if(ldapService.searchLogins(login, "uid").size()<1) {
 					errors.rejectValue("logins", "login_not_found");
 				}
 			}
 		}
 		if(evt.getViewerLogins2Add() != null) {
 			for(String login : evt.getViewerLogins2Add()) {
-				if(ldapService.searchLogins(login).size()<1) {
+				if(ldapService.searchLogins(login, "uid").size()<1) {
 					errors.rejectValue("viewerLogins2Add", "login_not_found");
 				}
 			}

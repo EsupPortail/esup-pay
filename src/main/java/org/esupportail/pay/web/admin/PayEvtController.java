@@ -38,6 +38,7 @@ import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.domain.RespLogin;
 import org.esupportail.pay.domain.UploadFile;
+import org.esupportail.pay.services.EvtService;
 import org.esupportail.pay.services.PayBoxServiceManager;
 import org.esupportail.pay.services.UrlIdService;
 import org.esupportail.pay.web.validators.PayEvtUpdateValidator;
@@ -72,10 +73,7 @@ public class PayEvtController {
 
 	@Autowired
 	ServletContext servletContext;
-		
-    @Resource
-    UrlIdService urlIdService;
-    
+
     @Resource
     PayEvtUpdateValidator payEvtUpdateValidator;
     
@@ -84,6 +82,9 @@ public class PayEvtController {
     
     @Resource
     CsvController csvController;
+
+    @Resource
+    EvtService evtService;
     
     Double defaultDbleMontantMax;
     
@@ -157,30 +158,8 @@ public class PayEvtController {
         }
         uiModel.asMap().clear();
         
-        // Hack : don't override logoFile !!
-        PayEvt payEvtCurrent = PayEvt.findPayEvt(payEvt.getId());
-        payEvt.setLogoFile(payEvtCurrent.getLogoFile());
-        // Hack end
-        
-        List<RespLogin> respLogins = new ArrayList<RespLogin>();
-        if(payEvt.getLogins() != null) {
-		    for(String login: payEvt.getLogins()) {
-		        RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
-		        respLogins.add(respLogin);
-	        }
-	        payEvt.setRespLogins(respLogins);
-        }
-        
-        List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
-        if(payEvt.getViewerLogins2Add() != null) {
-		    for(String login: payEvt.getViewerLogins2Add()) {
-		        RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
-		        viewerLogins.add(respLogin);
-	        }
-        }
-        payEvt.setViewerLogins(viewerLogins);
-        
-        payEvt.merge();
+        evtService.updateEvt(payEvt);
+
         return "redirect:/admin/evts/" + encodeUrlPathSegment(payEvt.getId().toString(), httpServletRequest);
     }
     
@@ -209,34 +188,20 @@ public class PayEvtController {
             populateEditForm(uiModel, payEvt);
             return "admin/evts/create";
         }
-        uiModel.asMap().clear();   
-        
-        List<RespLogin> respLogins = new ArrayList<RespLogin>();
+        uiModel.asMap().clear();
+
+        List<String> respLoginIds= Arrays.asList();
         if(httpServletRequest.getParameterValues("logins") != null) {
-	        List<String> logins = Arrays.asList(httpServletRequest.getParameterValues("logins"));
-	        for(String login: logins) {
-	        	RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
-	        	respLogins.add(respLogin);
-	        }
+	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
         }
-        payEvt.setRespLogins(respLogins);
-        
-        List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
+
+        List<String> viewerLoginIds= Arrays.asList();;
         if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
-	        List<String> logins = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
-	        for(String login: logins) {
-	        	RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
-	        	viewerLogins.add(respLogin);
-	        }
+	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
         }
-        payEvt.setViewerLogins(viewerLogins);
-        
-        if(payEvt.getUrlId() == null || payEvt.getUrlId().isEmpty()) {
-        	String urlId = urlIdService.generateUrlId4PayEvt(payEvt.getTitle().getTranslation(Label.LOCALE_IDS.en));
-        	payEvt.setUrlId(urlId);
-        }
-        
-        payEvt.persist();
+
+        evtService.createEvt(payEvt, respLoginIds, viewerLoginIds);
+
         return "redirect:/admin/evts/" + encodeUrlPathSegment(payEvt.getId().toString(), httpServletRequest);
     } 
     
@@ -251,7 +216,9 @@ public class PayEvtController {
         boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         boolean isManagerOrViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) ||
         		auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"));
-        
+
+        String currentUser = auth.getName();
+
         if(sortFieldName == null) {
         	sortFieldName = "id";
         	sortOrder = "desc";
@@ -268,8 +235,7 @@ public class PayEvtController {
 	            uiModel.addAttribute("payevts", PayEvt.findAllPayEvts(sortFieldName, sortOrder));
 	        }
         } else if(isManagerOrViewer) {
-    		RespLogin respLogin = RespLogin.findOrCreateRespLogin(auth.getName());
-    		List<RespLogin> loginList = Arrays.asList(new RespLogin[] {respLogin});
+    		List<RespLogin> loginList = evtService.listEvt(currentUser);
     		uiModel.addAttribute("payevts", PayEvt.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList());
         }
         

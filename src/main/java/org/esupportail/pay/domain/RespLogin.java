@@ -19,6 +19,8 @@ package org.esupportail.pay.domain;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Transient;
+
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -31,6 +33,10 @@ public class RespLogin {
 
     @Column(unique = true)
     String login;
+    @Transient
+	String displayName;
+    @Transient
+	String email;
 
 	public static RespLogin findOrCreateRespLogin(String login2find) {
 		RespLogin respLogin = null;

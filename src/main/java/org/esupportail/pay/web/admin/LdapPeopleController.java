@@ -47,7 +47,7 @@ public class LdapPeopleController {
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         
-        List<String> logins = ldapService.searchLogins(loginPrefix + "*");
+        List<String> logins = ldapService.searchLogins(loginPrefix + "*", "uid");
 
         String loginsJson = new JSONSerializer().serialize(logins);
         
