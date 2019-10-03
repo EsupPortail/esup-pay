@@ -102,11 +102,19 @@ public class PayEvt {
 	}
 
 	public String getRespLoginsStr() {
-        return StringUtils.join(respLogins, " ; ");
+        List<String> displayNames = new ArrayList<>();
+        for (RespLogin respLogin : respLogins) {
+            displayNames.add(respLogin.getDisplayName());
+        }
+        return StringUtils.join(displayNames, " ; ");
     }
     
     public String getViewerLoginsStr() {
-        return StringUtils.join(viewerLogins, " ; ");
+        List<String> displayNames = new ArrayList<>();
+        for (RespLogin viewerLogin : viewerLogins) {
+            displayNames.add(viewerLogin.getDisplayName());
+        }
+        return StringUtils.join(displayNames, " ; ");
     }
  
     public List<String> getLogins() {

@@ -17,11 +17,18 @@
  */
 package org.esupportail.pay.web.admin;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.esupportail.pay.domain.LdapResult;
+import org.esupportail.pay.domain.RespLogin;
 import org.esupportail.pay.services.LdapService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +42,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import flexjson.JSONSerializer;
 
 @Controller
+@PropertySource("classpath:META-INF/spring/esup-pay.properties")
 public class LdapPeopleController {
 
 	@Resource
 	LdapService ldapService;
+
+    @Value("${loginDisplayName}")
+    private String loginDisplayName;
+
+    @Value("${ldapSearchAttr}")
+    private String ldapSearchAttr;
 	
     @RequestMapping(value="/admin/searchLoginsJson", headers = "Accept=application/json", method = RequestMethod.POST)
     @ResponseBody
@@ -46,10 +60,18 @@ public class LdapPeopleController {
     			
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        
-        List<String> logins = ldapService.searchLogins(loginPrefix + "*", "uid");
 
-        String loginsJson = new JSONSerializer().serialize(logins);
+        List<String> ldapSearchAttrs = Arrays.asList(ldapSearchAttr.split(","));
+
+        List<LdapResult> ldapResults = ldapService.search(loginPrefix + "*", ldapSearchAttrs, loginDisplayName);
+
+        List<String> logins = new ArrayList<String>();;
+        for (LdapResult ldapResult : ldapResults) {
+           logins.add(ldapResult.getDisplayName());
+        }
+
+
+        String loginsJson = new JSONSerializer().serialize(ldapResults);
         
     	return new ResponseEntity<String>(loginsJson, headers, HttpStatus.OK);
     }    

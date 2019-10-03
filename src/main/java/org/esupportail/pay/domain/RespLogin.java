@@ -16,12 +16,15 @@
  * limitations under the License.
  */
 package org.esupportail.pay.domain;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
+import javax.validation.constraints.Null;
 
 
+import com.sun.istack.internal.Nullable;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -35,8 +38,6 @@ public class RespLogin {
     String login;
     @Transient
 	String displayName;
-    @Transient
-	String email;
 
 	public static RespLogin findOrCreateRespLogin(String login2find) {
 		RespLogin respLogin = null;
@@ -55,6 +56,4 @@ public class RespLogin {
 	public String toString() {
 		return login;
 	}
-	
-	
 }

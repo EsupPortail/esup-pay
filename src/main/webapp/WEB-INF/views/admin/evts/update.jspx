@@ -66,9 +66,9 @@
 			                   <span class="glyphicon glyphicon-plus" aria-hidden="true"><!--  --></span>
 			             </a></legend>
 			             <div id="respLogins">
-			                <c:forEach items="${payEvt.logins}" var="respLogin">
+			                <c:forEach items="${payEvt.respLogins}" var="respLogin">
 			                    <div class="input-group">
-			                        <input class="respLogin autocompleteLogin form-control" name="logins" type="text" value="${respLogin}"/>
+			                        <input class="respLogin autocompleteLogin form-control" name="logins" type="text" value="${respLogin.displayName} (${respLogin.login})"/>
 			                        <span class="input-group-addon">
 				                        <a class="btn btn-xs btn-danger removeclass" href="#">
 				                             <span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
@@ -86,9 +86,9 @@
 			            </a></legend>
 			
 						<div id="viewerLogins">
-			               <c:forEach items="${payEvt.viewerLogins2Add}" var="viewerLogin">
+			               <c:forEach items="${payEvt.viewerLogins}" var="viewerLogin">
 			                   <div class="input-group">
-			                       <input class="viewerLogin autocompleteLogin form-control" name="viewerLogins2Add" type="text" value="${viewerLogin}"/>
+			                       <input class="viewerLogin autocompleteLogin form-control" name="viewerLogins2Add" type="text" value="${viewerLogin.displayName} (${viewerLogin.login})"/>
 			                       <span class="input-group-addon">
 				                       <a class="btn btn-xs btn-danger removeclass" href="#">
 				                           <span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>

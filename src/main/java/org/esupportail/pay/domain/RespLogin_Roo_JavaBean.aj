@@ -31,5 +31,13 @@ privileged aspect RespLogin_Roo_JavaBean {
     public void RespLogin.setLogin(String login) {
         this.login = login;
     }
-    
+
+
+    public String RespLogin.getDisplayName() {
+        return this.displayName;
+    }
+
+    public void RespLogin.setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 }

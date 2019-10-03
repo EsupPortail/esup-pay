@@ -23,12 +23,15 @@ import javax.annotation.Resource;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 
-import org.springframework.beans.factory.annotation.Value;
+import jdk.nashorn.internal.ir.CallNode;
+import org.esupportail.pay.domain.LdapResult;
+import org.esupportail.pay.domain.RespLogin;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.LikeFilter;
+import org.springframework.ldap.filter.OrFilter;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,21 +40,48 @@ public class LdapService {
 	@Resource
 	LdapTemplate ldapTemplate;
 
-	private String ldapAttr;
+	private String loginDisplayName;
 
-	public List<String> searchLogins(String login, String ldapAttr) {
-		this.ldapAttr = ldapAttr;
+	public List<LdapResult> search(String login, List<String> ldapSearchAttrs, String loginDisplayName) {
+		this.loginDisplayName = loginDisplayName;
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
-		filter.and(new LikeFilter(this.ldapAttr, login));
-		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {this.ldapAttr}, new SimpleLoginAttributMapper());
+		OrFilter orFilter = new OrFilter();
+		for (String ldapSearchAttr : ldapSearchAttrs) {
+			orFilter.or(new LikeFilter(ldapSearchAttr, login));
+		}
+		filter.and(orFilter);
+		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, "uid"}, new SimpleLoginAttributMapper());
+	}
+
+	public void computeRespLogin(List<RespLogin> respLogins, String loginDisplayName) {
+		this.loginDisplayName = loginDisplayName;
+		AndFilter filter = new AndFilter();
+		filter.and(new EqualsFilter("objectclass", "person"));
+		OrFilter orFilter = new OrFilter();
+		for (RespLogin respLogin : respLogins) {
+			orFilter.or(new LikeFilter("uid", respLogin.getLogin()+'*'));
+		}
+		filter.and(orFilter);
+		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, "uid"}, new SimpleLoginAttributMapper());
+		for (RespLogin respLogin : respLogins) {
+			for (LdapResult ldapResult : ldapResults) {
+				if (respLogin.getLogin().equals(ldapResult.getUid())) {
+					respLogin.setDisplayName(ldapResult.getDisplayName());
+				}
+
+			}
+		}
 	}
 	
 	class SimpleLoginAttributMapper  implements AttributesMapper {
 
-		public String mapFromAttributes(Attributes attrs)
+		public LdapResult mapFromAttributes(Attributes attrs)
 				throws javax.naming.NamingException {
-			return attrs.get(ldapAttr).get().toString();
+			LdapResult ldapResult = new LdapResult();
+			ldapResult.setDisplayName(attrs.get(loginDisplayName).get().toString());
+			ldapResult.setUid(attrs.get("uid").get().toString());
+			return ldapResult;
 		}
 	}
 }

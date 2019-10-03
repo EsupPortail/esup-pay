@@ -156,8 +156,8 @@ $(document).ready(function() {
 				<div class="input-group"> \
 				<input class="respLogin autocompleteLogin form-control" name="logins" \
 				value="" \
-				type="text" /> <span class="input-group-addon"> <a href="#" \
-				class="btn btn-xs btn-danger removeclass"><span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span></span></a></span>\
+				type="text" />  <span class="input-group-addon"> <a href="#" \
+					class="btn btn-xs btn-danger removeclass"><span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span></span></a></span> \
 				</div> \
 		').appendTo('#respLogins');    
 		addAutocompleteLogin(inputDiv.find('input'));
@@ -177,7 +177,7 @@ $(document).ready(function() {
 				<div class="input-group"> \
 				<input class="viewerLogin autocompleteLogin form-control" name="viewerLogins2Add" \
 				value="" \
-				type="text" /> <span class="input-group-addon"><a href="#" \
+				type="text" />  <span class="input-group-addon"><a href="#" \
 				class="btn btn-xs btn-danger removeclass"><span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span></a></span> \
 				</div> \
 		').appendTo('#viewerLogins');      
@@ -193,30 +193,29 @@ $(document).ready(function() {
 	}) ;
 	
 	function addAutocompleteLogin(selector) {
-		$(selector).each(function(){       
+		$(selector).each(function(){
 			$(this).autocomplete({
 				source: function(request, response) {
-					$.ajax({
-						url : searchLoginsJsonUrl,
-						type: 'POST',
-						dataType : 'json',
-						data : {
-							loginPrefix : request.term,
-						},
-						success : function(data) {
+						$.ajax({
+							url: searchLoginsJsonUrl,
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								loginPrefix: request.term,
+							},
+							success: function (data) {
 
-							response($.map(data, function(item){
-								return {
-									label: item,
-									value: item
-								};
-							}));
-						}
-					});
-				},				
+								response($.map(data, function (item) {
+									return {
+										value: item["displayName"] + ' (' + item['uid'] + ')'
+									};
+								}));
+							},
+						});
+				},
 				minLength: 4,
 				maxLength: 8
-			});
+				});
 		});
 	}
 	
@@ -279,7 +278,7 @@ $(document).ready(function() {
 		"columns": [{},{"breakpoints": "xs"},{"breakpoints": "xs sm"},{},
 			{"breakpoints": "xs sm"},{"breakpoints": "xs sm"},{}]		
 	});
-	
+
 	if($('#registerForm').length >0 ){
 		$('#registerForm').bootstrapValidator({
 			message: 'This value is not valid',

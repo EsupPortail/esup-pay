@@ -1,9 +1,13 @@
 package org.esupportail.pay.services;
 
 import org.esupportail.pay.domain.Label;
+import org.esupportail.pay.domain.LdapResult;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.RespLogin;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -17,6 +21,12 @@ public class EvtService {
     @Resource
     UrlIdService urlIdService;
 
+    @Resource
+    LdapService ldapService;
+
+    @Value("${loginDisplayName}")
+    private String loginDisplayName;
+
     public void updateEvt(PayEvt payEvt) {
         // Hack : don't override logoFile !!
         PayEvt payEvtCurrent = PayEvt.findPayEvt(payEvt.getId());
@@ -26,6 +36,7 @@ public class EvtService {
         List<RespLogin> respLogins = new ArrayList<RespLogin>();
         if(payEvt.getLogins() != null) {
             for(String login: payEvt.getLogins()) {
+                login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
                 RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
                 respLogins.add(respLogin);
             }
@@ -35,19 +46,21 @@ public class EvtService {
         List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
         if(payEvt.getViewerLogins2Add() != null) {
             for(String login: payEvt.getViewerLogins2Add()) {
+                login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
                 RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
                 viewerLogins.add(respLogin);
             }
         }
         payEvt.setViewerLogins(viewerLogins);
-
+        computeRespLogin(payEvt);
         payEvt.merge();
     }
 
     public void createEvt(PayEvt payEvt, List<String> respLoginIds, List<String> viewerLoginIds) {
         List<RespLogin> respLogins = new ArrayList<RespLogin>();
-        if(!respLogins.isEmpty()) {
+        if(!respLoginIds.isEmpty()) {
             for(String login: respLoginIds) {
+                login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
                 RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
                 respLogins.add(respLogin);
             }
@@ -57,6 +70,7 @@ public class EvtService {
         List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
         if(!viewerLoginIds.isEmpty()) {
             for(String login: viewerLoginIds) {
+                login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
                 RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
                 viewerLogins.add(respLogin);
             }
@@ -76,4 +90,22 @@ public class EvtService {
         return Arrays.asList(new RespLogin[] {respLogin});
     }
 
-}
+    public void computeRespLogin(PayEvt payEvt) {
+        if (payEvt.getRespLogins() != null) {
+            ldapService.computeRespLogin(payEvt.getRespLogins(), loginDisplayName);
+        }
+        if (payEvt.getViewerLogins() != null) {
+            ldapService.computeRespLogin(payEvt.getViewerLogins(), loginDisplayName);
+        }
+    }
+ }
+
+
+
+
+
+
+
+
+
+

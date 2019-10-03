@@ -153,6 +153,7 @@ public class PayEvtController {
     public String update(@Valid PayEvt payEvt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	payEvtUpdateValidator.validate(payEvt, bindingResult);
     	if (bindingResult.hasErrors()) {
+            evtService.computeRespLogin(payEvt);
             populateEditForm(uiModel, payEvt);
             return "admin/evts/update";
         }
@@ -168,6 +169,7 @@ public class PayEvtController {
     @PreAuthorize("hasPermission(#id, 'view')")
     public String show(@PathVariable("id") Long id, Model uiModel) {
     	PayEvt evt = PayEvt.findPayEvt(id);
+    	evtService.computeRespLogin(evt);
         uiModel.addAttribute("payEvt", evt);
         uiModel.addAttribute("itemId", id);
         
@@ -225,6 +227,9 @@ public class PayEvtController {
         }
     	
         if(isAdmin) {
+            for (PayEvt payEvt : PayEvt.findAllPayEvts(sortFieldName, sortOrder)) {
+                evtService.computeRespLogin(payEvt);
+            }
 	    	if (page != null || size != null) {
 	            int sizeNo = size == null ? 10 : size.intValue();
 	            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
@@ -255,7 +260,9 @@ public class PayEvtController {
     @PreAuthorize("hasPermission(#id, 'manage')")
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, PayEvt.findPayEvt(id));
+        PayEvt payEvt = PayEvt.findPayEvt(id);
+        evtService.computeRespLogin(payEvt);
+        populateEditForm(uiModel, payEvt);
         return "admin/evts/update";
     }
     

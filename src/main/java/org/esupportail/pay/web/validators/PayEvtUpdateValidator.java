@@ -17,24 +17,35 @@
  */
 package org.esupportail.pay.web.validators;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.services.LdapService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 @Service
+@PropertySource("classpath:META-INF/spring/esup-pay.properties")
 public class PayEvtUpdateValidator implements Validator {
 
 	public static Pattern optionalAddedParamsPattern = Pattern.compile("[^=]+=[^\\&]+(\\&[^=]+=[^\\&]+)*");
 	
 	@Resource
 	LdapService ldapService;
-	
+
+	@Value("${loginDisplayName}")
+	private String loginDisplayName;
+
+	@Value("${ldapSearchAttr}")
+	private String ldapSearchAttr;
+
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return PayEvt.class.equals(clazz);
@@ -47,6 +58,8 @@ public class PayEvtUpdateValidator implements Validator {
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
+		List<String> ldapSearchAttrs = Arrays.asList(ldapSearchAttr.split(","));
+
 		PayEvt evt = (PayEvt) target;
 		if(evt.getUrlId() == null || evt.getUrlId().isEmpty()) {
 			errors.rejectValue("urlId", "NotEmpty");
@@ -59,14 +72,16 @@ public class PayEvtUpdateValidator implements Validator {
 	    }
 		if(evt.getLogins() != null) {
 			for(String login : evt.getLogins()) {
-				if(ldapService.searchLogins(login, "uid").size()<1) {
+				login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
+				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName).size()<1) {
 					errors.rejectValue("logins", "login_not_found");
 				}
 			}
 		}
 		if(evt.getViewerLogins2Add() != null) {
 			for(String login : evt.getViewerLogins2Add()) {
-				if(ldapService.searchLogins(login, "uid").size()<1) {
+				login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
+				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName).size()<1) {
 					errors.rejectValue("viewerLogins2Add", "login_not_found");
 				}
 			}
