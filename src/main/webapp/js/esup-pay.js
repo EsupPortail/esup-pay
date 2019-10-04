@@ -154,13 +154,16 @@ $(document).ready(function() {
 	$("#AddMoreLogins").on("click",function (e) {                                                                                                                                                                                           
 		var inputDiv = $(' \
 				<div class="input-group"> \
+				<input class="respLogin autocompleteLogin form-control" \
+				value="" \
+				type="text" /> \
 				<input class="respLogin autocompleteLogin form-control" name="logins" \
 				value="" \
-				type="text" />  <span class="input-group-addon"> <a href="#" \
+				type="hidden" /> <span class="input-group-addon"> <a href="#" \
 					class="btn btn-xs btn-danger removeclass"><span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span></span></a></span> \
 				</div> \
 		').appendTo('#respLogins');    
-		addAutocompleteLogin(inputDiv.find('input'));
+		addAutocompleteLogin(inputDiv);
 		return false;
 	});
 
@@ -175,13 +178,16 @@ $(document).ready(function() {
 	$("#AddMoreViewerLogins").on("click",function (e) {      
 		var inputDiv = $(' \
 				<div class="input-group"> \
+				<input class="viewerLogin autocompleteLogin form-control" \
+				value="" \
+				type="text" />\
 				<input class="viewerLogin autocompleteLogin form-control" name="viewerLogins2Add" \
 				value="" \
-				type="text" />  <span class="input-group-addon"><a href="#" \
+				type="hidden" /> <span class="input-group-addon"><a href="#" \
 				class="btn btn-xs btn-danger removeclass"><span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span></a></span> \
 				</div> \
 		').appendTo('#viewerLogins');      
-		addAutocompleteLogin(inputDiv.find('input'));
+		addAutocompleteLogin(inputDiv);
 		return false;
 	});
 
@@ -194,7 +200,9 @@ $(document).ready(function() {
 	
 	function addAutocompleteLogin(selector) {
 		$(selector).each(function(){
-			$(this).autocomplete({
+			var input = $(this).find("input:text");
+			var hidden = $(this).find("input:hidden");
+			input.autocomplete({
 				source: function(request, response) {
 						$.ajax({
 							url: searchLoginsJsonUrl,
@@ -207,11 +215,15 @@ $(document).ready(function() {
 
 								response($.map(data, function (item) {
 									return {
-										value: item["displayName"] + ' (' + item['uid'] + ')'
+										value: item["displayName"] + ' (' + item['uid'] + ')',
+										login: item['uid']
 									};
 								}));
-							},
+							}
 						});
+				},
+				select: function(e, term, item){
+					hidden.val(term.item["login"]);
 				},
 				minLength: 4,
 				maxLength: 8

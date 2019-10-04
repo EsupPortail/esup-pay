@@ -54,7 +54,8 @@
 			             <div id="respLogins">
 			                <c:forEach items="${payEvt.logins}" var="respLogin">
 			                    <div class="input-group">
-			                        <input class="respLogin autocompleteLogin form-control" name="logins" type="text" value="${respLogin}"/>
+			                        <input class="respLogin autocompleteLogin form-control" type="text" value="${respLogin}"/>
+									<input class="respLogin autocompleteLogin form-control" name="logins" type="text" />
 			                        <span class="input-group-addon">
 				                        <a class="btn btn-xs btn-danger removeclass" href="#">
 				                             <span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
@@ -74,7 +75,8 @@
 						<div id="viewerLogins">
 			               <c:forEach items="${payEvt.viewerLogins2Add}" var="viewerLogin">
 			                   <div class="input-group">
-			                       <input class="viewerLogin autocompleteLogin form-control" name="viewerLogins2Add" type="text" value="${viewerLogin}"/>
+			                       <input class="viewerLogin autocompleteLogin form-control" type="text" value="${viewerLogin}"/>
+								   <input class="viewerLogin autocompleteLogin form-control" name="viewerLogins2Add" type="hidden" />
 			                       <span class="input-group-addon">
 				                       <a class="btn btn-xs btn-danger removeclass" href="#">
 				                           <span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>

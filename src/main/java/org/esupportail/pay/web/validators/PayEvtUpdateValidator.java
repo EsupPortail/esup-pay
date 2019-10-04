@@ -72,7 +72,6 @@ public class PayEvtUpdateValidator implements Validator {
 	    }
 		if(evt.getLogins() != null) {
 			for(String login : evt.getLogins()) {
-				login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
 				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName).size()<1) {
 					errors.rejectValue("logins", "login_not_found");
 				}
@@ -80,7 +79,6 @@ public class PayEvtUpdateValidator implements Validator {
 		}
 		if(evt.getViewerLogins2Add() != null) {
 			for(String login : evt.getViewerLogins2Add()) {
-				login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
 				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName).size()<1) {
 					errors.rejectValue("viewerLogins2Add", "login_not_found");
 				}

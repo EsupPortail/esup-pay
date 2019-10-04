@@ -227,7 +227,8 @@ public class PayEvtController {
         }
     	
         if(isAdmin) {
-            for (PayEvt payEvt : PayEvt.findAllPayEvts(sortFieldName, sortOrder)) {
+            List<PayEvt> payEvts = PayEvt.findAllPayEvts(sortFieldName, sortOrder);
+            for (PayEvt payEvt : payEvts) {
                 evtService.computeRespLogin(payEvt);
             }
 	    	if (page != null || size != null) {
@@ -237,11 +238,15 @@ public class PayEvtController {
 	            float nrOfPages = (float) PayEvt.countPayEvts() / sizeNo;
 	            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
 	        } else {
-	            uiModel.addAttribute("payevts", PayEvt.findAllPayEvts(sortFieldName, sortOrder));
+	            uiModel.addAttribute("payevts", payEvts);
 	        }
         } else if(isManagerOrViewer) {
-    		List<RespLogin> loginList = evtService.listEvt(currentUser);
-    		uiModel.addAttribute("payevts", PayEvt.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList());
+            List<RespLogin> loginList = evtService.listEvt(currentUser);
+            List<PayEvt> payEvts = PayEvt.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList();
+    		for (PayEvt payEvt : payEvts) {
+                evtService.computeRespLogin(payEvt);
+            }
+    		uiModel.addAttribute("payevts", payEvts);
         }
         
         return "admin/evts/list";

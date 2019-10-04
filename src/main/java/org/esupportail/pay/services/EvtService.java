@@ -36,7 +36,6 @@ public class EvtService {
         List<RespLogin> respLogins = new ArrayList<RespLogin>();
         if(payEvt.getLogins() != null) {
             for(String login: payEvt.getLogins()) {
-                login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
                 RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
                 respLogins.add(respLogin);
             }
@@ -46,7 +45,6 @@ public class EvtService {
         List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
         if(payEvt.getViewerLogins2Add() != null) {
             for(String login: payEvt.getViewerLogins2Add()) {
-                login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
                 RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
                 viewerLogins.add(respLogin);
             }
@@ -60,7 +58,6 @@ public class EvtService {
         List<RespLogin> respLogins = new ArrayList<RespLogin>();
         if(!respLoginIds.isEmpty()) {
             for(String login: respLoginIds) {
-                login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
                 RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
                 respLogins.add(respLogin);
             }
@@ -70,7 +67,6 @@ public class EvtService {
         List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
         if(!viewerLoginIds.isEmpty()) {
             for(String login: viewerLoginIds) {
-                login = login.substring(login.indexOf('(') + 1, login.indexOf(')'));
                 RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
                 viewerLogins.add(respLogin);
             }
