@@ -34,49 +34,15 @@ public class EvtService {
         payEvt.setLogoFile(payEvtCurrent.getLogoFile());
         // Hack end
 
-        List<RespLogin> respLogins = new ArrayList<RespLogin>();
-        if(payEvt.getLogins() != null) {
-            for(String login: payEvt.getLogins()) {
-            	if(login != null && !login.isEmpty()) {
-            		RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
-            		respLogins.add(respLogin);
-            	}
-            }
-            payEvt.setRespLogins(respLogins);
-        }
-
-        List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
-        if(payEvt.getViewerLogins2Add() != null) {
-            for(String login: payEvt.getViewerLogins2Add()) {
-            	if(login != null && !login.isEmpty()) {
-	                RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
-	                viewerLogins.add(respLogin);
-            	}
-            }
-        }
-        payEvt.setViewerLogins(viewerLogins);
+        computeLogins(payEvt, payEvt.getLogins(), payEvt.getViewerLogins2Add());
         computeRespLogin(payEvt);
+        
         payEvt.merge();
     }
 
     public void createEvt(PayEvt payEvt, List<String> respLoginIds, List<String> viewerLoginIds) {
-        List<RespLogin> respLogins = new ArrayList<RespLogin>();
-        if(!respLoginIds.isEmpty()) {
-            for(String login: respLoginIds) {
-                RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
-                respLogins.add(respLogin);
-            }
-        }
-        payEvt.setRespLogins(respLogins);
-
-        List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
-        if(!viewerLoginIds.isEmpty()) {
-            for(String login: viewerLoginIds) {
-                RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
-                viewerLogins.add(respLogin);
-            }
-        }
-        payEvt.setViewerLogins(viewerLogins);
+    	
+        computeLogins(payEvt, respLoginIds, viewerLoginIds);
 
         if(payEvt.getUrlId() == null || payEvt.getUrlId().isEmpty()) {
             String urlId = urlIdService.generateUrlId4PayEvt(payEvt.getTitle().getTranslation(Label.LOCALE_IDS.en));
@@ -85,6 +51,30 @@ public class EvtService {
 
         payEvt.persist();
     }
+
+	public void computeLogins(PayEvt payEvt, List<String> respLoginIds, List<String> viewerLoginIds) {
+		List<RespLogin> respLogins = new ArrayList<RespLogin>();
+        if(!respLoginIds.isEmpty()) {
+            for(String login: respLoginIds) {
+            	if(login != null && !login.isEmpty()) {
+	                RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
+	                respLogins.add(respLogin);
+            	}
+            }
+        }
+        payEvt.setRespLogins(respLogins);
+
+        List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
+        if(!viewerLoginIds.isEmpty()) {
+            for(String login: viewerLoginIds) {
+            	if(login != null && !login.isEmpty()) {
+            		RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
+            		viewerLogins.add(respLogin);
+            	}
+            }
+        }
+        payEvt.setViewerLogins(viewerLogins);
+	}
 
     public List<RespLogin> listEvt(String currentUser) {
         RespLogin respLogin = RespLogin.findOrCreateRespLogin(currentUser);

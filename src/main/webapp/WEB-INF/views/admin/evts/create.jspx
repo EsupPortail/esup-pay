@@ -52,10 +52,10 @@
 			                   <span class="glyphicon glyphicon-plus" aria-hidden="true"><!--  --></span>
 			             </a></legend>
 			             <div id="respLogins">
-			                <c:forEach items="${payEvt.logins}" var="respLogin">
-			                    <div class="input-group">
-			                        <input class="respLogin autocompleteLogin form-control" type="text" value="${respLogin}"/>
-									<input class="respLogin autocompleteLogin form-control" name="logins" type="text" />
+			                <c:forEach items="${payEvt.respLogins}" var="respLogin">
+			                    <div class="input-group autocompleteLogin">
+			                        <input class="respLogin form-control" type="text" value="${respLogin.displayName} (${respLogin.login})"/>
+									<input class="respLogin form-control" name="logins" type="hidden" value="${respLogin.login}" />
 			                        <span class="input-group-addon">
 				                        <a class="btn btn-xs btn-danger removeclass" href="#">
 				                             <span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
@@ -73,11 +73,11 @@
 			            </a></legend>
 			
 						<div id="viewerLogins">
-			               <c:forEach items="${payEvt.viewerLogins2Add}" var="viewerLogin">
-			                   <div class="input-group">
-			                       <input class="viewerLogin autocompleteLogin form-control" type="text" value="${viewerLogin}"/>
-								   <input class="viewerLogin autocompleteLogin form-control" name="viewerLogins2Add" type="hidden" />
-			                       <span class="input-group-addon">
+			               <c:forEach items="${payEvt.viewerLogins}" var="viewerLogin">
+			                   <div class="input-group autocompleteLogin">
+			                       <input class="viewerLogin form-control" type="text" value="${viewerLogin.displayName} (${viewerLogin.login})"/>
+								   <input class="viewerLogin form-control" name="viewerLogins2Add" type="hidden" value="${viewerLogin.login}"/>
+								   <span class="input-group-addon">
 				                       <a class="btn btn-xs btn-danger removeclass" href="#">
 				                           <span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
 				                       </a>

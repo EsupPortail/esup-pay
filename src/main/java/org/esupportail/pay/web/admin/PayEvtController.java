@@ -153,9 +153,16 @@ public class PayEvtController {
     public String update(@Valid PayEvt payEvt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	payEvtUpdateValidator.validate(payEvt, bindingResult);
     	if (bindingResult.hasErrors()) {
-    		PayEvt currentPayEvt = PayEvt.findPayEvt(payEvt.getId());
-    		payEvt.setRespLogins(currentPayEvt.getRespLogins());
-    		payEvt.setViewerLogins(currentPayEvt.getViewerLogins());
+    		log.debug(bindingResult.getAllErrors());
+            List<String> respLoginIds= Arrays.asList();
+            if(httpServletRequest.getParameterValues("logins") != null) {
+    	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
+            }
+            List<String> viewerLoginIds= Arrays.asList();;
+            if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
+    	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
+            }
+            evtService.computeLogins(payEvt, respLoginIds, viewerLoginIds);
             evtService.computeRespLogin(payEvt);
             populateEditForm(uiModel, payEvt);
             return "admin/evts/update";
@@ -185,7 +192,16 @@ public class PayEvtController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String create(@Valid PayEvt payEvt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-        	log.info(bindingResult.getAllErrors());
+            List<String> respLoginIds= Arrays.asList();
+            if(httpServletRequest.getParameterValues("logins") != null) {
+    	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
+            }
+            List<String> viewerLoginIds= Arrays.asList();;
+            if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
+    	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
+            }
+            evtService.computeLogins(payEvt, respLoginIds, viewerLoginIds);
+            evtService.computeRespLogin(payEvt);
             populateEditForm(uiModel, payEvt);
             return "admin/evts/create";
         }
