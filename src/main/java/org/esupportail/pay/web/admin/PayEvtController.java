@@ -153,14 +153,15 @@ public class PayEvtController {
     public String update(@Valid PayEvt payEvt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	payEvtUpdateValidator.validate(payEvt, bindingResult);
     	if (bindingResult.hasErrors()) {
+    		PayEvt currentPayEvt = PayEvt.findPayEvt(payEvt.getId());
+    		payEvt.setRespLogins(currentPayEvt.getRespLogins());
+    		payEvt.setViewerLogins(currentPayEvt.getViewerLogins());
             evtService.computeRespLogin(payEvt);
             populateEditForm(uiModel, payEvt);
             return "admin/evts/update";
         }
-        uiModel.asMap().clear();
-        
+        uiModel.asMap().clear();        
         evtService.updateEvt(payEvt);
-
         return "redirect:/admin/evts/" + encodeUrlPathSegment(payEvt.getId().toString(), httpServletRequest);
     }
     
@@ -171,13 +172,11 @@ public class PayEvtController {
     	PayEvt evt = PayEvt.findPayEvt(id);
     	evtService.computeRespLogin(evt);
         uiModel.addAttribute("payEvt", evt);
-        uiModel.addAttribute("itemId", id);
-        
+        uiModel.addAttribute("itemId", id);    
         if(evt!=null) {
         	List<PayEvtMontant> montants = PayEvtMontant.findPayEvtMontantsByEvt(evt).getResultList();
             uiModel.addAttribute("payevtmontants", montants);
         }
-        
         return "admin/evts/show";
     }
     
@@ -220,26 +219,24 @@ public class PayEvtController {
         		auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"));
 
         String currentUser = auth.getName();
-
+        
         if(sortFieldName == null) {
         	sortFieldName = "id";
         	sortOrder = "desc";
         }
     	
         if(isAdmin) {
-            List<PayEvt> payEvts = PayEvt.findAllPayEvts(sortFieldName, sortOrder);
-            for (PayEvt payEvt : payEvts) {
-                evtService.computeRespLogin(payEvt);
-            }
-	    	if (page != null || size != null) {
-	            int sizeNo = size == null ? 10 : size.intValue();
-	            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-	            uiModel.addAttribute("payevts", PayEvt.findPayEvtEntries(firstResult, sizeNo, sortFieldName, sortOrder));
-	            float nrOfPages = (float) PayEvt.countPayEvts() / sizeNo;
-	            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-	        } else {
-	            uiModel.addAttribute("payevts", payEvts);
-	        }
+        	int sizeNo = size == null ? 10 : size.intValue();
+        	final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+        	List<PayEvt> payEvts = PayEvt.findPayEvtEntries(firstResult, sizeNo, sortFieldName, sortOrder);
+        	/* TODO : trop groumand pour l'instant
+        	for (PayEvt payEvt : payEvts) {
+        		evtService.computeRespLogin(payEvt);
+        	}
+        	*/
+        	uiModel.addAttribute("payevts", payEvts);
+        	float nrOfPages = (float) PayEvt.countPayEvts() / sizeNo;
+        	uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else if(isManagerOrViewer) {
             List<RespLogin> loginList = evtService.listEvt(currentUser);
             List<PayEvt> payEvts = PayEvt.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList();

@@ -60,7 +60,7 @@ public class LdapService {
 		filter.and(new EqualsFilter("objectclass", "person"));
 		OrFilter orFilter = new OrFilter();
 		for (RespLogin respLogin : respLogins) {
-			orFilter.or(new LikeFilter("uid", respLogin.getLogin()+'*'));
+			orFilter.or(new EqualsFilter("uid", respLogin.getLogin()));
 		}
 		filter.and(orFilter);
 		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, "uid"}, new SimpleLoginAttributMapper());
@@ -79,8 +79,12 @@ public class LdapService {
 		public LdapResult mapFromAttributes(Attributes attrs)
 				throws javax.naming.NamingException {
 			LdapResult ldapResult = new LdapResult();
-			ldapResult.setDisplayName(attrs.get(loginDisplayName).get().toString());
-			ldapResult.setUid(attrs.get("uid").get().toString());
+			if(attrs.get(loginDisplayName) != null) {
+				ldapResult.setDisplayName(attrs.get(loginDisplayName).get().toString());
+			}
+			if(attrs.get("uid") != null) {
+				ldapResult.setUid(attrs.get("uid").get().toString());
+			}
 			return ldapResult;
 		}
 	}

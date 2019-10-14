@@ -56,7 +56,7 @@
             <table:column id="c_org_esupportail_pay_domain_PayEvt_logoFile" property="logoFile" render="false" z="user-managed"/>
             <table:column id="c_org_esupportail_pay_domain_PayEvt_mailSubject" property="mailSubject" render="false" z="user-managed"/>
             <table:column id="c_org_esupportail_pay_domain_PayEvt_respLogins" label="${responsables}" property="respLoginsStr"/>
-            <table:column id="c_org_esupportail_pay_domain_PayEvt_logins"  property="logins" z="user-managed"/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_logins"  property="logins" z="user-managed" render="false"/>
             <table:column id="c_org_esupportail_pay_domain_PayEvt_viewerLogins2Add" label="${lecteurs}" property="ViewerLoginsStr" z="user-managed"/>
             <table:column id="c_org_esupportail_pay_domain_PayEvt_payServiceKey" label="${compte}" property="payboxServiceKey" z="Qwz7qh7neZ8wDSVF5T/7tI/Zjdo="/>
         </table:table>

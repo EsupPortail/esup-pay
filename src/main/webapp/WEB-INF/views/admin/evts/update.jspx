@@ -88,9 +88,9 @@
 			
 						<div id="viewerLogins">
 			               <c:forEach items="${payEvt.viewerLogins}" var="viewerLogin">
-			                   <div class="input-group">
-			                       <input class="viewerLogin autocompleteLogin form-control" type="text" value="${viewerLogin.displayName} (${viewerLogin.login})"/>
-								   <input class="viewerLogin autocompleteLogin form-control" name="viewerLogins2Add" type="hidden" value="${viewerLogin.login}"/>
+			                   <div class="input-group autocompleteLogin">
+			                       <input class="viewerLogin form-control" type="text" value="${viewerLogin.displayName} (${viewerLogin.login})"/>
+								   <input class="viewerLogin form-control" name="viewerLogins2Add" type="hidden" value="${viewerLogin.login}"/>
 								   <span class="input-group-addon">
 				                       <a class="btn btn-xs btn-danger removeclass" href="#">
 				                           <span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>

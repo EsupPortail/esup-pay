@@ -104,7 +104,11 @@ public class PayEvt {
 	public String getRespLoginsStr() {
         List<String> displayNames = new ArrayList<>();
         for (RespLogin respLogin : respLogins) {
-            displayNames.add(respLogin.getDisplayName());
+        	if(respLogin.getDisplayName() != null) {
+        		displayNames.add(respLogin.getDisplayName());
+        	} else {
+        		displayNames.add(respLogin.getLogin());
+        	}
         }
         return StringUtils.join(displayNames, " ; ");
     }
@@ -112,7 +116,11 @@ public class PayEvt {
     public String getViewerLoginsStr() {
         List<String> displayNames = new ArrayList<>();
         for (RespLogin viewerLogin : viewerLogins) {
-            displayNames.add(viewerLogin.getDisplayName());
+        	if(viewerLogin.getDisplayName() != null) {
+        		displayNames.add(viewerLogin.getDisplayName());
+        	} else {
+        		displayNames.add(viewerLogin.getLogin());
+        	}
         }
         return StringUtils.join(displayNames, " ; ");
     }

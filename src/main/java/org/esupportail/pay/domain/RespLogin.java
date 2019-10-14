@@ -36,6 +36,7 @@ public class RespLogin {
 
     @Column(unique = true)
     String login;
+    
     @Transient
 	String displayName;
 
