@@ -276,7 +276,7 @@ $(document).ready(function() {
 	//Event table
 	$('#listEvts .table:not(:empty)').footable({
 		"columns": [{},{"breakpoints": "xs"},{"breakpoints": "xs sm md"},{"breakpoints": "xs sm"},
-			{"breakpoints": "xs sm md"},{"breakpoints": "xs sm md"},{}]		
+			{"breakpoints": "xs sm md"},{}]		
 	});
 	$('#showEvts .table:not(:empty)').footable({
 		"columns": [{"breakpoints": "xs sm"},{},{"breakpoints": "xs"},{"breakpoints": "xs"},
