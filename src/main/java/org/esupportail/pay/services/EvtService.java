@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EvtService {
@@ -90,6 +91,26 @@ public class EvtService {
         return Arrays.asList(new RespLogin[] {respLogin});
     }
 
+    public void computeRespLogin(List<PayEvt> payEvts) {
+    	
+    	List<RespLogin> respLogins = new ArrayList<RespLogin>();
+    	for(PayEvt payEvt: payEvts) {
+    		if(payEvt.getRespLogins() != null) {
+    			respLogins.addAll(payEvt.getRespLogins());
+    		}
+    	}
+        ldapService.computeRespLogin(respLogins, loginDisplayName);
+ 
+    	List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
+    	for(PayEvt payEvt: payEvts) {
+    		if(payEvt.getViewerLogins() != null) {
+    			viewerLogins.addAll(payEvt.getViewerLogins());
+    		}
+    	}
+        ldapService.computeRespLogin(viewerLogins, loginDisplayName);
+        
+    }
+    
     public void computeRespLogin(PayEvt payEvt) {
         if (payEvt.getRespLogins() != null) {
             ldapService.computeRespLogin(payEvt.getRespLogins(), loginDisplayName);

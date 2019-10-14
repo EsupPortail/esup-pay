@@ -229,20 +229,14 @@ public class PayEvtController {
         	int sizeNo = size == null ? 10 : size.intValue();
         	final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
         	List<PayEvt> payEvts = PayEvt.findPayEvtEntries(firstResult, sizeNo, sortFieldName, sortOrder);
-        	/* TODO : trop groumand pour l'instant
-        	for (PayEvt payEvt : payEvts) {
-        		evtService.computeRespLogin(payEvt);
-        	}
-        	*/
+        	evtService.computeRespLogin(payEvts);
         	uiModel.addAttribute("payevts", payEvts);
         	float nrOfPages = (float) PayEvt.countPayEvts() / sizeNo;
         	uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else if(isManagerOrViewer) {
             List<RespLogin> loginList = evtService.listEvt(currentUser);
             List<PayEvt> payEvts = PayEvt.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList();
-    		for (PayEvt payEvt : payEvts) {
-                evtService.computeRespLogin(payEvt);
-            }
+            evtService.computeRespLogin(payEvts);
     		uiModel.addAttribute("payevts", payEvts);
         }
         
