@@ -55,6 +55,10 @@ public class PayController {
 
     private final Logger log = Logger.getLogger(getClass());
 
+    private static String regArobaseIsFirstChar = "^@{1,}";
+    private static String regArobaseIsLastChar = "@{1,}$";
+    private static String regArobaseInRow =  "@{2,}";
+
 	@Autowired
 	ServletContext servletContext;
 	
@@ -153,10 +157,10 @@ public class PayController {
     		mail = mail.trim();
     	}
     	if(field1!=null) {
-    		field1 = field1.trim();
+    		field1 = field1.trim().replaceAll(regArobaseIsFirstChar, "").replaceAll(regArobaseIsLastChar, "").replaceAll(regArobaseInRow, "@");
     	}
     	if(field2!=null) {
-    		field2 = field2.trim();
+    		field2 = field2.trim().replaceAll(regArobaseIsFirstChar, "").replaceAll(regArobaseIsLastChar, "").replaceAll(regArobaseInRow, "@");
     	}
     	
     	List<PayEvt> evts = PayEvt.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
