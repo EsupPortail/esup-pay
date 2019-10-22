@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
@@ -71,6 +72,8 @@ public class PayBoxService {
     private String reponseServerUrl;
     
     private String mailFrom;
+
+    private static String regex = "[^a-zA-Z0-9:@,.:_\\-]";
 
     @Autowired
     private transient MailSender mailTemplate;
@@ -126,7 +129,7 @@ public class PayBoxService {
         payBoxForm.setActionUrl(getPayBoxActionUrl());
         payBoxForm.setClientEmail(mail);
         if(payEvtMontant.getAddPrefix() == null || payEvtMontant.getAddPrefix().isEmpty()) {
-        	payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), mail, montantAsCents));
+                payBoxForm.setCommande(StringUtils.stripAccents(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), mail, montantAsCents).replaceAll(regex, "")));
         } else {
         	String addPrefix = "";
         	if("field1".equals(payEvtMontant.getAddPrefix())) {
@@ -134,7 +137,7 @@ public class PayBoxService {
         	} else if("field2".equals(payEvtMontant.getAddPrefix())) {
         		addPrefix = field2;
         	}
-        	payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), addPrefix, mail, montantAsCents));
+                payBoxForm.setCommande(StringUtils.stripAccents(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), addPrefix, mail, montantAsCents).replaceAll(regex, "")));
         }
         payBoxForm.setDevise(devise);
         payBoxForm.setHash(hashService.getHash());
