@@ -186,6 +186,12 @@ public class PayController {
     	if(!payevtmontant.getFreeAmount()) {
     		amount = payevtmontant.getDbleMontant();
     	}
+
+		if(mail.contains("+")) {
+			uiModel.addAttribute("error", "no_plus_mail");
+			return "evtmnt";
+		}
+
     	if(amount==null) {
     		uiModel.addAttribute("error", "amount_cant_be_null");
     		 return "evtmnt";
