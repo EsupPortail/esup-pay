@@ -55,9 +55,9 @@ public class PayController {
 
     private final Logger log = Logger.getLogger(getClass());
 
-    private static String regArobaseIsFirstChar = "^@{1,}";
-    private static String regArobaseIsLastChar = "@{1,}$";
-    private static String regArobaseInRow =  "@{2,}";
+    private static final String AROBAS_IS_FIRST_CHAR_REGEX = "^@{1,}";
+    private static final String AROBASE_IS_LAST_CHAR_REGEX = "@{1,}$";
+    private static final String AROBASE_IN_ROW_REGEX =  "@{2,}";
 
 	@Autowired
 	ServletContext servletContext;
@@ -157,10 +157,10 @@ public class PayController {
     		mail = mail.trim();
     	}
     	if(field1!=null) {
-    		field1 = field1.trim().replaceAll(regArobaseIsFirstChar, "").replaceAll(regArobaseIsLastChar, "").replaceAll(regArobaseInRow, "@");
+    		field1 = field1.trim().replaceAll(AROBAS_IS_FIRST_CHAR_REGEX, "").replaceAll(AROBASE_IS_LAST_CHAR_REGEX, "").replaceAll(AROBASE_IN_ROW_REGEX, "@").trim();
     	}
     	if(field2!=null) {
-    		field2 = field2.trim().replaceAll(regArobaseIsFirstChar, "").replaceAll(regArobaseIsLastChar, "").replaceAll(regArobaseInRow, "@");
+    		field2 = field2.trim().replaceAll(AROBAS_IS_FIRST_CHAR_REGEX, "").replaceAll(AROBASE_IS_LAST_CHAR_REGEX, "").replaceAll(AROBASE_IN_ROW_REGEX, "@").trim();
     	}
     	
     	List<PayEvt> evts = PayEvt.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
