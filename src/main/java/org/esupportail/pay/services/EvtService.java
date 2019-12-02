@@ -65,7 +65,7 @@ public class EvtService {
         payEvt.setRespLogins(respLogins);
 
         List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
-        if(!viewerLoginIds.isEmpty()) {
+        if(viewerLoginIds!=null && !viewerLoginIds.isEmpty()) {
             for(String login: viewerLoginIds) {
             	if(login != null && !login.isEmpty()) {
             		RespLogin respLogin = RespLogin.findOrCreateRespLogin(login);
