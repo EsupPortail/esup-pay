@@ -33,7 +33,9 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 public class ConfigInterceptor extends HandlerInterceptorAdapter {
 	
-	final static SortedMap<String, String> subTitles = new TreeMap<String, String>() {{
+	final static SortedMap<String, String> subTitles = new TreeMap<String, String>() {
+		private static final long serialVersionUID = 1L;
+	{
 	    put("/admin/evts", "Liste des évènements Paybox");
 	    put("/admin/fees", "Liste des transactions Paybox");
 	    put("/admin/evtmnts", "Montant transaction Paybox");

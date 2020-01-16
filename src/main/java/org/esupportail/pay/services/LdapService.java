@@ -23,7 +23,6 @@ import javax.annotation.Resource;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 
-import jdk.nashorn.internal.ir.CallNode;
 import org.esupportail.pay.domain.LdapResult;
 import org.esupportail.pay.domain.RespLogin;
 import org.springframework.ldap.core.AttributesMapper;

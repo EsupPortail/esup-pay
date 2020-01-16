@@ -19,7 +19,6 @@ package org.esupportail.pay.web.admin;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +31,6 @@ import javax.validation.Valid;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.esupportail.pay.domain.Label;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
@@ -40,7 +38,6 @@ import org.esupportail.pay.domain.RespLogin;
 import org.esupportail.pay.domain.UploadFile;
 import org.esupportail.pay.services.EvtService;
 import org.esupportail.pay.services.PayBoxServiceManager;
-import org.esupportail.pay.services.UrlIdService;
 import org.esupportail.pay.web.validators.PayEvtUpdateValidator;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;

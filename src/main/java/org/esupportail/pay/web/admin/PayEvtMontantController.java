@@ -23,12 +23,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
-import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.services.UrlIdService;
 import org.esupportail.pay.web.validators.PayEvtMontantUpdateValidator;
-import org.esupportail.pay.web.validators.PayEvtUpdateValidator;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

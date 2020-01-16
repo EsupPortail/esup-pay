@@ -16,15 +16,11 @@
  * limitations under the License.
  */
 package org.esupportail.pay.domain;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;
-import javax.validation.constraints.Null;
 
-
-import com.sun.istack.internal.Nullable;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
