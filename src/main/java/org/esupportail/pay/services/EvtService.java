@@ -25,7 +25,7 @@ public class EvtService {
     @Resource
     LdapService ldapService;
 
-    @Value("${ldap.displayName}")
+    @Value("${ldap.displayName:displayName}")
     private String loginDisplayName;
 
     public void updateEvt(PayEvt payEvt) {

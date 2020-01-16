@@ -48,10 +48,10 @@ public class LdapPeopleController {
 	@Resource
 	LdapService ldapService;
 
-    @Value("${ldap.displayName}")
+    @Value("${ldap.displayName:displayName}")
     private String loginDisplayName;
 
-    @Value("${ldap.searchAttrs}")
+    @Value("${ldap.searchAttrs:cn,uid,displayName,mail,supannAliasLogin}")
     private String ldapSearchAttr;
 	
     @RequestMapping(value="/admin/searchLoginsJson", headers = "Accept=application/json", method = RequestMethod.POST)

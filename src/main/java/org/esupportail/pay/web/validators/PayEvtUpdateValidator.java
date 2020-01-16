@@ -40,10 +40,10 @@ public class PayEvtUpdateValidator implements Validator {
 	@Resource
 	LdapService ldapService;
 
-	@Value("${ldap.displayName}")
+	@Value("${ldap.displayName:displayName}")
 	private String loginDisplayName;
 
-	@Value("${ldap.searchAttrs}")
+	@Value("${ldap.searchAttrs:cn,uid,displayName,mail,supannAliasLogin}")
 	private String ldapSearchAttr;
 
 	@Override
