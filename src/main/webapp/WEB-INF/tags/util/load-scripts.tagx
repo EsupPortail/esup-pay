@@ -5,36 +5,42 @@
 
   <jsp:output omit-xml-declaration="yes" />
 
-  <spring:url value="/resources/css/jquery-ui.min.css" var="jqueryui_css" />
-  <spring:url value="/resources/css/jquery-ui.theme.min.css" var="jqueryui_theme_css" />
-  <spring:url value="/resources/css/bootstrap.min.css" var="bootstrap_css_url" />
+  <spring:url value="/webjars/jquery-ui-themes/ui-lightness/jquery-ui.min.css" var="jqueryui_css" />
+  <spring:url value="/webjars/jquery-ui-themes/ui-lightness/theme.css" var="jqueryui_theme_css" />
+  <spring:url value="/webjars/bootstrap/css/bootstrap.min.css" var="bootstrap_css_url" />
   <spring:url value="/resources/css/esup-pay.css" var="pay_css_url" />
   <spring:url value="/resources/css/esup-pay-print.css" var="pay_print_css_url" />
   <spring:url value="/resources/css/footable.bootstrap.min.css" var="footable_css_url" />
+   <spring:url value="/webjars/chartjs/Chart.min.css" var="chart_css_url" />
   
-  <spring:url value="/resources/js/jquery.min.js" var="jquery_url" />
-  <spring:url value="/resources/js/jquery-ui.min.js" var="jqueryui_url" />  
-  <spring:url value="/resources/js/bootstrap.min.js" var="bootstrap_url" />
+  <spring:url value="/webjars/jquery/jquery.min.js" var="jquery_url" />
+  <spring:url value="/webjars/jquery-ui/jquery-ui.min.js" var="jqueryui_url" />  
+  <spring:url value="/webjars/bootstrap/js/bootstrap.min.js" var="bootstrap_url" />
   <spring:url value="/resources/js/bootstrapValidator.min.js" var="bootstrap_validator_url" />
   <spring:url value="/resources/js/esup-pay.js" var="pay_js_url" />
-  <spring:url value="/resources/js/Chart.min.js" var="chart_js_url" />
+  <spring:url value="/webjars/chartjs/Chart.min.js" var="chart_js_url" />
   <spring:url value="/resources/js/footable.min.js" var="footable_js_url" />
-    
-  <spring:url value="/resources/images/favicon.ico" var="favicon" />
+  
   <link rel="stylesheet" type="text/css" href="${jqueryui_css}" />
   <link rel="stylesheet" type="text/css" href="${jqueryui_theme_css}" />
   <link rel="stylesheet" type="text/css" href="${bootstrap_css_url}" />
   <link rel="stylesheet" type="text/css" href="${footable_css_url}" />
+  <link rel="stylesheet" type="text/css" href="${chart_css_url}" />
   <link rel="stylesheet" type="text/css" href="${pay_css_url}" />
   <link rel="stylesheet" type="text/css" href="${pay_print_css_url}" media="print"/>
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
-  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
-  <link rel="manifest" href="/manifest.json" />
+    
+  <spring:url value="/resources/images/favicon.ico" var="favicon_url" />
+  <spring:url value="/resources/images/apple-touch-icon.png" var="apple-touch_icon_url" />
+  <spring:url value="/resources/images/favicon-32x32.png.ico" var="favicon_32_url" />  
+  <spring:url value="/resources/images/favicon-16x16.png" var="favicon_16_url" />
+  <spring:url value="/resources/images/manifest.json" var="manifest_json_url" />
+  <link rel="apple-touch-icon" sizes="180x180" href="${touch_icon_url}" />
+  <link rel="icon" type="image/png" href="${favicon_32_url}" sizes="32x32" />
+  <link rel="icon" type="image/png" href="${favicon_16_url}" sizes="16x16" />
+  <link rel="manifest" href="${manifest_json_url}" />
   <meta name="theme-color" content="#ffffff" />
-
-  <link rel="SHORTCUT ICON" href="${favicon}" />
+  <link rel="SHORTCUT ICON" href="${favicon_url}" />
 
 
   <script src="${jquery_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>

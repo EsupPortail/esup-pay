@@ -35,7 +35,12 @@
     
 
     <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
-    <mvc:resources location="/, classpath:/META-INF/web-resources/" mapping="/resources/**"/>
+    <mvc:resources location="/, classpath:/META-INF/web-resources/" mapping="/resources/**"/>   
+    
+    <mvc:resources location="/webjars/" mapping="/webjars/**">
+        <mvc:cache-control cache-public="true" max-age="3600"/>
+        <mvc:resource-chain resource-cache="false"/>
+    </mvc:resources> 
 
     <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource 
     requests to the container's default Servlet -->
