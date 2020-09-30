@@ -53,6 +53,7 @@
     <spring:url value="/admin/evts?page=1&amp;size=${empty param.size ? 10 : param.size}" var="adminevtsUrl"/>
     <spring:url value="/admin/fees?page=1&amp;size=${empty param.size ? 10 : param.size}" var="adminTxUrl"/>
     <spring:url value="/admin/stats" var="statsUrl"/>
+    <spring:url value="/admin/ventilations" var="ventilationsUrl"/>
     <ul class="nav nav-tabs">
         <li class="${activeMenu == 'adminevts' || activeMenu == 'adminevtmnts' ? 'active' : ''}">
             <a href="${adminevtsUrl}">
@@ -68,6 +69,11 @@
             <li class="${activeMenu == 'adminstats' ? 'active' : ''}">
                 <a href="${statsUrl}">
                     <spring:message code="pay_statistics"/>
+                </a>
+            </li>
+            <li class="${activeMenu == 'adminventilations' ? 'active' : ''}" >
+                <a href="${ventilationsUrl}">
+                    <spring:message code="menu_ventilations"/>
                 </a>
             </li>
         </sec:authorize>

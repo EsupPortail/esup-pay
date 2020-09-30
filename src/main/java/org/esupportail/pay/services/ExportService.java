@@ -114,7 +114,7 @@ public class ExportService {
 		String[] fields = line.split(";");
 		String numRemise = fields[0];
 		String dateRemiseAsString = fields[1];
-		String montantAsString = fields[6];
+		String montantAsString = fields[8];
 		String nbTransactions = fields[9];
 
 		Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
@@ -153,7 +153,7 @@ public class ExportService {
 
 	public void consumeExportTransactionCsvFile(File f) throws FileNotFoundException, IOException, ParseException {
 		log.info(String.format("CSV de Transaction %s listé dans le répertoire ... début de l'importation", f.getName()));
-		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), "iso-8859-1"));
 		String line;
 		in.readLine(); // ignore header line;
 		while ((line = in.readLine()) != null) {
@@ -163,7 +163,7 @@ public class ExportService {
 	
 	public void consumeExportRemiseCsvFile(File f) throws FileNotFoundException, IOException, ParseException {
 			log.info(String.format("CSV de Remise %s listé dans le répertoire ... début de l'importation", f.getName()));
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), "iso-8859-1"));
 			String line;
 			in.readLine(); // ignore header line;
 			while ((line = in.readLine()) != null) {
