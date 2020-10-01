@@ -27,7 +27,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(finders = { "findExportTransactionsByTransactionDateBetweenAndStatutEquals" })
+@RooJpaActiveRecord(finders = { "findExportTransactionsByTransactionDateBetweenAndStatutEquals", "findExportTransactionsByNumTransactionEquals"})
 public class ExportTransaction {
 
     @Column(unique = true)

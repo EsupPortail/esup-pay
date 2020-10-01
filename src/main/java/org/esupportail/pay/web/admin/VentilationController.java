@@ -17,13 +17,26 @@
  */
 package org.esupportail.pay.web.admin;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.esupportail.pay.domain.PayEvt;
+import org.esupportail.pay.domain.UploadFile;
+import org.esupportail.pay.services.ExportService;
 import org.esupportail.pay.services.VentilationService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequestMapping("/admin/ventilations")
 @Controller
@@ -34,9 +47,25 @@ public class VentilationController {
 	@Resource
 	VentilationService ventilationService;
 	
+	@Resource
+	ExportService exportService;
+	
 	@RequestMapping
     public String getVentilations(Model uiModel) {
 		uiModel.addAttribute("ventilations", ventilationService.getVentilations());
     	return "admin/ventilations";
     }
+	
+	@RequestMapping(value = "/addExportTransactionFile", method = RequestMethod.POST, produces = "text/html")
+	public String addExportTransactionFile(UploadFile uploadFile) throws IOException, ParseException {
+		exportService.consumeExportTransactionCsvFile(uploadFile.getLogoFile().getInputStream());
+		return "redirect:/admin/ventilations";
+	}
+	
+	@RequestMapping(value = "/addExportRemiseFile", method = RequestMethod.POST, produces = "text/html")
+	public String addExportRemiseFile(UploadFile uploadFile) throws IOException, ParseException {
+		exportService.consumeExportRemiseCsvFile(uploadFile.getLogoFile().getInputStream());
+		return "redirect:/admin/ventilations";
+	}
+	
 }

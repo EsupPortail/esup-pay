@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -84,14 +85,21 @@ public class ExportService {
 		Number montantNumber = NumberFormat.getInstance().parse(montantAsString);
 		Long montant = montantNumber.longValue()*100;
 
-		ExportTransaction exportTransaction = new ExportTransaction();
+		ExportTransaction exportTransaction = new ExportTransaction();	
+		
+		if(ExportTransaction.countFindExportTransactionsByNumTransactionEquals(numTransaction)>0) {
+			exportTransaction = ExportTransaction.findExportTransactionsByNumTransactionEquals(numTransaction).getSingleResult();
+		}
+
 		exportTransaction.setEmail(email);
 		exportTransaction.setMontant(montant);
 		exportTransaction.setNumTransaction(numTransaction);
 		exportTransaction.setReference(reference);
 		exportTransaction.setStatut(statut);
 		exportTransaction.setTransactionDate(dateTransaction);
-		exportTransaction.persist();
+		if(exportTransaction.getId()==null) {
+			exportTransaction.persist();
+		}
 	}
 
 	/*
@@ -122,11 +130,18 @@ public class ExportService {
 		Long montant = montantNumber.longValue()*100;
 
 		ExportRemise exportRemise = new ExportRemise();
+		
+		if(ExportRemise.countFindExportRemisesByNumRemiseEquals(numRemise)>0) {
+			exportRemise = ExportRemise.findExportRemisesByNumRemiseEquals(numRemise).getSingleResult();
+		}
+		
 		exportRemise.setNumRemise(numRemise);
 		exportRemise.setMontant(montant);
 		exportRemise.setTransactionDate(dateRemise);
 		exportRemise.setNbTransactions(Long.valueOf(nbTransactions));
-		exportRemise.persist();
+		if(exportRemise.getId()==null) {
+			exportRemise.persist();
+		}
 	}
 
 	
@@ -137,10 +152,12 @@ public class ExportService {
 			log.info(String.format("%s listé", f.getName()));
 			Boolean importIsOK = false;
 			if(f.getName().matches("Export_transactions_.*\\.csv")) {
-				consumeExportTransactionCsvFile(f);
+				log.info(String.format("CSV de Transaction %s listé dans le répertoire ... début de l'importation", f.getName()));
+				consumeExportTransactionCsvFile(new FileInputStream(f));
 				importIsOK = true;
 			} else if(f.getName().matches("Export_remises_.*\\.csv")) {
-				consumeExportRemiseCsvFile(f);
+				log.info(String.format("CSV de Remise %s listé dans le répertoire ... début de l'importation", f.getName()));
+				consumeExportRemiseCsvFile(new FileInputStream(f));
 				importIsOK = true;
 			}
 			if(importIsOK) {
@@ -151,9 +168,8 @@ public class ExportService {
 		}
 	}
 
-	public void consumeExportTransactionCsvFile(File f) throws FileNotFoundException, IOException, ParseException {
-		log.info(String.format("CSV de Transaction %s listé dans le répertoire ... début de l'importation", f.getName()));
-		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), "iso-8859-1"));
+	public void consumeExportTransactionCsvFile(InputStream input) throws FileNotFoundException, IOException, ParseException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(input, "iso-8859-1"));
 		String line;
 		in.readLine(); // ignore header line;
 		while ((line = in.readLine()) != null) {
@@ -161,9 +177,8 @@ public class ExportService {
 		}
 	}
 	
-	public void consumeExportRemiseCsvFile(File f) throws FileNotFoundException, IOException, ParseException {
-			log.info(String.format("CSV de Remise %s listé dans le répertoire ... début de l'importation", f.getName()));
-			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), "iso-8859-1"));
+	public void consumeExportRemiseCsvFile(InputStream input) throws FileNotFoundException, IOException, ParseException {
+			BufferedReader in = new BufferedReader(new InputStreamReader(input, "iso-8859-1"));
 			String line;
 			in.readLine(); // ignore header line;
 			while ((line = in.readLine()) != null) {
