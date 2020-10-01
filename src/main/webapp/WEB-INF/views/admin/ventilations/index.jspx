@@ -27,7 +27,7 @@
   <a href="${csvUrl}" data-role="button" class="absButton"><img src="${csvImgUrl}" alt="CSV"/></a>
   <util:panel id="title" title="${title}">
   		<div class="row">
-			<div class="col-lg-6 well">
+			<div class="col-4 well">
 				<form:create id="fu_org_esupportail_pay_domain_payevt_logoFile" modelAttribute="uploadFile" multipart="true" path="/admin/ventilations/addExportTransactionFile" save_button="Sauver">
 			    	<fieldset>
 			            <legend>Export Transactions Paybox</legend>
@@ -35,7 +35,7 @@
 				   </fieldset>
 			    </form:create>
 			</div>
-			<div class="col-lg-6 well">
+			<div class="col-4 well">
 				<form:create id="fu_org_esupportail_pay_domain_payevt_logoFile" modelAttribute="uploadFile" multipart="true" path="/admin/ventilations/addExportRemiseFile" save_button="Sauver">
 			    	<fieldset>
 			            <legend>Export Remises Paybox</legend>
@@ -61,7 +61,23 @@
 						<dt>Total (centimes)</dt>
 						<dd>${ventilation.totalMontantTransactions}</dd>
 						<dt>Nombre de transactions</dt>
-						<dd>${ventilation.transactions.size()}</dd>
+						<dd>${ventilation.nbTransactions}</dd>
+						<dt>Détail</dt>
+						<dd>
+							<dl>
+								<c:forEach items="${ventilation.montantsEvts}" var="t">
+									<dt>
+										<c:if test="${t.key == null}">
+											Autre
+										</c:if>
+										<c:if test="${t.key != null}">
+											${t.key.title.labelLocales['fr'].translation}
+										</c:if>
+									</dt>
+									<dd>${t.value}</dd>
+								</c:forEach>
+							</dl>
+						</dd>
 					</dl>
 				</c:forEach>
 			</div>

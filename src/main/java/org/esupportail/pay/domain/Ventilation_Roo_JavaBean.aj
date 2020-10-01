@@ -5,8 +5,10 @@ package org.esupportail.pay.domain;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.esupportail.pay.domain.ExportRemise;
 import org.esupportail.pay.domain.ExportTransaction;
+import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.Ventilation;
 
 privileged aspect Ventilation_Roo_JavaBean {
@@ -27,12 +29,24 @@ privileged aspect Ventilation_Roo_JavaBean {
         this.remise = remise;
     }
     
-    public List<ExportTransaction> Ventilation.getTransactions() {
+    public Map<PayEvt, List<ExportTransaction>> Ventilation.getTransactions() {
         return this.transactions;
     }
     
-    public void Ventilation.setTransactions(List<ExportTransaction> transactions) {
-        this.transactions = transactions;
+    public Map<PayEvt, Long> Ventilation.getMontantsEvts() {
+        return this.montantsEvts;
+    }
+    
+    public void Ventilation.setMontantsEvts(Map<PayEvt, Long> montantsEvts) {
+        this.montantsEvts = montantsEvts;
+    }
+    
+    public long Ventilation.getTotalMontantTransactions() {
+        return this.totalMontantTransactions;
+    }
+    
+    public void Ventilation.setTotalMontantTransactions(long totalMontantTransactions) {
+        this.totalMontantTransactions = totalMontantTransactions;
     }
     
 }
