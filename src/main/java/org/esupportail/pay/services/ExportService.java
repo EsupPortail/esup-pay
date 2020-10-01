@@ -145,7 +145,7 @@ public class ExportService {
 	}
 
 	
-	@Scheduled(fixedDelay = 3600000, initialDelay = 1000)
+	//@Scheduled(fixedDelay = 3600000, initialDelay = 1000)
 	public synchronized void consumeCsvFolder() throws IOException, ParseException {
 		File actual = new File("/opt/paybox-exports/compte-colloque");
 		for(File f : actual.listFiles()) {
