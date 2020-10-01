@@ -48,7 +48,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<c:forEach items="${ventilations}" var="ventilation">
-					<h2>${ventilation.date}</h2>
+					<h2 class="${ventilation.consistentMontant ? 'text-success' : 'text-danger'}">${ventilation.date}</h2>
 					<h3>Remise</h3>
 					<dl>
 						<dt>Remise banque (centimes)</dt>

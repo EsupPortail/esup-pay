@@ -62,4 +62,8 @@ public class Ventilation {
     	}
     	return s;
     }
+    
+    public boolean isConsistentMontant() {
+    	return remise.getMontant().equals(this.totalMontantTransactions);
+    }
 }
