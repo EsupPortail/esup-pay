@@ -46,7 +46,17 @@
 			    </form:create>			
 			</div>
 		</div>
-
+		
+		<div class="row well text-center">
+			<spring:url value="/admin/ventilations" var="ventilationsUrl" />
+			<div class="col-lg-1"><!--  --></div>
+			<a href="${ventilationsUrl}?dateMonth=${dateMonthBefore}" type="button" class="col-lg-2 btn btn-lg btn-primary">${dateMonthBefore}</a>
+			<div class="col-lg-1"><!--  --></div>
+			<a href="${ventilationsUrl}?dateMonth=${dateMonth}" type="button" class="col-lg-2 btn btn-lg btn-success">${dateMonth}</a>
+			<div class="col-lg-1"><!--  --></div>
+			<a href="${ventilationsUrl}?dateMonth=${dateMonthAfter}" type="button" class="col-lg-2 btn btn-lg btn-primary">${dateMonthAfter}</a>
+		</div>
+		
 			<div class="panel panel-default" role="tab">
 				<c:forEach items="${ventilations}" var="ventilation" varStatus="ventilationStatus">
 					<div class="panel-heading" role="tab">

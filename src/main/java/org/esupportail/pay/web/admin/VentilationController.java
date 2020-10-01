@@ -18,25 +18,24 @@
 package org.esupportail.pay.web.admin;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
-import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.UploadFile;
 import org.esupportail.pay.services.ExportService;
 import org.esupportail.pay.services.VentilationService;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/admin/ventilations")
 @Controller
@@ -51,8 +50,15 @@ public class VentilationController {
 	ExportService exportService;
 	
 	@RequestMapping
-    public String getVentilations(Model uiModel) {
-		uiModel.addAttribute("ventilations", ventilationService.getVentilations());
+    public String getVentilations(Model uiModel, @RequestParam(required=false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date dateMonth) {
+		if(dateMonth == null) {
+			dateMonth = getActualMonth();
+		}
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+		uiModel.addAttribute("ventilations", ventilationService.getVentilations(dateMonth));
+		uiModel.addAttribute("dateMonthBefore", simpleDateFormat.format(DateUtils.addMonths(dateMonth,-1)));
+		uiModel.addAttribute("dateMonthAfter", simpleDateFormat.format(DateUtils.addMonths(dateMonth,+1)));
+		uiModel.addAttribute("dateMonth", simpleDateFormat.format(dateMonth));
     	return "admin/ventilations";
     }
 	
@@ -66,6 +72,15 @@ public class VentilationController {
 	public String addExportRemiseFile(UploadFile uploadFile) throws IOException, ParseException {
 		exportService.consumeExportRemiseCsvFile(uploadFile.getLogoFile().getInputStream());
 		return "redirect:/admin/ventilations";
+	}
+	
+	Date getActualMonth() {
+		 Calendar c = Calendar.getInstance();   
+		 c.set(Calendar.DAY_OF_MONTH, 1);
+		 c.set(Calendar.HOUR_OF_DAY, 0);
+		 c.set(Calendar.MINUTE, 0);
+		 c.set(Calendar.SECOND, 0);
+		 return c.getTime();
 	}
 	
 }

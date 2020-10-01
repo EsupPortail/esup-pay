@@ -41,13 +41,14 @@ public class VentilationService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	public List<Ventilation> getVentilations() {
+	public List<Ventilation> getVentilations(Date dateMonth) {
 		
 		Map<String, PayEvt> evenementsPrefix = getEvenementsPrefix();
 		
 		List<Ventilation> ventilations = new ArrayList<Ventilation>();
+		Date dateMonthAfter = DateUtils.addMonths(dateMonth,+1);
 		
-		for(ExportRemise remise : ExportRemise.findAllExportRemises("transactionDate", "DESC")) {
+		for(ExportRemise remise : ExportRemise.findExportRemisesByTransactionDateBetween(dateMonth, dateMonthAfter, "transactionDate", "DESC").getResultList()) {
 			Ventilation ventilation = new Ventilation();
 			ventilation.setRemise(remise);
 			ventilation.setDate(remise.getTransactionDate());
@@ -102,7 +103,6 @@ public class VentilationService {
 		}		
 		return evenementsPrefix;
 	}
-	
 	
 }
 

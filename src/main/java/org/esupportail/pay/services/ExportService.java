@@ -147,6 +147,7 @@ public class ExportService {
 	
 	//@Scheduled(fixedDelay = 3600000, initialDelay = 1000)
 	public synchronized void consumeCsvFolder() throws IOException, ParseException {
+		// TODO : chemin en paramètre
 		File actual = new File("/opt/paybox-exports/compte-colloque");
 		for(File f : actual.listFiles()) {
 			log.info(String.format("%s listé", f.getName()));
