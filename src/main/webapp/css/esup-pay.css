@@ -29,6 +29,10 @@ fieldset legend {
 margin-bottom: 0;
 }
 
+dl {
+margin-left: 20px;
+}
+
 table tbody tr:nth-child(odd){background:#FAFAFA;}
 table td{border-top:0px !important; border-right:1px solid #fff !important;}
 table tbody tr:nth-child(even){background:#EFEFEF; }

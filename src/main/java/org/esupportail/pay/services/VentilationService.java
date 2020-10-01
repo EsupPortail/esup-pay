@@ -71,7 +71,7 @@ public class VentilationService {
 					if(!transactionsEvts.containsKey(null)) {
 						transactionsEvts.put(null, new ArrayList<ExportTransaction>());
 					}
-					log.info(String.format("Transaction %s ne sorrespond à aucun préfixe d'un évènement connu !", t.getReference()));
+					log.warn(String.format("Transaction %s ne sorrespond à aucun préfixe d'un évènement connu !", t.getReference()));
 					transactionsEvts.get(null).add(t);
 				}
 			}

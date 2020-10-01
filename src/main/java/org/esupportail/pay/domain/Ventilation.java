@@ -16,54 +16,70 @@
  * limitations under the License.
  */
 package org.esupportail.pay.domain;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
 public class Ventilation {
-	
-    private Date date;
 
-    private ExportRemise remise;
-    
-    Map<PayEvt, List<ExportTransaction>> transactions = new HashMap<PayEvt, List<ExportTransaction>>(); 
-    
-    Map<PayEvt, Long> montantsEvts = new HashMap<PayEvt, Long>(); 
-    
-    long totalMontantTransactions;
-    
-    public void setTransactions(Map<PayEvt, List<ExportTransaction>> transactions) {
-        this.transactions = transactions;
-        updateMontants();
-    }
-    
-    public void updateMontants() {
-    	totalMontantTransactions = 0;
-    	for(PayEvt evt : transactions.keySet()) {
-    		long s = 0;
-	    	for(ExportTransaction t: transactions.get(evt)) {
-	    		s += t.getMontant();
-	    	}
-	    	montantsEvts.put(evt, s);
-	    	totalMontantTransactions += s;
-    	}
-    }
-    
-    public long getNbTransactions() {
-    	long s = 0;
-    	for(PayEvt evt : transactions.keySet()) {
-	    	s += transactions.get(evt).size();
-    	}
-    	return s;
-    }
-    
-    public boolean isConsistentMontant() {
-    	return remise.getMontant().equals(this.totalMontantTransactions);
-    }
+	private Date date;
+
+	private ExportRemise remise;
+
+	Map<PayEvt, List<ExportTransaction>> transactions = new TreeMap<PayEvt, List<ExportTransaction>>(
+			new Comparator<PayEvt>() {
+				@Override
+				public int compare(PayEvt evt1, PayEvt evt2) {
+					return evt1.getTitle().getTranslation(LOCALE_IDS.fr).compareTo(evt2.getTitle().getTranslation(LOCALE_IDS.fr));
+				}
+			}
+	); 
+
+	Map<PayEvt, Long> montantsEvts = new TreeMap<PayEvt, Long>(
+			new Comparator<PayEvt>() {
+				@Override
+				public int compare(PayEvt evt1, PayEvt evt2) {
+					return evt1.getTitle().getTranslation(LOCALE_IDS.fr).compareTo(evt2.getTitle().getTranslation(LOCALE_IDS.fr));
+				}
+			}
+	); 
+
+	long totalMontantTransactions;
+
+	public void setTransactions(Map<PayEvt, List<ExportTransaction>> transactions) {
+		this.transactions = transactions;
+		updateMontants();
+	}
+
+	public void updateMontants() {
+		totalMontantTransactions = 0;
+		for(PayEvt evt : transactions.keySet()) {
+			long s = 0;
+			for(ExportTransaction t: transactions.get(evt)) {
+				s += t.getMontant();
+			}
+			montantsEvts.put(evt, s);
+			totalMontantTransactions += s;
+		}
+	}
+
+	public long getNbTransactions() {
+		long s = 0;
+		for(PayEvt evt : transactions.keySet()) {
+			s += transactions.get(evt).size();
+		}
+		return s;
+	}
+
+	public boolean isConsistentMontant() {
+		return remise.getMontant().equals(this.totalMontantTransactions) && remise.getNbTransactions().equals(this.getNbTransactions());
+	}
 }
