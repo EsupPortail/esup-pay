@@ -189,6 +189,8 @@
 	<beans:bean id="switchUserProcessingFilter"
 		class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter">
 		<beans:property name="userDetailsService" ref="ldapUserDetailsService" />
+		<beans:property name="switchUserUrl" value="/login/impersonate"/>
+        <beans:property name="exitUserUrl" value="/logout/impersonate"/>
 		<beans:property name="targetUrl" value="/admin"/>
 	</beans:bean>
  
