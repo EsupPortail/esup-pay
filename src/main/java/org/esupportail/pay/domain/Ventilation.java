@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.esupportail.pay.domain.ExportTransaction.TypeTransaction;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -64,7 +65,11 @@ public class Ventilation {
 		for(PayEvt evt : transactions.keySet()) {
 			long s = 0;
 			for(ExportTransaction t: transactions.get(evt)) {
-				s += t.getMontant();
+				if(TypeTransaction.DEBIT.equals(t.getTypeTransaction())) {
+					s += t.getMontant();
+				} else {
+					s -= t.getMontant();
+				}
 			}
 			montantsEvts.put(evt, s);
 			totalMontantTransactions += s;
@@ -78,6 +83,15 @@ public class Ventilation {
 		}
 		return s;
 	}
+	
+	public long getNbTransactionsNotDebit() {
+		long s = 0;
+		for(PayEvt evt : transactions.keySet()) {
+			s += transactions.get(evt).stream().filter(t->!TypeTransaction.DEBIT.equals(t.getTypeTransaction())).count();
+		}
+		return s;
+	}
+	
 
 	public boolean isConsistentMontant() {
 		return remise.getMontant().equals(this.totalMontantTransactions) && remise.getNbTransactions().equals(this.getNbTransactions());

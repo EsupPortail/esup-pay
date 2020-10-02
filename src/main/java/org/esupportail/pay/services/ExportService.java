@@ -31,6 +31,7 @@ import java.util.Date;
 
 import org.esupportail.pay.domain.ExportRemise;
 import org.esupportail.pay.domain.ExportTransaction;
+import org.esupportail.pay.domain.ExportTransaction.TypeTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -78,6 +79,7 @@ public class ExportService {
 		String dateTransactionAsString = fields[2];
 		String reference = fields[3];
 		String montantAsString = fields[4];
+		String typeTransaction = fields[6];
 		String statut = fields[7];
 		String email = fields[12];
 		String dateRemiseAsString = fields[22];
@@ -103,6 +105,13 @@ public class ExportService {
 			exportTransaction.setTransactionDate(dateTransaction);
 			exportTransaction.setDateRemise(dateRemise);
 			exportTransaction.setNumContrat(numContrat);
+			if("Débit".equals(typeTransaction)) {
+				exportTransaction.setTypeTransaction(TypeTransaction.DEBIT);
+			} else if("Remboursement".equals(typeTransaction)) {
+				exportTransaction.setTypeTransaction(TypeTransaction.REMBOURSEMENT);
+			} if("Crédit".equals(typeTransaction)) {
+				exportTransaction.setTypeTransaction(TypeTransaction.CREDIT);
+			} 
 			if(exportTransaction.getId()==null) {
 				exportTransaction.persist();
 			}
@@ -130,7 +139,7 @@ public class ExportService {
 		String numRemise = fields[0];
 		String dateRemiseAsString = fields[1];
 		String numContrat = fields[2];
-		String montantAsString = fields[8];
+		String montantAsString = fields[10];
 		String nbTransactions = fields[9];
 
 		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty()) {

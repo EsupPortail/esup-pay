@@ -79,7 +79,10 @@
 						<dt>Total</dt>
 						<dd><fmt:formatNumber type="currency" currencySymbol="€" value="${ventilation.totalMontantTransactions/100}"/></dd>
 						<dt>Nombre de transactions</dt>
-						<dd>${ventilation.nbTransactions}</dd>
+						<dd>
+						${ventilation.nbTransactions}
+						<c:if test="${ventilation.nbTransactionsNotDebit > 0}"><span class="text-warning"> dont ${ventilation.nbTransactionsNotDebit} remboursement(s)/crédit(s) </span></c:if>
+						</dd>
 						<dt>Détail</dt>
 						<dd>
 							<dl>
@@ -101,7 +104,10 @@
 										</a>
 										<ul id="collapse-${ventilationStatus.index}-${evtStatus.index}" class="panel-collapse collapse" >
 											<c:forEach items="${ventilation.transactions[t.key]}" var="tx">
-												<li><fmt:formatNumber type="currency" currencySymbol="€" value="${tx.montant/100}"/> : ${tx.reference}</li>
+												<li>
+													<c:if test="${tx.typeTransaction != 'DEBIT'}"><span class="text-warning"> [${tx.typeTransaction}] </span></c:if>
+													<fmt:formatNumber type="currency" currencySymbol="€" value="${tx.montant/100}"/> : ${tx.reference}
+												</li>
 											</c:forEach>
 										</ul>
 									</dd>

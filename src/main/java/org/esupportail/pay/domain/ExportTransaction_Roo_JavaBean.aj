@@ -72,4 +72,12 @@ privileged aspect ExportTransaction_Roo_JavaBean {
         this.email = email;
     }
     
+    public TypeTransaction ExportTransaction.getTypeTransaction() {
+        return this.typeTransaction;
+    }
+    
+    public void ExportTransaction.setTypeTransaction(TypeTransaction typeTransaction) {
+        this.typeTransaction = typeTransaction;
+    }
+    
 }

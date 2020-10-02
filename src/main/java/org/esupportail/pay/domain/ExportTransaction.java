@@ -17,9 +17,13 @@
  */
 package org.esupportail.pay.domain;
 import java.util.Date;
+
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -30,6 +34,8 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord(finders = { "findExportTransactionsByDateRemiseAndStatutEqualsAndNumContratEquals", "findExportTransactionsByNumTransactionEqualsAndNumContratEquals"})
 public class ExportTransaction {
 
+	public enum TypeTransaction {DEBIT, CREDIT, REMBOURSEMENT}
+	
     @Column(unique = true)
     private String numTransaction;
 
@@ -50,4 +56,9 @@ public class ExportTransaction {
     private String statut;
 
     private String email;
+    
+    @Enumerated(EnumType.STRING)
+    private TypeTransaction typeTransaction;
+    
+    
 }
