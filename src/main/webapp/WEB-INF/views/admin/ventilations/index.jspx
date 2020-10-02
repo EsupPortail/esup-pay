@@ -26,35 +26,42 @@
   <spring:url value="/admin/csv" var="csvUrl" />
   <!-- <a href="${csvUrl}" data-role="button" class="absButton"><img src="${csvImgUrl}" alt="CSV"/></a> -->
   <util:panel id="title" title="${title}">
-  		<div class="row">
-  			<div class="col-lg-1"><!--  --></div>
-			<div class="col-lg-4 well">
-				<form:create id="fu_org_esupportail_pay_domain_payevt_logoFile" modelAttribute="uploadFile" multipart="true" path="/admin/ventilations/addExportTransactionFile" save_button="Sauver">
-			    	<fieldset>
-			            <legend>Export Transactions Paybox</legend>
-				        <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="required" type="file" />
-				   </fieldset>
-			    </form:create>
+  		<div class="panel panel-default">	
+  			<div class="panel-heading" role="tab">
+						<h2 class="panel-title alert alert-info">
+							<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-exports" aria-expanded="true" aria-controls="collapseOne">
+									Upload des Exports Paybox
+							</a>
+						</h2>
 			</div>
-			<div class="col-lg-1"><!--  --></div>
-			<div class="col-lg-4 well">
-				<form:create id="fu_org_esupportail_pay_domain_payevt_logoFile" modelAttribute="uploadFile" multipart="true" path="/admin/ventilations/addExportRemiseFile" save_button="Sauver">
-			    	<fieldset>
-			            <legend>Export Remises Paybox</legend>
-				        <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="required" type="file" />
-				   </fieldset>
-			    </form:create>			
+			<div class="row panel-collapse collapse" id="collapse-exports">
+	  			<div class="col-lg-1"><!--  --></div>
+				<div class="col-lg-4 well">
+					<form:create id="fu_org_esupportail_pay_domain_payevt_logoFile" modelAttribute="uploadFile" multipart="true" path="/admin/ventilations/addExportTransactionFile" save_button="Sauver">
+				    	<fieldset>
+				            <legend>Export Transactions Paybox</legend>
+					        <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="required" type="file" />
+					   </fieldset>
+				    </form:create>
+				</div>
+				<div class="col-lg-1"><!--  --></div>
+				<div class="col-lg-4 well">
+					<form:create id="fu_org_esupportail_pay_domain_payevt_logoFile" modelAttribute="uploadFile" multipart="true" path="/admin/ventilations/addExportRemiseFile" save_button="Sauver">
+				    	<fieldset>
+				            <legend>Export Remises Paybox</legend>
+					        <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="required" type="file" />
+					   </fieldset>
+				    </form:create>			
+				</div>
 			</div>
 		</div>
 		
 		<div class="row well text-center">
 			<spring:url value="/admin/ventilations" var="ventilationsUrl" />
-			<div class="col-lg-1"><!--  --></div>
-			<a href="${ventilationsUrl}?dateMonth=${dateMonthBefore}" type="button" class="col-lg-2 btn btn-lg btn-primary">${dateMonthBefore}</a>
-			<div class="col-lg-1"><!--  --></div>
-			<a href="${ventilationsUrl}?dateMonth=${dateMonth}" type="button" class="col-lg-2 btn btn-lg btn-success">${dateMonth}</a>
-			<div class="col-lg-1"><!--  --></div>
-			<a href="${ventilationsUrl}?dateMonth=${dateMonthAfter}" type="button" class="col-lg-2 btn btn-lg btn-primary">${dateMonthAfter}</a>
+			<div class="col-lg-3"><!--  --></div>
+			<div class="col-lg-2"><a href="${ventilationsUrl}?dateMonth=${dateMonthBefore}" type="button" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"><!--  --></span>${dateMonthBefore}</a></div>
+			<div class="col-lg-2"><a href="${ventilationsUrl}?dateMonth=${dateMonth}" type="button" class="btn btn-lg btn-success">${dateMonth}</a></div>
+			<div class="col-lg-2"><a href="${ventilationsUrl}?dateMonth=${dateMonthAfter}" type="button" class="btn btn-lg btn-primary">${dateMonthAfter}<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"><!--  --></span></a></div>
 		</div>
 		
 			<div class="panel panel-default" role="tab">

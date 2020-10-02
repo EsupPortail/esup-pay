@@ -50,11 +50,11 @@ public class VentilationController {
 	ExportService exportService;
 	
 	@RequestMapping
-    public String getVentilations(Model uiModel, @RequestParam(required=false) @DateTimeFormat(pattern = "dd.MM.yyyy") Date dateMonth) {
+    public String getVentilations(Model uiModel, @RequestParam(required=false) @DateTimeFormat(pattern = "MM.yyyy") Date dateMonth) {
 		if(dateMonth == null) {
 			dateMonth = getActualMonth();
 		}
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM.yyyy");
 		uiModel.addAttribute("ventilations", ventilationService.getVentilations(dateMonth));
 		uiModel.addAttribute("dateMonthBefore", simpleDateFormat.format(DateUtils.addMonths(dateMonth,-1)));
 		uiModel.addAttribute("dateMonthAfter", simpleDateFormat.format(DateUtils.addMonths(dateMonth,+1)));
