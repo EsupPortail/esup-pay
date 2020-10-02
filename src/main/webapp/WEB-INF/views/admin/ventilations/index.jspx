@@ -62,7 +62,7 @@
 					<div class="panel-heading" role="tab">
 						<h2 class="panel-title alert ${ventilation.consistentMontant ? 'alert-success' : 'alert-danger'}">
 							<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-${ventilationStatus.index}" aria-expanded="true" aria-controls="collapseOne">
-									${ventilation.date}
+									${ventilation.date} - ${ventilation.remise.numContrat}
 							</a>
 						</h2>
 					</div>
@@ -86,11 +86,12 @@
 								<c:forEach items="${ventilation.montantsEvts}" var="t" varStatus="evtStatus">
 									<dt>
 										<c:if test="${t.key == null}">
-											Autre
+											Autre ??
 										</c:if>
 										<c:if test="${t.key != null}">
-											${t.key.title.labelLocales['fr'].translation}
+											${t.key.title.labelLocales['fr'].translation} 
 										</c:if>
+										[${ventilation.transactions[t.key].size()}]
 									</dt>
 									<dd>
 										<fmt:formatNumber type="currency" currencySymbol="€" value="${t.value/100}"/>
