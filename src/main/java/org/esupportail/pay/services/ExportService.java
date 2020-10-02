@@ -80,25 +80,32 @@ public class ExportService {
 		String montantAsString = fields[4];
 		String statut = fields[7];
 		String email = fields[12];
+		String dateRemiseAsString = fields[22];
+		String numContrat = fields[18];
 
-		Date dateTransaction = csvDateFormat.parse(dateTransactionAsString);
-		Number montantNumber = NumberFormat.getInstance().parse(montantAsString);
-		Long montant = montantNumber.longValue()*100;
-
-		ExportTransaction exportTransaction = new ExportTransaction();	
-		
-		if(ExportTransaction.countFindExportTransactionsByNumTransactionEquals(numTransaction)>0) {
-			exportTransaction = ExportTransaction.findExportTransactionsByNumTransactionEquals(numTransaction).getSingleResult();
-		}
-
-		exportTransaction.setEmail(email);
-		exportTransaction.setMontant(montant);
-		exportTransaction.setNumTransaction(numTransaction);
-		exportTransaction.setReference(reference);
-		exportTransaction.setStatut(statut);
-		exportTransaction.setTransactionDate(dateTransaction);
-		if(exportTransaction.getId()==null) {
-			exportTransaction.persist();
+		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty()) {
+			Date dateTransaction = csvDateFormat.parse(dateTransactionAsString);
+			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
+			Number montantNumber = NumberFormat.getInstance().parse(montantAsString);
+			Long montant = montantNumber.longValue()*100;
+	
+			ExportTransaction exportTransaction = new ExportTransaction();	
+			
+			if(ExportTransaction.countFindExportTransactionsByNumTransactionEqualsAndNumContratEquals(numTransaction, numContrat)>0) {
+				exportTransaction = ExportTransaction.findExportTransactionsByNumTransactionEqualsAndNumContratEquals(numTransaction, numContrat).getSingleResult();
+			}
+	
+			exportTransaction.setEmail(email);
+			exportTransaction.setMontant(montant);
+			exportTransaction.setNumTransaction(numTransaction);
+			exportTransaction.setReference(reference);
+			exportTransaction.setStatut(statut);
+			exportTransaction.setTransactionDate(dateTransaction);
+			exportTransaction.setDateRemise(dateRemise);
+			exportTransaction.setNumContrat(numContrat);
+			if(exportTransaction.getId()==null) {
+				exportTransaction.persist();
+			}
 		}
 	}
 
@@ -122,25 +129,29 @@ public class ExportService {
 		String[] fields = line.split(";");
 		String numRemise = fields[0];
 		String dateRemiseAsString = fields[1];
+		String numContrat = fields[2];
 		String montantAsString = fields[8];
 		String nbTransactions = fields[9];
 
-		Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
-		Number montantNumber = NumberFormat.getInstance().parse(montantAsString);
-		Long montant = montantNumber.longValue()*100;
-
-		ExportRemise exportRemise = new ExportRemise();
-		
-		if(ExportRemise.countFindExportRemisesByNumRemiseEquals(numRemise)>0) {
-			exportRemise = ExportRemise.findExportRemisesByNumRemiseEquals(numRemise).getSingleResult();
-		}
-		
-		exportRemise.setNumRemise(numRemise);
-		exportRemise.setMontant(montant);
-		exportRemise.setTransactionDate(dateRemise);
-		exportRemise.setNbTransactions(Long.valueOf(nbTransactions));
-		if(exportRemise.getId()==null) {
-			exportRemise.persist();
+		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty()) {
+			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
+			Number montantNumber = NumberFormat.getInstance().parse(montantAsString);
+			Long montant = montantNumber.longValue()*100;
+	
+			ExportRemise exportRemise = new ExportRemise();
+			
+			if(ExportRemise.countFindExportRemisesByNumRemiseEqualsAndNumContratEquals(numRemise, numContrat)>0) {
+				exportRemise = ExportRemise.findExportRemisesByNumRemiseEqualsAndNumContratEquals(numRemise, numContrat).getSingleResult();
+			}
+	
+			exportRemise.setNumRemise(numRemise);
+			exportRemise.setNumContrat(numContrat);
+			exportRemise.setMontant(montant);
+			exportRemise.setDateRemise(dateRemise);
+			exportRemise.setNbTransactions(Long.valueOf(nbTransactions));
+			if(exportRemise.getId()==null) {
+				exportRemise.persist();
+			}
 		}
 	}
 

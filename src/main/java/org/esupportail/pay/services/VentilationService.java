@@ -48,12 +48,12 @@ public class VentilationService {
 		List<Ventilation> ventilations = new ArrayList<Ventilation>();
 		Date dateMonthAfter = DateUtils.addMonths(dateMonth,+1);
 		
-		for(ExportRemise remise : ExportRemise.findExportRemisesByTransactionDateBetween(dateMonth, dateMonthAfter, "transactionDate", "DESC").getResultList()) {
+		for(ExportRemise remise : ExportRemise.findExportRemisesByDateRemiseBetween(dateMonth, dateMonthAfter, "dateRemise", "DESC").getResultList()) {
 			Ventilation ventilation = new Ventilation();
 			ventilation.setRemise(remise);
-			ventilation.setDate(remise.getTransactionDate());
-			Date dayBefore = DateUtils.addDays(remise.getTransactionDate(),-1);
-			List<ExportTransaction> transactions = ExportTransaction.findExportTransactionsByTransactionDateBetweenAndStatutEquals(dayBefore, remise.getTransactionDate(), "Acceptée").getResultList();			
+			ventilation.setDate(remise.getDateRemise());
+			Date dayBefore = DateUtils.addDays(remise.getDateRemise(),-1);
+			List<ExportTransaction> transactions = ExportTransaction.findExportTransactionsByDateRemiseAndStatutEqualsAndNumContratEquals(remise.getDateRemise(), "Acceptée", remise.getNumContrat()).getResultList();			
 		
 			Map<PayEvt, List<ExportTransaction>> transactionsEvts = new HashMap<PayEvt, List<ExportTransaction>>();
 			for(ExportTransaction t : transactions) {

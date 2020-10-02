@@ -10,38 +10,74 @@ import org.esupportail.pay.domain.ExportTransaction;
 
 privileged aspect ExportTransaction_Roo_Finder {
     
-    public static Long ExportTransaction.countFindExportTransactionsByNumTransactionEquals(String numTransaction) {
-        if (numTransaction == null || numTransaction.length() == 0) throw new IllegalArgumentException("The numTransaction argument is required");
-        EntityManager em = ExportTransaction.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ExportTransaction AS o WHERE o.numTransaction = :numTransaction", Long.class);
-        q.setParameter("numTransaction", numTransaction);
-        return ((Long) q.getSingleResult());
-    }
-    
-    public static Long ExportTransaction.countFindExportTransactionsByTransactionDateBetweenAndStatutEquals(Date minTransactionDate, Date maxTransactionDate, String statut) {
-        if (minTransactionDate == null) throw new IllegalArgumentException("The minTransactionDate argument is required");
-        if (maxTransactionDate == null) throw new IllegalArgumentException("The maxTransactionDate argument is required");
+    public static Long ExportTransaction.countFindExportTransactionsByDateRemiseAndStatutEqualsAndNumContratEquals(Date dateRemise, String statut, String numContrat) {
+        if (dateRemise == null) throw new IllegalArgumentException("The dateRemise argument is required");
         if (statut == null || statut.length() == 0) throw new IllegalArgumentException("The statut argument is required");
+        if (numContrat == null || numContrat.length() == 0) throw new IllegalArgumentException("The numContrat argument is required");
         EntityManager em = ExportTransaction.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ExportTransaction AS o WHERE o.transactionDate BETWEEN :minTransactionDate AND :maxTransactionDate  AND o.statut = :statut", Long.class);
-        q.setParameter("minTransactionDate", minTransactionDate);
-        q.setParameter("maxTransactionDate", maxTransactionDate);
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ExportTransaction AS o WHERE o.dateRemise = :dateRemise AND o.statut = :statut  AND o.numContrat = :numContrat", Long.class);
+        q.setParameter("dateRemise", dateRemise);
         q.setParameter("statut", statut);
+        q.setParameter("numContrat", numContrat);
         return ((Long) q.getSingleResult());
     }
     
-    public static TypedQuery<ExportTransaction> ExportTransaction.findExportTransactionsByNumTransactionEquals(String numTransaction) {
+    public static Long ExportTransaction.countFindExportTransactionsByNumTransactionEqualsAndNumContratEquals(String numTransaction, String numContrat) {
         if (numTransaction == null || numTransaction.length() == 0) throw new IllegalArgumentException("The numTransaction argument is required");
+        if (numContrat == null || numContrat.length() == 0) throw new IllegalArgumentException("The numContrat argument is required");
         EntityManager em = ExportTransaction.entityManager();
-        TypedQuery<ExportTransaction> q = em.createQuery("SELECT o FROM ExportTransaction AS o WHERE o.numTransaction = :numTransaction", ExportTransaction.class);
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ExportTransaction AS o WHERE o.numTransaction = :numTransaction  AND o.numContrat = :numContrat", Long.class);
         q.setParameter("numTransaction", numTransaction);
+        q.setParameter("numContrat", numContrat);
+        return ((Long) q.getSingleResult());
+    }
+    
+    public static TypedQuery<ExportTransaction> ExportTransaction.findExportTransactionsByDateRemiseAndStatutEqualsAndNumContratEquals(Date dateRemise, String statut, String numContrat) {
+        if (dateRemise == null) throw new IllegalArgumentException("The dateRemise argument is required");
+        if (statut == null || statut.length() == 0) throw new IllegalArgumentException("The statut argument is required");
+        if (numContrat == null || numContrat.length() == 0) throw new IllegalArgumentException("The numContrat argument is required");
+        EntityManager em = ExportTransaction.entityManager();
+        TypedQuery<ExportTransaction> q = em.createQuery("SELECT o FROM ExportTransaction AS o WHERE o.dateRemise = :dateRemise AND o.statut = :statut  AND o.numContrat = :numContrat", ExportTransaction.class);
+        q.setParameter("dateRemise", dateRemise);
+        q.setParameter("statut", statut);
+        q.setParameter("numContrat", numContrat);
         return q;
     }
     
-    public static TypedQuery<ExportTransaction> ExportTransaction.findExportTransactionsByNumTransactionEquals(String numTransaction, String sortFieldName, String sortOrder) {
-        if (numTransaction == null || numTransaction.length() == 0) throw new IllegalArgumentException("The numTransaction argument is required");
+    public static TypedQuery<ExportTransaction> ExportTransaction.findExportTransactionsByDateRemiseAndStatutEqualsAndNumContratEquals(Date dateRemise, String statut, String numContrat, String sortFieldName, String sortOrder) {
+        if (dateRemise == null) throw new IllegalArgumentException("The dateRemise argument is required");
+        if (statut == null || statut.length() == 0) throw new IllegalArgumentException("The statut argument is required");
+        if (numContrat == null || numContrat.length() == 0) throw new IllegalArgumentException("The numContrat argument is required");
         EntityManager em = ExportTransaction.entityManager();
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ExportTransaction AS o WHERE o.numTransaction = :numTransaction");
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ExportTransaction AS o WHERE o.dateRemise = :dateRemise AND o.statut = :statut  AND o.numContrat = :numContrat");
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            queryBuilder.append(" ORDER BY ").append(sortFieldName);
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" ").append(sortOrder);
+            }
+        }
+        TypedQuery<ExportTransaction> q = em.createQuery(queryBuilder.toString(), ExportTransaction.class);
+        q.setParameter("dateRemise", dateRemise);
+        q.setParameter("statut", statut);
+        q.setParameter("numContrat", numContrat);
+        return q;
+    }
+    
+    public static TypedQuery<ExportTransaction> ExportTransaction.findExportTransactionsByNumTransactionEqualsAndNumContratEquals(String numTransaction, String numContrat) {
+        if (numTransaction == null || numTransaction.length() == 0) throw new IllegalArgumentException("The numTransaction argument is required");
+        if (numContrat == null || numContrat.length() == 0) throw new IllegalArgumentException("The numContrat argument is required");
+        EntityManager em = ExportTransaction.entityManager();
+        TypedQuery<ExportTransaction> q = em.createQuery("SELECT o FROM ExportTransaction AS o WHERE o.numTransaction = :numTransaction  AND o.numContrat = :numContrat", ExportTransaction.class);
+        q.setParameter("numTransaction", numTransaction);
+        q.setParameter("numContrat", numContrat);
+        return q;
+    }
+    
+    public static TypedQuery<ExportTransaction> ExportTransaction.findExportTransactionsByNumTransactionEqualsAndNumContratEquals(String numTransaction, String numContrat, String sortFieldName, String sortOrder) {
+        if (numTransaction == null || numTransaction.length() == 0) throw new IllegalArgumentException("The numTransaction argument is required");
+        if (numContrat == null || numContrat.length() == 0) throw new IllegalArgumentException("The numContrat argument is required");
+        EntityManager em = ExportTransaction.entityManager();
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ExportTransaction AS o WHERE o.numTransaction = :numTransaction  AND o.numContrat = :numContrat");
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             queryBuilder.append(" ORDER BY ").append(sortFieldName);
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
@@ -50,37 +86,7 @@ privileged aspect ExportTransaction_Roo_Finder {
         }
         TypedQuery<ExportTransaction> q = em.createQuery(queryBuilder.toString(), ExportTransaction.class);
         q.setParameter("numTransaction", numTransaction);
-        return q;
-    }
-    
-    public static TypedQuery<ExportTransaction> ExportTransaction.findExportTransactionsByTransactionDateBetweenAndStatutEquals(Date minTransactionDate, Date maxTransactionDate, String statut) {
-        if (minTransactionDate == null) throw new IllegalArgumentException("The minTransactionDate argument is required");
-        if (maxTransactionDate == null) throw new IllegalArgumentException("The maxTransactionDate argument is required");
-        if (statut == null || statut.length() == 0) throw new IllegalArgumentException("The statut argument is required");
-        EntityManager em = ExportTransaction.entityManager();
-        TypedQuery<ExportTransaction> q = em.createQuery("SELECT o FROM ExportTransaction AS o WHERE o.transactionDate BETWEEN :minTransactionDate AND :maxTransactionDate  AND o.statut = :statut", ExportTransaction.class);
-        q.setParameter("minTransactionDate", minTransactionDate);
-        q.setParameter("maxTransactionDate", maxTransactionDate);
-        q.setParameter("statut", statut);
-        return q;
-    }
-    
-    public static TypedQuery<ExportTransaction> ExportTransaction.findExportTransactionsByTransactionDateBetweenAndStatutEquals(Date minTransactionDate, Date maxTransactionDate, String statut, String sortFieldName, String sortOrder) {
-        if (minTransactionDate == null) throw new IllegalArgumentException("The minTransactionDate argument is required");
-        if (maxTransactionDate == null) throw new IllegalArgumentException("The maxTransactionDate argument is required");
-        if (statut == null || statut.length() == 0) throw new IllegalArgumentException("The statut argument is required");
-        EntityManager em = ExportTransaction.entityManager();
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ExportTransaction AS o WHERE o.transactionDate BETWEEN :minTransactionDate AND :maxTransactionDate  AND o.statut = :statut");
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
-        TypedQuery<ExportTransaction> q = em.createQuery(queryBuilder.toString(), ExportTransaction.class);
-        q.setParameter("minTransactionDate", minTransactionDate);
-        q.setParameter("maxTransactionDate", maxTransactionDate);
-        q.setParameter("statut", statut);
+        q.setParameter("numContrat", numContrat);
         return q;
     }
     

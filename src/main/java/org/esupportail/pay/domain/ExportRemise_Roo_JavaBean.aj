@@ -16,12 +16,12 @@ privileged aspect ExportRemise_Roo_JavaBean {
         this.numRemise = numRemise;
     }
     
-    public Date ExportRemise.getTransactionDate() {
-        return this.transactionDate;
+    public Date ExportRemise.getDateRemise() {
+        return this.dateRemise;
     }
     
-    public void ExportRemise.setTransactionDate(Date transactionDate) {
-        this.transactionDate = transactionDate;
+    public void ExportRemise.setDateRemise(Date dateRemise) {
+        this.dateRemise = dateRemise;
     }
     
     public Long ExportRemise.getNbTransactions() {
@@ -38,6 +38,14 @@ privileged aspect ExportRemise_Roo_JavaBean {
     
     public void ExportRemise.setMontant(Long montant) {
         this.montant = montant;
+    }
+    
+    public String ExportRemise.getNumContrat() {
+        return this.numContrat;
+    }
+    
+    public void ExportRemise.setNumContrat(String numContrat) {
+        this.numContrat = numContrat;
     }
     
 }

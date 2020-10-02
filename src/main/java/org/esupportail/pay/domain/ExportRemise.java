@@ -29,7 +29,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(finders = { "findExportRemisesByNumRemiseEquals", "findExportRemisesByTransactionDateBetween"})
+@RooJpaActiveRecord(finders = { "findExportRemisesByNumRemiseEqualsAndNumContratEquals", "findExportRemisesByDateRemiseBetween"})
 public class ExportRemise {
 
 	@Column(unique=true)
@@ -37,10 +37,12 @@ public class ExportRemise {
 	
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "MM")
-    private Date transactionDate;
+    private Date dateRemise;
     
     private Long nbTransactions;
 
     private Long montant;
+      
+    private String numContrat;
 
 }

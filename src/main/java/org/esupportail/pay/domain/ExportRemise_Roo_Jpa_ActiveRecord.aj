@@ -14,7 +14,7 @@ privileged aspect ExportRemise_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager ExportRemise.entityManager;
     
-    public static final List<String> ExportRemise.fieldNames4OrderClauseFilter = java.util.Arrays.asList("numRemise", "transactionDate", "nbTransactions", "montant");
+    public static final List<String> ExportRemise.fieldNames4OrderClauseFilter = java.util.Arrays.asList("numRemise", "dateRemise", "nbTransactions", "montant", "numContrat");
     
     public static final EntityManager ExportRemise.entityManager() {
         EntityManager em = new ExportRemise().entityManager;

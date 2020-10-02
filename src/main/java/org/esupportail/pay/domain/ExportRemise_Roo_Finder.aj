@@ -10,36 +10,68 @@ import org.esupportail.pay.domain.ExportRemise;
 
 privileged aspect ExportRemise_Roo_Finder {
     
-    public static Long ExportRemise.countFindExportRemisesByNumRemiseEquals(String numRemise) {
-        if (numRemise == null || numRemise.length() == 0) throw new IllegalArgumentException("The numRemise argument is required");
+    public static Long ExportRemise.countFindExportRemisesByDateRemiseBetween(Date minDateRemise, Date maxDateRemise) {
+        if (minDateRemise == null) throw new IllegalArgumentException("The minDateRemise argument is required");
+        if (maxDateRemise == null) throw new IllegalArgumentException("The maxDateRemise argument is required");
         EntityManager em = ExportRemise.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ExportRemise AS o WHERE o.numRemise = :numRemise", Long.class);
-        q.setParameter("numRemise", numRemise);
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ExportRemise AS o WHERE o.dateRemise BETWEEN :minDateRemise AND :maxDateRemise", Long.class);
+        q.setParameter("minDateRemise", minDateRemise);
+        q.setParameter("maxDateRemise", maxDateRemise);
         return ((Long) q.getSingleResult());
     }
     
-    public static Long ExportRemise.countFindExportRemisesByTransactionDateBetween(Date minTransactionDate, Date maxTransactionDate) {
-        if (minTransactionDate == null) throw new IllegalArgumentException("The minTransactionDate argument is required");
-        if (maxTransactionDate == null) throw new IllegalArgumentException("The maxTransactionDate argument is required");
+    public static Long ExportRemise.countFindExportRemisesByNumRemiseEqualsAndNumContratEquals(String numRemise, String numContrat) {
+        if (numRemise == null || numRemise.length() == 0) throw new IllegalArgumentException("The numRemise argument is required");
+        if (numContrat == null || numContrat.length() == 0) throw new IllegalArgumentException("The numContrat argument is required");
         EntityManager em = ExportRemise.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ExportRemise AS o WHERE o.transactionDate BETWEEN :minTransactionDate AND :maxTransactionDate", Long.class);
-        q.setParameter("minTransactionDate", minTransactionDate);
-        q.setParameter("maxTransactionDate", maxTransactionDate);
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ExportRemise AS o WHERE o.numRemise = :numRemise  AND o.numContrat = :numContrat", Long.class);
+        q.setParameter("numRemise", numRemise);
+        q.setParameter("numContrat", numContrat);
         return ((Long) q.getSingleResult());
     }
     
-    public static TypedQuery<ExportRemise> ExportRemise.findExportRemisesByNumRemiseEquals(String numRemise) {
-        if (numRemise == null || numRemise.length() == 0) throw new IllegalArgumentException("The numRemise argument is required");
+    public static TypedQuery<ExportRemise> ExportRemise.findExportRemisesByDateRemiseBetween(Date minDateRemise, Date maxDateRemise) {
+        if (minDateRemise == null) throw new IllegalArgumentException("The minDateRemise argument is required");
+        if (maxDateRemise == null) throw new IllegalArgumentException("The maxDateRemise argument is required");
         EntityManager em = ExportRemise.entityManager();
-        TypedQuery<ExportRemise> q = em.createQuery("SELECT o FROM ExportRemise AS o WHERE o.numRemise = :numRemise", ExportRemise.class);
-        q.setParameter("numRemise", numRemise);
+        TypedQuery<ExportRemise> q = em.createQuery("SELECT o FROM ExportRemise AS o WHERE o.dateRemise BETWEEN :minDateRemise AND :maxDateRemise", ExportRemise.class);
+        q.setParameter("minDateRemise", minDateRemise);
+        q.setParameter("maxDateRemise", maxDateRemise);
         return q;
     }
     
-    public static TypedQuery<ExportRemise> ExportRemise.findExportRemisesByNumRemiseEquals(String numRemise, String sortFieldName, String sortOrder) {
-        if (numRemise == null || numRemise.length() == 0) throw new IllegalArgumentException("The numRemise argument is required");
+    public static TypedQuery<ExportRemise> ExportRemise.findExportRemisesByDateRemiseBetween(Date minDateRemise, Date maxDateRemise, String sortFieldName, String sortOrder) {
+        if (minDateRemise == null) throw new IllegalArgumentException("The minDateRemise argument is required");
+        if (maxDateRemise == null) throw new IllegalArgumentException("The maxDateRemise argument is required");
         EntityManager em = ExportRemise.entityManager();
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ExportRemise AS o WHERE o.numRemise = :numRemise");
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ExportRemise AS o WHERE o.dateRemise BETWEEN :minDateRemise AND :maxDateRemise");
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            queryBuilder.append(" ORDER BY ").append(sortFieldName);
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" ").append(sortOrder);
+            }
+        }
+        TypedQuery<ExportRemise> q = em.createQuery(queryBuilder.toString(), ExportRemise.class);
+        q.setParameter("minDateRemise", minDateRemise);
+        q.setParameter("maxDateRemise", maxDateRemise);
+        return q;
+    }
+    
+    public static TypedQuery<ExportRemise> ExportRemise.findExportRemisesByNumRemiseEqualsAndNumContratEquals(String numRemise, String numContrat) {
+        if (numRemise == null || numRemise.length() == 0) throw new IllegalArgumentException("The numRemise argument is required");
+        if (numContrat == null || numContrat.length() == 0) throw new IllegalArgumentException("The numContrat argument is required");
+        EntityManager em = ExportRemise.entityManager();
+        TypedQuery<ExportRemise> q = em.createQuery("SELECT o FROM ExportRemise AS o WHERE o.numRemise = :numRemise  AND o.numContrat = :numContrat", ExportRemise.class);
+        q.setParameter("numRemise", numRemise);
+        q.setParameter("numContrat", numContrat);
+        return q;
+    }
+    
+    public static TypedQuery<ExportRemise> ExportRemise.findExportRemisesByNumRemiseEqualsAndNumContratEquals(String numRemise, String numContrat, String sortFieldName, String sortOrder) {
+        if (numRemise == null || numRemise.length() == 0) throw new IllegalArgumentException("The numRemise argument is required");
+        if (numContrat == null || numContrat.length() == 0) throw new IllegalArgumentException("The numContrat argument is required");
+        EntityManager em = ExportRemise.entityManager();
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ExportRemise AS o WHERE o.numRemise = :numRemise  AND o.numContrat = :numContrat");
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             queryBuilder.append(" ORDER BY ").append(sortFieldName);
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
@@ -48,33 +80,7 @@ privileged aspect ExportRemise_Roo_Finder {
         }
         TypedQuery<ExportRemise> q = em.createQuery(queryBuilder.toString(), ExportRemise.class);
         q.setParameter("numRemise", numRemise);
-        return q;
-    }
-    
-    public static TypedQuery<ExportRemise> ExportRemise.findExportRemisesByTransactionDateBetween(Date minTransactionDate, Date maxTransactionDate) {
-        if (minTransactionDate == null) throw new IllegalArgumentException("The minTransactionDate argument is required");
-        if (maxTransactionDate == null) throw new IllegalArgumentException("The maxTransactionDate argument is required");
-        EntityManager em = ExportRemise.entityManager();
-        TypedQuery<ExportRemise> q = em.createQuery("SELECT o FROM ExportRemise AS o WHERE o.transactionDate BETWEEN :minTransactionDate AND :maxTransactionDate", ExportRemise.class);
-        q.setParameter("minTransactionDate", minTransactionDate);
-        q.setParameter("maxTransactionDate", maxTransactionDate);
-        return q;
-    }
-    
-    public static TypedQuery<ExportRemise> ExportRemise.findExportRemisesByTransactionDateBetween(Date minTransactionDate, Date maxTransactionDate, String sortFieldName, String sortOrder) {
-        if (minTransactionDate == null) throw new IllegalArgumentException("The minTransactionDate argument is required");
-        if (maxTransactionDate == null) throw new IllegalArgumentException("The maxTransactionDate argument is required");
-        EntityManager em = ExportRemise.entityManager();
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ExportRemise AS o WHERE o.transactionDate BETWEEN :minTransactionDate AND :maxTransactionDate");
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
-        TypedQuery<ExportRemise> q = em.createQuery(queryBuilder.toString(), ExportRemise.class);
-        q.setParameter("minTransactionDate", minTransactionDate);
-        q.setParameter("maxTransactionDate", maxTransactionDate);
+        q.setParameter("numContrat", numContrat);
         return q;
     }
     
