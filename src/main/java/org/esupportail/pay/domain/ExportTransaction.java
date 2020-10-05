@@ -31,14 +31,16 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(finders = { "findExportTransactionsByDateRemiseAndStatutEqualsAndNumContratEquals", "findExportTransactionsByNumTransactionEqualsAndNumContratEquals"})
+@RooJpaActiveRecord(finders = { "findExportTransactionsByNumRemiseAndStatutEqualsAndNumContratEquals", "findExportTransactionsByNumTransactionEqualsAndNumContratEquals"})
 public class ExportTransaction {
 
 	public enum TypeTransaction {DEBIT, CREDIT, REMBOURSEMENT}
 	
     @Column(unique = true)
     private String numTransaction;
-
+    
+    private String numRemise;
+    
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "MM")
     private Date transactionDate;

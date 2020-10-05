@@ -77,6 +77,7 @@ public class ExportService {
 	public void consumeExportTransactionCsvLine(String line) throws IOException, ParseException {
 		String[] fields = line.split(";");
 		String numTransaction = fields[0];
+		String numRemise = fields[1];
 		String dateTransactionAsString = fields[2];
 		String reference = fields[3];
 		String montantAsString = fields[4];
@@ -86,7 +87,7 @@ public class ExportService {
 		String dateRemiseAsString = fields[22];
 		String numContrat = fields[18];
 
-		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty()) {
+		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty() && !numRemise.isEmpty()) {
 			Date dateTransaction = csvDateFormat.parse(dateTransactionAsString);
 			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
 			Number montantNumber = NumberFormat.getInstance(Locale.US).parse(montantAsString);
@@ -98,6 +99,7 @@ public class ExportService {
 				exportTransaction = ExportTransaction.findExportTransactionsByNumTransactionEqualsAndNumContratEquals(numTransaction, numContrat).getSingleResult();
 			}
 	
+			exportTransaction.setNumRemise(numRemise);
 			exportTransaction.setEmail(email);
 			exportTransaction.setMontant(montant);
 			exportTransaction.setNumTransaction(numTransaction);

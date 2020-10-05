@@ -16,6 +16,14 @@ privileged aspect ExportTransaction_Roo_JavaBean {
         this.numTransaction = numTransaction;
     }
     
+    public String ExportTransaction.getNumRemise() {
+        return this.numRemise;
+    }
+    
+    public void ExportTransaction.setNumRemise(String numRemise) {
+        this.numRemise = numRemise;
+    }
+    
     public Date ExportTransaction.getTransactionDate() {
         return this.transactionDate;
     }

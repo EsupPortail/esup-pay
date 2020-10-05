@@ -54,8 +54,7 @@ public class VentilationService {
 			Ventilation ventilation = new Ventilation();
 			ventilation.setRemise(remise);
 			ventilation.setDate(remise.getDateRemise());
-			Date dayBefore = DateUtils.addDays(remise.getDateRemise(),-1);
-			List<ExportTransaction> transactions = ExportTransaction.findExportTransactionsByDateRemiseAndStatutEqualsAndNumContratEquals(remise.getDateRemise(), "Acceptée", remise.getNumContrat()).getResultList();			
+			List<ExportTransaction> transactions = ExportTransaction.findExportTransactionsByNumRemiseAndStatutEqualsAndNumContratEquals(remise.getNumRemise(), "Acceptée", remise.getNumContrat()).getResultList();			
 		
 			Map<PayEvt, List<ExportTransaction>> transactionsEvts = new HashMap<PayEvt, List<ExportTransaction>>();
 			for(ExportTransaction t : transactions) {
