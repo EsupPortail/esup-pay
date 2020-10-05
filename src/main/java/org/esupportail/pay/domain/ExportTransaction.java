@@ -34,7 +34,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord(finders = { "findExportTransactionsByNumRemiseAndStatutEqualsAndNumContratEquals", "findExportTransactionsByNumTransactionEqualsAndNumContratEquals"})
 public class ExportTransaction {
 
-	public enum TypeTransaction {DEBIT, CREDIT, REMBOURSEMENT}
+	public enum TypeTransaction {DEBIT, CREDIT, REMBOURSEMENT, ANNULATION}
 	
     @Column(unique = true)
     private String numTransaction;

@@ -66,7 +66,7 @@ public class Ventilation {
 			for(ExportTransaction t: transactions.get(evt)) {
 				if(TypeTransaction.DEBIT.equals(t.getTypeTransaction())) {
 					s += t.getMontant();
-				} else {
+				} else if(TypeTransaction.REMBOURSEMENT.equals(t.getTypeTransaction()) || TypeTransaction.CREDIT.equals(t.getTypeTransaction()) || TypeTransaction.ANNULATION.equals(t.getTypeTransaction())) {
 					s -= t.getMontant();
 				}
 			}
@@ -78,15 +78,15 @@ public class Ventilation {
 	public long getNbTransactions() {
 		long s = 0;
 		for(PayEvt evt : transactions.keySet()) {
-			s += transactions.get(evt).size();
+			s += transactions.get(evt).stream().filter(t->!TypeTransaction.ANNULATION.equals(t.getTypeTransaction())).count();
 		}
 		return s;
 	}
 	
-	public long getNbTransactionsNotDebit() {
+	public long getNbTransactionsCreditRemboursement() {
 		long s = 0;
 		for(PayEvt evt : transactions.keySet()) {
-			s += transactions.get(evt).stream().filter(t->!TypeTransaction.DEBIT.equals(t.getTypeTransaction())).count();
+			s += transactions.get(evt).stream().filter(t->TypeTransaction.CREDIT.equals(t.getTypeTransaction()) || TypeTransaction.REMBOURSEMENT.equals(t.getTypeTransaction())).count();
 		}
 		return s;
 	}

@@ -24,6 +24,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +37,6 @@ import org.esupportail.pay.domain.ExportTransaction;
 import org.esupportail.pay.domain.ExportTransaction.TypeTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,8 +91,10 @@ public class ExportService {
 		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty() && !numRemise.isEmpty()) {
 			Date dateTransaction = csvDateFormat.parse(dateTransactionAsString);
 			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
-			Number montantNumber = NumberFormat.getInstance(Locale.US).parse(montantAsString);
-			Long montant = (long)(montantNumber.doubleValue()*100);
+			BigDecimal montantBG = new BigDecimal(montantAsString);
+			montantBG = montantBG.multiply( new BigDecimal(100)).setScale(0, RoundingMode.HALF_UP);
+			montantBG = montantBG.setScale(0, RoundingMode.HALF_UP);
+			Long montant = montantBG.longValue();
 	
 			ExportTransaction exportTransaction = new ExportTransaction();	
 			
@@ -112,8 +115,10 @@ public class ExportService {
 				exportTransaction.setTypeTransaction(TypeTransaction.DEBIT);
 			} else if("Remboursement".equals(typeTransaction)) {
 				exportTransaction.setTypeTransaction(TypeTransaction.REMBOURSEMENT);
-			} if("Crédit".equals(typeTransaction)) {
+			} else if("Crédit".equals(typeTransaction)) {
 				exportTransaction.setTypeTransaction(TypeTransaction.CREDIT);
+			} else if("Annulation".equals(typeTransaction)) {
+				exportTransaction.setTypeTransaction(TypeTransaction.ANNULATION);
 			} 
 			if(exportTransaction.getId()==null) {
 				exportTransaction.persist();
@@ -147,8 +152,10 @@ public class ExportService {
 
 		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty()) {
 			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
-			Number montantNumber = NumberFormat.getInstance(Locale.US).parse(montantAsString);
-			Long montant = (long)(montantNumber.doubleValue()*100);
+			BigDecimal montantBG = new BigDecimal(montantAsString);
+			montantBG = montantBG.multiply( new BigDecimal(100)).setScale(0, RoundingMode.HALF_UP);
+			montantBG = montantBG.setScale(0, RoundingMode.HALF_UP);
+			Long montant = montantBG.longValue();
 	
 			ExportRemise exportRemise = new ExportRemise();
 			

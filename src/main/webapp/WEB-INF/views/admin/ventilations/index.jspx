@@ -88,7 +88,7 @@
 						<dt>Nombre de transactions</dt>
 						<dd>
 						${ventilation.nbTransactions}
-						<c:if test="${ventilation.nbTransactionsNotDebit > 0}"><span class="text-warning"> dont ${ventilation.nbTransactionsNotDebit} remboursement(s)/crédit(s) </span></c:if>
+						<c:if test="${ventilation.nbTransactionsCreditRemboursement > 0}"><span class="text-warning"> dont ${ventilation.nbTransactionsCreditRemboursement} remboursement(s)/crédit(s) </span></c:if>
 						</dd>
 						<dt>Détail</dt>
 						<dd>
