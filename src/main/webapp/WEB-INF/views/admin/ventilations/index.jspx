@@ -69,12 +69,12 @@
 					<div class="panel-heading" role="tab">
 						<h2 class="panel-title alert ${ventilation.consistentMontant ? 'alert-success' : 'alert-danger'}">
 							<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-${ventilationStatus.index}" aria-expanded="true" aria-controls="collapseOne">
-									${ventilation.date} - ${ventilation.remise.numContrat}
+									${ventilation.date} - ${ventilation.remise.numContrat} - ${ventilation.remise.numRemise}
 							</a>
 						</h2>
 					</div>
 					<div id="collapse-${ventilationStatus.index}" class="panel-collapse collapse">
-					<h3>Remise</h3>
+					<h3>Remise ${ventilation.remise.numRemise}</h3>
 					<dl>
 						<dt>Remise banque</dt>
 						<dd><fmt:formatNumber type="currency" currencySymbol="€" value="${ventilation.remise.montant/100}"/></dd>
