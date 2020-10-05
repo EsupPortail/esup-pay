@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.esupportail.pay.domain.ExportTransaction.TypeTransaction;
-import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
 
@@ -39,7 +38,7 @@ public class Ventilation {
 			new Comparator<PayEvt>() {
 				@Override
 				public int compare(PayEvt evt1, PayEvt evt2) {
-					return evt1.getTitle().getTranslation(LOCALE_IDS.fr).compareTo(evt2.getTitle().getTranslation(LOCALE_IDS.fr));
+					return evt1.getTitleFr().compareTo(evt2.getTitleFr());
 				}
 			}
 	); 
@@ -48,7 +47,7 @@ public class Ventilation {
 			new Comparator<PayEvt>() {
 				@Override
 				public int compare(PayEvt evt1, PayEvt evt2) {
-					return evt1.getTitle().getTranslation(LOCALE_IDS.fr).compareTo(evt2.getTitle().getTranslation(LOCALE_IDS.fr));
+					return evt1.getTitleFr().compareTo(evt2.getTitleFr());
 				}
 			}
 	); 

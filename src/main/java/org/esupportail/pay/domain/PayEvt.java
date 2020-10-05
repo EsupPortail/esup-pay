@@ -229,5 +229,9 @@ public class PayEvt {
         Query q = em.createNativeQuery(sql);
         return q.getResultList();
     }
+    
+    public String getTitleFr() {
+    	return this.getTitle().getTranslation(LOCALE_IDS.fr);
+    }
 
 }

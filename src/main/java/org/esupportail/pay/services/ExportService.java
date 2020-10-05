@@ -28,6 +28,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.esupportail.pay.domain.ExportRemise;
 import org.esupportail.pay.domain.ExportTransaction;
@@ -88,8 +89,8 @@ public class ExportService {
 		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty()) {
 			Date dateTransaction = csvDateFormat.parse(dateTransactionAsString);
 			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
-			Number montantNumber = NumberFormat.getInstance().parse(montantAsString);
-			Long montant = montantNumber.longValue()*100;
+			Number montantNumber = NumberFormat.getInstance(Locale.US).parse(montantAsString);
+			Long montant = (long)(montantNumber.doubleValue()*100);
 	
 			ExportTransaction exportTransaction = new ExportTransaction();	
 			
@@ -144,8 +145,8 @@ public class ExportService {
 
 		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty()) {
 			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
-			Number montantNumber = NumberFormat.getInstance().parse(montantAsString);
-			Long montant = montantNumber.longValue()*100;
+			Number montantNumber = NumberFormat.getInstance(Locale.US).parse(montantAsString);
+			Long montant = (long)(montantNumber.doubleValue()*100);
 	
 			ExportRemise exportRemise = new ExportRemise();
 			

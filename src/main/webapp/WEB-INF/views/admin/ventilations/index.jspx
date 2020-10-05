@@ -95,13 +95,7 @@
 							<dl>
 								<c:forEach items="${ventilation.montantsEvts}" var="t" varStatus="evtStatus">
 									<dt>
-										<c:if test="${t.key == null}">
-											Autre ??
-										</c:if>
-										<c:if test="${t.key != null}">
-											${t.key.title.labelLocales['fr'].translation} 
-										</c:if>
-										[${ventilation.transactions[t.key].size()}]
+										${t.key.titleFr} [${ventilation.transactions[t.key].size()}]
 									</dt>
 									<dd>
 										<fmt:formatNumber type="currency" currencySymbol="€" value="${t.value/100}"/>

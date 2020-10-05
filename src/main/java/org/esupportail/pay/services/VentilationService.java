@@ -29,6 +29,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.esupportail.pay.domain.ExportRemise;
 import org.esupportail.pay.domain.ExportTransaction;
 import org.esupportail.pay.domain.PayEvt;
+import org.esupportail.pay.domain.PayEvtUnknown;
 import org.esupportail.pay.domain.Ventilation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ public class VentilationService {
 	public List<Ventilation> getVentilations(Date dateMonth) {
 		
 		Map<String, PayEvt> evenementsPrefix = getEvenementsPrefix();
+		PayEvtUnknown payEvtUnknown = new PayEvtUnknown();
 		
 		List<Ventilation> ventilations = new ArrayList<Ventilation>();
 		Date dateMonthAfter = DateUtils.addMonths(dateMonth,+1);
@@ -66,14 +68,14 @@ public class VentilationService {
 						transactionsEvts.get(evenementsPrefix.get(prefix)).add(t);
 						findElement = true;
 						break;
-					}	
+					}
 				}
 				if(!findElement) {
-					if(!transactionsEvts.containsKey(null)) {
-						transactionsEvts.put(null, new ArrayList<ExportTransaction>());
+					if(!transactionsEvts.containsKey(payEvtUnknown)) {
+						transactionsEvts.put(payEvtUnknown, new ArrayList<ExportTransaction>());
 					}
 					log.warn(String.format("Transaction %s ne sorrespond à aucun préfixe d'un évènement connu !", t.getReference()));
-					transactionsEvts.get(null).add(t);
+					transactionsEvts.get(payEvtUnknown).add(t);
 				}
 			}
 			
