@@ -23,6 +23,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd         
 						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
 
+	<http security="none" pattern="/resources/**" />
+
+    <http security="none" pattern="/webjars/**" />
+
 	<!-- HTTP security configurations -->
 	<http auto-config="false" disable-url-rewriting="true"
 		use-expressions="true" entry-point-ref="casEntryPoint">
