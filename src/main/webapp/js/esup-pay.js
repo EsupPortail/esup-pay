@@ -338,4 +338,17 @@ $(document).ready(function() {
 			}
 		});
 	}
+
+	$('.clipboard').on('click', function(e) {
+		e.preventDefault(); 
+		temp = document.createElement("input");
+		temp.value = this.href;
+		document.body.appendChild(temp);
+		temp.select();
+		document.execCommand("copy");
+		document.body.removeChild(temp);	
+		alert("URL copiée dans le presse-papier :\n" + this.href);
+	})
+	
+	
 });

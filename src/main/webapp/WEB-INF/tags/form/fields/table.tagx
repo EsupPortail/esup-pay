@@ -158,7 +158,7 @@
               </c:when>
               <c:when test="${columnType eq 'link'}">
  				<c:set var="colTxt">
- 					<a href="${columnLinkPrefixe}${item[column]}">${item[column]}</a>
+ 					<a href="${columnLinkPrefixe}${item[column]}">${item[column]}</a> <span>&amp;nbsp;</span> <a href="${columnLinkPrefixe}${item[column]}" class="clipboard" title="copier dans le presse-papier"><span class="glyphicon glyphicon-copy"></span></a>
  				</c:set>
  			  </c:when>
               <c:otherwise>
