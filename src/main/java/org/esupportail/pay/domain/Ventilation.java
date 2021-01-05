@@ -80,7 +80,7 @@ public class Ventilation {
 	public long getNbTransactions() {
 		long s = 0;
 		for(PayEvt evt : transactions.keySet()) {
-			s += transactions.get(evt).stream().filter(t->!TypeTransaction.ANNULATION.equals(t.getTypeTransaction())).count();
+			s += transactions.get(evt).size();
 		}
 		return s;
 	}
