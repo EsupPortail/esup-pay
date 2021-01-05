@@ -66,8 +66,10 @@ public class Ventilation {
 			for(ExportTransaction t: transactions.get(evt)) {
 				if(TypeTransaction.DEBIT.equals(t.getTypeTransaction())) {
 					s += t.getMontant();
-				} else if(TypeTransaction.REMBOURSEMENT.equals(t.getTypeTransaction()) || TypeTransaction.CREDIT.equals(t.getTypeTransaction()) || TypeTransaction.ANNULATION.equals(t.getTypeTransaction())) {
+				} else if(TypeTransaction.REMBOURSEMENT.equals(t.getTypeTransaction()) || TypeTransaction.CREDIT.equals(t.getTypeTransaction())) {
 					s -= t.getMontant();
+				} else if(TypeTransaction.ANNULATION.equals(t.getTypeTransaction())) {
+					// operation neutre
 				}
 			}
 			montantsEvts.put(evt, s);
