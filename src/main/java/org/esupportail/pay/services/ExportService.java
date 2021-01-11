@@ -150,7 +150,7 @@ public class ExportService {
 		String montantAsString = fields[10];
 		String nbTransactions = fields[9];
 
-		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty()) {
+		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty() && !montantAsString.isEmpty()) {
 			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
 			BigDecimal montantBG = new BigDecimal(montantAsString);
 			montantBG = montantBG.multiply( new BigDecimal(100)).setScale(0, RoundingMode.HALF_UP);
