@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 package org.esupportail.pay.web.admin;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,8 +23,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.Label;
+import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.services.UrlIdService;
@@ -161,7 +160,7 @@ public class PayEvtMontantController {
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
+        } catch (Exception uee) {}
         return pathSegment;
     }
 }

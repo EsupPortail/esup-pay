@@ -323,7 +323,7 @@ public class PayEvtController {
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
+        } catch (Exception uee) {}
         return pathSegment;
     }
 }

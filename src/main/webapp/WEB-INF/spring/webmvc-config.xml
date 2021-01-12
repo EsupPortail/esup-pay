@@ -22,7 +22,7 @@
 		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd                 
 							http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd                 
 							http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd	
-							http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+							http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.4.xsd">
                 
     <!-- The controllers are autodetected POJOs labeled with the @Controller annotation. -->
     <context:component-scan base-package="org.esupportail.pay" use-default-filters="false">
@@ -94,10 +94,10 @@
     <!-- Enable this for integration of file upload functionality -->
     
 	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="tilesViewResolver">
-      <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
+      <property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView"/>
     </bean>
   
-    <bean class="org.springframework.web.servlet.view.tiles2.TilesConfigurer" id="tilesConfigurer">
+    <bean class="org.springframework.web.servlet.view.tiles3.TilesConfigurer" id="tilesConfigurer">
      <property name="definitions">
       <list>
         <value>/WEB-INF/layouts/layouts.xml</value>
