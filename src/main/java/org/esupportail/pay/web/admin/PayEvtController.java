@@ -59,6 +59,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
 
 @RequestMapping("/admin/evts")
 @Controller
@@ -314,5 +316,16 @@ public class PayEvtController {
     	PayEvt payEvt = PayEvt.findPayEvt(id);
     	TypedQuery<PayTransactionLog> txLogsQuery = PayTransactionLog.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc");
     	csvController.generateAndReturnCsv(response, txLogsQuery);
+    }
+
+	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+        String enc = httpServletRequest.getCharacterEncoding();
+        if (enc == null) {
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        }
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {}
+        return pathSegment;
     }
 }

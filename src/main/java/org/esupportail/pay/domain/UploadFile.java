@@ -25,4 +25,12 @@ public class UploadFile {
     
     private MultipartFile logoFile;
     
+
+	public MultipartFile getLogoFile() {
+        return this.logoFile;
+    }
+
+	public void setLogoFile(MultipartFile logoFile) {
+        this.logoFile = logoFile;
+    }
 }
