@@ -34,22 +34,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.LobHelper;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
-import org.springframework.roo.classpath.operations.jsr303.RooUploadedFile;
 import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Configurable
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord
 public class BigFile {
 	
 	//@Lob
 	//@Type(type="org.hibernate.type.PrimitiveByteArrayBlobType")
-	@RooUploadedFile(contentType = "application/zip")
 	@Basic(fetch = FetchType.LAZY)
 	private Blob binaryFile;
 	

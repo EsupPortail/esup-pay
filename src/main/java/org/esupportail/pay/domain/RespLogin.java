@@ -29,16 +29,10 @@ import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Configurable
-@RooJavaBean
-@RooToString
-@RooJpaActiveRecord(finders = { "findRespLoginsByLoginEquals"})
 public class RespLogin {
 
     @Column(unique = true)

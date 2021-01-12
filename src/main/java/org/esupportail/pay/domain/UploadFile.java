@@ -17,10 +17,8 @@
  */
 package org.esupportail.pay.domain;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.web.multipart.MultipartFile;
 
-@RooJavaBean
 public class UploadFile {
     
     private MultipartFile logoFile;

@@ -30,7 +30,6 @@ import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.services.UrlIdService;
 import org.esupportail.pay.web.validators.PayEvtMontantUpdateValidator;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,7 +44,6 @@ import org.springframework.web.util.WebUtils;
 
 @RequestMapping("/admin/evtmnts")
 @Controller
-@RooWebScaffold(path = "admin/evtmnts", formBackingObject = PayEvtMontant.class)
 public class PayEvtMontantController {
 	
     @Resource

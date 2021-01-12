@@ -20,7 +20,6 @@ package org.esupportail.pay.web.admin;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/admin/fees")
 @Controller
-@RooWebScaffold(path = "admin/fees-admin-view", formBackingObject = PayTransactionLog.class, update = false, delete = false, create = false)
 public class PayTransactionLogController {
 	
     @RequestMapping(produces = "text/html")

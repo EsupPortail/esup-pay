@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.springframework.roo.addon.javabean.RooJavaBean;
 
-@RooJavaBean
 public class PayBoxForm {
 
 	private String actionUrl;

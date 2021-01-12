@@ -24,11 +24,7 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.esupportail.pay.domain.ExportTransaction.TypeTransaction;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.tostring.RooToString;
 
-@RooJavaBean
-@RooToString
 public class Ventilation {
 
 	private Date date;

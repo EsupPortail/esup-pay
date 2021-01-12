@@ -44,7 +44,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.AbstractResource;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -64,7 +63,6 @@ import org.springframework.web.util.WebUtils;
 
 @RequestMapping("/admin/evts")
 @Controller
-@RooWebScaffold(path = "admin/evts", formBackingObject = PayEvt.class)
 @Transactional
 public class PayEvtController {
 

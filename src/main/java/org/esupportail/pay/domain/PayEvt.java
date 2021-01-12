@@ -40,16 +40,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Configurable
-@RooJavaBean
-@RooToString(excludeFields = "logoFile")
-@RooJpaActiveRecord(finders = { "findPayEvtsByUrlIdEquals", "findPayEvtsByRespLogins", "findPayEvtsByViewerLogins" })
 public class PayEvt {
 
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("id", "logoFile", "payboxServiceKey", "title", "webSiteUrl", "urlId", "managersEmail", "mailSubject", "payboxCommandPrefix", "respLogins", "viewerLogins", "defaultMntDescription", "logins", "viewerLogins2Add");
