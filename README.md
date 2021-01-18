@@ -19,8 +19,8 @@ Cette application utilise CAS+LDAP pour autoriser uniquement certains membres de
 * un LDAP avec un groupe regroupant les administrateurs de l'applciation esup-pay qui pourront créer des évènements esup-pay - ce groupe peut-être un posixGroup ou un groupOfNames
 * un compte Paybox - esup-pay utilise l'intégration paybox version hmac (sans module cgi) - il faut donc un compte paybox avec un hmac de configuré. 
 * une base de données PostgreSQL
-* JDK 1.8
-* Tomcat 1.8
+* JDK 11
+* Tomcat 9
 
 Précisions supplémentaires : 
 * esup-pay est complètement indépendant de l'ENT esup-uportal
@@ -47,10 +47,10 @@ Pour des configurations avancées, il est également possible de modifier les fi
 ## Installation 
 
 ### Pré-requis
-* Java OpenJDK 8 : le mieux est de l'installer via le système de paquets de votre linux.
-* Maven (dernière version 3.0.x) : http://maven.apache.org/download.cgi
-* Postgresql (8 ou 9) : le mieux est de l'installer via le système de paquets de votre linux.
-* Tomcat (Tomcat 8)
+* Java OpenJDK 11 : le mieux est de l'installer via le système de paquets de votre linux.
+* Maven : le mieux est de l'installer via le système de paquets de votre linux.
+* Postgresql (8 ou 9, ...) : le mieux est de l'installer via le système de paquets de votre linux.
+* Tomcat (Tomcat 9)
 
 ### PostgreSQL
 * pg_hba.conf : ajout de 
