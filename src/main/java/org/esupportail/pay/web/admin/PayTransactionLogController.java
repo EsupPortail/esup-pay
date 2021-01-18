@@ -17,7 +17,9 @@
  */
 package org.esupportail.pay.web.admin;
 
-import org.esupportail.pay.domain.PayTransactionLog;
+import javax.annotation.Resource;
+
+import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +32,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/admin/fees")
 @Controller
 public class PayTransactionLogController {
+	
+	@Resource
+	PayTransactionLogDaoService payTransactionLogDaoService;
 	
     @RequestMapping(produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -44,11 +49,11 @@ public class PayTransactionLogController {
     	if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("paytransactionlogs", PayTransactionLog.findPayTransactionLogEntries(firstResult, sizeNo, sortFieldName, sortOrder));
-            float nrOfPages = (float) PayTransactionLog.countPayTransactionLogs() / sizeNo;
+            uiModel.addAttribute("paytransactionlogs", payTransactionLogDaoService.findPayTransactionLogEntries(firstResult, sizeNo, sortFieldName, sortOrder));
+            float nrOfPages = (float) payTransactionLogDaoService.countPayTransactionLogs() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("paytransactionlogs", PayTransactionLog.findAllPayTransactionLogs(sortFieldName, sortOrder));
+            uiModel.addAttribute("paytransactionlogs", payTransactionLogDaoService.findAllPayTransactionLogs(sortFieldName, sortOrder));
         }
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("listAllTxEvts", true);
@@ -59,7 +64,7 @@ public class PayTransactionLogController {
 	@RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("paytransactionlog", PayTransactionLog.findPayTransactionLog(id));
+        uiModel.addAttribute("paytransactionlog", payTransactionLogDaoService.findPayTransactionLog(id));
         uiModel.addAttribute("itemId", id);
         return "admin/fees-admin-view/show";
     }

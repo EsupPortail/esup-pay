@@ -17,6 +17,11 @@
  */
 package org.esupportail.pay.web;
 
+import javax.annotation.Resource;
+
+import org.esupportail.pay.dao.PayEvtDaoService;
+import org.esupportail.pay.dao.PayEvtMontantDaoService;
+import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
@@ -30,8 +35,16 @@ import org.springframework.format.support.FormattingConversionServiceFactoryBean
  * A central place to register application converters and formatters. 
  */
 public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean {
-
-
+   
+	@Resource
+    PayEvtMontantDaoService payEvtMontantDaoService;
+	
+	@Resource
+    PayEvtDaoService payEvtDaoService;
+	
+	@Resource
+	PayTransactionLogDaoService payTransactionLogDaoService;
+	
 	public Converter<PayEvt, String> getPayEvtToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<org.esupportail.pay.domain.PayEvt, java.lang.String>() {
             public String convert(PayEvt payboxEvt) {
@@ -43,7 +56,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<Long, PayEvt> getIdToPayEvtConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, org.esupportail.pay.domain.PayEvt>() {
             public org.esupportail.pay.domain.PayEvt convert(java.lang.Long id) {
-                return PayEvt.findPayEvt(id);
+                return payEvtDaoService.findPayEvt(id);
             }
         };
     }
@@ -67,7 +80,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<Long, PayEvtMontant> getIdToPayEvtMontantConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, org.esupportail.pay.domain.PayEvtMontant>() {
             public org.esupportail.pay.domain.PayEvtMontant convert(java.lang.Long id) {
-                return PayEvtMontant.findPayEvtMontant(id);
+                return payEvtMontantDaoService.findPayEvtMontant(id);
             }
         };
     }
@@ -91,7 +104,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<Long, PayTransactionLog> getIdToPayTransactionLogConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, org.esupportail.pay.domain.PayTransactionLog>() {
             public org.esupportail.pay.domain.PayTransactionLog convert(java.lang.Long id) {
-                return PayTransactionLog.findPayTransactionLog(id);
+                return payTransactionLogDaoService.findPayTransactionLog(id);
             }
         };
     }

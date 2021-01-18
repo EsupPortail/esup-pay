@@ -21,10 +21,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+
 import org.esupportail.pay.domain.ExportTransaction.TypeTransaction;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Ventilation {
 
 	private Date date;
@@ -92,44 +96,5 @@ public class Ventilation {
 	public boolean isConsistentMontant() {
 		return remise.getMontant().equals(this.totalMontantTransactions) && remise.getNbTransactions().equals(this.getNbTransactions());
 	}
-
-	public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-	public Date getDate() {
-        return this.date;
-    }
-
-	public void setDate(Date date) {
-        this.date = date;
-    }
-
-	public ExportRemise getRemise() {
-        return this.remise;
-    }
-
-	public void setRemise(ExportRemise remise) {
-        this.remise = remise;
-    }
-
-	public Map<PayEvt, List<ExportTransaction>> getTransactions() {
-        return this.transactions;
-    }
-
-	public Map<PayEvt, Long> getMontantsEvts() {
-        return this.montantsEvts;
-    }
-
-	public void setMontantsEvts(Map<PayEvt, Long> montantsEvts) {
-        this.montantsEvts = montantsEvts;
-    }
-
-	public long getTotalMontantTransactions() {
-        return this.totalMontantTransactions;
-    }
-
-	public void setTotalMontantTransactions(long totalMontantTransactions) {
-        this.totalMontantTransactions = totalMontantTransactions;
-    }
+	
 }

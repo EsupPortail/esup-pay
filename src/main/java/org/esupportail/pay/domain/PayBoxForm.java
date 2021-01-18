@@ -22,7 +22,11 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class PayBoxForm {
 
 	private String actionUrl;
@@ -115,141 +119,5 @@ public class PayBoxForm {
 		}
 	}
 	
-
-	public String getActionUrl() {
-        return this.actionUrl;
-    }
-
-	public void setActionUrl(String actionUrl) {
-        this.actionUrl = actionUrl;
-    }
-
-	public String getSite() {
-        return this.site;
-    }
-
-	public void setSite(String site) {
-        this.site = site;
-    }
-
-	public String getRang() {
-        return this.rang;
-    }
-
-	public void setRang(String rang) {
-        this.rang = rang;
-    }
-
-	public String getIdentifiant() {
-        return this.identifiant;
-    }
-
-	public void setIdentifiant(String identifiant) {
-        this.identifiant = identifiant;
-    }
-
-	public String getTotal() {
-        return this.total;
-    }
-
-	public void setTotal(String total) {
-        this.total = total;
-    }
-
-	public String getDevise() {
-        return this.devise;
-    }
-
-	public void setDevise(String devise) {
-        this.devise = devise;
-    }
-
-	public String getCommande() {
-        return this.commande;
-    }
-
-	public void setCommande(String commande) {
-        this.commande = commande;
-    }
-
-	public String getClientEmail() {
-        return this.clientEmail;
-    }
-
-	public void setClientEmail(String clientEmail) {
-        this.clientEmail = clientEmail;
-    }
-
-	public String getRetourVariables() {
-        return this.retourVariables;
-    }
-
-	public void setRetourVariables(String retourVariables) {
-        this.retourVariables = retourVariables;
-    }
-
-	public String getHash() {
-        return this.hash;
-    }
-
-	public void setHash(String hash) {
-        this.hash = hash;
-    }
-
-	public String getTime() {
-        return this.time;
-    }
-
-	public void setTime(String time) {
-        this.time = time;
-    }
-
-	public String getCallbackUrl() {
-        return this.callbackUrl;
-    }
-
-	public void setCallbackUrl(String callbackUrl) {
-        this.callbackUrl = callbackUrl;
-    }
-
-	public String getForwardEffectueUrl() {
-        return this.forwardEffectueUrl;
-    }
-
-	public void setForwardEffectueUrl(String forwardEffectueUrl) {
-        this.forwardEffectueUrl = forwardEffectueUrl;
-    }
-
-	public String getForwardRefuseUrl() {
-        return this.forwardRefuseUrl;
-    }
-
-	public void setForwardRefuseUrl(String forwardRefuseUrl) {
-        this.forwardRefuseUrl = forwardRefuseUrl;
-    }
-
-	public String getForwardAnnuleUrl() {
-        return this.forwardAnnuleUrl;
-    }
-
-	public void setForwardAnnuleUrl(String forwardAnnuleUrl) {
-        this.forwardAnnuleUrl = forwardAnnuleUrl;
-    }
-
-	public String getHmac() {
-        return this.hmac;
-    }
-
-	public void setHmac(String hmac) {
-        this.hmac = hmac;
-    }
-
-	public SortedMap<String, String> getOptionalAddedParams() {
-        return this.optionalAddedParams;
-    }
-
-	public void setOptionalAddedParams(SortedMap<String, String> optionalAddedParams) {
-        this.optionalAddedParams = optionalAddedParams;
-    }
 }
 

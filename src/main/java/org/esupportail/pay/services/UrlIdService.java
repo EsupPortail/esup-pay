@@ -20,16 +20,25 @@ package org.esupportail.pay.services;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.esupportail.pay.dao.PayEvtDaoService;
+import org.esupportail.pay.dao.PayEvtMontantDaoService;
 import org.esupportail.pay.domain.PayEvt;
-import org.esupportail.pay.domain.PayEvtMontant;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UrlIdService {
 
     private final Logger log = Logger.getLogger(getClass());
+	
+    @Resource
+	PayEvtDaoService payEvtDaoService;
+	
+    @Resource
+    PayEvtMontantDaoService payEvtMontantDaoService;
 
 	public String generateUrlId4PayEvt(String title) {
 		String urlId = title.replaceAll("[^\\p{L}\\p{Nd}]+", "");
@@ -40,7 +49,7 @@ public class UrlIdService {
 			log.warn("UnsupportedEncodingException encoding " + urlId, e);
 		}
 		int i = 1;
-		while(!PayEvt.findPayEvtsByUrlIdEquals(urlId).getResultList().isEmpty()) {
+		while(!payEvtDaoService.findPayEvtsByUrlIdEquals(urlId).getResultList().isEmpty()) {
 			urlId = urlId + i++;
 		}
 		return urlId;
@@ -55,7 +64,7 @@ public class UrlIdService {
 			log.warn("UnsupportedEncodingException encoding " + urlId, e);
 		}
 		int i = 1;
-		while(!PayEvtMontant.findPayEvtMontantsByEvtAndUrlIdEquals(payboxEvt, urlId).getResultList().isEmpty()) {
+		while(!payEvtMontantDaoService.findPayEvtMontantsByEvtAndUrlIdEquals(payboxEvt, urlId).getResultList().isEmpty()) {
 			urlId = urlId + i++;
 		}
 		return urlId;

@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.esupportail.pay.dao.PayEvtDaoService;
+import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.domain.StatsForm;
@@ -29,6 +33,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class StatsService {
 	
+	@Resource
+	PayEvtDaoService payEvtDaoService;
+	
+	@Resource
+	PayTransactionLogDaoService payTransactionLogDaoService;
+
 	public List<StatsForm> findListeStats(List<Object[]> listeStats){
 		 List<StatsForm> listeObjets= new ArrayList<>();
 		if(listeStats.size()!=0){
@@ -87,12 +97,12 @@ public class StatsService {
     	
 		LinkedHashMap<String, Object> results = new LinkedHashMap<String, Object>() {
 	        {
-	            put("montants",mapField(findListeStats(PayEvt.findSumMontantGroupByEvt()), 2));
-	            put("participants",mapField(findListeStats(PayEvt.findNbParticipantsByEvt()), 2));
-	            put("transactions",mapField(findListeStats(PayTransactionLog.findNbTransactionByYear()), 2));
-	            put("cumul",mapField(findListeStats(PayTransactionLog.findMontantByYear()), 2));
-	            put("transactionsMonth",mapField(findListeStats(PayTransactionLog.findNbTransactionByMonth()), 3));
-	            put("cumulMonth",mapField(findListeStats(PayTransactionLog.findMontantByMonth()), 3));
+	            put("montants",mapField(findListeStats(payEvtDaoService.findSumMontantGroupByEvt()), 2));
+	            put("participants",mapField(findListeStats(payEvtDaoService.findNbParticipantsByEvt()), 2));
+	            put("transactions",mapField(findListeStats(payTransactionLogDaoService.findNbTransactionByYear()), 2));
+	            put("cumul",mapField(findListeStats(payTransactionLogDaoService.findMontantByYear()), 2));
+	            put("transactionsMonth",mapField(findListeStats(payTransactionLogDaoService.findNbTransactionByMonth()), 3));
+	            put("cumulMonth",mapField(findListeStats(payTransactionLogDaoService.findMontantByMonth()), 3));
 	        }
 
 	    };

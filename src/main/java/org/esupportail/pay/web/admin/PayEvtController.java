@@ -31,6 +31,10 @@ import javax.validation.Valid;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.esupportail.pay.dao.BigFileDaoService;
+import org.esupportail.pay.dao.PayEvtDaoService;
+import org.esupportail.pay.dao.PayEvtMontantDaoService;
+import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
@@ -83,6 +87,18 @@ public class PayEvtController {
     @Resource
     EvtService evtService;
     
+    @Resource
+    BigFileDaoService bigFileDaoService;
+    
+    @Resource
+    PayEvtMontantDaoService payEvtMontantDaoService;
+    
+	@Resource
+    PayEvtDaoService payEvtDaoService;
+	
+	@Resource
+	PayTransactionLogDaoService payTransactionLogDaoService;
+	
     Double defaultDbleMontantMax;
     
     @Value("${esup-pay.defaultDbleMontantMax:}")
@@ -102,7 +118,7 @@ public class PayEvtController {
 		uiModel.asMap().clear();
 
 		// get PosteCandidature from id                                                                                                                                                                                               
-		PayEvt evt = PayEvt.findPayEvt(id);
+		PayEvt evt = payEvtDaoService.findPayEvt(id);
 
 		MultipartFile file = uploadFile.getLogoFile();
 
@@ -115,8 +131,8 @@ public class PayEvtController {
 			InputStream inputStream = file.getInputStream();
 			//byte[] bytes = IOUtils.toByteArray(inputStream);                                                                                                                                            
 
-			evt.getLogoFile().setBinaryFileStream(inputStream, fileSize);
-			evt.getLogoFile().persist();
+			bigFileDaoService.setBinaryFileStream(evt.getLogoFile(), inputStream, fileSize);
+			bigFileDaoService.persist(evt.getLogoFile());
 		}
 
 		return "redirect:/admin/evts/" + id.toString();
@@ -125,7 +141,7 @@ public class PayEvtController {
 	@RequestMapping(value = "/{id}/logo")
 	public void getLogoFile(@PathVariable("id") Long id, HttpServletRequest request, HttpServletResponse response) {
 		try {
-			PayEvt evt = PayEvt.findPayEvt(id);               
+			PayEvt evt = payEvtDaoService.findPayEvt(id);               
 			if(evt.getLogoFile().getBinaryFile() != null) {
 				IOUtils.copy(evt.getLogoFile().getBinaryFile().getBinaryStream(), response.getOutputStream());
 			} else {
@@ -173,12 +189,12 @@ public class PayEvtController {
     @RequestMapping(value = "/{id}", produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'view')")
     public String show(@PathVariable("id") Long id, Model uiModel) {
-    	PayEvt evt = PayEvt.findPayEvt(id);
+    	PayEvt evt = payEvtDaoService.findPayEvt(id);
     	evtService.computeRespLogin(evt);
         uiModel.addAttribute("payEvt", evt);
         uiModel.addAttribute("itemId", id);    
         if(evt!=null) {
-        	List<PayEvtMontant> montants = PayEvtMontant.findPayEvtMontantsByEvt(evt).getResultList();
+        	List<PayEvtMontant> montants = payEvtMontantDaoService.findPayEvtMontantsByEvt(evt).getResultList();
             uiModel.addAttribute("payevtmontants", montants);
         }
         return "admin/evts/show";
@@ -241,14 +257,14 @@ public class PayEvtController {
         if(isAdmin) {
         	int sizeNo = size == null ? 10 : size.intValue();
         	final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-        	List<PayEvt> payEvts = PayEvt.findPayEvtEntries(firstResult, sizeNo, sortFieldName, sortOrder);
+        	List<PayEvt> payEvts = payEvtDaoService.findPayEvtEntries(firstResult, sizeNo, sortFieldName, sortOrder);
         	evtService.computeRespLogin(payEvts);
         	uiModel.addAttribute("payevts", payEvts);
-        	float nrOfPages = (float) PayEvt.countPayEvts() / sizeNo;
+        	float nrOfPages = (float) payEvtDaoService.countPayEvts() / sizeNo;
         	uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else if(isManagerOrViewer) {
             List<RespLogin> loginList = evtService.listEvt(currentUser);
-            List<PayEvt> payEvts = PayEvt.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList();
+            List<PayEvt> payEvts = payEvtDaoService.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList();
             evtService.computeRespLogin(payEvts);
     		uiModel.addAttribute("payevts", payEvts);
         }
@@ -269,7 +285,7 @@ public class PayEvtController {
     @PreAuthorize("hasPermission(#id, 'manage')")
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        PayEvt payEvt = PayEvt.findPayEvt(id);
+        PayEvt payEvt = payEvtDaoService.findPayEvt(id);
         evtService.computeRespLogin(payEvt);
         populateEditForm(uiModel, payEvt);
         return "admin/evts/update";
@@ -278,8 +294,8 @@ public class PayEvtController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        PayEvt payEvt = PayEvt.findPayEvt(id);
-        payEvt.remove();
+        PayEvt payEvt = payEvtDaoService.findPayEvt(id);
+        payEvtDaoService.remove(payEvt);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
@@ -293,15 +309,15 @@ public class PayEvtController {
     		sortFieldName = "transactionDate";
     		sortOrder = "desc";
     	}
-    	PayEvt payEvt = PayEvt.findPayEvt(id);
+    	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
     	if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("paytransactionlogs", PayTransactionLog.findPayTransactionLogsByPayEvt(payEvt, sortFieldName, sortOrder).setFirstResult(firstResult).setMaxResults(sizeNo).getResultList());
-            float nrOfPages = (float) PayTransactionLog.countFindPayTransactionLogsByPayEvt(payEvt) / sizeNo;
+            uiModel.addAttribute("paytransactionlogs", payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, sortFieldName, sortOrder).setFirstResult(firstResult).setMaxResults(sizeNo).getResultList());
+            float nrOfPages = (float) payTransactionLogDaoService.countFindPayTransactionLogsByPayEvt(payEvt) / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("paytransactionlogs", PayTransactionLog.findPayTransactionLogsByPayEvt(payEvt, sortFieldName, sortOrder).getResultList());
+            uiModel.addAttribute("paytransactionlogs", payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, sortFieldName, sortOrder).getResultList());
         }
         uiModel.addAttribute("payTransactionLog_transactiondate_date_format", DateTimeFormat.patternForStyle("MM", LocaleContextHolder.getLocale()));
         uiModel.addAttribute("payEvt", payEvt);
@@ -311,8 +327,8 @@ public class PayEvtController {
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees/csv", produces = "text/html")
     public void csvFees(@PathVariable("id") Long id, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
-    	PayEvt payEvt = PayEvt.findPayEvt(id);
-    	TypedQuery<PayTransactionLog> txLogsQuery = PayTransactionLog.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc");
+    	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
+    	TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc");
     	csvController.generateAndReturnCsv(response, txLogsQuery);
     }
 

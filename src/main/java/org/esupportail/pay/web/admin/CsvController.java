@@ -23,12 +23,14 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
+import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StopWatch;
@@ -40,10 +42,13 @@ public class CsvController {
 
 	private final Logger log = Logger.getLogger(getClass());
 	
+	@Resource
+	PayTransactionLogDaoService payTransactionLogDaoService;
+	
 	@RequestMapping
     public void getCsv(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
 		
-		TypedQuery<PayTransactionLog> txLogsQuery = PayTransactionLog.findAllPayTransactionLogsQuery("transactionDate", "asc");
+		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc");
 		
 		generateAndReturnCsv(response, txLogsQuery);
 

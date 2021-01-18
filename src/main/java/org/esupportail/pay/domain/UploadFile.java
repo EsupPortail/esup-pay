@@ -19,16 +19,13 @@ package org.esupportail.pay.domain;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UploadFile {
     
     private MultipartFile logoFile;
     
-
-	public MultipartFile getLogoFile() {
-        return this.logoFile;
-    }
-
-	public void setLogoFile(MultipartFile logoFile) {
-        this.logoFile = logoFile;
-    }
 }

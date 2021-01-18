@@ -21,6 +21,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.esupportail.pay.dao.PayEvtDaoService;
+import org.esupportail.pay.dao.RespLoginDaoService;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.RespLogin;
@@ -30,10 +34,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class PayPermissionEvaluator implements PermissionEvaluator {
 
+	
+	@Resource
+	PayEvtDaoService payEvtDaoService;
+	
+	@Resource
+	RespLoginDaoService respLoginDaoService;
+	
 	@Override
 	public boolean hasPermission(Authentication auth, Object targetDomainObject, Object permission) {
-		
-		
+				
 		if(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
 			return true;
 
@@ -59,16 +69,16 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 			PayEvt transientEvt = ((PayEvtMontant) targetDomainObject).getEvt();
 			evtId = transientEvt.getId();				
 		}
-		PayEvt evt = PayEvt.findPayEvt(evtId);
-		RespLogin respLogin = RespLogin.findOrCreateRespLogin(auth.getName());
+		PayEvt evt = payEvtDaoService.findPayEvt(evtId);
+		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(auth.getName());
 		List<RespLogin> respLoginList = Arrays.asList(new RespLogin[] {respLogin});
 
 		if("view".equals(permissionKey) || "manage".equals(permissionKey)) {
-			accessAuth = PayEvt.findPayEvtsByRespLogins(respLoginList).getResultList().contains(evt);
+			accessAuth = payEvtDaoService.findPayEvtsByRespLogins(respLoginList).getResultList().contains(evt);
 		}
 		
 		if("view".equals(permissionKey)) {
-			accessAuth = accessAuth || PayEvt.findPayEvtsByViewerLogins(respLoginList).getResultList().contains(evt);
+			accessAuth = accessAuth || payEvtDaoService.findPayEvtsByViewerLogins(respLoginList).getResultList().contains(evt);
 		}
 
 		return accessAuth;

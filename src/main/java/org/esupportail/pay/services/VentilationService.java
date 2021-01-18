@@ -25,7 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.time.DateUtils;
+import org.esupportail.pay.dao.ExportRemiseDaoService;
+import org.esupportail.pay.dao.ExportTransactionDaoService;
+import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.domain.ExportRemise;
 import org.esupportail.pay.domain.ExportTransaction;
 import org.esupportail.pay.domain.PayEvt;
@@ -41,7 +46,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class VentilationService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-
+	
+	@Resource
+	ExportRemiseDaoService exportRemiseDaoService;
+	
+	@Resource
+	ExportTransactionDaoService exportTransactionDaoService;
+	
+	@Resource
+	PayEvtDaoService payEvtDaoService;
+	
 	public List<Ventilation> getVentilations(Date dateMonth) {
 		
 		Map<String, PayEvt> evenementsPrefix = getEvenementsPrefix();
@@ -50,11 +64,11 @@ public class VentilationService {
 		List<Ventilation> ventilations = new ArrayList<Ventilation>();
 		Date dateMonthAfter = DateUtils.addMonths(dateMonth,+1);
 		
-		for(ExportRemise remise : ExportRemise.findExportRemisesByDateRemiseBetween(dateMonth, dateMonthAfter, "dateRemise", "DESC").getResultList()) {
+		for(ExportRemise remise : exportRemiseDaoService.findExportRemisesByDateRemiseBetween(dateMonth, dateMonthAfter, "dateRemise", "DESC").getResultList()) {
 			Ventilation ventilation = new Ventilation();
 			ventilation.setRemise(remise);
 			ventilation.setDate(remise.getDateRemise());
-			List<ExportTransaction> transactions = ExportTransaction.findExportTransactionsByNumRemiseAndStatutEqualsAndNumContratEquals(remise.getNumRemise(), "Acceptée", remise.getNumContrat()).getResultList();			
+			List<ExportTransaction> transactions = exportTransactionDaoService.findExportTransactionsByNumRemiseAndStatutEqualsAndNumContratEquals(remise.getNumRemise(), "Acceptée", remise.getNumContrat()).getResultList();			
 		
 			Map<PayEvt, List<ExportTransaction>> transactionsEvts = new HashMap<PayEvt, List<ExportTransaction>>();
 			for(ExportTransaction t : transactions) {
@@ -99,7 +113,7 @@ public class VentilationService {
 			            }
 			        }
 		});			
-		for(PayEvt evt : PayEvt.findAllPayEvts()) {
+		for(PayEvt evt : payEvtDaoService.findAllPayEvts()) {
 			evenementsPrefix.put(evt.getPayboxCommandPrefix(), evt);
 		}		
 		return evenementsPrefix;

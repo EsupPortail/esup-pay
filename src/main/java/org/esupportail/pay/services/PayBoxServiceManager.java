@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.PayBoxForm;
 import org.esupportail.pay.domain.PayEvt;
@@ -36,7 +37,10 @@ import org.springframework.stereotype.Service;
 public class PayBoxServiceManager {
 
     private final Logger log = Logger.getLogger(getClass());
-
+    
+    @Resource
+    EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
+    
     @Value("${institute.href}")
     String instituteHref;
     
@@ -56,7 +60,7 @@ public class PayBoxServiceManager {
 	}
 	
 	public String getWebSite(String reference) {
-        List<EmailFieldsMapReference> emailMapFirstLastNames = EmailFieldsMapReference.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt evt = evtMontant.getEvt();
@@ -66,7 +70,7 @@ public class PayBoxServiceManager {
 	}
 	
 	public EmailFieldsMapReference getEmailFieldsMapReference(String reference) {
-        List<EmailFieldsMapReference> emailMapFirstLastNames = EmailFieldsMapReference.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {
             return emailMapFirstLastNames.get(0);
         }
@@ -76,7 +80,7 @@ public class PayBoxServiceManager {
 	public boolean payboxCallback(String montant, String reference,
 			String auto, String erreur, String idtrans, String signature,
 			String queryString) {
-		List<EmailFieldsMapReference> emailMapFirstLastNames = EmailFieldsMapReference.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+		List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt payboxevt = evtMontant.getEvt();

@@ -24,8 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
-import org.esupportail.pay.domain.PayEvt;
+import org.esupportail.pay.dao.PayEvtDaoService;
+import org.esupportail.pay.dao.RespLoginDaoService;
 import org.esupportail.pay.domain.RespLogin;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
@@ -44,6 +47,12 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 	protected LdapUserSearch ldapUserGroupAdminFilterSearch;
 	
 	protected String groupAdminFilter;
+	
+	@Resource
+	PayEvtDaoService payEvtDaoService;
+	
+	@Resource
+	RespLoginDaoService respLoginDaoService;
 	
 	public void setMappingGroupesRoles(Map<String, String> mappingGroupesRoles) {
 		// for case insensitive ...
@@ -109,15 +118,15 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		}
 		
-		RespLogin respLogin = RespLogin.findOrCreateRespLogin(username);
+		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(username);
 		List<RespLogin> respLoginList = Arrays.asList(new RespLogin[] {respLogin});
-		if(!PayEvt.findPayEvtsByRespLogins(respLoginList).getResultList().isEmpty()) {
+		if(!payEvtDaoService.findPayEvtsByRespLogins(respLoginList).getResultList().isEmpty()) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
 		}
 		
-		RespLogin viewerLogin = RespLogin.findOrCreateRespLogin(username);
+		RespLogin viewerLogin = respLoginDaoService.findOrCreateRespLogin(username);
 		List<RespLogin> viewerLoginList = Arrays.asList(new RespLogin[] {viewerLogin});
-		if(!PayEvt.findPayEvtsByViewerLogins(viewerLoginList).getResultList().isEmpty()) {
+		if(!payEvtDaoService.findPayEvtsByViewerLogins(viewerLoginList).getResultList().isEmpty()) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_VIEWER"));
 		}
 		

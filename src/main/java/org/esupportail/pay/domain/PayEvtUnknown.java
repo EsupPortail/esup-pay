@@ -18,8 +18,7 @@
 package org.esupportail.pay.domain;
 
 public class PayEvtUnknown extends PayEvt {
-
-    
+  
     public String getTitleFr() {
 		return "Inconnu ?";
 	}

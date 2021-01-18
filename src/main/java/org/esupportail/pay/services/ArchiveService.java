@@ -19,9 +19,13 @@ package org.esupportail.pay.services;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
+import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.domain.ScienceConfReference;
@@ -36,6 +40,9 @@ public class ArchiveService {
 	
 	private final Logger log = Logger.getLogger(getClass());
 	
+	@Resource
+	EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
+	
 	@Value("${archive.enabled:false}")
 	private Boolean enabled;
 	
@@ -44,18 +51,24 @@ public class ArchiveService {
 	
 	@Value("${archive.oldDays.transactionsLogs:1825}")
 	private Long oldDays4transactionsLogs;
+	
+	@Resource
+	ScienceConfReferenceDaoService scienceConfReferenceDaoService;
+	
+	@Resource
+	PayTransactionLogDaoService payTransactionLogDaoService;
 
 	@Scheduled(fixedDelay=3600000)
 	public void removeOldTmpEmailFieldsMapReference() {		
 		if(enabled) {
 			log.debug("removeOldTmpEmailFieldsMapReference called");
-			List<EmailFieldsMapReference> emailFieldsMapReferences2remove = EmailFieldsMapReference.findOldEmailFieldsMapReferences(oldDays4emailFieldsMapReference);
+			List<EmailFieldsMapReference> emailFieldsMapReferences2remove = emailFieldsMapReferenceDaoService.findOldEmailFieldsMapReferences(oldDays4emailFieldsMapReference);
 			for(EmailFieldsMapReference emailFieldsMapReference : emailFieldsMapReferences2remove) {
-				TypedQuery<ScienceConfReference> q = ScienceConfReference.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference);
+				TypedQuery<ScienceConfReference> q = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference);
 				if(!q.getResultList().isEmpty()) {
-					q.getSingleResult().remove();
+					scienceConfReferenceDaoService.remove(q.getSingleResult());
 				}
-				emailFieldsMapReference.remove();
+				emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
 			}
 			if(emailFieldsMapReferences2remove.size()>0) {
 				log.info(emailFieldsMapReferences2remove.size() + " old emailFieldsMapReferences removed");
@@ -67,7 +80,7 @@ public class ArchiveService {
 	public void anonymiseOldTransactions() {	
 		if(enabled) {
 			log.debug("anonymiseOldTransactions called");
-			List<PayTransactionLog> transactionLogs = PayTransactionLog.findOldPayTransactionLogs(oldDays4transactionsLogs);
+			List<PayTransactionLog> transactionLogs = payTransactionLogDaoService.findOldPayTransactionLogs(oldDays4transactionsLogs);
 			for(PayTransactionLog transactionLog : transactionLogs) {
 				anonymise(transactionLog);
 			}

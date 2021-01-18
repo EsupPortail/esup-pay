@@ -26,12 +26,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
+import javax.annotation.Resource;
+
+import org.esupportail.pay.dao.ExportRemiseDaoService;
+import org.esupportail.pay.dao.ExportTransactionDaoService;
 import org.esupportail.pay.domain.ExportRemise;
 import org.esupportail.pay.domain.ExportTransaction;
 import org.esupportail.pay.domain.ExportTransaction.TypeTransaction;
@@ -48,7 +50,13 @@ public class ExportService {
 
 	// 2020-09-28 11:54:20
 	SimpleDateFormat csvDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+	
+	@Resource
+	ExportTransactionDaoService exportTransactionDaoService;
+	
+	@Resource
+	ExportRemiseDaoService exportRemiseDaoService;
+	
 	/*
 	Num. transaction	
 	Numéro remise banque	
@@ -98,8 +106,8 @@ public class ExportService {
 	
 			ExportTransaction exportTransaction = new ExportTransaction();	
 			
-			if(ExportTransaction.countFindExportTransactionsByNumTransactionEqualsAndNumContratEquals(numTransaction, numContrat)>0) {
-				exportTransaction = ExportTransaction.findExportTransactionsByNumTransactionEqualsAndNumContratEquals(numTransaction, numContrat).getSingleResult();
+			if(exportTransactionDaoService.countFindExportTransactionsByNumTransactionEqualsAndNumContratEquals(numTransaction, numContrat)>0) {
+				exportTransaction = exportTransactionDaoService.findExportTransactionsByNumTransactionEqualsAndNumContratEquals(numTransaction, numContrat).getSingleResult();
 			}
 	
 			exportTransaction.setNumRemise(numRemise);
@@ -121,7 +129,7 @@ public class ExportService {
 				exportTransaction.setTypeTransaction(TypeTransaction.ANNULATION);
 			} 
 			if(exportTransaction.getId()==null) {
-				exportTransaction.persist();
+				exportTransactionDaoService.persist(exportTransaction);
 			}
 		}
 	}
@@ -159,8 +167,8 @@ public class ExportService {
 	
 			ExportRemise exportRemise = new ExportRemise();
 			
-			if(ExportRemise.countFindExportRemisesByNumRemiseEqualsAndNumContratEquals(numRemise, numContrat)>0) {
-				exportRemise = ExportRemise.findExportRemisesByNumRemiseEqualsAndNumContratEquals(numRemise, numContrat).getSingleResult();
+			if(exportRemiseDaoService.countFindExportRemisesByNumRemiseEqualsAndNumContratEquals(numRemise, numContrat)>0) {
+				exportRemise = exportRemiseDaoService.findExportRemisesByNumRemiseEqualsAndNumContratEquals(numRemise, numContrat).getSingleResult();
 			}
 	
 			exportRemise.setNumRemise(numRemise);
@@ -169,7 +177,7 @@ public class ExportService {
 			exportRemise.setDateRemise(dateRemise);
 			exportRemise.setNbTransactions(Long.valueOf(nbTransactions));
 			if(exportRemise.getId()==null) {
-				exportRemise.persist();
+				exportRemiseDaoService.persist(exportRemise);
 			}
 		}
 	}

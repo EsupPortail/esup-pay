@@ -27,6 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
+import org.esupportail.pay.dao.PayEvtDaoService;
+import org.esupportail.pay.dao.PayEvtMontantDaoService;
+import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.PayBoxForm;
 import org.esupportail.pay.domain.PayEvt;
@@ -64,6 +68,18 @@ public class PayController {
 	@Resource 
 	PayBoxServiceManager payBoxServiceManager;
 	
+    @Resource
+    PayEvtMontantDaoService payEvtMontantDaoService;
+    
+    @Resource
+    PayEvtDaoService payEvtDaoService;   
+    
+	@Resource
+	EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
+	
+	@Resource
+	ScienceConfReferenceDaoService scienceConfReferenceDaoService;
+	
     @RequestMapping("/")
     public String index(Model uiModel) {
     	 
@@ -82,7 +98,7 @@ public class PayController {
     @RequestMapping("evts/{evtUrlId}")
     public String indexEvt(@PathVariable("evtUrlId") String evtUrlId, Model uiModel) {
     	log.info("Evt " + evtUrlId + " called");
-    	List<PayEvt> evts = PayEvt.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
+    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
     	if(evts.size() == 0) {
     		throw new EntityNotFoundException();
     	} 
@@ -93,7 +109,7 @@ public class PayController {
 	@RequestMapping(value = "logo/{evtUrlId}")
 	public void getLogoFileEvt(@PathVariable("evtUrlId") String evtUrlId, HttpServletRequest request, HttpServletResponse response) {
 		try {
-	    	List<PayEvt> evts = PayEvt.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
+	    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
 	    	if(evts.size() == 0) {
 	    		throw new EntityNotFoundException();
 	    	} 
@@ -112,12 +128,12 @@ public class PayController {
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.GET)
     public String indexEvtMnt(@PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, Model uiModel) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called");
-    	List<PayEvt> evts = PayEvt.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
+    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
     	if(evts.size() == 0) {
     		log.warn("PayEvt " + evtUrlId + " not found");
     		throw new EntityNotFoundException();
     	} 
-    	List<PayEvtMontant> evtsMnts = PayEvtMontant.findPayEvtMontantsByEvtAndUrlIdEquals(evts.get(0), mntUrlId).getResultList();
+    	List<PayEvtMontant> evtsMnts = payEvtMontantDaoService.findPayEvtMontantsByEvtAndUrlIdEquals(evts.get(0), mntUrlId).getResultList();
     	if(evtsMnts.size() == 0) {
     		log.warn("PayEvtMontant " + mntUrlId + "in " + evts.get(0) + " not found");
     		throw new EntityNotFoundException();
@@ -162,14 +178,14 @@ public class PayController {
     		field2 = field2.trim().replaceAll(AROBAS_IS_FIRST_CHAR_REGEX, "").replaceAll(AROBASE_IS_LAST_CHAR_REGEX, "").replaceAll(AROBASE_IN_ROW_REGEX, "@").trim();
     	}
     	
-    	List<PayEvt> evts = PayEvt.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
+    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
     	if(evts.size() == 0) {
     		log.warn("PayEvt " + evtUrlId + " not found");
     		throw new EntityNotFoundException();
     	} 
     	PayEvt payevt = evts.get(0);
     	
-    	List<PayEvtMontant> evtsMnts = PayEvtMontant.findPayEvtMontantsByEvtAndUrlIdEquals(payevt, mntUrlId).getResultList();
+    	List<PayEvtMontant> evtsMnts = payEvtMontantDaoService.findPayEvtMontantsByEvtAndUrlIdEquals(payevt, mntUrlId).getResultList();
     	if(evtsMnts.size() == 0) {
     		log.warn("PayEvtMontant " + mntUrlId + "in " + payevt + " not found");
     		throw new EntityNotFoundException();
@@ -216,7 +232,7 @@ public class PayController {
     public String payboxForward(Model uiModel, @RequestParam String reference, HttpServletResponse response) {
     	EmailFieldsMapReference emailFieldsMapReference = payBoxServiceManager.getEmailFieldsMapReference(reference);
     	if(emailFieldsMapReference!=null && emailFieldsMapReference.getPayEvtMontant().getSciencesconf()) {
-    		ScienceConfReference scienceConfReference = ScienceConfReference.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference).getSingleResult();
+    		ScienceConfReference scienceConfReference = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference).getSingleResult();
     		 uiModel.addAttribute("scienceConfReference", scienceConfReference);
     		 return "scienceconfPostReturn";
     	}
@@ -240,14 +256,14 @@ public class PayController {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called via sciencesconf");
     	log.info("confid " + confid + " - uid : " + uid + " - lastname : " + lastname + " - firstname : " + firstname + " - mail : " + mail + " - fees : " + fees + " - returnurl : " + returnurl );
     	
-    	List<PayEvt> evts = PayEvt.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
+    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
     	if(evts.size() == 0) {
     		log.warn("PayEvt " + evtUrlId + " not found");
     		throw new EntityNotFoundException();
     	} 
     	PayEvt payevt = evts.get(0);
     	
-    	List<PayEvtMontant> evtsMnts = PayEvtMontant.findPayEvtMontantsByEvtAndUrlIdEquals(payevt, mntUrlId).getResultList();
+    	List<PayEvtMontant> evtsMnts = payEvtMontantDaoService.findPayEvtMontantsByEvtAndUrlIdEquals(payevt, mntUrlId).getResultList();
     	if(evtsMnts.size() == 0) {
     		log.warn("PayEvtMontant " + mntUrlId + "in " + payevt + " not found");
     		throw new EntityNotFoundException();
@@ -261,7 +277,7 @@ public class PayController {
 
     	PayBoxForm payBoxForm = payBoxServiceManager.getPayBoxForm(payevt, mail, firstname, lastname, amount, payevtmontant);
     	
-    	List<EmailFieldsMapReference> emailMapFirstLastNames = EmailFieldsMapReference.findEmailFieldsMapReferencesByReferenceEquals(payBoxForm.getCommande()).getResultList();
+    	List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(payBoxForm.getCommande()).getResultList();
         EmailFieldsMapReference emailFieldsMapReference = emailMapFirstLastNames.get(0);
         ScienceConfReference scienceConfReference = new ScienceConfReference();
         scienceConfReference.setConfid(confid);
@@ -269,7 +285,7 @@ public class PayController {
         scienceConfReference.setReturnurl(returnurl);
         scienceConfReference.setEmailFieldsMapReference(emailFieldsMapReference);
         scienceConfReference.setDateCreated(new Date());
-        scienceConfReference.persist();
+        scienceConfReferenceDaoService.persist(scienceConfReference);
 
 	    uiModel.addAttribute("payBoxForm", payBoxForm);
         return "evtmntForm";
