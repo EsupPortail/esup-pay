@@ -28,13 +28,11 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Configurable
 @Getter
 @Setter
 public class PayEvtMontant {

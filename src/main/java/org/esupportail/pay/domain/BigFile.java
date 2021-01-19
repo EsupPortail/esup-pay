@@ -27,13 +27,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Configurable
 @Getter
 @Setter
 public class BigFile {

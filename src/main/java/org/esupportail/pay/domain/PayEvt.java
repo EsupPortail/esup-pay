@@ -18,36 +18,27 @@
 package org.esupportail.pay.domain;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.Transient;
-import javax.persistence.TypedQuery;
 import javax.persistence.Version;
+
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Configurable
 @Getter
 @Setter
 public class PayEvt {

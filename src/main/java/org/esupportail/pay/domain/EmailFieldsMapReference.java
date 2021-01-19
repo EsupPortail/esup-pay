@@ -27,12 +27,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
 import lombok.Getter;
 import lombok.Setter;
 
-@Configurable
 @Entity
 @Getter
 @Setter

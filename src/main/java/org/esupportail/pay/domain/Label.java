@@ -29,12 +29,9 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
 import lombok.Getter;
 import lombok.Setter;
 
-@Configurable
 @Entity
 @Getter
 @Setter

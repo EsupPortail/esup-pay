@@ -26,6 +26,7 @@ import javax.persistence.TypedQuery;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.RespLogin;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PayEvtDaoService {
@@ -252,7 +253,7 @@ public class PayEvtDaoService {
         return em.createQuery(jpaQuery, PayEvt.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
-
+	@Transactional
 	public void persist(PayEvt payEvt) {
 		em.persist(payEvt);
 	}

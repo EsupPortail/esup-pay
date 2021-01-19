@@ -24,13 +24,10 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Configurable
 @Getter
 @Setter
 public class RespLogin {

@@ -54,6 +54,9 @@ public class LdapService {
 	}
 
 	public void computeRespLogin(List<RespLogin> respLogins, String loginDisplayName) {
+		if(respLogins==null || respLogins.isEmpty()) {
+			return;
+		}
 		this.loginDisplayName = loginDisplayName;
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
