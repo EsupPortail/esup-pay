@@ -25,6 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
@@ -50,6 +52,9 @@ public class Label {
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@MapKey(name = "idLocale")
+    @JoinTable(name = "label_label_locales",
+	    joinColumns = @JoinColumn( name = "label" ),
+	    inverseJoinColumns = @JoinColumn( name = "label_locales" ) )
 	Map<String, LabelLocale> labelLocales;
 	
 	public Label() {

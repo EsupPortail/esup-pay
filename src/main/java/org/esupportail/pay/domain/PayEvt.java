@@ -26,6 +26,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
@@ -33,8 +35,8 @@ import javax.persistence.Version;
 
 import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
-import org.hibernate.validator.constraints.NotEmpty;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -78,9 +80,29 @@ public class PayEvt {
     String payboxCommandPrefix;
 
     @ManyToMany
+    @JoinTable(name = "pay_evt_resp_logins",
+    	joinColumns = @JoinColumn(
+            name = "pay_evt",
+            referencedColumnName = "id"
+    	),
+    	inverseJoinColumns = @JoinColumn(
+    		name = "resp_logins",
+    		referencedColumnName = "id"
+    	)
+    )
     List<RespLogin> respLogins;
 
     @ManyToMany
+    @JoinTable(name = "pay_evt_viewer_logins",
+        	joinColumns = @JoinColumn(
+                    name = "pay_evt",
+                    referencedColumnName = "id"
+            	),
+            	inverseJoinColumns = @JoinColumn(
+            		name = "viewer_logins",
+            		referencedColumnName = "id"
+            	)
+            )
     List<RespLogin> viewerLogins;
     
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
