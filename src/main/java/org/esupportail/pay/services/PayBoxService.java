@@ -50,7 +50,6 @@ import org.esupportail.pay.domain.PayTransactionLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.MailSender;
-import org.springframework.transaction.annotation.Transactional;
 
 public class PayBoxService {
 
@@ -239,7 +238,6 @@ public class PayBoxService {
         }
     }
 
-    @Transactional
     public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String signature, String queryString) {
         synchronized (idtrans.intern()) {
 	    	List<PayTransactionLog> txLogs = payTransactionLogDaoService.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();

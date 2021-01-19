@@ -22,10 +22,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class LabelLocaleDaoService {
 
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("idLocale", "translation");

@@ -47,6 +47,7 @@ import org.springframework.web.util.WebUtils;
 
 @RequestMapping("/admin/evtmnts")
 @Controller
+@Transactional
 public class PayEvtMontantController {
 	
     @Resource
@@ -106,6 +107,7 @@ public class PayEvtMontantController {
             populateEditForm(uiModel, payEvtMontant);
             return "admin/evtmnts/update";
         }
+    	payEvtMontantDaoService.merge(payEvtMontant);
         uiModel.asMap().clear();
         return "redirect:/admin/evtmnts/" + encodeUrlPathSegment(payEvtMontant.getId().toString(), httpServletRequest);
     }

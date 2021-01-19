@@ -33,11 +33,13 @@ import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/admin/csv")
 @Controller
+@Transactional
 public class CsvController {
 
 	private final Logger log = Logger.getLogger(getClass());

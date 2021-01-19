@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class PayEvtDaoService {
 
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("id", "logoFile", "payboxServiceKey", "title", "webSiteUrl", "urlId", "managersEmail", "mailSubject", "payboxCommandPrefix", "respLogins", "viewerLogins", "defaultMntDescription", "logins", "viewerLogins2Add");
@@ -263,6 +262,11 @@ public class PayEvtDaoService {
 
 	public void remove(PayEvt payEvt) {
 		em.remove(payEvt);
+	}
+
+
+	public void merge(PayEvt payEvt) {
+		em.merge(payEvt);
 	}
 	
 }

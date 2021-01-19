@@ -136,13 +136,13 @@ xmlns:springform="http://www.springframework.org/tags/form" version="2.0" id="up
         <!-- gestion labels - ids -->
         <input name="title.id" type="hidden" value="${payEvtMontant.title.id}"/>
         <input name="title.version" type="hidden" value="${payEvtMontant.title.version}"/>
-        <input name="description" type="hidden" value="${payEvtMontant.description.id}"/>
+        <input name="description.id" type="hidden" value="${payEvtMontant.description.id}"/>
         <input name="description.version" type="hidden" value="${payEvtMontant.description.version}"/>
-        <input name="help" type="hidden" value="${payEvtMontant.help.id}"/>
-        <input name="help" type="hidden" value="${payEvtMontant.help.version}"/>      
-        <input name="field1Label" type="hidden" value="${payEvtMontant.field1Label.id}"/>
+        <input name="help.id" type="hidden" value="${payEvtMontant.help.id}"/>
+        <input name="help.version" type="hidden" value="${payEvtMontant.help.version}"/>      
+        <input name="field1Label.id" type="hidden" value="${payEvtMontant.field1Label.id}"/>
         <input name="field1Label.version" type="hidden" value="${payEvtMontant.field1Label.version}"/>
-        <input name="field2Label" type="hidden" value="${payEvtMontant.field2Label.id}"/>
+        <input name="field2Label.id" type="hidden" value="${payEvtMontant.field2Label.id}"/>
         <input name="field2Label.version" type="hidden" value="${payEvtMontant.field2Label.version}"/>
         
         

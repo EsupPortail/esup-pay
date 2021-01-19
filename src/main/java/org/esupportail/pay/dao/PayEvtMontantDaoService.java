@@ -26,12 +26,9 @@ import javax.validation.Valid;
 
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
-import org.esupportail.pay.domain.PayTransactionLog;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class PayEvtMontantDaoService {
 
 	public final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("evt", "title", "description", "help", "field1Label", "field2Label", "dbleMontant", "urlId", "freeAmount", "sciencesconf", "addPrefix", "optionalAddedParams", "isEnabled");
@@ -157,6 +154,10 @@ public class PayEvtMontantDaoService {
 
 	public void remove(PayEvtMontant payEvtMontant) {
 		em.remove(payEvtMontant);
+	}
+
+	public void merge(@Valid PayEvtMontant payEvtMontant) {
+		em.merge(payEvtMontant);
 	}
 
 }

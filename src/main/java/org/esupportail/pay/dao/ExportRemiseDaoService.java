@@ -9,10 +9,8 @@ import javax.persistence.TypedQuery;
 
 import org.esupportail.pay.domain.ExportRemise;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class ExportRemiseDaoService {
 	
 	public final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("numRemise", "dateRemise", "nbTransactions", "montant", "numContrat");

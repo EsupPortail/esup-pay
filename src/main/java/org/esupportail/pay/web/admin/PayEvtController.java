@@ -67,6 +67,7 @@ import org.springframework.web.util.WebUtils;
 
 @RequestMapping("/admin/evts")
 @Controller
+@Transactional
 public class PayEvtController {
 
 	private final Logger log = Logger.getLogger(getClass());

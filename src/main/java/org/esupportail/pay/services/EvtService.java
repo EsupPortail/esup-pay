@@ -13,7 +13,6 @@ import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.RespLogin;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EvtService {
@@ -34,7 +33,6 @@ public class EvtService {
     @Value("${ldap.displayName:displayName}")
     private String loginDisplayName;
 
-    @Transactional
     public void updateEvt(PayEvt payEvt) {
         // Hack : don't override logoFile !!
         PayEvt payEvtCurrent = payEvtDaoService.findPayEvt(payEvt.getId());
@@ -43,6 +41,8 @@ public class EvtService {
 
         computeLogins(payEvt, payEvt.getLogins(), payEvt.getViewerLogins2Add());
         computeRespLogin(payEvt);
+        
+        payEvtDaoService.merge(payEvt);
     }
 
     public void createEvt(PayEvt payEvt, List<String> respLoginIds, List<String> viewerLoginIds) {
