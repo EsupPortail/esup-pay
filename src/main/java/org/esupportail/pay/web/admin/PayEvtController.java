@@ -262,6 +262,7 @@ public class PayEvtController {
         	uiModel.addAttribute("payevts", payEvts);
         	float nrOfPages = (float) payEvtDaoService.countPayEvts() / sizeNo;
         	uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        	log.info(payEvts.get(0).getTitle());
         } else if(isManagerOrViewer) {
             List<RespLogin> loginList = evtService.listEvt(currentUser);
             List<PayEvt> payEvts = payEvtDaoService.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList();

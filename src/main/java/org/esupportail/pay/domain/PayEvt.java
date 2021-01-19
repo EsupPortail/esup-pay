@@ -57,12 +57,14 @@ public class PayEvt {
     private Integer version;
 	
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "logo_file")
     private BigFile logoFile = new BigFile();
 
     @NotEmpty
     String payboxServiceKey;
     
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "title")
     Label title;
 
     String webSiteUrl;
