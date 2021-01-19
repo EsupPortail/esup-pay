@@ -108,6 +108,7 @@ public class PayEvt {
     List<RespLogin> viewerLogins;
     
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "default_mnt_description")
     Label defaultMntDescription;
     
     String defaultOptionalAddedParams = "";
