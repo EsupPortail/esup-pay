@@ -27,8 +27,10 @@ import org.esupportail.pay.domain.BigFile;
 import org.hibernate.LobHelper;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class BigFileDaoService {
 	
 	public final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("binaryFile");

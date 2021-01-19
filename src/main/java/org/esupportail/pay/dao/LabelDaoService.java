@@ -23,8 +23,10 @@ import javax.persistence.PersistenceContext;
 
 import org.esupportail.pay.domain.Label;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class LabelDaoService {
 	
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("labelLocales");

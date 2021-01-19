@@ -99,7 +99,6 @@ public class PayEvtMontantController {
     }
     
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
-    @Transactional
     public String update(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	PayEvtMontantUpdateValidator payEvtMontantValidator = new PayEvtMontantUpdateValidator();
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);

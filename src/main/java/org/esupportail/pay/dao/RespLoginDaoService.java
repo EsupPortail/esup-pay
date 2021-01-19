@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class RespLoginDaoService {
 	
 	public final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("login");

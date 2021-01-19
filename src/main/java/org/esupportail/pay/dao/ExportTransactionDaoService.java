@@ -24,8 +24,10 @@ import javax.persistence.TypedQuery;
 
 import org.esupportail.pay.domain.ExportTransaction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ExportTransactionDaoService {
 
 	@PersistenceContext

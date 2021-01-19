@@ -29,8 +29,10 @@ import javax.persistence.TypedQuery;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class EmailFieldsMapReferenceDaoService {
 
 	@PersistenceContext

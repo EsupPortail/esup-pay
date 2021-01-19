@@ -25,8 +25,10 @@ import javax.persistence.TypedQuery;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.ScienceConfReference;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ScienceConfReferenceDaoService {
 
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("emailFieldsMapReference", "uid", "confid", "returnurl", "dateCreated");
