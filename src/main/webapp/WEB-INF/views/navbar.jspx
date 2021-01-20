@@ -18,10 +18,13 @@
     limitations under the License.
 
 -->
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" 
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" 
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" 
     xmlns:sec="http://www.springframework.org/security/tags"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:spring="http://www.springframework.org/tags" class="navbar-default navbar-inverse navbar-fixed-top">
+	xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:form="http://www.springframework.org/tags/form"
+	class="navbar-default navbar-inverse navbar-fixed-top">
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 	<spring:url value="/j_spring_cas_security_logout" var="logoutUrl" />
@@ -53,9 +56,13 @@
 		</sec:authorize>
 			
 		<sec:authorize access="hasRole('ROLE_PREVIOUS_ADMINISTRATOR')">
-			<spring:url value="/logout/impersonate" var="su_exit_url" />
 			<ul class="nav navbar-nav navbar-right supervisor-nav">
-				<li><a href="${su_exit_url}" class="btn btn-warning"><spring:message code="button_exit_su" htmlEscape="false" /></a></li>
+				<li>
+				  <form:form class="form-horizontal" action="/logout/impersonate" method="POST">
+				  	<spring:message code="button_exit_su" htmlEscape="false" var="button_exit_label"/>
+					<input type="submit" class="btn btn-warning" value="${button_exit_label}"/>
+				  </form:form>
+				</li>	
 			</ul>
 		</sec:authorize>
 	</div>
