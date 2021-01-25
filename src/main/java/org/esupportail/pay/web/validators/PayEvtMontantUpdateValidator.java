@@ -41,6 +41,9 @@ public class PayEvtMontantUpdateValidator implements Validator {
 		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf() && (evtMontant.getDbleMontant() == null || evtMontant.getDbleMontant() <= 0.0)) {
 			errors.rejectValue("dbleMontant", "MustBePositive");
 	    }
+		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf() && (evtMontant.getDbleMontant()*100)%1>0) {
+			errors.rejectValue("dbleMontant", "MustBeInCents");
+	    }
 		if(evtMontant.getTitle().getTranslation(LOCALE_IDS.en) == null || evtMontant.getTitle().getTranslation(LOCALE_IDS.en).isEmpty()) {
 			errors.rejectValue("title", "NotEmpty");
 	    }
