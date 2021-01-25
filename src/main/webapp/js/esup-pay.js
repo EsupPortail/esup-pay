@@ -306,7 +306,7 @@ $(document).ready(function() {
 							message: pay_registration_fees_validator_notempty
 						},
 						regexp: {
-	                        regexp: /^[0-9]+[,\.]?[0-9]*$/i,
+	                        regexp: /^[0-9]+[,\.]?[0-9]?[0-9]?$/i,
 	                        message:  pay_registration_fees_validator_amount
 	                    }
 					}
