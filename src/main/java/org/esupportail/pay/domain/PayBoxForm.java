@@ -103,8 +103,12 @@ public class PayBoxForm {
 	}
 	
 	public String getMontant() {
-		return new Double(new Double(total)/100.0).toString();
+		return Double.valueOf((Double.valueOf(total)/100.0)).toString();
 	}
+	
+    public String getMontantDisplay() {
+    	return String.format("%,.2f€", Double.valueOf(total)/100.0);
+    }
 
 	public void setOptionalAddedParams(String optionalAddedParams2) {
 		if(optionalAddedParams2!=null && !optionalAddedParams2.isEmpty()) {

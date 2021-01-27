@@ -27,7 +27,7 @@
 	<center>
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-				<h4><spring:message code="pay_confirm_transaction" arguments="${payBoxForm.montant}"/></h4>
+				<h4><spring:message code="pay_confirm_transaction" arguments="${payBoxForm.montantDisplay}" argumentSeparator=";"/></h4>
 				<small><spring:message code="pay_confirm_transaction_help"/></small>
 			</div>
 			<div class="panel-body">
@@ -39,7 +39,7 @@
 			
 					<input type="hidden" name="PBX_HMAC" value="${payBoxForm.hmac}" />
 			
-					<input type="submit" value="${payBoxForm.montant} Euros"
+					<input type="submit" value="${payBoxForm.montantDisplay}"
 							class="btn btn-success btn-lg" />
 				</form>
 			</div>

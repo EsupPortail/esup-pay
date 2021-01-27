@@ -86,6 +86,10 @@ public class PayEvtMontant {
     
     Boolean isEnabled = true;
     
+    public String getDbleMontantDisplay() {
+    	return String.format("%,.2f€", dbleMontant);
+    }
+    
     public Boolean getIsEnabled() {
         return this.isEnabled == null || this.isEnabled;
     }
