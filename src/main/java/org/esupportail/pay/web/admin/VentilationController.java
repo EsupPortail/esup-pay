@@ -32,6 +32,7 @@ import org.esupportail.pay.services.ExportService;
 import org.esupportail.pay.services.VentilationService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/admin/ventilations")
 @Controller
+@Transactional
 public class VentilationController {
 
 	private final Logger log = Logger.getLogger(getClass());
