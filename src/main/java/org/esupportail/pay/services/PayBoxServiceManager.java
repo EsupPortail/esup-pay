@@ -56,6 +56,11 @@ public class PayBoxServiceManager {
 	public PayBoxForm getPayBoxForm(PayEvt payboxevt, String mail,
 			String field1, String field2, Double montant,
 			PayEvtMontant payboxEvtMontant) {
+		if(!payboxServices.containsKey(payboxevt.getPayboxServiceKey())) {
+			String errorMessage = String.format("Pas de compte paybox associé à %s en configuration d'esup-pay.", payboxevt.getPayboxServiceKey());
+			log.error(errorMessage);
+			throw new RuntimeException(errorMessage);
+		}
 		return payboxServices.get(payboxevt.getPayboxServiceKey()).getPayBoxForm(mail, field1, field2, montant, payboxEvtMontant);
 	}
 	
