@@ -183,5 +183,10 @@ public class PayEvt {
     public String getTitleFr() {
     	return this.getTitle().getTranslation(LOCALE_IDS.fr);
     }
+    
+    public String getDbleMontantMaxDisplay() {
+    	return String.format("%,.2f€", dbleMontantMax);
+    }
+    
 
 }
