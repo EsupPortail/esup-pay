@@ -101,6 +101,8 @@ version="2.0" id="createEvtmnts">
         		</c:forEach>
         </fieldset>
         
+        <field:checkbox field="authCas" id="c_org_esupportail_pay_domain_payevtmontant_authCas" label="Auth CAS" alternateLabel="Oui"/>
+                
         <c:choose>
 	        <c:when test="${isAdmin}">
 	        	<field:checkbox field="freeAmount" id="c_org_esupportail_pay_domain_payEvtMontant_freeAmount" z="user-managed" alternateLabel="Oui"/>

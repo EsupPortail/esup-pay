@@ -116,6 +116,8 @@ xmlns:springform="http://www.springframework.org/tags/form" version="2.0" id="up
         		</c:forEach>
         </fieldset>
         
+        <field:checkbox field="authCas" id="c_org_esupportail_pay_domain_payevtmontant_authCas" label="Auth CAS" alternateLabel="Oui"/>
+        
         <c:choose>
 	        <c:when test="${isAdmin}">
 	        	<field:checkbox field="freeAmount" id="c_org_esupportail_pay_domain_payevtmontant_freeAmount" z="user-managed" alternateLabel="Oui"/>
@@ -128,7 +130,7 @@ xmlns:springform="http://www.springframework.org/tags/form" version="2.0" id="up
 	        	<input name="addPrefix" type="hidden" value="${payEvtMontant.addPrefix}"/>
 	        </c:otherwise>
         </c:choose>
-        
+           
         <field:input field="optionalAddedParams" id="c_org_esupportail_pay_domain_payEvtMontant_optionalAddedParams" readonly="${not isAdmin}" cssClass="form-control" z="user-managed"/>
         
         </div>

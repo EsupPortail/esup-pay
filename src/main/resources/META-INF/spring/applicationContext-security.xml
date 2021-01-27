@@ -41,6 +41,7 @@
 		<intercept-url access="permitAll" pattern="/resources/**" />
 		<intercept-url access="permitAll" pattern="/webjars/**" />
 		<intercept-url access="${payboxIpRestriction}" pattern="/payboxcallback**" />
+		<intercept-url access="isAuthenticated()" request-matcher-ref="esupPayEvtMntAuthCasRequestMatcher"/>
 		<intercept-url access="permitAll" pattern="/evts/**" />
 		<intercept-url access="permitAll" pattern="/logo/**" />
 		<intercept-url access="isAuthenticated()" pattern="/**" />

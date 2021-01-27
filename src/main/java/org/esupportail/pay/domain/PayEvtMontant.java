@@ -80,6 +80,8 @@ public class PayEvtMontant {
        
     Boolean sciencesconf = false;
     
+    Boolean authCas = false;
+ 
     String addPrefix = "";
     
     String optionalAddedParams = "";
