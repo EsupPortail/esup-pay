@@ -28,7 +28,6 @@ import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.PayEvtMontantDaoService;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
-import org.esupportail.pay.exceptions.EntityNotFoundException;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
 

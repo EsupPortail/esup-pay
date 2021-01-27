@@ -43,6 +43,7 @@ import org.springframework.core.io.AbstractResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.ldap.userdetails.InetOrgPerson;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -154,6 +155,14 @@ public class PayController {
     		return "amountFormDisabled";
     	}
 	
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	if(auth!=null && auth.isAuthenticated() && auth.getPrincipal() instanceof InetOrgPerson) {
+    		InetOrgPerson person = (InetOrgPerson)auth.getPrincipal();
+    		if(person != null) {
+    			uiModel.addAttribute("mail", person.getMail());
+    		}
+    	}
+    	
         return "evtmnt";
     }
 

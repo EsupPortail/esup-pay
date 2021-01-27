@@ -160,6 +160,9 @@
 		class="org.springframework.security.ldap.userdetails.LdapUserDetailsService">
 		<beans:constructor-arg ref="ldapUserSearch"/>
 		<beans:constructor-arg ref="payboxLdapAuthoritiesPopulator" />
+		<beans:property name="userDetailsMapper">
+			<beans:bean class="org.springframework.security.ldap.userdetails.InetOrgPersonContextMapper"/>
+		</beans:property>
 	</beans:bean>
 
 
