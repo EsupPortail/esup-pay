@@ -143,5 +143,9 @@ public class PayEvtMontant {
 			this.dbleMontant = null;
 		}
 	}
+	
+	public Boolean getAuthCas() {
+		return authCas != null && authCas;
+	}
 
 }
