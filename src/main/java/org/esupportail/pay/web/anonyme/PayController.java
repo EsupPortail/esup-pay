@@ -238,12 +238,18 @@ public class PayController {
     
     
     @RequestMapping(value="/", params = "reference")
-    public String payboxForward(Model uiModel, @RequestParam String reference, HttpServletResponse response) {
+    public String payboxForward(Model uiModel, @RequestParam String reference, @RequestParam(required = false) String erreur, @RequestParam(required = false) String signature, @RequestParam(required = false) String queryString, HttpServletResponse response) {
     	EmailFieldsMapReference emailFieldsMapReference = payBoxServiceManager.getEmailFieldsMapReference(reference);
     	if(emailFieldsMapReference!=null && emailFieldsMapReference.getPayEvtMontant().getSciencesconf()) {
+    		// Fonctionnement du paiement dans sciencesconf : https://www.sciencesconf.org/resources/sciencesconf.org.paiement.pdf
+    		int payStatut4sciencesConf = 2; // refusé
+    		if("00000".equals(erreur) && payBoxServiceManager.checkPayboxSignature(reference, queryString, signature)) {
+    			payStatut4sciencesConf = 1; // accepté
+    		}
     		ScienceConfReference scienceConfReference = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference).getSingleResult();
-    		 uiModel.addAttribute("scienceConfReference", scienceConfReference);
-    		 return "scienceconfPostReturn";
+    		uiModel.addAttribute("scienceConfReference", scienceConfReference);
+    		uiModel.addAttribute("payStatut4sciencesConf", payStatut4sciencesConf);
+    		return "scienceconfPostReturn";
     	}
         String forwardUrl = payBoxServiceManager.getWebSite(reference);
         return "redirect:" + forwardUrl;

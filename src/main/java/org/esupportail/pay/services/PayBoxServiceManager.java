@@ -101,5 +101,16 @@ public class PayBoxServiceManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public boolean checkPayboxSignature(String reference, String queryString, String signature) {
+		List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+        if (!emailMapFirstLastNames.isEmpty()) {
+            PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
+            PayEvt payboxevt = evtMontant.getEvt();
+            return payboxServices.get(payboxevt.getPayboxServiceKey()).checkPayboxSignature(queryString, signature);
+        }
+        log.error("reference ne correspond pas à un montant/evt et donc à un service paybox !? reference : " + reference);
+        return false;
+	}
     
 }

@@ -47,7 +47,7 @@
 
 						<input type="hidden" name="confid" value="${scienceConfReference.confid}" />
 						<input type="hidden" name="uid" value="${scienceConfReference.uid}" />
-						<input type="hidden" name="status" value="1" />
+						<input type="hidden" name="status" value="${payStatut4sciencesConf}" />
 						<input type="hidden" name="transactionid" value="${scienceConfReference.emailFieldsMapReference.reference}" />
 
 						<spring:message code="sciences_conf_desc_validation_button" htmlEscape="false" var="button_label"/>
