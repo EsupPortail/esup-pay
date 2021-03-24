@@ -16,6 +16,8 @@
  * limitations under the License.
  */
  package org.esupportail.pay.domain;
+import java.util.Locale;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -89,7 +91,7 @@ public class PayEvtMontant {
     Boolean isEnabled = true;
     
     public String getDbleMontantDisplay() {
-    	return String.format("%,.2f€", dbleMontant);
+    	return String.format(Locale.FRANCE, "%,.2f€", dbleMontant);
     }
     
     public Boolean getIsEnabled() {
