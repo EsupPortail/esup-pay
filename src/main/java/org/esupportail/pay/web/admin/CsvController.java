@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -28,10 +30,12 @@ import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.PayTransactionLog;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
@@ -46,6 +50,9 @@ public class CsvController {
 	
 	@Resource
 	PayTransactionLogDaoService payTransactionLogDaoService;
+	
+	@Value("${csv.separator:;}")
+	private String separator;
 	
 	@RequestMapping
     public void getCsv(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
@@ -67,7 +74,8 @@ public class CsvController {
         
 		Writer writer = new OutputStreamWriter(response.getOutputStream(), "UTF8");
 		
-		String csv = "Date transaction,payEvt,payEvtMontant,mail,field1,field2,montant,ID transaction";
+		List<String> headers = Arrays.asList(new String[] {"Date transaction", "payEvt", "payEvtMontant", "mail", "field1", "field2", "montant", "ID transaction"});
+		String csv = StringUtils.join(headers, separator);
 		writer.write(csv);
 
         int offset = 0;
@@ -76,16 +84,16 @@ public class CsvController {
         while ((txLogs = txLogsQuery.setFirstResult(offset).setMaxResults(1000).getResultList()).size() > 0) {
         	log.debug("Build CSV Iteration - offset : " + offset);
 	    	for(PayTransactionLog txLog : txLogs) {
-	    		csv = "";
-	    		csv = csv + "\r\n";
-	    		csv = csv + txLog.getTransactionDate() + ",";
-	    		csv = csv + txLog.getPayEvtMontant().getEvt().getTitle().getTranslation(LOCALE_IDS.fr) + ",";
-	    		csv = csv + txLog.getPayEvtMontant().getTitle().getTranslation(LOCALE_IDS.fr) + ",";
-	    		csv = csv + txLog.getMail() + ",";
-	    		csv = csv + txLog.getField1() + ",";
-	    		csv = csv + txLog.getField2() + ",";
-	    		csv = csv + txLog.getMontant() + ",";
-	    		csv = csv + txLog.getIdtrans();
+	    		List<String> entries = new ArrayList<String>();
+	    		entries.add(txLog.getTransactionDate().toString());
+	    		entries.add(txLog.getPayEvtMontant().getEvt().getTitle().getTranslation(LOCALE_IDS.fr));
+	    		entries.add(txLog.getPayEvtMontant().getTitle().getTranslation(LOCALE_IDS.fr));
+	    		entries.add(txLog.getMail());
+	    		entries.add(txLog.getField1());
+	    		entries.add(txLog.getField2());
+	    		entries.add(txLog.getMontant());
+	    		entries.add(txLog.getIdtrans());
+	    		csv = "\r\n" + StringUtils.join(entries, separator);
 	    		writer.write(csv);
 	    		nbLine++;
 	    	} 
