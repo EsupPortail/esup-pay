@@ -58,7 +58,8 @@
 		<sec:authorize access="hasRole('ROLE_PREVIOUS_ADMINISTRATOR')">
 			<ul class="nav navbar-nav navbar-right supervisor-nav">
 				<li>
-				  <form:form class="form-horizontal" action="/logout/impersonate" method="POST">
+				  <spring:url value="/logout/impersonate" var="impersonatePath" />
+				  <form:form class="form-horizontal" action="${impersonatePath}" method="POST">
 				  	<spring:message code="button_exit_su" htmlEscape="false" var="button_exit_label"/>
 					<input type="submit" class="btn btn-warning" value="${button_exit_label}"/>
 				  </form:form>
