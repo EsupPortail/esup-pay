@@ -224,6 +224,10 @@ $(document).ready(function() {
 				},
 				select: function(e, term, item){
 					hidden.val(term.item["login"]);
+					var suBtn = $("#suBtn");
+					if(undefined != suBtn) {
+						suBtn.prop("disabled", false);
+					}
 				},
 				minLength: 4,
 				maxLength: 8
