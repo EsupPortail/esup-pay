@@ -30,7 +30,8 @@
 		<spring:message code="su_help_msg" htmlEscape="false" />    
 	</div>
     
-    <form:form class="form-horizontal" action="/login/impersonate" method="POST">
+    <spring:url value="/login/impersonate" var="impersonatePath" />
+    <form:form class="form-horizontal" action="${impersonatePath}" method="POST">
      <fieldset>
 	     <div class="form-group autocompleteLogin">
 		      <label for="_uid_id"><spring:message code="su_input_login" htmlEscape="false" /></label>
