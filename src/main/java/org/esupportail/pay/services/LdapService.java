@@ -39,10 +39,7 @@ public class LdapService {
 	@Resource
 	LdapTemplate ldapTemplate;
 
-	private String loginDisplayName;
-
 	public List<LdapResult> search(String login, List<String> ldapSearchAttrs, String loginDisplayName) {
-		this.loginDisplayName = loginDisplayName;
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
 		OrFilter orFilter = new OrFilter();
@@ -50,14 +47,13 @@ public class LdapService {
 			orFilter.or(new LikeFilter(ldapSearchAttr, login));
 		}
 		filter.and(orFilter);
-		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, "uid"}, new SimpleLoginAttributMapper());
+		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, "uid"}, new SimpleLoginAttributMapper(loginDisplayName));
 	}
 
 	public void computeRespLogin(List<RespLogin> respLogins, String loginDisplayName) {
 		if(respLogins==null || respLogins.isEmpty()) {
 			return;
 		}
-		this.loginDisplayName = loginDisplayName;
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
 		OrFilter orFilter = new OrFilter();
@@ -65,7 +61,7 @@ public class LdapService {
 			orFilter.or(new EqualsFilter("uid", respLogin.getLogin()));
 		}
 		filter.and(orFilter);
-		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, "uid"}, new SimpleLoginAttributMapper());
+		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, "uid"}, new SimpleLoginAttributMapper(loginDisplayName));
 		for (RespLogin respLogin : respLogins) {
 			for (LdapResult ldapResult : ldapResults) {
 				if (respLogin.getLogin().equals(ldapResult.getUid())) {
@@ -77,6 +73,12 @@ public class LdapService {
 	}
 	
 	class SimpleLoginAttributMapper  implements AttributesMapper {
+		
+		String loginDisplayName;
+
+		public SimpleLoginAttributMapper(String loginDisplayName) {
+			this.loginDisplayName = loginDisplayName;
+		}
 
 		public LdapResult mapFromAttributes(Attributes attrs)
 				throws javax.naming.NamingException {
