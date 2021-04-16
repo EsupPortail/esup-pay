@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.RespLoginDaoService;
 import org.esupportail.pay.domain.RespLogin;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
@@ -88,6 +89,13 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 	 protected Set<GrantedAuthority> getAdditionalRoles(DirContextOperations user, String username) {
 
 		String userDn = user.getNameInNamespace();
+		
+		// id uid != username getting from CAS
+		String uid = user.getStringAttribute("uid");
+		if(uid != null && !username.equals(uid)) {
+			log.info(String.format("username from cas : %s -> get uid from ldap attribute : %s", username, uid));
+			username = uid;
+		}
 
 		// search groups with groupFilter usually
 		Set<GrantedAuthority> roles = getGroupMembershipRoles(userDn, username);
