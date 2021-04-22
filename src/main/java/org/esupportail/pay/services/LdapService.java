@@ -25,6 +25,7 @@ import javax.naming.directory.SearchControls;
 
 import org.esupportail.pay.domain.LdapResult;
 import org.esupportail.pay.domain.RespLogin;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
@@ -38,6 +39,9 @@ public class LdapService {
 
 	@Resource
 	LdapTemplate ldapTemplate;
+	
+	@Value("${ldap.uid.attribute:uid}")
+	String ldapUidAttr;
 
 	public List<LdapResult> search(String login, List<String> ldapSearchAttrs, String loginDisplayName) {
 		AndFilter filter = new AndFilter();
@@ -47,7 +51,7 @@ public class LdapService {
 			orFilter.or(new LikeFilter(ldapSearchAttr, login));
 		}
 		filter.and(orFilter);
-		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, "uid"}, new SimpleLoginAttributMapper(loginDisplayName));
+		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr}, new SimpleLoginAttributMapper(loginDisplayName));
 	}
 
 	public void computeRespLogin(List<RespLogin> respLogins, String loginDisplayName) {
@@ -58,10 +62,10 @@ public class LdapService {
 		filter.and(new EqualsFilter("objectclass", "person"));
 		OrFilter orFilter = new OrFilter();
 		for (RespLogin respLogin : respLogins) {
-			orFilter.or(new EqualsFilter("uid", respLogin.getLogin()));
+			orFilter.or(new EqualsFilter(ldapUidAttr, respLogin.getLogin()));
 		}
 		filter.and(orFilter);
-		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, "uid"}, new SimpleLoginAttributMapper(loginDisplayName));
+		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr}, new SimpleLoginAttributMapper(loginDisplayName));
 		for (RespLogin respLogin : respLogins) {
 			for (LdapResult ldapResult : ldapResults) {
 				if (respLogin.getLogin().equals(ldapResult.getUid())) {
@@ -86,8 +90,8 @@ public class LdapService {
 			if(attrs.get(loginDisplayName) != null) {
 				ldapResult.setDisplayName(attrs.get(loginDisplayName).get().toString());
 			}
-			if(attrs.get("uid") != null) {
-				ldapResult.setUid(attrs.get("uid").get().toString());
+			if(attrs.get(ldapUidAttr) != null) {
+				ldapResult.setUid(attrs.get(ldapUidAttr).get().toString());
 			}
 			return ldapResult;
 		}
