@@ -6,7 +6,7 @@
 	<groupId>org.esupportail</groupId>
 	<artifactId>esup-pay</artifactId>
 	<packaging>war</packaging>
-	<version>1.3.4-SNAPSHOT</version>
+	<version>1.3.4</version>
 	<name>esup-pay</name>
 
 	<description>EsupPay is a web application that allow ldap users authenticated with jasig cas managing payments forms (only paybox platform is supported).</description>
