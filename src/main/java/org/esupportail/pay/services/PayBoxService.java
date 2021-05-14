@@ -134,7 +134,7 @@ public class PayBoxService {
 	}
 
 	public PayBoxForm getPayBoxForm(String mail, String field1, String field2, double montant, PayEvtMontant payEvtMontant) {
-        String montantAsCents = Integer.toString(new Double(montant * 100).intValue());
+        String montantAsCents = Long.toString(Math.round(new Double(montant * 100)));
         PayBoxForm payBoxForm = new PayBoxForm();
         payBoxForm.setActionUrl(getPayBoxActionUrl());
         payBoxForm.setClientEmail(mail);
