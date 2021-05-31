@@ -198,7 +198,13 @@ public class PayBoxService {
     protected String getPayBoxActionUrl() {
         for (String payboxActionUrl : payboxActionUrls) {
             try {
-                URL url = new URL(payboxActionUrl);
+                String checkUrl = payboxActionUrl;
+                if ("".equals(checkUrl)) continue;
+                int index = checkUrl.lastIndexOf("/php");
+                if (index != -1) {
+                    checkUrl = checkUrl.substring(0, index + 1) + "load.html";
+                }
+                URL url = new URL(checkUrl);
                 URLConnection connection = url.openConnection();
                 connection.connect();
                 connection.getInputStream().read();
@@ -212,7 +218,7 @@ public class PayBoxService {
 
     protected String getCurrentTime() {
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
         return nowAsISO;
