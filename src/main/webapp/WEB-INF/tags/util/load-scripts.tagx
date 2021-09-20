@@ -11,21 +11,19 @@
   <spring:url value="/resources/css/esup-pay.css" var="pay_css_url" />
   <spring:url value="/resources/css/esup-pay-print.css" var="pay_print_css_url" />
   <spring:url value="/resources/css/footable.bootstrap.min.css" var="footable_css_url" />
-   <spring:url value="/webjars/chartjs/Chart.min.css" var="chart_css_url" />
   
   <spring:url value="/webjars/jquery/jquery.min.js" var="jquery_url" />
   <spring:url value="/webjars/jquery-ui/jquery-ui.min.js" var="jqueryui_url" />  
   <spring:url value="/webjars/bootstrap/js/bootstrap.min.js" var="bootstrap_url" />
   <spring:url value="/resources/js/bootstrapValidator.min.js" var="bootstrap_validator_url" />
   <spring:url value="/resources/js/esup-pay.js" var="pay_js_url" />
-  <spring:url value="/webjars/chartjs/Chart.min.js" var="chart_js_url" />
+  <spring:url value="/webjars/chartjs/dist/chart.min.js" var="chart_js_url" />
   <spring:url value="/resources/js/footable.min.js" var="footable_js_url" />
   
   <link rel="stylesheet" type="text/css" href="${jqueryui_css}" />
   <link rel="stylesheet" type="text/css" href="${jqueryui_theme_css}" />
   <link rel="stylesheet" type="text/css" href="${bootstrap_css_url}" />
   <link rel="stylesheet" type="text/css" href="${footable_css_url}" />
-  <link rel="stylesheet" type="text/css" href="${chart_css_url}" />
   <link rel="stylesheet" type="text/css" href="${pay_css_url}" />
   <link rel="stylesheet" type="text/css" href="${pay_print_css_url}" media="print"/>
 
