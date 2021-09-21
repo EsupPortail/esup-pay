@@ -51,8 +51,8 @@
 		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.30</slf4j.version>
-		<spring.version>5.3.6</spring.version>
-		<spring-security.version>5.4.6</spring-security.version>
+		<spring.version>5.3.10</spring.version>
+		<spring-security.version>5.5.2</spring-security.version>
 		<hibernate.version>5.4.27.Final</hibernate.version>
 	</properties>
 	<dependencies>
