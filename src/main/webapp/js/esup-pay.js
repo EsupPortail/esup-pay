@@ -43,42 +43,31 @@ function chartBar(data, id, unite){
     	myBar = new Chart(ctx, {
     		type: 'bar',
     		data: barChartData,
-    		options: {responsive : true,
-    			legend: {
-    				display: false
-    			},
-    			tooltips: {
-                	mode: 'label',
-                	bodyFontSize :  15,
-                	titleFontSize: 16,
-                	callbacks: {
-                        label: function (t, e) {
-                        	if( t.yLabel!=0){
-	                            return  e.labels[t.index] + " : " + t.yLabel + unite;
-                        	}
-                        },
-                        title: function (t, e) {
-                        	return  e.labels[t.index];
-                        }
-                	}
-    			},
-    	        scales: {
-    	        	xAxes: [{
-    	                ticks: {
-    	                    callback: function(value) {
-    	                    	if(value.length>10){
-    	                    		value = value.substr(0, 10) + "...";
-    	                    	}
-    	                        return value;
-    	                    },
-    	                }
-    	            }],    	        	
-    	            yAxes: [{
-    	                ticks: {
-    	                    beginAtZero:true
-    	                }
-    	            }]
-    	        }
+    		options: {
+				responsive : true,
+				plugins: {
+	    			legend: {
+	    				display: false
+	    			}
+	    		},
+	    	        scales: {
+	    	        	x: {
+	    	                ticks: {
+	    	                    callback: function(value, index, values) {
+									value = this.getLabelForValue(value);
+	    	                    	if(value.length>10){
+	    	                    		value = value.substr(0, 10) + "...";
+	    	                    	}
+	    	                        return value;
+	    	                    }
+	    	                }
+	    	            },    	        	
+	    	            y: {
+	    	                ticks: {
+	    	                    beginAtZero:true
+	    	                }
+	    	            }
+	    	        }
     		}
     	});
 	}	
@@ -123,26 +112,17 @@ function chartLine(data, id, unite){
 		type: 'line',
 		data: dataMois,
 		options: {
-			 scales:{
-				 type:"category",
-	                xAxes:[{
-	        			ticks: {
-	        				autoSkip: false
-	        			}
-	                }],
-	                yAxes:[{
-	                	type: "linear"
-	                }]
-	            },
-	            legend: {
-	                position: 'bottom'
-	            },
-	            tooltips: {
-	            	mode: 'label'
-	            },
-	            hover: {
-	                mode: 'dataset'
-	            }
+	            plugins: {
+		            legend: {
+		                position: 'bottom'
+		            }
+		        },
+		        interaction: {
+		            mode: 'index',
+		            axis: 'y'
+		        },
+	            fill: true,
+	            cubicInterpolationMode: 'monotone'
 		}
 	});
 	}
