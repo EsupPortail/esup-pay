@@ -20,7 +20,7 @@ for(var k = 0; k < 100; k++) {
 	generateColors.push('rgba(' + color + ', 0.2)');
 	generateBorderColors.push('rgba(' + color + ', 1)'); 
 }
-function chartBar(data, id, unite){
+function chartBar(data, id, unite, scaleType='linear'){
 	if(typeof $(id).get(0) != "undefined"){
     	var listLabels = [];
     	var listValeurs = [];
@@ -63,6 +63,7 @@ function chartBar(data, id, unite){
 	    	                }
 	    	            },    	        	
 	    	            y: {
+							type: scaleType,
 	    	                ticks: {
 	    	                    beginAtZero:true
 	    	                }
@@ -242,8 +243,8 @@ $(document).ready(function() {
 	        type: 'GET',
 	        dataType : 'json',
 	        success : function(data) {
-				chartBar(data.montants, "#montantsEvt","€");
-				chartBar(data.participants, "#participantsEvt"," transactions");
+				chartBar(data.montants, "#montantsEvt","€", "logarithmic");
+				chartBar(data.participants, "#participantsEvt"," transactions", "logarithmic");
 				chartBar(data.transactions, "#transactions"," transactions");
 				chartBar(data.cumul, "#cumul"," €");
 				chartLine(data.transactionsMonth, "#transactionsMonth"," transactions");
