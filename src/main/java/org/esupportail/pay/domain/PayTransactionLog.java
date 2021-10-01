@@ -73,6 +73,14 @@ public class PayTransactionLog {
     private String erreur;
 
     private String idtrans;
+    
+    private String securevers; 
+    
+    private String softdecline;
+    
+    private String secureauth; 
+    
+    private String securegarantie;
 
     private String signature;
     

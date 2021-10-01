@@ -64,6 +64,9 @@ xmlns:springform="http://www.springframework.org/tags/form" version="2.0" id="up
 	    
         <field:select field="description" id="c_org_esupportail_pay_domain_payevtmontant_description" itemValue="id" items="${labels}" path="/labels" render="false" z="user-managed"/>        
         
+        <field:input field="shoppingcartTotalQuantity" id="c_org_esupportail_pay_domain_payevtmontant_shoppingcartTotalQuantity" z="user-managed" cssClass="form-control"/>
+        
+        <field:checkbox field="isBillingAddressRequired" id="c_org_esupportail_pay_domain_PayEvtMontant_isBillingAddressRequired"/>
         
         <c:if test="${isAdmin}">
 	        <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#advanced">

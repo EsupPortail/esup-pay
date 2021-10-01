@@ -17,6 +17,8 @@
  */
 package org.esupportail.pay.web.anonyme;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -52,6 +54,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.ServletContextResource;
+
+import com.neovisionaries.i18n.CountryCode;
 
 @Controller
 @Transactional
@@ -163,6 +167,10 @@ public class PayController {
     		}
     	}
     	
+    	List<CountryCode> countryCodes = Arrays.asList(CountryCode.values());
+    	countryCodes.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
+    	uiModel.addAttribute("countryCodes",countryCodes);
+    	
         return "evtmnt";
     }
 
@@ -170,7 +178,10 @@ public class PayController {
     
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.POST)
     public String form(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, 
-    		@RequestParam String mail, @RequestParam String field1, @RequestParam String field2, @RequestParam(required=false, value="amount") String amountString) {
+    		@RequestParam String mail, @RequestParam String field1, @RequestParam String field2, @RequestParam(required=false, value="amount") String amountString,
+    		@RequestParam(required=false) String billingFirstname, @RequestParam(required=false) String billingLastname, @RequestParam(required=false) String billingAddress1, 
+    		@RequestParam(required=false) String billingZipCode, @RequestParam(required=false) String billingCity, @RequestParam(required=false) String billingCountryCode
+    		) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " form called");
     	
     	// on supprime les espaces en début et fin, 
@@ -230,7 +241,8 @@ public class PayController {
 			 return "evtmnt";
 	    }
     		
-    	PayBoxForm payBoxForm = payBoxServiceManager.getPayBoxForm(payevt, mail, field1, field2, amount, payevtmontant);
+    	PayBoxForm payBoxForm = payBoxServiceManager.getPayBoxForm(payevt, mail, field1, field2, amount, payevtmontant, 
+    			billingFirstname, billingLastname, billingAddress1, billingZipCode, billingCity, billingCountryCode);
 
 	    uiModel.addAttribute("payBoxForm", payBoxForm);
         return "evtmntForm";
@@ -267,7 +279,9 @@ public class PayController {
      */
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.POST, params="confid")
     public String sciencesConfForm(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, 
-    		@RequestParam String confid, @RequestParam String uid, @RequestParam String lastname, @RequestParam String firstname, @RequestParam String mail, @RequestParam String fees, @RequestParam String returnurl) {
+    		@RequestParam String confid, @RequestParam String uid, @RequestParam String lastname, @RequestParam String firstname, @RequestParam String mail, @RequestParam String fees, @RequestParam String returnurl,
+    		@RequestParam(required=false) String billingFirstname, @RequestParam(required=false) String billingLastname, @RequestParam(required=false) String billingAddress1, 
+    		@RequestParam(required=false) String billingZipCode, @RequestParam(required=false) String billingCity, @RequestParam(required=false) String billingCountryCode) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called via sciencesconf");
     	log.info("confid " + confid + " - uid : " + uid + " - lastname : " + lastname + " - firstname : " + firstname + " - mail : " + mail + " - fees : " + fees + " - returnurl : " + returnurl );
     	
@@ -290,7 +304,7 @@ public class PayController {
     	
     	Double amount =  Double.valueOf(fees);
 
-    	PayBoxForm payBoxForm = payBoxServiceManager.getPayBoxForm(payevt, mail, firstname, lastname, amount, payevtmontant);
+    	PayBoxForm payBoxForm = payBoxServiceManager.getPayBoxForm(payevt, mail, firstname, lastname, amount, payevtmontant, billingFirstname, billingLastname, billingAddress1, billingZipCode, billingCity, billingCountryCode);
     	
     	List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(payBoxForm.getCommande()).getResultList();
         EmailFieldsMapReference emailFieldsMapReference = emailMapFirstLastNames.get(0);

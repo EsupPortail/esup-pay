@@ -55,13 +55,15 @@ public class PayBoxServiceManager {
 
 	public PayBoxForm getPayBoxForm(PayEvt payboxevt, String mail,
 			String field1, String field2, Double montant,
-			PayEvtMontant payboxEvtMontant) {
+			PayEvtMontant payboxEvtMontant, String billingFirstname, String billingLastname, 
+			String billingAddress1, String billingZipCode, String billingCity, String billingCountryCode) {
 		if(!payboxServices.containsKey(payboxevt.getPayboxServiceKey())) {
 			String errorMessage = String.format("Pas de compte paybox associé à %s en configuration d'esup-pay.", payboxevt.getPayboxServiceKey());
 			log.error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
-		return payboxServices.get(payboxevt.getPayboxServiceKey()).getPayBoxForm(mail, field1, field2, montant, payboxEvtMontant);
+		return payboxServices.get(payboxevt.getPayboxServiceKey()).getPayBoxForm(mail, field1, field2, montant, payboxEvtMontant,
+				billingFirstname, billingLastname, billingAddress1, billingZipCode, billingCity, billingCountryCode);
 	}
 	
 	public String getWebSite(String reference) {
@@ -83,13 +85,14 @@ public class PayBoxServiceManager {
 	}
 
 	public boolean payboxCallback(String montant, String reference,
-			String auto, String erreur, String idtrans, String signature,
-			String queryString) {
+			String auto, String erreur, String idtrans,
+			String securevers, String softdecline, String secureauth, String securegarantie,
+			String signature, String queryString) {
 		List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt payboxevt = evtMontant.getEvt();
-            return payboxServices.get(payboxevt.getPayboxServiceKey()).payboxCallback(montant, reference, auto, erreur, idtrans, signature, queryString);
+            return payboxServices.get(payboxevt.getPayboxServiceKey()).payboxCallback(montant, reference, auto, erreur, idtrans, securevers, softdecline, secureauth, securegarantie, signature, queryString);
         }
         log.error("reference ne correspond pas à un montant/evt et donc à un service paybox !? reference : " + reference);
         return false;

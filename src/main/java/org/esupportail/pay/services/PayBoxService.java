@@ -55,7 +55,7 @@ public class PayBoxService {
 
     private final Logger log = Logger.getLogger(getClass());
 
-    private static final String RETOUR_VARIABLES = "montant:M;reference:R;auto:A;erreur:E;idtrans:S;signature:K";
+    private static final String RETOUR_VARIABLES = "montant:M;reference:R;auto:A;erreur:E;idtrans:S;securevers:v;softdecline:e;secureauth:F;securegarantie:G;signature:K";
     
     private static final String DELIMITER_REF = "@@";
     
@@ -133,7 +133,8 @@ public class PayBoxService {
 		this.mailFrom = mailFrom;
 	}
 
-	public PayBoxForm getPayBoxForm(String mail, String field1, String field2, double montant, PayEvtMontant payEvtMontant) {
+	public PayBoxForm getPayBoxForm(String mail, String field1, String field2, double montant, PayEvtMontant payEvtMontant, 
+			String billingFirstname, String billingLastname, String billingAddress1, String billingZipCode, String billingCity, String billingCountryCode) {
         String montantAsCents = Long.toString(Math.round(new Double(montant * 100)));
         PayBoxForm payBoxForm = new PayBoxForm();
         payBoxForm.setActionUrl(getPayBoxActionUrl());
@@ -163,7 +164,18 @@ public class PayBoxService {
         payBoxForm.setForwardAnnuleUrl(forwardUrl);
         payBoxForm.setForwardEffectueUrl(forwardUrl);
         payBoxForm.setForwardRefuseUrl(forwardUrl);
+        
+        payBoxForm.setShoppingcartTotalQuantity(payEvtMontant.getShoppingcartTotalQuantity());
+        
+        payBoxForm.setBillingFirstname(billingFirstname);
+        payBoxForm.setBillingLastname(billingLastname);
+        payBoxForm.setBillingAddress1(billingAddress1);
+        payBoxForm.setBillingZipCode(billingZipCode);
+        payBoxForm.setBillingCity(billingCity);
+        payBoxForm.setBillingCountryCode(billingCountryCode);
+        
         payBoxForm.setOptionalAddedParams(payEvtMontant.getOptionalAddedParams());
+
         String hMac = hashService.getHMac(payBoxForm.getParamsAsString());
         payBoxForm.setHmac(hMac);
         
@@ -199,7 +211,8 @@ public class PayBoxService {
         for (String payboxActionUrl : payboxActionUrls) {
             try {
                 URL url = new URL(payboxActionUrl);
-                URLConnection connection = url.openConnection();
+                URL url2test = new URL(String.format("%s://%s", url.getProtocol(), url.getHost()));
+                URLConnection connection = url2test.openConnection();
                 connection.connect();
                 connection.getInputStream().read();
                 return payboxActionUrl;
@@ -212,7 +225,7 @@ public class PayBoxService {
 
     protected String getCurrentTime() {
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
         return nowAsISO;
@@ -238,7 +251,7 @@ public class PayBoxService {
         }
     }
 
-    public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String signature, String queryString) {
+    public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String securevers, String softdecline, String secureauth, String securegarantie, String signature, String queryString) {
         synchronized (idtrans.intern()) {
 	    	List<PayTransactionLog> txLogs = payTransactionLogDaoService.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
 	        boolean newTxLog = txLogs.size() == 0;
@@ -256,6 +269,10 @@ public class PayBoxService {
 	        txLog.setAuto(auto);
 	        txLog.setErreur(erreur);
 	        txLog.setIdtrans(idtrans);
+	        txLog.setSecurevers(securevers);
+	        txLog.setSoftdecline(softdecline);
+	        txLog.setSecureauth(secureauth);
+	        txLog.setSecuregarantie(securegarantie);
 	        txLog.setSignature(signature);
 	        txLog.setTransactionDate(new Date());
 	

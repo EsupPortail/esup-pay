@@ -28,6 +28,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
@@ -89,6 +91,12 @@ public class PayEvtMontant {
     String optionalAddedParams = "";
     
     Boolean isEnabled = true;
+    
+    @Min(value = 1)
+    @Max(value = 99)
+    Integer shoppingcartTotalQuantity = 1;
+    
+    Boolean isBillingAddressRequired = false;
     
     public String getDbleMontantDisplay() {
     	return String.format(Locale.FRANCE, "%,.2f€", dbleMontant);

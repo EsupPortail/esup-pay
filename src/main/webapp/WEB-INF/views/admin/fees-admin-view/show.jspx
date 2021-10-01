@@ -35,6 +35,10 @@
             <field:display field="field2" id="s_org_esupportail_pay_domain_PayTransactionLog_field2" object="${paytransactionlog}" z="user-managed"/>
             <field:display field="payEvtMontant" id="s_org_esupportail_pay_domain_PayTransactionLog_payEvtMontant" object="${paytransactionlog}" render="false" z="user-managed"/>
             <field:display field="mailSent" id="s_org_esupportail_pay_domain_PayTransactionLog_mailSent" object="${paytransactionlog}" z="OYHYRni9A3KJ3DVB04FRu72U4Dg="/>
+            <field:display field="securevers" id="s_org_esupportail_pay_domain_PayTransactionLog_securevers" object="${paytransactionlog}" z="user-managed"/>
+            <field:display field="softdecline" id="s_org_esupportail_pay_domain_PayTransactionLog_softdecline" object="${paytransactionlog}" z="user-managed"/>
+            <field:display field="secureauth" id="s_org_esupportail_pay_domain_PayTransactionLog_secureauth" object="${paytransactionlog}" z="user-managed"/>
+            <field:display field="securegarantie" id="s_org_esupportail_pay_domain_PayTransactionLog_securegarantie" object="${paytransactionlog}" z="user-managed"/>
         </page:show>
     </div>
 </div>

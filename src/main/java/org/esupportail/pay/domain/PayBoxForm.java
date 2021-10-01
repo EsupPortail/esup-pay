@@ -22,12 +22,33 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class PayBoxForm {
+	
+	private static String PBX_SHOPPINGCART_XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+			+ "<shoppingcart>"
+			+ "<total>"
+			+ "<totalQuantity>%s</totalQuantity>"
+			+ "</total>"
+			+ "</shoppingcart>";
+	
+	private static String PBX_BILLING_XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+			+ "<Billing>"
+			+ "<Address>"
+			+ "<FirstName>%s</FirstName>"
+			+ "<LastName>%s</LastName>"
+			+ "<Address1>%s</Address1>"
+			+ "<ZipCode>%s</ZipCode>"
+			+ "<City>%s</City>"
+			+ "<CountryCode>%s</CountryCode>"
+			+ "</Address>"
+			+ "</Billing>";
 
 	private String actionUrl;
 
@@ -61,9 +82,27 @@ public class PayBoxForm {
 	
 	private String hmac;
 	
-	SortedMap<String, String> optionalAddedParams = new TreeMap<String, String>();
+	private Integer shoppingcartTotalQuantity;
+	
+	private String billingFirstname;
+	
+	private String billingLastname;
+	
+	private String billingAddress1;
+	
+	private String billingZipCode;
+	
+	private String billingCity;
+	
+	private String billingCountryCode;
+	
+	private SortedMap<String, String> optionalAddedParams = new TreeMap<String, String>();	
 	
 	public SortedMap<String, String> getOrderedParams() {
+		return getOrderedParams(true);
+	}
+	
+	public SortedMap<String, String> getOrderedParams(boolean escapeXml) {
 		SortedMap<String, String> params = new TreeMap<String, String>();
 		params.put("PBX_SITE", site);
 		params.put("PBX_RANG", rang);
@@ -80,15 +119,44 @@ public class PayBoxForm {
 		params.put("PBX_REFUSE", forwardRefuseUrl);
 		params.put("PBX_ANNULE", forwardAnnuleUrl);
 		
+		if(shoppingcartTotalQuantity != null) {
+			String pbxShoppingcardXml = String.format(PBX_SHOPPINGCART_XML, shoppingcartTotalQuantity);
+			if(escapeXml) {
+				String pbxShoppingcardXmlEscaped = StringEscapeUtils.escapeXml10(pbxShoppingcardXml);
+				params.put("PBX_SHOPPINGCART", pbxShoppingcardXmlEscaped);
+			} else {
+				params.put("PBX_SHOPPINGCART", pbxShoppingcardXml);
+			}
+		}
+		
+		if(billingFirstname != null) {
+			String pbxBillingXml = String.format(PBX_BILLING_XML,
+					billingFirstname,
+					billingLastname,
+					billingAddress1,
+					billingZipCode,
+					billingCity,
+					billingCountryCode);
+			if(escapeXml) {
+				String pbxBillingXmlEscaped = StringEscapeUtils.escapeXml10(pbxBillingXml);
+				params.put("PBX_BILLING", pbxBillingXmlEscaped);
+			} else {
+				params.put("PBX_BILLING", pbxBillingXml);
+			}
+		}
+		
 		params.putAll(optionalAddedParams);
+		
+		params.put("PBX_HASH", "SHA512");
+		
 		// params.put("PBX_HMAC", hmac);
 		
 		return params;
 	}
-	
+
 	public String getParamsAsString() {
 		String paramsAsString = "";
-		 SortedMap<String, String> params = getOrderedParams();
+		 SortedMap<String, String> params = getOrderedParams(false);
 		 for(String key : params.keySet()) {
 			 paramsAsString = paramsAsString + key + "=" + params.get(key) + "&";
 		 }
@@ -121,6 +189,36 @@ public class PayBoxForm {
 			}
 			
 		}
+	}
+
+	public void setBillingFirstname(String billingFirstname) {
+		if(billingFirstname != null)
+			this.billingFirstname = billingFirstname.replaceAll("[^a-zA-Z0-9\\s]", "");
+	}
+
+	public void setBillingLastname(String billingLastname) {
+		if(billingLastname != null)
+			this.billingLastname = billingLastname.replaceAll("[^a-zA-Z0-9\\s]", "");
+	}
+
+	public void setBillingAddress1(String billingAddress1) {
+		if(billingAddress1 != null)
+			this.billingAddress1 = billingAddress1.replaceAll("[^a-zA-Z0-9\\s]", "");
+	}
+
+	public void setBillingZipCode(String billingZipCode) {
+		if(billingZipCode != null)
+			this.billingZipCode = billingZipCode.replaceAll("[^a-zA-Z0-9\\s]", "");
+	}
+
+	public void setBillingCity(String billingCity) {
+		if(billingCity != null)
+			this.billingCity = billingCity.replaceAll("[^a-zA-Z0-9\\s]", "");
+	}
+
+	public void setBillingCountryCode(String billingCountryCode) {
+		if(billingCountryCode != null)
+			this.billingCountryCode = billingCountryCode.replaceAll("[^a-zA-Z0-9\\s]", "");
 	}
 	
 }
