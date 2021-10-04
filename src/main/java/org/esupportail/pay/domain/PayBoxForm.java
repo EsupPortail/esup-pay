@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import lombok.Getter;
@@ -191,34 +192,37 @@ public class PayBoxForm {
 		}
 	}
 
+	private String removeNotUsualCharacters(String s) {
+		String cleanupString =  s;
+		if(cleanupString != null) {
+			cleanupString = StringUtils.stripAccents(cleanupString);
+			cleanupString = cleanupString.replaceAll("[^a-zA-Z0-9\\s]", "");
+		}
+		return cleanupString;
+	}
+	
 	public void setBillingFirstname(String billingFirstname) {
-		if(billingFirstname != null)
-			this.billingFirstname = billingFirstname.replaceAll("[^a-zA-Z0-9\\s]", "");
+		this.billingFirstname = removeNotUsualCharacters(billingFirstname);
 	}
 
 	public void setBillingLastname(String billingLastname) {
-		if(billingLastname != null)
-			this.billingLastname = billingLastname.replaceAll("[^a-zA-Z0-9\\s]", "");
+		this.billingLastname = removeNotUsualCharacters(billingLastname);
 	}
 
 	public void setBillingAddress1(String billingAddress1) {
-		if(billingAddress1 != null)
-			this.billingAddress1 = billingAddress1.replaceAll("[^a-zA-Z0-9\\s]", "");
+		this.billingAddress1 = removeNotUsualCharacters(billingAddress1);
 	}
 
 	public void setBillingZipCode(String billingZipCode) {
-		if(billingZipCode != null)
-			this.billingZipCode = billingZipCode.replaceAll("[^a-zA-Z0-9\\s]", "");
+		this.billingZipCode = removeNotUsualCharacters(billingZipCode);
 	}
 
 	public void setBillingCity(String billingCity) {
-		if(billingCity != null)
-			this.billingCity = billingCity.replaceAll("[^a-zA-Z0-9\\s]", "");
+		this.billingCity = removeNotUsualCharacters(billingCity);
 	}
 
 	public void setBillingCountryCode(String billingCountryCode) {
-		if(billingCountryCode != null)
-			this.billingCountryCode = billingCountryCode.replaceAll("[^a-zA-Z0-9\\s]", "");
+		this.billingCountryCode = removeNotUsualCharacters(billingCountryCode);
 	}
 	
 }
