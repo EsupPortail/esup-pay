@@ -29,6 +29,8 @@ public class HashService {
 	private final Logger log = Logger.getLogger(getClass());
 	
 	private final static String ALGO_HSAH = "SHA512";
+	
+	private final static String PAYBOX_CHARSET = "ISO-8859-1";
 
 	SecretKeySpec secretKey;
 
@@ -47,7 +49,7 @@ public class HashService {
 			mac.init(secretKey);
 			final byte[] macData = mac.doFinal(input.getBytes());
 			byte[] hex = new Hex().encode(macData);
-			String hmac = new String(hex, "ISO-8859-1").toUpperCase();
+			String hmac = new String(hex, PAYBOX_CHARSET).toUpperCase();
 			log.debug(input);
 			log.debug(hmac);
 			return hmac;
