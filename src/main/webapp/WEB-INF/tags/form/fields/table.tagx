@@ -147,13 +147,13 @@
               <c:when test="${columnType eq 'date'}">
                 <spring:escapeBody>
                   <spring:eval expression="item.${column}" var="columnDate"/>
-                  <fmt:formatDate value="${columnDate}" pattern="${fn:escapeXml(columnDatePattern)}" var="colTxt" />
+                  <fmt:formatDate value="${columnDate}" pattern="${columnDatePattern}" var="colTxt" />
                 </spring:escapeBody>
               </c:when>
               <c:when test="${columnType eq 'calendar'}">
                 <spring:escapeBody>
                   <spring:eval expression="item.${column}.time" var="columnDateTime"/>
-                  <fmt:formatDate value="${columnDateTime}" pattern="${fn:escapeXml(columnDatePattern)}" var="colTxt" />
+                  <fmt:formatDate value="${columnDateTime}" pattern="${columnDatePattern}" var="colTxt" />
                 </spring:escapeBody>
               </c:when>
               <c:when test="${columnType eq 'link'}">
