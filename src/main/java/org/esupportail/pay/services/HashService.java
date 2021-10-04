@@ -30,7 +30,7 @@ public class HashService {
 	
 	private final static String ALGO_HSAH = "SHA512";
 	
-	private final static String PAYBOX_CHARSET = "ISO-8859-1";
+	private final static String PAYBOX_CHARSET = "UTF-8";
 
 	SecretKeySpec secretKey;
 
