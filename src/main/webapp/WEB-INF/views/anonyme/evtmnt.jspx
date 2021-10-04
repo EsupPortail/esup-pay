@@ -105,7 +105,14 @@
 							<label for="billingCountryCode"><spring:message code="billing.countryCode"/></label>
 							<select name="billingCountryCode" class="form-control">
 							    <c:forEach var="countryCode" items="${countryCodes}">
-							        <option value="${countryCode.numeric}">${countryCode.name}</option>
+							    	<c:choose>
+								    	<c:when test="${countryCode.numeric == '250'}">
+								        	<option selected="selected" value="${countryCode.numeric}">${countryCode.name}</option>
+								        </c:when>
+								        <c:otherwise>
+								        	<option value="${countryCode.numeric}">${countryCode.name}</option>
+								        </c:otherwise>
+								    </c:choose>
 							    </c:forEach>
 							</select>				
 						</div>
