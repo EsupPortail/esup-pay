@@ -100,10 +100,6 @@ public class PayBoxForm {
 	private SortedMap<String, String> optionalAddedParams = new TreeMap<String, String>();	
 	
 	public SortedMap<String, String> getOrderedParams() {
-		return getOrderedParams(true);
-	}
-	
-	public SortedMap<String, String> getOrderedParams(boolean escapeXml) {
 		SortedMap<String, String> params = new TreeMap<String, String>();
 		params.put("PBX_SITE", site);
 		params.put("PBX_RANG", rang);
@@ -122,12 +118,7 @@ public class PayBoxForm {
 		
 		if(shoppingcartTotalQuantity != null) {
 			String pbxShoppingcardXml = String.format(PBX_SHOPPINGCART_XML, shoppingcartTotalQuantity);
-			if(escapeXml) {
-				String pbxShoppingcardXmlEscaped = StringEscapeUtils.escapeXml10(pbxShoppingcardXml);
-				params.put("PBX_SHOPPINGCART", pbxShoppingcardXmlEscaped);
-			} else {
-				params.put("PBX_SHOPPINGCART", pbxShoppingcardXml);
-			}
+			params.put("PBX_SHOPPINGCART", pbxShoppingcardXml);
 		}
 		
 		if(billingFirstname != null) {
@@ -138,12 +129,7 @@ public class PayBoxForm {
 					billingZipCode,
 					billingCity,
 					billingCountryCode);
-			if(escapeXml) {
-				String pbxBillingXmlEscaped = StringEscapeUtils.escapeXml10(pbxBillingXml);
-				params.put("PBX_BILLING", pbxBillingXmlEscaped);
-			} else {
-				params.put("PBX_BILLING", pbxBillingXml);
-			}
+			params.put("PBX_BILLING", pbxBillingXml);
 		}
 		
 		params.putAll(optionalAddedParams);
@@ -157,7 +143,7 @@ public class PayBoxForm {
 
 	public String getParamsAsString() {
 		String paramsAsString = "";
-		 SortedMap<String, String> params = getOrderedParams(false);
+		 SortedMap<String, String> params = getOrderedParams();
 		 for(String key : params.keySet()) {
 			 paramsAsString = paramsAsString + key + "=" + params.get(key) + "&";
 		 }

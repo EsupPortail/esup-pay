@@ -21,6 +21,7 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
@@ -34,7 +35,7 @@
 				<form method="POST" action="${payBoxForm.actionUrl}">
 					<c:forEach items="${payBoxForm.orderedParams}" var="payBoxParam">
 						<input type="hidden" name="${payBoxParam.key}"
-							value="${payBoxParam.value}" />
+							value="${fn:escapeXml(payBoxParam.value)}" />
 					</c:forEach>
 			
 					<input type="hidden" name="PBX_HMAC" value="${payBoxForm.hmac}" />
