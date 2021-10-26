@@ -59,5 +59,19 @@ public class EmailFieldsMapReference {
     private String field2;
     
     private Date dateCreated;
+    
+	private Integer shoppingcartTotalQuantity;
+	
+	private String billingFirstname;
+	
+	private String billingLastname;
+	
+	private String billingAddress1;
+	
+	private String billingZipCode;
+	
+	private String billingCity;
+	
+	private String billingCountryCode;
 	
 }

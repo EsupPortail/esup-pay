@@ -5,6 +5,7 @@
   <jsp:directive.attribute name="object" type="java.lang.Object" required="true" rtexprvalue="true" description="The form backing object" />
   <jsp:directive.attribute name="field" type="java.lang.String" required="true" rtexprvalue="true" description="The field name" />
   <jsp:directive.attribute name="label" type="java.lang.String" required="false" rtexprvalue="true" description="The label used for this field, will default to a message bundle if not supplied" />
+  <jsp:directive.attribute name="i18nlabel" type="java.lang.String" required="false" rtexprvalue="true" description="The i18n label used for this field" />
   <jsp:directive.attribute name="date" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate that this field is of type java.util.Date" />
   <jsp:directive.attribute name="calendar" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate that this field is of type java.util.Calendar" />
   <jsp:directive.attribute name="pre" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate that this field should be writed in a html tag 'pre'"/>
@@ -13,6 +14,10 @@
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
 
   <c:if test="${empty render or render}">
+    <c:if test="${not empty object and not empty i18nlabel and empty label}">
+      <spring:message code="${i18nlabel}" var="label" htmlEscape="false" />
+    </c:if>
+    
     <c:if test="${not empty object and empty label}">
       <spring:message code="label_${fn:toLowerCase(fn:substringAfter(id,'_'))}" var="label" htmlEscape="false" />
     </c:if>

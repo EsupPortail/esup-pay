@@ -86,6 +86,20 @@ public class PayTransactionLog {
     
     private Boolean mailSent = null;
     
+	private Integer shoppingcartTotalQuantity;
+	
+	private String billingFirstname;
+	
+	private String billingLastname;
+	
+	private String billingAddress1;
+	
+	private String billingZipCode;
+	
+	private String billingCity;
+	
+	private String billingCountryCode;
+    
     /* pour compatibilité ascendante */
     public Boolean getMailSent() {
         return this.mailSent == null || this.mailSent;

@@ -186,6 +186,15 @@ public class PayBoxService {
         emailMapFirstLastName.setMail(mail);
         emailMapFirstLastName.setPayEvtMontant(payEvtMontant);
         emailMapFirstLastName.setDateCreated(new Date());
+        
+        emailMapFirstLastName.setShoppingcartTotalQuantity(payEvtMontant.getShoppingcartTotalQuantity());      
+        emailMapFirstLastName.setBillingFirstname(billingFirstname);
+        emailMapFirstLastName.setBillingLastname(billingLastname);
+        emailMapFirstLastName.setBillingAddress1(billingAddress1);
+        emailMapFirstLastName.setBillingZipCode(billingZipCode);
+        emailMapFirstLastName.setBillingCity(billingCity);
+        emailMapFirstLastName.setBillingCountryCode(billingCountryCode);
+        
         emailFieldsMapReferenceDaoService.persist(emailMapFirstLastName);
         
         return payBoxForm;
@@ -281,6 +290,13 @@ public class PayBoxService {
 	                txLog.setField1(emailMapFirstLastNames.get(0).getField1());
 	                txLog.setField2(emailMapFirstLastNames.get(0).getField2());
 	                txLog.setMail(emailMapFirstLastNames.get(0).getMail());
+	                txLog.setShoppingcartTotalQuantity(emailMapFirstLastNames.get(0).getShoppingcartTotalQuantity());      
+	                txLog.setBillingFirstname(emailMapFirstLastNames.get(0).getBillingFirstname());
+	                txLog.setBillingLastname(emailMapFirstLastNames.get(0).getBillingLastname());
+	                txLog.setBillingAddress1(emailMapFirstLastNames.get(0).getBillingAddress1());
+	                txLog.setBillingZipCode(emailMapFirstLastNames.get(0).getBillingZipCode());
+	                txLog.setBillingCity(emailMapFirstLastNames.get(0).getBillingCity());
+	                txLog.setBillingCountryCode(emailMapFirstLastNames.get(0).getBillingCountryCode());
 	                PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
 	                PayEvt evt = evtMontant.getEvt();
 	                txLog.setPayEvtMontant(emailMapFirstLastNames.get(0).getPayEvtMontant());
