@@ -95,6 +95,12 @@ public class ArchiveService {
 		transactionLog.setField2("archived");
 		transactionLog.setMail("archived");
 		transactionLog.setReference("archived");
+		transactionLog.setBillingFirstname("archived");
+		transactionLog.setBillingLastname("archived");
+		transactionLog.setBillingAddress1("archived");
+		transactionLog.setBillingZipCode("archived");
+		transactionLog.setBillingCity("archived");
+		transactionLog.setBillingCountryCode("archived");
 	}
 	
 }
