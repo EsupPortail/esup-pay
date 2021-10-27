@@ -51,8 +51,8 @@
 		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.30</slf4j.version>
-		<spring.version>5.3.10</spring.version>
-		<spring-security.version>5.5.2</spring-security.version>
+		<spring.version>5.3.12</spring.version>
+		<spring-security.version>5.5.3</spring-security.version>
 		<hibernate.version>5.4.27.Final</hibernate.version>
 	</properties>
 	<dependencies>
@@ -166,11 +166,6 @@
 			<version>2.0.1.Final</version>
 		</dependency>
 		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-			<version>2.2.2</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
@@ -211,15 +206,15 @@
 			<version>2.5.1.RELEASE</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-digester</groupId>
-			<artifactId>commons-digester</artifactId>
-			<version>2.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-digester3</artifactId>
+		    <version>3.2</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>commons-logging</groupId>
+		    		<artifactId>commons-logging</artifactId>
+		    	</exclusion>
+		    </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -236,8 +231,8 @@
 			<groupId>javax.servlet.jsp.jstl</groupId>
 			<artifactId>javax.servlet.jsp.jstl-api</artifactId>
 			<version>1.2.2</version>
+			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>javax.el</groupId>
 			<artifactId>el-api</artifactId>
@@ -327,7 +322,7 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator</artifactId>
-			<version>0.37</version>
+			<version>0.42</version>
 		</dependency>
 
 		<dependency>
@@ -343,17 +338,17 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>jquery</artifactId>
-			<version>2.2.4</version>
+			<version>3.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>jquery-ui</artifactId>
-			<version>1.11.4</version>
+			<version>1.12.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>jquery-ui-themes</artifactId>
-			<version>1.11.4</version>
+			<version>1.12.1</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -377,11 +372,6 @@
 		    <version>1.18.16</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.taglibs</groupId>
-		    <artifactId>taglibs-standard-impl</artifactId>
-		    <version>1.2.5</version>
-		</dependency>
-		<dependency>
 		    <groupId>com.neovisionaries</groupId>
 		    <artifactId>nv-i18n</artifactId>
 		    <version>1.29</version>
@@ -391,6 +381,16 @@
 		    <artifactId>commons-text</artifactId>
 		    <version>1.9</version>
 		</dependency>
+		<dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-databind</artifactId>
+	        <version>2.13.0</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-annotations</artifactId>
+	        <version>2.13.0</version>
+	    </dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -508,7 +508,7 @@
 			<plugin>
 			    <groupId>org.eclipse.jetty</groupId>
 			    <artifactId>jetty-maven-plugin</artifactId>
-			    <version>10.0.0</version>
+			    <version>10.0.7</version>
 			</plugin>
 		</plugins>
 
