@@ -17,24 +17,82 @@
  */
 package org.esupportail.pay.web;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.esupportail.pay.exceptions.EntityNotFoundException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver;
 
 @Controller
-public class UncaughtExceptionController {
+public class UncaughtExceptionController extends AbstractHandlerExceptionResolver {
 
+	private final Logger log = Logger.getLogger(getClass());
 	
-	/**
-	 * Workaround : <mvc:view-controller path="/uncaughtException"/> ne suffit pas (plus), 
-	 * le content-type n'est plus positionné dans cette version de spring-mvc (4.3.5) :-( 
-	 */
-	@RequestMapping(value = "uncaughtException")
-    public String handelError(final HttpServletResponse response) {
-		 response.setContentType("text/html");
-		 return "uncaughtException";
-    }
+	@Override
+	protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
+			Exception ex) {
+		request.getRequestURL();
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("exception", ex);
+		String url = getFullRequestURL(request);
+		if(request.getQueryString()!=null && !request.getQueryString().isEmpty()) {
+			url += "?" + request.getQueryString();
+		}
+		mav.addObject("url", url);
+		if(ex instanceof DataAccessException) {
+			log.error("Request: " + url + " raised " + ex.getMessage());
+			mav.setViewName("dataAccessFailure");
+		} else if(ex instanceof EntityNotFoundException) {
+			log.warn("Request: " + url + " raised " + ex.getMessage());
+			mav.setViewName("resourceNotFound");
+		} else {
+			log.error("Request: " + url + " raised " + ex.getMessage());
+			mav.setViewName("uncaughtException");
+		}
+		log.trace("Request: " + url + " raised " + ex, ex);
+		return mav;
+	}
+	
+	@RequestMapping(value = "/uncaughtException")
+    public ModelAndView uncaughtException(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getRequestURL();
+		ModelAndView mav = new ModelAndView();
+		String url = getFullRequestURL(request);
+		mav.addObject("url", url);
+		log.error("Request: " + url + " raised uncaught exception ");
+		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		mav.setViewName("uncaughtException");
+		return mav;
+	}
+
+	private String getFullRequestURL(HttpServletRequest request) {
+		String url = request.getRequestURL().toString();
+		if(request.getQueryString()!=null && !request.getQueryString().isEmpty()) {
+			url += "?" + request.getQueryString();
+		}
+		return url;
+	}
+	
+
+	@RequestMapping(value = "/resourceNotFound")
+    public ModelAndView resourceNotFound(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getRequestURL();
+		ModelAndView mav = new ModelAndView();
+		String url = getFullRequestURL(request);
+		mav.addObject("url", url);
+		log.warn("Request: " + url + " not found");
+		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		mav.setViewName("resourceNotFound");
+		return mav;
+	}
+	
 	
 	
 	/**
