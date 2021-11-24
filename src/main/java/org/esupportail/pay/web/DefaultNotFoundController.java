@@ -21,7 +21,7 @@ public class DefaultNotFoundController {
 			url += "?" + request.getQueryString();
 		}
 		mav.addObject("url", url);
-		log.error("Request: " + url + " not found ");
+		log.warn("Request: " + url + " not found ");
 		mav.setViewName("resourceNotFound");
 		return mav;
     }

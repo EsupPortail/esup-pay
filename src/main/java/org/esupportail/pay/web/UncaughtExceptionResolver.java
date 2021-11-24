@@ -44,15 +44,17 @@ public class UncaughtExceptionResolver extends AbstractHandlerExceptionResolver 
 			url += "?" + request.getQueryString();
 		}
 		mav.addObject("url", url);
-		log.error("Request: " + url + " raised " + ex.getMessage());
-		log.trace("Request: " + url + " raised " + ex, ex);
 		if(ex instanceof DataAccessException) {
+			log.error("Request: " + url + " raised " + ex.getMessage());
 			mav.setViewName("dataAccessFailure");
 		} else if(ex instanceof EntityNotFoundException) {
+			log.warn("Request: " + url + " raised " + ex.getMessage());
 			mav.setViewName("resourceNotFound");
 		} else {
+			log.error("Request: " + url + " raised " + ex.getMessage());
 			mav.setViewName("uncaughtException");
 		}
+		log.trace("Request: " + url + " raised " + ex, ex);
 		return mav;
 	}
 
