@@ -12,7 +12,7 @@ public class DefaultNotFoundController {
 	
 	private final Logger log = Logger.getLogger(getClass());
 
-    @RequestMapping("/**")
+    //@RequestMapping("/**")
     public ModelAndView defaultNotFound(HttpServletRequest request) {
     	request.getRequestURL();
 		ModelAndView mav = new ModelAndView();
