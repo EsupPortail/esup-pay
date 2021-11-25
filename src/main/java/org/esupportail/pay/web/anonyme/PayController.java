@@ -250,9 +250,11 @@ public class PayController {
     
     
     @RequestMapping(value="/", params = "reference")
-    public String payboxForward(Model uiModel, @RequestParam String reference, @RequestParam(required = false) String erreur, @RequestParam(required = false) String signature, @RequestParam(required = false) String queryString, HttpServletResponse response) {
+    public String payboxForward(Model uiModel, @RequestParam String reference, @RequestParam(required = false) String erreur, @RequestParam(required = false) String signature, HttpServletRequest request, HttpServletResponse response) {
     	EmailFieldsMapReference emailFieldsMapReference = payBoxServiceManager.getEmailFieldsMapReference(reference);
     	if(emailFieldsMapReference!=null && emailFieldsMapReference.getPayEvtMontant().getSciencesconf()) {
+        	String queryString = request.getQueryString();
+        	log.debug("payboxForward for sciencesconf.org with request query : " + queryString);
     		// Fonctionnement du paiement dans sciencesconf : https://www.sciencesconf.org/resources/sciencesconf.org.paiement.pdf
     		int payStatut4sciencesConf = 2; // refusé
     		if("00000".equals(erreur) && payBoxServiceManager.checkPayboxSignature(reference, queryString, signature)) {
