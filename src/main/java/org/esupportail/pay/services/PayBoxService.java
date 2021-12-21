@@ -31,7 +31,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -55,8 +54,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSender;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 public class PayBoxService {
@@ -338,16 +341,17 @@ public class PayBoxService {
 		                    }
 	                        if(emailMapFirstLastNames.get(0).getPayEvtMontant().getSciencesconf()) {
 	                    		ScienceConfReference scienceConfReference = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailMapFirstLastNames.get(0)).getSingleResult();
-	                    		HttpHeaders headers = new HttpHeaders();
-	                    		Map<String, String> formVars = new HashMap<String, String>();
-	                    		formVars.put("confid", scienceConfReference.getConfid());
-	                    		formVars.put("uid", scienceConfReference.getUid());
-	                    		formVars.put("status", "1");
-	                    		formVars.put("transactionid", scienceConfReference.getEmailFieldsMapReference().getReference());
-	                    		HttpEntity<Map<String, String>> request = new HttpEntity<Map<String, String>>(formVars, headers);
-	                    		// Fonctionnement du paiement dans sciencesconf : https://www.sciencesconf.org/resources/sciencesconf.org.paiement.pdf
-	                    		String sciencesconfResponse = restTemplate.postForObject(scienceConfReference.getReturnurl(), request, String.class);
-	                    		if("1".equals(sciencesconfResponse)) {
+	                            HttpHeaders headers = new HttpHeaders();
+	                            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);        
+	                            MultiValueMap<String, String> formVars = new LinkedMultiValueMap<String, String>();
+	                    		formVars.add("confid", scienceConfReference.getConfid());
+	                    		formVars.add("uid", scienceConfReference.getUid());
+	                    		formVars.add("status", "1");
+	                    		formVars.add("transactionid", scienceConfReference.getEmailFieldsMapReference().getReference());
+	                    		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(formVars, headers);
+	                    		// Fonctionnement du paiement dans sciencesconf : https://www.sciencesconf.org/resources/sciencesconf.org.paiement.pdf - 
+	                    		ResponseEntity<String> sciencesconfResponse = restTemplate.exchange(scienceConfReference.getReturnurl(), HttpMethod.POST, request, String.class);
+	                    		if("1".equals(sciencesconfResponse.getBody())) {
 	                    			log.info("Paiement ok sur sciencesconf");
 	                    		} else {
 	                    			log.warn("Problème de retour de paiement avec sciencesconf ? " + StringUtils.join(formVars) + " -> " + sciencesconfResponse);
