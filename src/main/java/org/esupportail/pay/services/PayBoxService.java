@@ -53,6 +53,9 @@ import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.domain.ScienceConfReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.mail.MailSender;
 import org.springframework.web.client.RestTemplate;
 
@@ -335,16 +338,20 @@ public class PayBoxService {
 		                    }
 	                        if(emailMapFirstLastNames.get(0).getPayEvtMontant().getSciencesconf()) {
 	                    		ScienceConfReference scienceConfReference = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailMapFirstLastNames.get(0)).getSingleResult();
-	                    		Map<String, String> urlVariables = new HashMap<String, String>();
-	                    		urlVariables.put("confid", scienceConfReference.getConfid());
-	                    		urlVariables.put("uid", scienceConfReference.getUid());
-	                    		urlVariables.put("status", "1");
-	                    		urlVariables.put("transactionid", scienceConfReference.getEmailFieldsMapReference().getReference());
-	                    		String sciencesconfResponse = restTemplate.postForObject(scienceConfReference.getReturnurl(), null, String.class, urlVariables);
+	                    		HttpHeaders headers = new HttpHeaders();
+	                    		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+	                    		Map<String, String> formVars = new HashMap<String, String>();
+	                    		formVars.put("confid", scienceConfReference.getConfid());
+	                    		formVars.put("uid", scienceConfReference.getUid());
+	                    		formVars.put("status", "1");
+	                    		formVars.put("transactionid", scienceConfReference.getEmailFieldsMapReference().getReference());
+	                    		HttpEntity<Map<String, String>> request = new HttpEntity<Map<String, String>>(formVars, headers);
+	                    		// Fonctionnement du paiement dans sciencesconf : https://www.sciencesconf.org/resources/sciencesconf.org.paiement.pdf
+	                    		String sciencesconfResponse = restTemplate.postForObject(scienceConfReference.getReturnurl(), request, String.class);
 	                    		if("1".equals(sciencesconfResponse)) {
 	                    			log.info("Paiement ok sur sciencesconf");
 	                    		} else {
-	                    			log.warn("Problème de retour de paiement avec sciencesconf ? " + StringUtils.join(urlVariables) + " -> " + sciencesconfResponse);
+	                    			log.warn("Problème de retour de paiement avec sciencesconf ? " + StringUtils.join(formVars) + " -> " + sciencesconfResponse);
 	                    		}
 	                    	}
 	                        if (newTxLog) {
