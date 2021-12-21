@@ -339,7 +339,6 @@ public class PayBoxService {
 	                        if(emailMapFirstLastNames.get(0).getPayEvtMontant().getSciencesconf()) {
 	                    		ScienceConfReference scienceConfReference = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailMapFirstLastNames.get(0)).getSingleResult();
 	                    		HttpHeaders headers = new HttpHeaders();
-	                    		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 	                    		Map<String, String> formVars = new HashMap<String, String>();
 	                    		formVars.put("confid", scienceConfReference.getConfid());
 	                    		formVars.put("uid", scienceConfReference.getUid());
