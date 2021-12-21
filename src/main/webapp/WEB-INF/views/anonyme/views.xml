@@ -28,11 +28,6 @@
         <put-attribute name="header" value="/WEB-INF/views/anonyme/header.jspx" />
         <put-attribute name="body" value="/WEB-INF/views/anonyme/evtmntForm.jspx"/>
     </definition>
-    <definition extends="public" name="scienceconfPostReturn">
-        <put-attribute name="header" value="/WEB-INF/views/anonyme/header.jspx" />
-        <put-attribute name="body" value="/WEB-INF/views/anonyme/scienceconfPostReturn.jspx"/>
-        <put-attribute name="footer" value="/WEB-INF/views/anonyme/scienceconfPostReturn-footer.jspx" />
-    </definition>
     <definition extends="public" name="amountFormDisabled">
         <put-attribute name="header" value="/WEB-INF/views/anonyme/header.jspx" />
         <put-attribute name="body" value="/WEB-INF/views/anonyme/amountFormDisabled.jspx"/>

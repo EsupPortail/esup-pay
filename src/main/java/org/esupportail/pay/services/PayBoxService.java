@@ -31,7 +31,9 @@ import java.security.spec.X509EncodedKeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.annotation.Resource;
@@ -41,15 +43,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.PayBoxForm;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
+import org.esupportail.pay.domain.ScienceConfReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.MailSender;
+import org.springframework.web.client.RestTemplate;
 
 public class PayBoxService {
 
@@ -64,6 +69,12 @@ public class PayBoxService {
     
 	@Resource
 	PayTransactionLogDaoService payTransactionLogDaoService;
+		
+	@Resource
+	ScienceConfReferenceDaoService scienceConfReferenceDaoService;
+	
+	@Resource
+	RestTemplate restTemplate;
 	
     private HashService hashService;
 
@@ -322,7 +333,20 @@ public class PayBoxService {
 		                        log.error("Exception during sending email to : " + mailTo , ex);
 		                        txLog.setMailSent(false);
 		                    }
-	                        
+	                        if(emailMapFirstLastNames.get(0).getPayEvtMontant().getSciencesconf()) {
+	                    		ScienceConfReference scienceConfReference = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailMapFirstLastNames.get(0)).getSingleResult();
+	                    		Map<String, String> urlVariables = new HashMap<String, String>();
+	                    		urlVariables.put("confid", scienceConfReference.getConfid());
+	                    		urlVariables.put("uid", scienceConfReference.getUid());
+	                    		urlVariables.put("status", "1");
+	                    		urlVariables.put("transactionid", scienceConfReference.getEmailFieldsMapReference().getReference());
+	                    		String sciencesconfResponse = restTemplate.postForObject(scienceConfReference.getReturnurl(), null, String.class, urlVariables);
+	                    		if("1".equals(sciencesconfResponse)) {
+	                    			log.info("Paiement ok sur sciencesconf");
+	                    		} else {
+	                    			log.warn("Problème de retour de paiement avec sciencesconf ? " + StringUtils.join(urlVariables) + " -> " + sciencesconfResponse);
+	                    		}
+	                    	}
 	                        if (newTxLog) {
 	                        	payTransactionLogDaoService.persist(txLog);
 	                        } 

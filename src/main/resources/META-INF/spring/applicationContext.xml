@@ -67,5 +67,8 @@
     </bean>
     
     <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="filterMultipartResolver"/>
+
+	<bean id="restTemplate"
+		class="org.springframework.web.client.RestTemplate"/>
         
 </beans>
