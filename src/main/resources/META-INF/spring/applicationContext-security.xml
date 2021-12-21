@@ -52,7 +52,7 @@
 		<custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
     	<custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
     	<custom-filter ref="resourceUrlEncodingFilter" position="LAST"/>
-    	<csrf/>
+    	<csrf request-matcher-ref="esupPayCsrfSecurityRequestMatcher"/>
 	</http>
 
 	<authentication-manager alias="authenticationManager">
