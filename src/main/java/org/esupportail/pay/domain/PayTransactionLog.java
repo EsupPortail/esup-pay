@@ -106,7 +106,7 @@ public class PayTransactionLog {
     }
 
     public String getMontantDevise() {
-        Double mnt = new Double(montant) / 100.0;
+        Double mnt = Double.valueOf(montant) / 100.0;
         return mnt.toString();
     }
     
