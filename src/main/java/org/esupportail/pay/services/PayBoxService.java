@@ -322,7 +322,7 @@ public class PayBoxService {
 	                        log.info("Transaction : " + reference + " pour un montant de " + montant + " OK !");
 	                        
 	                        String subject = evt.getMailSubject() + txLog.getMail() + " - "  + txLog.getMontantDevise() + " Euros.";
-	                        String mailTo = evt.getManagersEmail();
+	                        List<String> mailTo = evt.getManagersEmails();
 	                        String message = "Email : " + txLog.getMail() + "\n";
 	                        message += txLog.getPayEvtMontant().getField1Label().getTranslation(LOCALE_IDS.fr) + " : " + txLog.getField1() + "\n";
 	                        message += txLog.getPayEvtMontant().getField2Label().getTranslation(LOCALE_IDS.fr) + " : " + txLog.getField2() + "\n";
@@ -372,11 +372,11 @@ public class PayBoxService {
         }
     }
 
-    public void sendMessage(String mailFrom, String subject, String mailTo, String message) {
+    public void sendMessage(String mailFrom, String subject, List<String> mailTo, String message) {
         org.springframework.mail.SimpleMailMessage mailMessage = new org.springframework.mail.SimpleMailMessage();
         mailMessage.setFrom(mailFrom);
         mailMessage.setSubject(subject);
-        mailMessage.setTo(mailTo);
+        mailMessage.setTo(mailTo.toArray(new String[mailTo.size()]));
         mailMessage.setText(message);
         mailTemplate.send(mailMessage);
     }

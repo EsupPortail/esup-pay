@@ -16,29 +16,16 @@
  * limitations under the License.
  */
 package org.esupportail.pay.domain;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
-import org.apache.commons.lang3.StringUtils;
-import org.esupportail.pay.domain.Label.LOCALE_IDS;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.esupportail.pay.domain.Label.LOCALE_IDS;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -72,9 +59,11 @@ public class PayEvt {
     @Column(unique = true)
     String urlId;
 
-    @NotEmpty
-    String managersEmail;
-    
+    @ElementCollection
+    @CollectionTable(name = "managers_emails", joinColumns = @JoinColumn(name = "pay_evt"))
+    @Column(name = "manager_email")
+    List<String> managersEmails;
+
     @NotEmpty
     String mailSubject;
 

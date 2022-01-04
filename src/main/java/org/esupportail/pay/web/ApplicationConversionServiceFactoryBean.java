@@ -48,7 +48,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<PayEvt, String> getPayEvtToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<org.esupportail.pay.domain.PayEvt, java.lang.String>() {
             public String convert(PayEvt payboxEvt) {
-                return new StringBuilder().append(payboxEvt.getPayboxServiceKey()).append(' ').append(payboxEvt.getWebSiteUrl()).append(' ').append(payboxEvt.getUrlId()).append(' ').append(payboxEvt.getManagersEmail()).toString();
+                return new StringBuilder().append(payboxEvt.getPayboxServiceKey()).append(' ').append(payboxEvt.getWebSiteUrl()).append(' ').append(payboxEvt.getUrlId()).append(' ').append(payboxEvt.getManagersEmails()).toString();
             }
         };
     }

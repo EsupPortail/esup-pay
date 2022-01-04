@@ -47,7 +47,17 @@ xmlns:spring="http://www.springframework.org/tags" xmlns:table="urn:jsptagdir:/W
 		    <page:show create="false" delete="${isAdmin and empty payevtmontants}" id="ps_org_esupportail_pay_domain_payevt" list="false" object="${payEvt}" path="/admin/evts" update="false " z="user-managed">
 		        <field:display field="webSiteUrl" id="s_org_esupportail_pay_domain_payevt_webSiteUrl" object="${payEvt}" z="kz1h5qI4d2x2XYzeU07q7+RVXRk="/>
 		        <field:display field="urlId" id="s_org_esupportail_pay_domain_payevt_urlId" object="${payEvt}" z="s7novZJxF32fiExpfcF6bMM0egs="/>
-		        <field:display field="managersEmail" id="s_org_esupportail_pay_domain_payevt_managersEmail" object="${payEvt}" z="bwEfbBcVGOhWPzsraL9Ili9kpA0="/>
+				<dl class="displayTag">
+					<dt><spring:message code="label_org_esupportail_pay_domain_payevt_managersemail" htmlEscape="false" /> :
+					</dt>
+					<dd>
+						<ul id="managersEmails">
+							<c:forEach items="${payEvt.managersEmails}" var="managersEmail">
+								<li>${managersEmail}</li>
+							</c:forEach>
+						</ul>
+					</dd>
+				</dl>
 		        <field:display field="mailSubject" id="s_org_esupportail_pay_domain_payevt_mailSubject" object="${payEvt}" z="+LHr7Epi5+K1YzTz+jo8/RyS/ek="/>
 		        <field:display field="payboxCommandPrefix" id="s_org_esupportail_pay_domain_payevt_payCommandPrefix" object="${payEvt}" z="KQMKBPx7ZrihJrJGteLcFGPAQzI="/>
 		        <field:display field="logoFile" id="s_org_esupportail_pay_domain_payevt_logoFile" object="${payEvt}" render="false" z="user-managed"/>

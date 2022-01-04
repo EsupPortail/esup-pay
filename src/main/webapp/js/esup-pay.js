@@ -131,6 +131,23 @@ function chartLine(data, id, unite){
 
 $(document).ready(function() {
 
+	$("#AddMoreManagersEmails").on("click",function (e) {
+		var inputDiv = $(' \
+				<div class="input-group">\
+				<input class="form-control" name="managersEmails" value="" /> <span class="input-group-addon"> <a href="#" \
+					class="btn btn-xs btn-danger removeclass"><span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span></span></a></span> \
+				</div> \
+		').appendTo('#managersEmails');
+		addAutocompleteLogin(inputDiv);
+		return false;
+	});
+
+	$("body").on("click","#managersEmails .removeclass", function(e){
+		if( $("#managersEmails").find("input").length > 0 ) {
+			$(this).closest('.input-group').remove();
+		}
+		return false;
+	}) ;
 
 	$("#AddMoreLogins").on("click",function (e) {                                                                                                                                                                                           
 		var inputDiv = $(' \

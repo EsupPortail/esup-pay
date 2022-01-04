@@ -64,9 +64,10 @@ public class PayEvtUpdateValidator implements Validator {
 		if(evt.getUrlId() == null || evt.getUrlId().isEmpty()) {
 			errors.rejectValue("urlId", "NotEmpty");
 	    }
-		if(evt.getManagersEmail() == null || evt.getManagersEmail().isEmpty()) {
-			errors.rejectValue("managersEmail", "NotEmpty");
-	    }
+		/*
+		if(evt.getManagersEmails() == null || evt.getManagersEmails().isEmpty()) {
+			errors.rejectValue("managersEmails", "NotEmpty");
+	    }*/
 		if(evt.getMailSubject() == null || evt.getMailSubject().isEmpty()) {
 			errors.rejectValue("mailSubject", "NotEmpty");
 	    }
