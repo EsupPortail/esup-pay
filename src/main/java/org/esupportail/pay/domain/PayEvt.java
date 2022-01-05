@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
+import org.esupportail.pay.services.PayBoxService;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -180,6 +181,8 @@ public class PayEvt {
     public String getDbleMontantMaxDisplay() {
     	return String.format("%,.2f€", dbleMontantMax);
     }
-    
 
+    public void setPayboxCommandPrefix(String payboxCommandPrefix) {
+        this.payboxCommandPrefix = StringUtils.stripAccents(payboxCommandPrefix).replaceAll(PayBoxService.NUM_COMMANDE_CHARS_NOT_AUTHORIZED_REGEX, "");
+    }
 }

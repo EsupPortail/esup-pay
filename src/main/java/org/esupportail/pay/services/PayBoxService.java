@@ -100,7 +100,7 @@ public class PayBoxService {
     
     private String mailFrom;
 
-    private static final String NUM_COMMANDE_CHARS_NOT_AUTHORIZED_REGEX = "[^a-zA-Z0-9:@,.:_\\-]";
+    public static final String NUM_COMMANDE_CHARS_NOT_AUTHORIZED_REGEX = "[^a-zA-Z0-9:@,.:_\\-]";
 
     @Autowired
     private transient MailSender mailTemplate;
