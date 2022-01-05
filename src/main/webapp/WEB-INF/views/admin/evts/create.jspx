@@ -40,16 +40,14 @@
 							</a>
 						</label>
 						<div id="managersEmails">
-							<c:forEach items="${payEvt.managersEmails}" var="managersEmail">
-								<div class="input-group">
-									<input name="managersEmails" value="${managersEmail}" id="c_org_esupportail_pay_domain_payevt_managersEmail" z="user-managed" class="form-control"/>
-									<span class="input-group-addon">
-										<a class="btn btn-xs btn-danger removeclass" href="#">
-											<span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
-										</a>
-									</span>
-								</div>
-							</c:forEach>
+							<div class="input-group">
+								<input name="managersEmails" id="c_org_esupportail_pay_domain_payevt_managersEmail" z="user-managed" class="form-control"/>
+								<span class="input-group-addon">
+									<a class="btn btn-xs btn-danger removeclass" href="#">
+										<span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
+									</a>
+								</span>
+							</div>
 						</div>
 					</div>
 			        <field:input field="mailSubject" id="c_org_esupportail_pay_domain_payevt_mailSubject" z="user-managed" cssClass="form-control"/>
