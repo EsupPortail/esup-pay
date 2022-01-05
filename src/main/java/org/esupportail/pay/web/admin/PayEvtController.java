@@ -250,7 +250,7 @@ public class PayEvtController {
         String currentUser = auth.getName();
         
         if(sortFieldName == null) {
-        	sortFieldName = "id";
+        	sortFieldName = "archived, id";
         	sortOrder = "desc";
         }
     	

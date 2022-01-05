@@ -30,9 +30,10 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "pay_evt", indexes = {
+                @Index(name = "pay_evt_archived_id", columnList = "archived, id desc")
+})
 public class PayEvt {
-
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("id", "logoFile", "payboxServiceKey", "title", "webSiteUrl", "urlId", "managersEmail", "mailSubject", "payboxCommandPrefix", "respLogins", "viewerLogins", "defaultMntDescription", "logins", "viewerLogins2Add");
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -69,6 +70,9 @@ public class PayEvt {
 
     @NotEmpty
     String payboxCommandPrefix;
+
+    @Column(columnDefinition = "boolean default false")
+    Boolean archived = false;
 
     @ManyToMany
     @JoinTable(name = "pay_evt_resp_logins",

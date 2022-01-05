@@ -43,7 +43,7 @@
     	<div class="row">
 	        <div class="col-lg-7">
 		        <div class="well">
-			        <field:input field="webSiteUrl" id="c_org_esupportail_pay_domain_payevt_webSiteUrl" z="user-managed" cssClass="form-control"/>
+					<field:input field="webSiteUrl" id="c_org_esupportail_pay_domain_payevt_webSiteUrl" z="user-managed" cssClass="form-control"/>
 			        <field:input field="urlId" id="c_org_esupportail_pay_domain_payevt_urlId" readonly="${not isAdmin}" z="user-managed" cssClass="form-control"/>
 					<div class="form-group" id="_c_org_esupportail_pay_domain_payevt_managersEmails">
 						<label for="managersEmail" class="c">
@@ -76,7 +76,8 @@
 			        </c:if>
 			        <field:input field="defaultOptionalAddedParams" id="c_org_esupportail_pay_domain_payevt_defaultOptionalAddedParams" readonly="${not isAdmin}" cssClass="form-control" z="user-managed"/>
 		        	<field:input field="dbleMontantMax" id="c_org_esupportail_pay_domain_payEvtMontant_dbleMontantMax" readonly="${not isAdmin}" cssClass="form-control" z="user-managed"/>
-		        </div>
+					<field:checkbox field="archived" id="c_org_esupportail_pay_domain_payevt_archived" alternateLabel="Oui"/>
+				</div>
 	        </div>
 	        <div class="col-lg-5">
 		        <div class="well">

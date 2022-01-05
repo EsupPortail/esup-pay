@@ -59,6 +59,7 @@
             <table:column id="c_org_esupportail_pay_domain_PayEvt_logins"  property="logins" z="user-managed" render="false"/>
             <table:column id="c_org_esupportail_pay_domain_PayEvt_viewerLogins2Add" label="${lecteurs}" property="ViewerLoginsStr" z="user-managed"/>
             <table:column id="c_org_esupportail_pay_domain_PayEvt_payServiceKey" label="${compte}" property="payboxServiceKey" z="Qwz7qh7neZ8wDSVF5T/7tI/Zjdo="/>
+            <table:column id="c_org_esupportail_pay_domain_PayEvt_archived" property="archived" z="user-managed"/>
         </table:table>
     </page:list>
 </div>

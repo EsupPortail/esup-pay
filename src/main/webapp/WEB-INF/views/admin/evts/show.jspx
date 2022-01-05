@@ -104,7 +104,8 @@ xmlns:spring="http://www.springframework.org/tags" xmlns:table="urn:jsptagdir:/W
 		        </c:forEach>
 		        <field:display field="title" id="s_org_esupportail_pay_domain_payevt_title" object="${payEvt}" render="false" z="user-managed"/>
 		        <field:display field="defaultMntDescription" id="s_org_esupportail_pay_domain_payevt_defaultMntDescription" object="${payEvt}" render="false" z="user-managed"/>
-		    </page:show>
+				<field:display field="archived" id="s_org_esupportail_pay_domain_payevt_archived" object="${payEvt}" z="user-managed"/>
+			</page:show>
 	    </div>
     </div>
     
