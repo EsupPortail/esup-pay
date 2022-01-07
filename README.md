@@ -16,7 +16,7 @@ Cette application utilise CAS+LDAP pour autoriser uniquement certains membres de
 ## Prérequis
 
 * un CAS
-* un LDAP avec un groupe regroupant les administrateurs de l'applciation esup-pay qui pourront créer des évènements esup-pay - ce groupe peut-être un posixGroup ou un groupOfNames
+* un LDAP avec un groupe regroupant les administrateurs de l'application esup-pay qui pourront créer des évènements esup-pay - ce groupe peut-être un posixGroup ou un groupOfNames
 * un compte Paybox - esup-pay utilise l'intégration paybox version hmac (sans module cgi) - il faut donc un compte paybox avec un hmac de configuré. 
 * une base de données PostgreSQL
 * JDK 11
