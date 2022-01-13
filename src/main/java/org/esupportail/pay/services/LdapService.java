@@ -51,18 +51,29 @@ public class LdapService {
 	private String loginMail;
 
 	private List<String> ldapSearchAttrs;
+	private List<String> ldapSearchEqAttrs;
 
-	@Value("${ldap.searchAttrs:cn,uid,displayName,mail,supannAliasLogin}")
+	@Value("${ldap.searchAttrs:cn,displayName,mail}")
 	public void setLdapSearchAttr(String ldapSearchAttr) {
 		this.ldapSearchAttrs = Arrays.asList(ldapSearchAttr.split(","));
+	}
+
+	@Value("${ldap.searchEqAttrs:uid,supannAliasLogin}")
+	public void setLdapSearchEqAttr(String ldapSearchEqAttr) {
+		this.ldapSearchEqAttrs = Arrays.asList(ldapSearchEqAttr.split(","));
 	}
 
 	public List<LdapResult> search(String login) {
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
 		OrFilter orFilter = new OrFilter();
-		for (String ldapSearchAttr : ldapSearchAttrs) {
-			orFilter.or(new LikeFilter(ldapSearchAttr, login));
+		if (ldapSearchAttrs != null) {
+			for (String ldapSearchAttr : ldapSearchAttrs) {
+			    orFilter.or(new LikeFilter(ldapSearchAttr, login));
+			}
+		}
+		for (String ldapSearchAttr : ldapSearchEqAttrs) {
+			orFilter.or(new EqualsFilter(ldapSearchAttr, login));
 		}
 		filter.and(orFilter);
 		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
