@@ -39,7 +39,7 @@
    	    <spring:url value="/" var="rootUrl"/>
    	    <c:choose>
    	    	<c:when test="${not empty logoAppUrl }">
-   	    		<a class="navbar-brand" href="${rootUrl}"><img src="${logoAppUrl}" /></a>
+   	    		<a class="navbar-brand" href="${rootUrl}"><img alt="" src="${logoAppUrl}" /></a>
    	    	</c:when>
    	    	<c:otherwise>
    	    		<a class="navbar-brand" href="${rootUrl}">${appName}</a> 
