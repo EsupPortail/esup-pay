@@ -32,7 +32,7 @@ xmlns:spring="http://www.springframework.org/tags" xmlns:table="urn:jsptagdir:/W
     
     <div class="col-lg-1">
     	<spring:url value="/admin/evts/${payEvt.id}/logo" var="logoUrl"/>
-    	<img src="${logoUrl}" title="logo" class="img-responsive"/>
+    	<img alt="" src="${logoUrl}" title="logo" class="img-responsive"/>
     </div>
     
     <div class="col-lg-3">

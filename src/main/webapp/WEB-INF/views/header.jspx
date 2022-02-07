@@ -34,7 +34,7 @@
 			<spring:url var="home" value="/admin" />
 			<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12" id="logoDiv">
 				<a href="${home}" title="${default_title}">
-					<img src="${banner}"/>			
+					<img alt="" src="${banner}"/>			
 				</a>
 			</div>	
 			<div class="col-lg-8 col-md-9 col-sm-9 col-xs-12">
@@ -46,7 +46,7 @@
 				<spring:eval expression="@propertyConfigurer.getProperty('institute.name')" var="logo_title" />
 				<spring:eval expression="@propertyConfigurer.getProperty('institute.href')" var="logo_href" />
 				<a href="${logo_href}" name="${logo_title}"
-					title="${logo_title}"><img src="${logo}"/></a>
+					title="${logo_title}"><img alt="" src="${logo}"/></a>
 			</div>
 		</div> 
 	</div>

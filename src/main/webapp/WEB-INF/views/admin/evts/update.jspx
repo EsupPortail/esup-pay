@@ -32,7 +32,7 @@
 			        <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="required" type="file" />
 			        <br />
 			        <spring:url value="/admin/evts/${payEvt.id}/logo" var="logoUrl"/>
-			        <img src="${logoUrl}" title="logo"/>
+			        <img alt="" src="${logoUrl}" title="logo"/>
 			   </fieldset>
 		    </form:create>
 	    </div>
