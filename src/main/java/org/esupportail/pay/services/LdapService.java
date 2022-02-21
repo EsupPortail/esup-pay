@@ -17,6 +17,7 @@
  */
 package org.esupportail.pay.services;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -43,7 +44,20 @@ public class LdapService {
 	@Value("${ldap.uid.attribute:uid}")
 	String ldapUidAttr;
 
-	public List<LdapResult> search(String login, List<String> ldapSearchAttrs, String loginDisplayName, String loginMail) {
+	@Value("${ldap.displayName:displayName}")
+	private String loginDisplayName;
+
+	@Value("${ldap.mail:mail}")
+	private String loginMail;
+
+	private List<String> ldapSearchAttrs;
+
+	@Value("${ldap.searchAttrs:cn,uid,displayName,mail,supannAliasLogin}")
+	public void setLdapSearchAttr(String ldapSearchAttr) {
+		this.ldapSearchAttrs = Arrays.asList(ldapSearchAttr.split(","));
+	}
+
+	public List<LdapResult> search(String login) {
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
 		OrFilter orFilter = new OrFilter();
@@ -54,7 +68,7 @@ public class LdapService {
 		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
 	}
 
-	public void computeRespLogin(List<RespLogin> respLogins, String loginDisplayName, String loginMail) {
+	public void computeRespLogin(List<RespLogin> respLogins) {
 		if(respLogins==null || respLogins.isEmpty()) {
 			return;
 		}

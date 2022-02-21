@@ -48,15 +48,6 @@ public class LdapPeopleController {
 	@Resource
 	LdapService ldapService;
 
-    @Value("${ldap.displayName:displayName}")
-    private String loginDisplayName;
-
-    @Value("${ldap.mail:mail}")
-    private String loginMail;
-
-    @Value("${ldap.searchAttrs:cn,uid,displayName,mail,supannAliasLogin}")
-    private String ldapSearchAttr;
-	
     @RequestMapping(value="/admin/searchLoginsJson", headers = "Accept=application/json", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> searchLoginsJson(Model uiModel, @RequestParam String loginPrefix) {
@@ -64,18 +55,9 @@ public class LdapPeopleController {
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
 
-        List<String> ldapSearchAttrs = Arrays.asList(ldapSearchAttr.split(","));
-
-        List<LdapResult> ldapResults = ldapService.search(loginPrefix + "*", ldapSearchAttrs, loginDisplayName, loginMail);
-
-        List<String> logins = new ArrayList<String>();;
-        for (LdapResult ldapResult : ldapResults) {
-           logins.add(ldapResult.getDisplayName());
-        }
-
+        List<LdapResult> ldapResults = ldapService.search(loginPrefix + "*");
 
         String loginsJson = new JSONSerializer().serialize(ldapResults);
-        
     	return new ResponseEntity<String>(loginsJson, headers, HttpStatus.OK);
     }    
 }

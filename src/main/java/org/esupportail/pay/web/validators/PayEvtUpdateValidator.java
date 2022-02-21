@@ -40,15 +40,6 @@ public class PayEvtUpdateValidator implements Validator {
 	@Resource
 	LdapService ldapService;
 
-	@Value("${ldap.displayName:displayName}")
-	private String loginDisplayName;
-
-	@Value("${ldap.mail:mail}")
-	private String loginMail;
-
-	@Value("${ldap.searchAttrs:cn,uid,displayName,mail,supannAliasLogin}")
-	private String ldapSearchAttr;
-
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return PayEvt.class.equals(clazz);
@@ -61,7 +52,6 @@ public class PayEvtUpdateValidator implements Validator {
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
-		List<String> ldapSearchAttrs = Arrays.asList(ldapSearchAttr.split(","));
 
 		PayEvt evt = (PayEvt) target;
 		if(evt.getUrlId() == null || evt.getUrlId().isEmpty()) {
@@ -78,14 +68,14 @@ public class PayEvtUpdateValidator implements Validator {
 
 		if(evt.getLogins() != null) {
 			for(String login : evt.getLogins()) {
-				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName, loginMail).size()<1) {
+				if(ldapService.search(login).size()<1) {
 					errors.rejectValue("logins", "login_not_found");
 				}
 			}
 		}
 		if(evt.getViewerLogins2Add() != null) {
 			for(String login : evt.getViewerLogins2Add()) {
-				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName, loginMail).size()<1) {
+				if(ldapService.search(login).size()<1) {
 					errors.rejectValue("viewerLogins2Add", "login_not_found");
 				}
 			}
