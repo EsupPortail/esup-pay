@@ -36,7 +36,7 @@
 <util:load-scripts />
 
 <spring:message code="application_name" var="app_name" htmlEscape="false" />
-<title>Paybox UR - ${active}</title>
+<title>${title} - ${subTitle}</title>
 </head>
 
 <body> 

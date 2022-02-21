@@ -26,12 +26,16 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 public class ConfigInterceptor extends HandlerInterceptorAdapter {
+
+	@Value("ESUP-PAY ${institute.name:''}")
+	private String title;
 	
 	final static SortedMap<String, String> subTitles = new TreeMap<String, String>() {
 		private static final long serialVersionUID = 1L;
@@ -40,6 +44,7 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 	    put("/admin/fees", "Liste des transactions Paybox");
 	    put("/admin/evtmnts", "Montant transaction Paybox");
 	    put("/admin/stats", "Statistiques Paybox");
+		put("/admin/ventilations", "Ventilations Paybox");
 	}};
 	
 	@Override
@@ -78,6 +83,7 @@ public class ConfigInterceptor extends HandlerInterceptorAdapter {
 					}
 				}
 
+				modelAndView.addObject("title", title);
 				modelAndView.addObject("subTitle", subTitle);
 				modelAndView.addObject("activeMenu", activeMenu);
 			}
