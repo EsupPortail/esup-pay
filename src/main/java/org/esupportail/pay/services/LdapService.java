@@ -43,7 +43,7 @@ public class LdapService {
 	@Value("${ldap.uid.attribute:uid}")
 	String ldapUidAttr;
 
-	public List<LdapResult> search(String login, List<String> ldapSearchAttrs, String loginDisplayName) {
+	public List<LdapResult> search(String login, List<String> ldapSearchAttrs, String loginDisplayName, String loginMail) {
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
 		OrFilter orFilter = new OrFilter();
@@ -51,10 +51,10 @@ public class LdapService {
 			orFilter.or(new LikeFilter(ldapSearchAttr, login));
 		}
 		filter.and(orFilter);
-		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr}, new SimpleLoginAttributMapper(loginDisplayName));
+		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
 	}
 
-	public void computeRespLogin(List<RespLogin> respLogins, String loginDisplayName) {
+	public void computeRespLogin(List<RespLogin> respLogins, String loginDisplayName, String loginMail) {
 		if(respLogins==null || respLogins.isEmpty()) {
 			return;
 		}
@@ -65,7 +65,7 @@ public class LdapService {
 			orFilter.or(new EqualsFilter(ldapUidAttr, respLogin.getLogin()));
 		}
 		filter.and(orFilter);
-		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr}, new SimpleLoginAttributMapper(loginDisplayName));
+		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
 		for (RespLogin respLogin : respLogins) {
 			for (LdapResult ldapResult : ldapResults) {
 				if (respLogin.getLogin().equals(ldapResult.getUid())) {
@@ -79,9 +79,11 @@ public class LdapService {
 	class SimpleLoginAttributMapper  implements AttributesMapper {
 		
 		String loginDisplayName;
+		String loginMail;
 
-		public SimpleLoginAttributMapper(String loginDisplayName) {
+		public SimpleLoginAttributMapper(String loginDisplayName, String loginMail) {
 			this.loginDisplayName = loginDisplayName;
+			this.loginMail = loginMail;
 		}
 
 		public LdapResult mapFromAttributes(Attributes attrs)
@@ -92,6 +94,9 @@ public class LdapService {
 			}
 			if(attrs.get(ldapUidAttr) != null) {
 				ldapResult.setUid(attrs.get(ldapUidAttr).get().toString());
+			}
+			if(attrs.get(loginMail) != null) {
+				ldapResult.setEmail(attrs.get(loginMail).get().toString());
 			}
 			return ldapResult;
 		}

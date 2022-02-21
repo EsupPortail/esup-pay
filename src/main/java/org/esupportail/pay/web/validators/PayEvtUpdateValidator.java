@@ -43,6 +43,9 @@ public class PayEvtUpdateValidator implements Validator {
 	@Value("${ldap.displayName:displayName}")
 	private String loginDisplayName;
 
+	@Value("${ldap.mail:mail}")
+	private String loginMail;
+
 	@Value("${ldap.searchAttrs:cn,uid,displayName,mail,supannAliasLogin}")
 	private String ldapSearchAttr;
 
@@ -75,14 +78,14 @@ public class PayEvtUpdateValidator implements Validator {
 
 		if(evt.getLogins() != null) {
 			for(String login : evt.getLogins()) {
-				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName).size()<1) {
+				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName, loginMail).size()<1) {
 					errors.rejectValue("logins", "login_not_found");
 				}
 			}
 		}
 		if(evt.getViewerLogins2Add() != null) {
 			for(String login : evt.getViewerLogins2Add()) {
-				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName).size()<1) {
+				if(ldapService.search(login, ldapSearchAttrs, loginDisplayName, loginMail).size()<1) {
 					errors.rejectValue("viewerLogins2Add", "login_not_found");
 				}
 			}

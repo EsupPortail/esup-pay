@@ -33,6 +33,9 @@ public class EvtService {
     @Value("${ldap.displayName:displayName}")
     private String loginDisplayName;
 
+    @Value("${ldap.mail:mail}")
+    private String loginMail;
+
     public void updateEvt(PayEvt payEvt) {
         // Hack : don't override logoFile !!
         PayEvt payEvtCurrent = payEvtDaoService.findPayEvt(payEvt.getId());
@@ -94,7 +97,7 @@ public class EvtService {
     			respLogins.addAll(payEvt.getRespLogins());
     		}
     	}
-        ldapService.computeRespLogin(respLogins, loginDisplayName);
+        ldapService.computeRespLogin(respLogins, loginDisplayName, loginMail);
  
     	List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
     	for(PayEvt payEvt: payEvts) {
@@ -102,16 +105,16 @@ public class EvtService {
     			viewerLogins.addAll(payEvt.getViewerLogins());
     		}
     	}
-        ldapService.computeRespLogin(viewerLogins, loginDisplayName);
+        ldapService.computeRespLogin(viewerLogins, loginDisplayName, loginMail);
         
     }
     
     public void computeRespLogin(PayEvt payEvt) {
         if (payEvt.getRespLogins() != null) {
-            ldapService.computeRespLogin(payEvt.getRespLogins(), loginDisplayName);
+            ldapService.computeRespLogin(payEvt.getRespLogins(), loginDisplayName, loginMail);
         }
         if (payEvt.getViewerLogins() != null) {
-            ldapService.computeRespLogin(payEvt.getViewerLogins(), loginDisplayName);
+            ldapService.computeRespLogin(payEvt.getViewerLogins(), loginDisplayName, loginMail);
         }
     }
  }

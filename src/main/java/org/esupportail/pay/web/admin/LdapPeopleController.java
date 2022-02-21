@@ -51,6 +51,9 @@ public class LdapPeopleController {
     @Value("${ldap.displayName:displayName}")
     private String loginDisplayName;
 
+    @Value("${ldap.mail:mail}")
+    private String loginMail;
+
     @Value("${ldap.searchAttrs:cn,uid,displayName,mail,supannAliasLogin}")
     private String ldapSearchAttr;
 	
@@ -63,7 +66,7 @@ public class LdapPeopleController {
 
         List<String> ldapSearchAttrs = Arrays.asList(ldapSearchAttr.split(","));
 
-        List<LdapResult> ldapResults = ldapService.search(loginPrefix + "*", ldapSearchAttrs, loginDisplayName);
+        List<LdapResult> ldapResults = ldapService.search(loginPrefix + "*", ldapSearchAttrs, loginDisplayName, loginMail);
 
         List<String> logins = new ArrayList<String>();;
         for (LdapResult ldapResult : ldapResults) {
