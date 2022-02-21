@@ -46,7 +46,7 @@
 				<spring:eval expression="@propertyConfigurer.getProperty('institute.name')" var="logo_title" />
 				<spring:eval expression="@propertyConfigurer.getProperty('institute.href')" var="logo_href" />
 				<a href="${logo_href}" name="${logo_title}"
-					title="${logo_title}"><img alt="" src="${logo}"/></a>
+					title="${logo_title}"><img alt="" src="${logo}" class="institute-logo"/></a>
 			</div>
 		</div>
 	</div>
