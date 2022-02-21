@@ -138,7 +138,7 @@ $(document).ready(function() {
 					class="btn btn-xs btn-danger removeclass"><span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span></span></a></span> \
 				</div> \
 		').appendTo('#managersEmails');
-		addAutocompleteLogin(inputDiv);
+		addAutocompleteLogin(inputDiv, 'email');
 		return false;
 	});
 
@@ -161,7 +161,7 @@ $(document).ready(function() {
 					class="btn btn-xs btn-danger removeclass"><span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span></span></a></span> \
 				</div> \
 		').appendTo('#respLogins');    
-		addAutocompleteLogin(inputDiv);
+		addAutocompleteLogin(inputDiv, 'login');
 		return false;
 	});
 
@@ -185,7 +185,7 @@ $(document).ready(function() {
 				class="btn btn-xs btn-danger removeclass"><span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span></a></span> \
 				</div> \
 		').appendTo('#viewerLogins');      
-		addAutocompleteLogin(inputDiv);
+		addAutocompleteLogin(inputDiv, 'login');
 		return false;
 	});
 
@@ -196,7 +196,7 @@ $(document).ready(function() {
 		return false;
 	}) ;
 	
-	function addAutocompleteLogin(selector) {
+	function addAutocompleteLogin(selector, type) {
 		$(selector).each(function(){
 			var input = $(this).find("input:text");
 			var hidden = $(this).find("input:hidden");
@@ -210,12 +210,17 @@ $(document).ready(function() {
 								loginPrefix: request.term,
 							},
 							success: function (data) {
-
 								response($.map(data, function (item) {
-									return {
-										value: item["displayName"] + ' (' + item['uid'] + ')',
-										login: item['uid']
-									};
+									if(type === 'email') {
+										return {
+											value: item['email']
+										}
+									} else {
+										return {
+											value: item["displayName"] + ' (' + item['uid'] + ')',
+											login: item['uid']
+										}
+									}
 								}));
 							}
 						});
@@ -232,9 +237,9 @@ $(document).ready(function() {
 				});
 		});
 	}
-	
-	addAutocompleteLogin('.autocompleteLogin');
-	
+	addAutocompleteLogin('.autocompleteLogin', 'login');
+	addAutocompleteLogin('.autocompleteEmail', 'email');
+
 	updateDbleMontant = function() {
 		$('#dbleMontant').prop('readonly', $('#_sciencesconf_id:checkbox').is(':checked') || $('#_freeAmount_id:checkbox').is(':checked'));
 	};

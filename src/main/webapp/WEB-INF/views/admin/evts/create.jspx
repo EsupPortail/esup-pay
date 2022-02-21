@@ -42,7 +42,7 @@
 						<div id="managersEmails">
 							<div class="input-group">
 								<input name="managersEmails" id="c_org_esupportail_pay_domain_payevt_managersEmail" z="user-managed" class="form-control"/>
-								<span class="input-group-addon">
+								<span class="input-group-addon autocompleteEmail">
 									<a class="btn btn-xs btn-danger removeclass" href="#">
 										<span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
 									</a>
