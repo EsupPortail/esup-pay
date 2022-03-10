@@ -210,18 +210,19 @@ $(document).ready(function() {
 								loginPrefix: request.term,
 							},
 							success: function (data) {
-								response($.map(data, function (item) {
-									if(type === 'email') {
+								response(type === 'email' ?
+									data.filter(function (item) { return item['email'] }).map(function (item) {
 										return {
 											value: item['email']
 										}
-									} else {
+									}) :
+									data.map(function (item) {
 										return {
 											value: item["displayName"] + ' (' + item['uid'] + ')',
 											login: item['uid']
 										}
-									}
-								}));
+									})
+								)
 							}
 						});
 				},
