@@ -53,12 +53,12 @@ public class LdapService {
 	private List<String> ldapSearchAttrs;
 	private List<String> ldapSearchEqAttrs;
 
-	@Value("${ldap.searchAttrs:cn,displayName,mail}")
+	@Value("${ldap.searchLikeAttrs}")
 	public void setLdapSearchAttr(String ldapSearchAttr) {
 		this.ldapSearchAttrs = Arrays.asList(ldapSearchAttr.split(","));
 	}
 
-	@Value("${ldap.searchEqAttrs:uid,supannAliasLogin}")
+	@Value("${ldap.searchEqAttrs}")
 	public void setLdapSearchEqAttr(String ldapSearchEqAttr) {
 		this.ldapSearchEqAttrs = Arrays.asList(ldapSearchEqAttr.split(","));
 	}
