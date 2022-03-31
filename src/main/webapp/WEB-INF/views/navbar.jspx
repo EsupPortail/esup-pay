@@ -48,7 +48,9 @@
 		    <spring:message code="pay_logout" htmlEscape="false" var="pay_logout_message" arguments="${userName}" />
 		    <spring:message code="pay_home" htmlEscape="false" var="pay_home" />
 			<menu:menu logoAppUrl="${logo}" appName="${app_name}" id="_navbar" labelRightButton="${pay_logout}" urlRightButton="${logoutUrl}" iconRightButton="off">
-		        <menu:item id="home" label="${pay_home}" url="/admin"  activeMenu="${actif=='notsu'}"/>
+		        <sec:authorize access="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')">
+		            <menu:item id="home" label="${pay_home}" url="/admin"  activeMenu="${actif=='notsu'}"/>
+		        </sec:authorize>
 		        <sec:authorize access="hasRole('ROLE_SU')">
 		        	<menu:item id="su" label="SU" url="/admin/su" activeMenu="${actif=='su'}" />
 		        </sec:authorize>
