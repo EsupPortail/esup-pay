@@ -56,7 +56,7 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 			log.error("Request: " + url + " raised " + ex.getMessage());
 			mav.setViewName("uncaughtException");
 		}
-		log.trace("Request: " + url + " raised " + ex, ex);
+		log.debug("Request: " + url + " raised " + ex, ex);
 		return mav;
 	}
 	
