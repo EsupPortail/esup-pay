@@ -27,11 +27,14 @@ import org.apache.commons.text.StringEscapeUtils;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.log4j.Logger;
 
 @Getter
 @Setter
 public class PayBoxForm {
-	
+
+	private final static Logger log = Logger.getLogger(PayBoxForm.class);
+
 	private static String PBX_SHOPPINGCART_XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
 			+ "<shoppingcart>"
 			+ "<total>"
@@ -170,9 +173,13 @@ public class PayBoxForm {
 			List<String> params = Arrays.asList(optionalAddedParams2.split("&"));
 			for(String param : params) {
 				List<String> paramNameAndValue = Arrays.asList(param.split("="));
-				String paramName = paramNameAndValue.get(0);
-				String paramValue = paramNameAndValue.get(1);
-				this.optionalAddedParams.put(paramName, paramValue);
+				if(paramNameAndValue.size()<2) {
+					log.warn(String.format("OptionalAddedParam %s not well formed : it doesn't contain '='", param));
+				} else {
+					String paramName = paramNameAndValue.get(0);
+					String paramValue = paramNameAndValue.get(1);
+					this.optionalAddedParams.put(paramName, paramValue);
+				}
 			}
 			
 		}
