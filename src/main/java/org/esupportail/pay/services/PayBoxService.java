@@ -278,7 +278,6 @@ public class PayBoxService {
     }
 
     public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String securevers, String softdecline, String secureauth, String securegarantie, String signature, String queryString) {
-        synchronized (idtrans.intern()) {
 	    	List<PayTransactionLog> txLogs = payTransactionLogDaoService.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
 	        boolean newTxLog = txLogs.size() == 0;
 	        PayTransactionLog txLog = txLogs.size() > 0 ? txLogs.get(0) : null;
@@ -369,7 +368,6 @@ public class PayBoxService {
 	            return true;
 	        }    
 	        return false;
-        }
     }
 
     public void sendMessage(String mailFrom, String subject, List<String> mailTo, String message) {

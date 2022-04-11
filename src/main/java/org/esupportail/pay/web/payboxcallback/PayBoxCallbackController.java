@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@Transactional
 public class PayBoxCallbackController {
 
     private final Logger log = Logger.getLogger(getClass());
@@ -49,14 +48,16 @@ public class PayBoxCallbackController {
     		@RequestParam String signature, HttpServletRequest request) {
         String ip = request.getRemoteAddr();
         String queryString = request.getQueryString();
-        if (payBoxServiceManager.payboxCallback(montant, reference, auto, erreur, idtrans, securevers, softdecline, secureauth, securegarantie, signature, queryString)) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "text/html; charset=utf-8");
-            return new ResponseEntity<String>("", headers, HttpStatus.OK);
-        } else {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "text/html; charset=utf-8");
-            return new ResponseEntity<String>("", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        synchronized (idtrans.intern()) {
+             if (payBoxServiceManager.payboxCallback(montant, reference, auto, erreur, idtrans, securevers, softdecline, secureauth, securegarantie, signature, queryString)) {
+                 HttpHeaders headers = new HttpHeaders();
+                 headers.add("Content-Type", "text/html; charset=utf-8");
+                 return new ResponseEntity<String>("", headers, HttpStatus.OK);
+             } else {
+                 HttpHeaders headers = new HttpHeaders();
+                 headers.add("Content-Type", "text/html; charset=utf-8");
+                 return new ResponseEntity<String>("", headers, HttpStatus.INTERNAL_SERVER_ERROR);
+             }
         }
     }
     

@@ -32,6 +32,7 @@ import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PayBoxServiceManager {
@@ -84,6 +85,7 @@ public class PayBoxServiceManager {
         return null;
 	}
 
+    @Transactional
 	public boolean payboxCallback(String montant, String reference,
 			String auto, String erreur, String idtrans,
 			String securevers, String softdecline, String secureauth, String securegarantie,
