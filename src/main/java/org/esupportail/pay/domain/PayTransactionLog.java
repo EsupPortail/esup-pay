@@ -99,7 +99,7 @@ public class PayTransactionLog {
 
     public String getMontantDevise() {
         Double mnt = Double.valueOf(montant) / 100.0;
-        return mnt.toString();
+        return String.format("%,.2f€", mnt);
     }
     
     public Label getEvtTitle() {

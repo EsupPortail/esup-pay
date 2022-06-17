@@ -35,6 +35,9 @@
             <c:set value="listFees2" var="idFees"/>
             <h3>${payEvt.title.labelLocales['fr'].translation}</h3>
         </c:if>
+        <c:if test="${not empty total}">
+            <i>${paytransactionlogs.size()} transactions pour un total de ${total}</i>
+        </c:if>
         <div id="${idFees}">
             <table:table create="false" data="${paytransactionlogs}" delete="false" id="l_org_esupportail_pay_domain_PayTransactionLog" path="/admin/fees" update="false" z="user-managed">
                 <table:column id="s_org_esupportail_pay_domain_PayTransactionLog_evt" label="Evt" property="payEvtMontant.evt.title.labelLocales['fr'].translation" render="${listAllTxEvts}"/>
