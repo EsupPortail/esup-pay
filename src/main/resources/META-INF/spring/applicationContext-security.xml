@@ -33,9 +33,9 @@
 		<logout logout-success-url="/j_spring_cas_security_logout" />
 		<!-- Configure these elements to secure URIs in your application -->
 		<intercept-url pattern="/login/impersonate" access="hasRole('ROLE_SU')"/>
-		<intercept-url access="hasRole('ROLE_ADMIN')" pattern="/admin/csv" />
-		<intercept-url access="hasRole('ROLE_ADMIN')" pattern="/admin/stats" />
-		<intercept-url access="hasRole('ROLE_ADMIN')" pattern="/admin/ventilations" />
+		<intercept-url access="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER') or hasRole('ROLE_STAT') or hasRole('ROLE_VENTILATION')" pattern="/admin" />
+		<intercept-url access="hasRole('ROLE_STAT')" pattern="/admin/stats" />
+		<intercept-url access="hasRole('ROLE_VENTILATION')" pattern="/admin/ventilations" />
 		<intercept-url access="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')" pattern="/admin/**" />
 		<intercept-url access="permitAll" pattern="/" />
 		<intercept-url access="${payboxIpRestriction}" pattern="/payboxcallback**" />
@@ -157,7 +157,7 @@
 		</beans:constructor-arg>
 		<beans:constructor-arg ref="ldapContextSource" />
 	</beans:bean>
-			
+
 	<beans:bean id="ldapUserDetailsService"
 		class="org.springframework.security.ldap.userdetails.LdapUserDetailsService">
 		<beans:constructor-arg ref="ldapUserSearch"/>
@@ -166,33 +166,28 @@
 			<beans:bean class="org.springframework.security.ldap.userdetails.InetOrgPersonContextMapper"/>
 		</beans:property>
 	</beans:bean>
-
-
-
-	<beans:bean id="ldapUserGroupAdminFilterSearch"
-		class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
-		<beans:constructor-arg>
-			<beans:value>${ldap.peopleSearchBase}</beans:value>
-		</beans:constructor-arg>
-		<beans:constructor-arg>
-			<beans:value>(&amp;(${ldap.peopleSearchFilter})(${ldap.groupAdminFilter:}))</beans:value>
-		</beans:constructor-arg>
-		<beans:constructor-arg ref="ldapContextSource" />
-	</beans:bean>
-	
 	
 	<beans:bean id="payboxLdapAuthoritiesPopulator"
 		class="org.esupportail.pay.security.PayLdapAuthoritiesPopulator">
 		<beans:constructor-arg ref="ldapContextSource" />
+		<beans:constructor-arg value="${ldap.peopleSearchBase:}" />
+		<beans:constructor-arg value="${ldap.peopleSearchFilter:}" />
 		<beans:constructor-arg value="${ldap.groupSearchBase:}" />
-		<beans:property name="groupSearchFilter" value="${ldap.groupSearchFilter:}"/>
-		<beans:property name="mappingGroupesRoles">
+		<beans:constructor-arg value="${ldap.groupSearchFilter:}" />
+		<beans:constructor-arg>
 			<beans:map>
-				<beans:entry key="ROLE_${ldap.groupAdmin:}" value="ROLE_SU" />
+				<beans:entry key="ROLE_SU" value="${ldap.groupAdmin:}" />
+				<beans:entry key="ROLE_VENTILATION" value="${ldap.groupVentilation:}" />
+				<beans:entry key="ROLE_STAT" value="${ldap.groupStatistique:}" />
 			</beans:map>
-		</beans:property>
-		<beans:property name="groupAdminFilter" value="${ldap.groupAdminFilter:}"/>
-		<beans:property name="ldapUserGroupAdminFilterSearch" ref="ldapUserGroupAdminFilterSearch"/>
+		</beans:constructor-arg>
+		<beans:constructor-arg>
+			<beans:map>
+				<beans:entry key="ROLE_SU" value="${ldap.groupAdminFilter:}" />
+				<beans:entry key="ROLE_VENTILATION" value="${ldap.groupVentilationFilter:}" />
+				<beans:entry key="ROLE_STAT" value="${ldap.groupStatistiqueFilter:}" />
+			</beans:map>
+		</beans:constructor-arg>
 	</beans:bean>
 
 

@@ -32,9 +32,11 @@ import org.esupportail.pay.dao.RespLoginDaoService;
 import org.esupportail.pay.domain.RespLogin;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
+import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
 import org.springframework.security.ldap.search.LdapUserSearch;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
 
@@ -44,9 +46,9 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 	
 	protected Map<String, String> mappingGroupesRoles;
 	
-	protected LdapUserSearch ldapUserGroupAdminFilterSearch;
+	protected Map<String, LdapUserSearch> ldapUserGroupFilterSearch = new HashMap<>();
 	
-	protected String groupAdminFilter;
+	protected Map<String, String> groupFilters;
 	
 	@Resource
 	PayEvtDaoService payEvtDaoService;
@@ -62,17 +64,21 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 		}
 	}
 
-	public void setLdapUserGroupAdminFilterSearch(LdapUserSearch ldapUserGroupAdminFilterSearch) {
-		this.ldapUserGroupAdminFilterSearch = ldapUserGroupAdminFilterSearch;
-	}
-
-	public void setGroupAdminFilter(String groupAdminFilter) {
-		this.groupAdminFilter = groupAdminFilter;
-	}
-
-	public PayLdapAuthoritiesPopulator(ContextSource contextSource,
-			String groupSearchBase) {
+	public PayLdapAuthoritiesPopulator(BaseLdapPathContextSource contextSource,
+									   String peopleSearchBase, String peopleSearchFilter,
+									   String groupSearchBase, String groupSearchFilter, Map<String, String> mappingGroupesRoles, Map<String, String> groupFilters) {
 		super(contextSource, groupSearchBase);
+		this.setGroupSearchFilter(groupSearchFilter);
+		this.mappingGroupesRoles = mappingGroupesRoles;
+		for(String role : groupFilters.keySet()) {
+			String groupFilter = groupFilters.get(role);
+			if(!groupFilter.isBlank()) {
+				String searchFilter = String.format("(&(%s)(%s))", peopleSearchFilter, groupFilter);
+				LdapUserSearch ldapUserSearch = new FilterBasedLdapUserSearch(peopleSearchBase, searchFilter, contextSource);
+				ldapUserGroupFilterSearch.put(role, ldapUserSearch);
+				log.debug(String.format("%s -> %s", searchFilter, role));
+			}
+		}
 	}
 	
 	@Override
@@ -90,24 +96,31 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 		String userDn = user.getNameInNamespace();
 
 		// search groups with groupFilter usually
-		Set<GrantedAuthority> roles = getGroupMembershipRoles(userDn, username);
-		log.info("Roles from ldap groups for " + username + " : " + roles);
+		Set<GrantedAuthority> groups = getGroupMembershipRoles(userDn, username);
+		log.info("Groups from ldap (with ROLE_ prefix) for " + username + " : " + groups);
 
 		Set<GrantedAuthority> extraRoles = new HashSet<GrantedAuthority>();
 
-		for(GrantedAuthority role: roles) {
-			log.debug("Group from LDAP : " + role.getAuthority().replaceAll("ROLE_", ""));
-			if(mappingGroupesRoles != null && mappingGroupesRoles.containsKey(role.getAuthority())) {
-				extraRoles.add(new SimpleGrantedAuthority(mappingGroupesRoles.get(role.getAuthority())));
+		for(GrantedAuthority group: groups) {
+			String groupname =  group.getAuthority().replaceAll("ROLE_", "");
+			if(!groupname.isBlank()) {
+				log.debug("Group from LDAP : " + groupname);
+				for (String role : mappingGroupesRoles.keySet()) {
+					if (groupname.equalsIgnoreCase(mappingGroupesRoles.get(role))) {
+						extraRoles.add(new SimpleGrantedAuthority(role));
+						log.debug(String.format("Role %s ok for %s", role, username));
+					}
+				}
 			}
 		}
 		
-		// add groups found via groupAdminFilter
-		if(groupAdminFilter != null && !groupAdminFilter.isEmpty()) {
+		// add groups found via group filters
+		for(String role : ldapUserGroupFilterSearch.keySet()) {
+			LdapUserSearch ldapUserSearch = ldapUserGroupFilterSearch.get(role);
 			try {
-				ldapUserGroupAdminFilterSearch.searchForUser(username);
-				extraRoles.add(new SimpleGrantedAuthority("ROLE_SU"));
-				log.info("Role Admin ok for " + username + " with the filter " + groupAdminFilter);
+				ldapUserSearch.searchForUser(username);
+				extraRoles.add(new SimpleGrantedAuthority(role));
+				log.debug(String.format("Role %s ok for %s", role, username));
 			} catch(UsernameNotFoundException e) {
 				// User is not admin
 			}
@@ -116,6 +129,8 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 		// role SU -> role ADMIN
 		if(extraRoles.contains(new SimpleGrantedAuthority("ROLE_SU"))) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+			extraRoles.add(new SimpleGrantedAuthority("ROLE_STAT"));
+			extraRoles.add(new SimpleGrantedAuthority("ROLE_VENTILATION"));
 		}
 		
 		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(username);
@@ -132,7 +147,7 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 		
 		if(log.isInfoEnabled()) {
 			for(GrantedAuthority role: extraRoles) {
-				log.info("-> Role : " + role.getAuthority().replaceAll("ROLE_", ""));
+				log.info(String.format("%s -> Role : %s ", username, role.getAuthority().replaceAll("ROLE_", "")));
 			}
 		}
 

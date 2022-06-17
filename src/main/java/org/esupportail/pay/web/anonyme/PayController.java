@@ -86,16 +86,15 @@ public class PayController {
 	
     @RequestMapping("/")
     public String index(Model uiModel) {
-    	 
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         if(auth.isAuthenticated() && 
         		(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || 
         		auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) ||
-         		auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER")))) {
+         		auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER")) ||
+				auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VENTILATION")) ||
+				auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_STAT")))) {
         	return "redirect:/admin";
         }
-    	
        return "index";
     }
 

@@ -18,12 +18,15 @@
 package org.esupportail.pay.web.admin;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class SwitchUserController {
+public class AdminController {
 	
 	private final Logger log = Logger.getLogger(getClass());
 	
@@ -34,7 +37,17 @@ public class SwitchUserController {
 	}
 	
 	@RequestMapping("/admin")
-	public String index(Model uiModel) {		
+	public String index(Model uiModel) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) ||
+				auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) ||
+				auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"))) {
+			return "redirect:/admin/evts?page=1";
+		} else if(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VENTILATION"))) {
+			return "redirect:/admin/ventilations";
+		} else if(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_STAT"))) {
+			return "redirect:/admin/stats";
+		}
 		return "redirect:/admin/evts?page=1";
 	}
 }

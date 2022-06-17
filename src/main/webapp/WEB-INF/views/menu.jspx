@@ -55,22 +55,28 @@
     <spring:url value="/admin/stats" var="statsUrl"/>
     <spring:url value="/admin/ventilations" var="ventilationsUrl"/>
     <ul class="nav nav-tabs">
-        <li class="${activeMenu == 'adminevts' || activeMenu == 'adminevtmnts' ? 'active' : ''}">
-            <a href="${adminevtsUrl}">
-                <spring:message code="pay_evts"/>
-            </a>
-        </li>
+        <sec:authorize access="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')">
+            <li class="${activeMenu == 'adminevts' || activeMenu == 'adminevtmnts' ? 'active' : ''}">
+                <a href="${adminevtsUrl}">
+                    <spring:message code="pay_evts"/>
+                </a>
+            </li>
+        </sec:authorize>
         <sec:authorize access="hasRole('ROLE_ADMIN')">
             <li class="${activeMenu == 'adminfees' ? 'active' : ''}">
                 <a href="${adminTxUrl}">
                     <spring:message code="pay_transactions"/>
                 </a>
             </li>
+        </sec:authorize>
+        <sec:authorize access="hasRole('ROLE_STAT')">
             <li class="${activeMenu == 'adminstats' ? 'active' : ''}">
                 <a href="${statsUrl}">
                     <spring:message code="pay_statistics"/>
                 </a>
             </li>
+        </sec:authorize>
+        <sec:authorize access="hasRole('ROLE_VENTILATION')">
             <li class="${activeMenu == 'adminventilations' ? 'active' : ''}" >
                 <a href="${ventilationsUrl}">
                     <spring:message code="menu_ventilations"/>
