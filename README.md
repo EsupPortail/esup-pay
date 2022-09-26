@@ -143,13 +143,13 @@ Vous pouvez ainsi lancer depuis le répertoire __docker4dev__ :
 docker-compose up
 ```
 
-Puis depuis le répetoire principal, vous lancez le jetty ainsi :
+Puis depuis le répertoire principal, vous lancez le jetty ainsi :
 ```
 mvn clean jetty:run -Djetty.systemPropertiesFile=docker4dev/esup-pay4docker.properties
 ```
 
 Avec les fichiers de configuration par défaut, un esup-pay est alors opérationnel.
-Vous poouvez alors accéder à http://localhost:8080 et vous authentifier avec un des comptes suivants :
+Vous pouvez alors accéder à http://localhost:8080 et vous authentifier avec un des comptes suivants :
 * admin/esup
 * ventil/esup
 * stat/esup
