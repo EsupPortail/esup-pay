@@ -131,7 +131,7 @@ CF http://docs.postgresqlfr.org/8.3/lo.html
 
 
 
-## Test / Environnement de développement ave DOCKER
+## Test / Environnement de développement avec DOCKER
 
 Pour faciliter le développement, un docker-compose est livré avec esup-pay. Celui-ci permet de monter les services requis suivants :
 * un PostgreSQL
