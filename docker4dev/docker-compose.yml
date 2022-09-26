@@ -1,0 +1,30 @@
+version: '3.1'
+services:
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    environment:
+      LDAP_DOMAIN: "univ-ville.fr"
+    command: --copy-service
+    volumes:
+     - ./ldap-config:/container/service/slapd/assets/config/bootstrap/ldif/custom
+    ports:
+     - 3890:389
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 4432:5432
+    volumes:
+      - ./postgres-config:/docker-entrypoint-initdb.d 
+  cas:
+    image: esupportail/apereo-cas-ldap:v6.6.0
+    volumes:
+      - ./cas-config:/etc/cas
+      - ./cas-config/tmp-cas:/tmp/cas
+    ports:
+      - "8081:8080"
+    depends_on:
+      - openldap

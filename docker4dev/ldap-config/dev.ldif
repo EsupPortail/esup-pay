@@ -1,0 +1,58 @@
+dn: ou=people,dc=univ-ville,dc=fr
+changetype: add
+ou: people
+objectclass: organizationalunit
+
+dn: uid=admin,ou=people,dc=univ-ville,dc=fr
+changetype: add
+uid: admin
+sn: admin
+cn: admin
+objectClass: inetOrgPerson
+userPassword: esup
+mail: admin@univ-ville.fr
+
+dn: uid=ventil,ou=people,dc=univ-ville,dc=fr
+changetype: add
+uid: ventil
+sn: ventil
+cn: ventil
+objectClass: inetOrgPerson
+userPassword: esup
+mail: ventil@univ-ville.fr
+
+dn: uid=stat,ou=people,dc=univ-ville,dc=fr
+changetype: add
+uid: stat
+sn: stat
+cn: stat
+objectClass: inetOrgPerson
+userPassword: esup
+mail: stat@univ-ville.fr
+
+dn: ou=groups,dc=univ-ville,dc=fr
+changetype: add
+ou: groups
+objectclass: organizationalunit
+
+dn: cn=for.esuppay.admin,ou=groups,dc=univ-ville,dc=fr
+changetype: add
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: for.esuppay.admin
+uniqueMember: uid=admin,ou=people,dc=univ-ville,dc=fr
+
+dn: cn=for.esuppay.statistique,ou=groups,dc=univ-ville,dc=fr
+changetype: add
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: for.esuppay.statistique
+uniqueMember: uid=stat,ou=people,dc=univ-ville,dc=fr
+
+dn: cn=for.esuppay.ventilation,ou=groups,dc=univ-ville,dc=fr
+changetype: add
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: for.esuppay.ventilation
+uniqueMember: uid=ventil,ou=people,dc=univ-ville,dc=fr
+

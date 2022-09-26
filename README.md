@@ -93,7 +93,6 @@ mvn clean package
 ```
 
 
-
 ## POSTGRESQL
 
 Pour une bonne gestion des blob de cette application (utilisés pour stocker les logos des formulaires de paiement), il faut ajouter dans PostgreSQL un trigger sur la base de données sur la table big_file.
@@ -131,5 +130,28 @@ CF http://docs.postgresqlfr.org/8.3/lo.html
 \* afin que les tables soient préalablement créées, notamment la table big_file sur lequel on souhaite mettre le trigger lo_manage, vous devez démarrer l'application une fois ; en n'oubliant pas ensuite, pour ne pas écraser la base au redémarrage, de __modifier src/main/resources/META-INF/persistence.xml : create-> update__ - cf ci-dessous.
 
 
+
+## Test / Environnement de développement ave DOCKER
+
+Pour faciliter le développement, un docker-compose est livré avec esup-pay. Celui-ci permet de monter les services requis suivants :
+* un PostgreSQL
+* un LDAP
+* un CAS
+
+Vous pouvez ainsi lancer depuis le répertoire __docker4dev__ :
+```
+docker-compose up
+```
+
+Puis depuis le répetoire principal, vous lancez le jetty ainsi :
+```
+mvn clean jetty:run -Djetty.systemPropertiesFile=docker4dev/esup-pay4docker.properties
+```
+
+Avec les fichiers de configuration par défaut, un esup-pay est alors opérationnel.
+Vous poouvez alors accéder à http://localhost:8080 et vous authentifier avec un des comptes suivants :
+* admin/esup
+* ventil/esup
+* stat/esup
 
 
