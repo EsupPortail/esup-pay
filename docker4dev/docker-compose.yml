@@ -11,7 +11,7 @@ services:
     ports:
      - 3890:389
   db:
-    image: postgres
+    image: postgres:13
     restart: always
     environment:
       POSTGRES_PASSWORD: postgres
