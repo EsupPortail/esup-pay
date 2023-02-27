@@ -158,7 +158,7 @@ public class ExportService {
 
 		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty() && !montantAsString.isEmpty()) {
 			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
-			BigDecimal montantBG = new BigDecimal(montantAsString);
+			BigDecimal montantBG = new BigDecimal(montantAsString.replaceAll("'", ""));
 			montantBG = montantBG.multiply( new BigDecimal(100)).setScale(0, RoundingMode.HALF_UP);
 			montantBG = montantBG.setScale(0, RoundingMode.HALF_UP);
 			Long montant = montantBG.longValue();
