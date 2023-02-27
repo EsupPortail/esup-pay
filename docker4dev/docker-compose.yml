@@ -3,7 +3,6 @@ version: '3.3'
 services:
   openldap:
     image: osixia/openldap:1.5.0
-    container_name: openldap
     environment:
       LDAP_DOMAIN: "univ-ville.fr"
     command: --copy-service
@@ -12,7 +11,7 @@ services:
     ports:
      - 3890:389
   db:
-    image: postgres:13
+    image: postgres:14
     restart: always
     environment:
       POSTGRES_PASSWORD: postgres
