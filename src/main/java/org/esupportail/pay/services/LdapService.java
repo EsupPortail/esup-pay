@@ -17,6 +17,7 @@
  */
 package org.esupportail.pay.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import javax.naming.directory.SearchControls;
 
 import org.esupportail.pay.domain.LdapResult;
 import org.esupportail.pay.domain.RespLogin;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
@@ -38,7 +40,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LdapService {
 
-	@Resource
+	@Autowired(required = false)
 	LdapTemplate ldapTemplate;
 	
 	@Value("${ldap.uid.attribute:uid}")
@@ -64,6 +66,9 @@ public class LdapService {
 	}
 
 	public List<LdapResult> search(String login) {
+		if(ldapTemplate == null) {
+			return new ArrayList<>();
+		}
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
 		OrFilter orFilter = new OrFilter();
@@ -80,7 +85,7 @@ public class LdapService {
 	}
 
 	public void computeRespLogin(List<RespLogin> respLogins) {
-		if(respLogins==null || respLogins.isEmpty()) {
+		if(respLogins==null || respLogins.isEmpty() || ldapTemplate == null) {
 			return;
 		}
 		AndFilter filter = new AndFilter();
