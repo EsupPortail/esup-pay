@@ -67,7 +67,7 @@ public class LdapService {
 
 	public List<LdapResult> search(String login) {
 		if(ldapTemplate == null) {
-			return new ArrayList<>();
+			return null;
 		}
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
@@ -85,9 +85,16 @@ public class LdapService {
 	}
 
 	public void computeRespLogin(List<RespLogin> respLogins) {
-		if(respLogins==null || respLogins.isEmpty() || ldapTemplate == null) {
+		if(respLogins==null || respLogins.isEmpty()) {
 			return;
 		}
+		if( ldapTemplate == null) {
+			for (RespLogin respLogin : respLogins) {
+				respLogin.setDisplayName(respLogin.getLogin());
+			}
+			return;
+		}
+
 		AndFilter filter = new AndFilter();
 		filter.and(new EqualsFilter("objectclass", "person"));
 		OrFilter orFilter = new OrFilter();
