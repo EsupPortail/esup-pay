@@ -40,9 +40,9 @@
 							</a>
 						</label>
 						<div id="managersEmails">
-							<div class="input-group">
+							<div class="input-group autocompleteEmail">
 								<input name="managersEmails" id="c_org_esupportail_pay_domain_payevt_managersEmail" z="user-managed" class="form-control"/>
-								<span class="input-group-addon autocompleteEmail">
+								<span class="input-group-addon">
 									<a class="btn btn-xs btn-danger removeclass" href="#">
 										<span class="glyphicon glyphicon-minus" aria-hidden="true"><!--  --></span>
 									</a>
