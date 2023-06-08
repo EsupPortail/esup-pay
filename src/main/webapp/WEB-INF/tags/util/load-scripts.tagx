@@ -17,7 +17,7 @@
   <spring:url value="/webjars/bootstrap/js/bootstrap.min.js" var="bootstrap_url" />
   <spring:url value="/resources/js/bootstrapValidator.min.js" var="bootstrap_validator_url" />
   <spring:url value="/resources/js/esup-pay.js" var="pay_js_url" />
-  <spring:url value="/webjars/chartjs/dist/chart.min.js" var="chart_js_url" />
+  <spring:url value="/webjars/chartjs/dist/chart.umd.js" var="chart_js_url" />
   <spring:url value="/resources/js/footable.min.js" var="footable_js_url" />
   
   <link rel="stylesheet" type="text/css" href="${jqueryui_css}" />
@@ -46,8 +46,8 @@
   <script src="${bootstrap_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
   <script src="${footable_js_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
   <script src="${bootstrap_validator_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-  <script src="${pay_js_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
   <script src="${chart_js_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+  <script src="${pay_js_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
   
   
   <!-- urls pour requetes Ajax -->
