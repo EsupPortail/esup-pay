@@ -25,8 +25,6 @@ import javax.annotation.Resource;
 
 import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
-import org.esupportail.pay.domain.PayEvt;
-import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.domain.StatsForm;
 import org.springframework.stereotype.Service;
 
@@ -93,12 +91,12 @@ public class StatsService {
     }
     
     @SuppressWarnings("serial")
-	public  LinkedHashMap<String,Object> getStats() {
+	public  LinkedHashMap<String,Object> getStats(String year) {
     	
 		LinkedHashMap<String, Object> results = new LinkedHashMap<String, Object>() {
 	        {
-	            put("montants",mapField(findListeStats(payEvtDaoService.findSumMontantGroupByEvt()), 2));
-	            put("participants",mapField(findListeStats(payEvtDaoService.findNbParticipantsByEvt()), 2));
+	            put("montants",mapField(findListeStats(payEvtDaoService.findSumMontantGroupByEvt(year)), 2));
+	            put("participants",mapField(findListeStats(payEvtDaoService.findNbParticipantsByEvt(year)), 2));
 	            put("transactions",mapField(findListeStats(payTransactionLogDaoService.findNbTransactionByYear()), 2));
 	            put("cumul",mapField(findListeStats(payTransactionLogDaoService.findMontantByYear()), 2));
 	            put("transactionsMonth",mapField(findListeStats(payTransactionLogDaoService.findNbTransactionByMonth()), 3));
@@ -108,4 +106,8 @@ public class StatsService {
 	    };
 		return results;
     }
+
+	public List<String> getDistinctYears() {
+		return payTransactionLogDaoService.findDistinctYears();
+	}
 }

@@ -23,7 +23,9 @@ import org.apache.log4j.Logger;
 import org.esupportail.pay.services.StatsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import flexjson.JSONSerializer;
@@ -34,25 +36,23 @@ import flexjson.JSONSerializer;
 public class StatsController {
 
 	private final Logger log = Logger.getLogger(getClass());
-	
+
 	@Resource
 	StatsService statsService;
 	
 	@RequestMapping
-    public String getStats() {
-		
+    public String getStats(Model uiModel) {
+		uiModel.addAttribute("years", statsService.getDistinctYears());
     	return "admin/stats";
     }
 
-	
 	@RequestMapping(value="/montants", headers = "Accept=application/json; charset=utf-8")
 	@ResponseBody 
-	public String getmontants() {
+	public String getmontants(@RequestParam(required = false) String year) {
 		String flexJsonString = "Aucune statistique à récupérer";
-
 		try {
 			JSONSerializer serializer = new JSONSerializer();
-			flexJsonString = serializer.deepSerialize(statsService.getStats());
+			flexJsonString = serializer.deepSerialize(statsService.getStats(year));
 			
 		} catch (Exception e) {
 			log.warn("Impossible de récupérer les statistiques", e);
