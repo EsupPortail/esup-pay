@@ -23,6 +23,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.RespLogin;
 import org.springframework.stereotype.Service;
@@ -102,21 +103,33 @@ public class PayEvtDaoService {
         return q;
     }
     
-    public List<Object[]> findSumMontantGroupByEvt (){
+    public List<Object[]> findSumMontantGroupByEvt(String year){
         
-        String sql = "SELECT mail_subject, SUM(cast(montant AS INTEGER)/100), pay_evt.id FROM pay_transaction_log, pay_evt_montant, pay_evt "
-        		+ "WHERE pay_transaction_log.pay_evt_montant = pay_evt_montant.id AND pay_evt_montant.evt = pay_evt.id  "
-        		+ "GROUP BY pay_evt.id, pay_evt.mail_subject ORDER BY pay_evt.id DESC";
+        String sql = "SELECT mail_subject || '(' || pay_evt.id || ')' as title, SUM(cast(montant AS INTEGER)/100) as total, pay_evt.id FROM pay_transaction_log, pay_evt_montant, pay_evt "
+        		+ "WHERE pay_transaction_log.pay_evt_montant = pay_evt_montant.id AND pay_evt_montant.evt = pay_evt.id  ";
+        if(StringUtils.isNotEmpty(year)) {
+            sql += " AND CAST(date_part('year',transaction_date) AS varchar) = :year ";
+        }
+        sql += "GROUP BY pay_evt.id ORDER BY total DESC";
         Query q = em.createNativeQuery(sql);
+        if(StringUtils.isNotEmpty(year)) {
+            q.setParameter("year", year);
+        }
         return q.getResultList();
     }
     
-    public List<Object[]> findNbParticipantsByEvt (){
+    public List<Object[]> findNbParticipantsByEvt(String year){
         
-        String sql = "SELECT mail_subject, COUNT(evt) AS count, pay_evt.id FROM pay_transaction_log, pay_evt_montant, pay_evt "
-        		+ "WHERE pay_transaction_log.pay_evt_montant = pay_evt_montant.id AND pay_evt_montant.evt = pay_evt.id  "
-        		+ "GROUP BY pay_evt.id, pay_evt.mail_subject ORDER BY pay_evt.id DESC";
+        String sql = "SELECT mail_subject || '(' || pay_evt.id || ')' as title, COUNT(evt) AS totalCount, pay_evt.id FROM pay_transaction_log, pay_evt_montant, pay_evt "
+        		+ "WHERE pay_transaction_log.pay_evt_montant = pay_evt_montant.id AND pay_evt_montant.evt = pay_evt.id  ";
+        if(StringUtils.isNotEmpty(year)) {
+            sql += " AND CAST(date_part('year',transaction_date) AS varchar) = :year ";
+        }
+        sql += "GROUP BY pay_evt.id ORDER BY totalCount DESC";
         Query q = em.createNativeQuery(sql);
+        if(StringUtils.isNotEmpty(year)) {
+            q.setParameter("year", year);
+        }
         return q.getResultList();
     }
 

@@ -223,4 +223,11 @@ public class PayTransactionLogDaoService {
 	public void persist(PayTransactionLog txLog) {
 		em.persist(txLog);
 	}
+
+    public List<String> findDistinctYears() {
+        String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year FROM pay_transaction_log GROUP BY year"
+                + " ORDER BY year DESC";
+        Query q = em.createNativeQuery(sql);
+        return q.getResultList();
+    }
 }
