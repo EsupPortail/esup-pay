@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 
 import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.RespLoginDaoService;

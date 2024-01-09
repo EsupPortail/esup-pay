@@ -22,7 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import javax.persistence.TypedQuery;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;

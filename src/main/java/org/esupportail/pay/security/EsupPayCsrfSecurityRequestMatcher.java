@@ -21,9 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import jakarta.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.PayEvtMontantDaoService;

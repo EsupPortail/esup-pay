@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;

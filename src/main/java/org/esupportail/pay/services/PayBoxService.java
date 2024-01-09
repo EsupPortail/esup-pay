@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;

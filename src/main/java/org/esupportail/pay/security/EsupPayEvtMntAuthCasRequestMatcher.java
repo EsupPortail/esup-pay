@@ -19,7 +19,7 @@ package org.esupportail.pay.security;
 
 import java.util.List;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;

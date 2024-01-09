@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.services.LdapService;

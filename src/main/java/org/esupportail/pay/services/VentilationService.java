@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.esupportail.pay.dao.ExportRemiseDaoService;

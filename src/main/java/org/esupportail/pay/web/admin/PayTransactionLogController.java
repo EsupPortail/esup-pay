@@ -17,7 +17,7 @@
  */
 package org.esupportail.pay.web.admin;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.joda.time.format.DateTimeFormat;

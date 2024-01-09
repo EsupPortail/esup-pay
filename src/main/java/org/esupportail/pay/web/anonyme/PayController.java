@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

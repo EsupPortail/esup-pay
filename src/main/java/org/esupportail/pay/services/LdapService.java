@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 

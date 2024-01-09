@@ -24,11 +24,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.RespLoginDaoService;
 import org.esupportail.pay.domain.RespLogin;
+import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.core.GrantedAuthority;

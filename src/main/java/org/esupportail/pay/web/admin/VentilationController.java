@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import jakarta.annotation.Resource;
+import javax.annotation.Resource;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
