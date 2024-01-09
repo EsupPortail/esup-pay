@@ -19,7 +19,7 @@ package org.esupportail.pay.services;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;

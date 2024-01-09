@@ -30,7 +30,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.esupportail.pay.dao.ExportRemiseDaoService;
 import org.esupportail.pay.dao.ExportTransactionDaoService;

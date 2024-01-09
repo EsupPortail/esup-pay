@@ -17,7 +17,7 @@
  */
 package org.esupportail.pay.web.payboxcallback;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
