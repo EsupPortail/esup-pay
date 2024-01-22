@@ -67,7 +67,7 @@
 				
 					<c:if test="${payevtmontant.freeAmount}">
 						<div class="form-group">
-							<label for="amount"><spring:message code="amount"/></label>
+							<label for="amount" class="control-label"><spring:message code="amount"/></label>
 							<input name="amount" class="form-control" type="text" />
 						</div>
 					</c:if>
@@ -92,18 +92,29 @@
 					<div class="panel panel-default">
 					  <div class="panel-heading"><spring:message code="billing.address"/></div>
 					  <div class="panel-body">
-							<label for="billingFirstname"><spring:message code="billing.firstname"/></label>
-							<input name="billingFirstname" class="form-control" type="text"/>
-							<label for="billingLastname"><spring:message code="billing.lastname"/></label>
-							<input name="billingLastname" class="form-control" type="text"/>
-							<label for="billingAddress1"><spring:message code="billing.address1"/></label>
-							<input name="billingAddress1" class="form-control" type="text"/>
-							<label for="billingZipCode"><spring:message code="billing.zipCode"/></label>
-							<input name="billingZipCode" class="form-control" type="text"/>
-							<label for="billingCity"><spring:message code="billing.city"/></label>
-							<input name="billingCity" class="form-control" type="text"/>
-							<label for="billingCountryCode"><spring:message code="billing.countryCode"/></label>
-							<select name="billingCountryCode" class="form-control">
+							<div class="form-group">
+							  <label for="billingFirstname" class="control-label"><spring:message code="billing.firstname"/></label>
+							  <input name="billingFirstname" class="form-control" type="text"/>
+							</div>
+							<div class="form-group">
+							  <label for="billingLastname" class="control-label"><spring:message code="billing.lastname"/></label>
+							  <input name="billingLastname" class="form-control" type="text"/>
+							</div>
+							<div class="form-group">
+							  <label for="billingAddress1" class="control-label"><spring:message code="billing.address1"/></label>
+							  <input name="billingAddress1" class="form-control" type="text"/>
+							</div>
+							<div class="form-group">
+							  <label for="billingZipCode" class="control-label"><spring:message code="billing.zipCode"/></label>
+							  <input name="billingZipCode" class="form-control" type="text"/>
+							</div>
+							<div class="form-group">
+							  <label for="billingCity" class="control-label"><spring:message code="billing.city"/></label>
+							  <input name="billingCity" class="form-control" type="text"/>
+							</div>
+							<div class="form-group">
+							  <label for="billingCountryCode" class="control-label"><spring:message code="billing.countryCode"/></label>
+							  <select name="billingCountryCode" class="form-control">
 							    <c:forEach var="countryCode" items="${countryCodes}">
 							    	<c:choose>
 								    	<c:when test="${countryCode.numeric == '250'}">
@@ -114,7 +125,8 @@
 								        </c:otherwise>
 								    </c:choose>
 							    </c:forEach>
-							</select>				
+							  </select>
+							</div>
 						</div>
 					</div>
 					</c:if>
