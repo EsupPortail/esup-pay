@@ -300,6 +300,7 @@ $(document).ready(function() {
 	});
 
 	if($('#registerForm').length >0 ){
+		var mustBeNotEmpty = { validators: { notEmpty: { message: pay_registration_fees_validator_notempty } } }
 		$('#registerForm').bootstrapValidator({
 			message: 'This value is not valid',
 			feedbackIcons: {
@@ -329,20 +330,13 @@ $(document).ready(function() {
 						}
 					}
 				},
-				field1: {
-					validators: {
-						notEmpty: {
-							message: pay_registration_fees_validator_notempty
-						},
-					}
-				},
-				field2: {
-					validators: {
-						notEmpty: {
-							message: pay_registration_fees_validator_notempty
-						},
-					}
-				}
+				field1: mustBeNotEmpty,
+				field2: mustBeNotEmpty,
+				billingFirstname: mustBeNotEmpty,
+				billingLastname: mustBeNotEmpty,
+				billingAddress1: mustBeNotEmpty,
+				billingCity: mustBeNotEmpty,
+				billingCountryCode: mustBeNotEmpty,
 			}
 		});
 	}
