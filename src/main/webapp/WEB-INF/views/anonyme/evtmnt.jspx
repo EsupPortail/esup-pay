@@ -131,6 +131,21 @@
 					</div>
 					</c:if>
 
+					<script>
+					    // allow forcing some parameter values using URL hash fragment
+					    // Examples:
+					    // "field1=xx" makes "field1" readonly, with value "xx"
+					    // "default_field1=xx" keeps "field1" editable, with initial value "xx"
+					    new URLSearchParams(location.hash.replace(/^#/, '')).forEach(function (v, k) { 
+					        let default_ = k.match(/^default_(.*)/);
+					        let elt = document.forms[0][default_ ? default_[1] : k];
+					        elt.value = v;
+					        if (!default_) {
+					            elt.readOnly = true;
+					        }
+					    })
+					</script>
+
 					<div class="form-group">
 						<button type="submit" class="btn btn-success"><spring:message code="pay_registration_fees_validate"/></button>
 					</div>
