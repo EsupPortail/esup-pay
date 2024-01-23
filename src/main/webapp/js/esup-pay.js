@@ -332,7 +332,6 @@ $(document).ready(function() {
 				},
 				field1: mustBeNotEmpty,
 				field2: mustBeNotEmpty,
-				billingFirstname: mustBeNotEmpty,
 				billingLastname: mustBeNotEmpty,
 				billingAddress1: mustBeNotEmpty,
 				billingCity: mustBeNotEmpty,
