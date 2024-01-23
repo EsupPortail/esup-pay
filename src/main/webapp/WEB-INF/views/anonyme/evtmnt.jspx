@@ -139,10 +139,12 @@
 					    new URLSearchParams(location.hash.replace(/^#/, '')).forEach(function (v, k) { 
 					        let default_ = k.match(/^default_(.*)/);
 					        let elt = document.forms[0][default_ ? default_[1] : k];
-					        elt.value = v;
-					        if (!default_) {
-					            elt.readOnly = true;
-					        }
+							if(elt != null) {
+								elt.value = v;
+								if (!default_) {
+									elt.readOnly = true;
+								}
+							}
 					    })
 					</script>
 
