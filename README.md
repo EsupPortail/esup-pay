@@ -66,6 +66,7 @@ host    all             all             127.0.0.1/32            password
 create database esuppay;
 create USER esuppay with password 'esup';
 grant ALL ON DATABASE esuppay to esuppay;
+ALTER DATABASE esuppay OWNER TO esuppay;
 ```
 
 ### Paramétrage mémoire JVM :
@@ -112,7 +113,7 @@ psql
 \i /usr/share/postgresql/8.4/contrib/lo.sql
 ```
 
-* avec postgresql 9 :
+* avec postgresql 9 ou supérieur :
 ```
 psql
 \c esuppay
