@@ -81,7 +81,7 @@ public class CsvController {
         int offset = 0;
         int nbLine = 0;
         List<PayTransactionLog> txLogs;
-        while ((txLogs = txLogsQuery.setFirstResult(offset).setMaxResults(1000).getResultList()).size() > 0) {
+        while ((txLogs = txLogsQuery.setFirstResult(offset).setMaxResults(100000).getResultList()).size() > 0) {
         	log.debug("Build CSV Iteration - offset : " + offset);
 	    	for(PayTransactionLog txLog : txLogs) {
 	    		List<String> entries = new ArrayList<String>();
