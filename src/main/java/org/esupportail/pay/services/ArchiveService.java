@@ -39,6 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArchiveService {
 	
 	private final Logger log = Logger.getLogger(getClass());
+
+	static final String ARCHIVED = "archived";
 	
 	@Resource
 	EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
@@ -91,16 +93,16 @@ public class ArchiveService {
 	}
 
 	private void anonymise(PayTransactionLog transactionLog) {
-		transactionLog.setField1("archived");
-		transactionLog.setField2("archived");
-		transactionLog.setMail("archived");
-		transactionLog.setReference("archived");
-		transactionLog.setBillingFirstname("archived");
-		transactionLog.setBillingLastname("archived");
-		transactionLog.setBillingAddress1("archived");
-		transactionLog.setBillingZipCode("archived");
-		transactionLog.setBillingCity("archived");
-		transactionLog.setBillingCountryCode("archived");
+		transactionLog.setField1(ARCHIVED);
+		transactionLog.setField2(ARCHIVED);
+		transactionLog.setMail(ARCHIVED);
+		transactionLog.setReference(ARCHIVED);
+		transactionLog.setBillingFirstname(ARCHIVED);
+		transactionLog.setBillingLastname(ARCHIVED);
+		transactionLog.setBillingAddress1(ARCHIVED);
+		transactionLog.setBillingZipCode(ARCHIVED);
+		transactionLog.setBillingCity(ARCHIVED);
+		transactionLog.setBillingCountryCode(ARCHIVED);
 	}
 	
 }

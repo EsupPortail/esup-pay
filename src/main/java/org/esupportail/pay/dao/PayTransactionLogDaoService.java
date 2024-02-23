@@ -114,7 +114,7 @@ public class PayTransactionLogDaoService {
     }
 
 	public List<PayTransactionLog> findOldPayTransactionLogs(long oldDays) {
-		Query q = em.createQuery("select log from PayTransactionLog log where log.transactionDate < :oldDate");
+		Query q = em.createQuery("select log from PayTransactionLog log where log.transactionDate < :oldDate and log.mail <> 'archived'");
 		q.setParameter("oldDate", Date.from(Instant.now().minus(Duration.ofDays(oldDays))));
 		return q.getResultList();	
 	}
