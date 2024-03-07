@@ -85,8 +85,8 @@
     	p:basenames="WEB-INF/i18n/messages,WEB-INF/i18n/application,WEB-INF/i18n/pay" 
     	p:fallbackToSystemLocale="false" p:cacheSeconds="10" p:UseCodeAsDefaultMessage="true"/>
 
-    <!-- Store preferred language configuration in a cookie -->
-    <bean class="org.springframework.web.servlet.i18n.CookieLocaleResolver" id="localeResolver" p:cookieName="locale" p:defaultLocale="fr"/>
+    <!-- Handle browser "Accept-Language" HTTP header + store in session any forced choice (via footer links) -->
+    <bean class="org.springframework.web.servlet.i18n.SessionLocaleResolver" id="localeResolver"/>
 
     <!-- Resolves localized <theme_name>.properties files in the classpath to allow for theme support -->
     <bean class="org.springframework.ui.context.support.ResourceBundleThemeSource" id="themeSource"/>
