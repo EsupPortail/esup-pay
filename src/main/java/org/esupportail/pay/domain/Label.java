@@ -68,4 +68,7 @@ public class Label {
 		return this.getLabelLocales().get(localeId.toString()).getTranslation();
 	}
 
+	public String getTranslation(String localeId) {
+		return this.getTranslation(localeId.equals("fr") ? LOCALE_IDS.fr : LOCALE_IDS.en);
+	}
 }
