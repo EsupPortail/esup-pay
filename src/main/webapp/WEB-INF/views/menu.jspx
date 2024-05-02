@@ -25,14 +25,14 @@
     <spring:url value="/admin/stats" var="statsUrl"/>
     <spring:url value="/admin/ventilations" var="ventilationsUrl"/>
     <ul class="nav nav-tabs">
-        <sec:authorize access="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')">
+        <sec:authorize access="hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')">
             <li class="${activeMenu == 'adminevts' || activeMenu == 'adminevtmnts' ? 'active' : ''}">
                 <a href="${adminevtsUrl}">
                     <spring:message code="pay_evts"/>
                 </a>
             </li>
         </sec:authorize>
-        <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <sec:authorize access="hasRole('ROLE_ALL_VIEWER')">
             <li class="${activeMenu == 'adminfees' ? 'active' : ''}">
                 <a href="${adminTxUrl}">
                     <spring:message code="pay_transactions"/>
@@ -87,7 +87,7 @@
                 <span>${payEvtMontant.title.labelLocales['fr'].translation}</span>
             </li>
         </c:if>
-        <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <sec:authorize access="hasRole('ROLE_ALL_VIEWER')">
             <c:if test="${not empty paytransactionlogs or not empty paytransactionlog}">
                 <li>
                     <a href="${adminTxUrl}">

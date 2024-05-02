@@ -132,6 +132,10 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_STAT"));
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_VENTILATION"));
 		}
+		// ADMIN implies ALL_VIEWER
+		if(extraRoles.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+			extraRoles.add(new SimpleGrantedAuthority("ROLE_ALL_VIEWER"));
+		}
 		
 		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(username);
 		List<RespLogin> respLoginList = Arrays.asList(new RespLogin[] {respLogin});

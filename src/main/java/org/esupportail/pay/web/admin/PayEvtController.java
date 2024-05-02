@@ -238,12 +238,12 @@ public class PayEvtController {
     
     
     @RequestMapping(produces = "text/html")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')")
+    @PreAuthorize("hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')")
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
        
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        boolean isAllViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ALL_VIEWER"));
         boolean isManagerOrViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) ||
         		auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"));
 
@@ -254,7 +254,7 @@ public class PayEvtController {
         	sortOrder = "desc";
         }
     	
-        if(isAdmin) {
+        if(isAllViewer) {
         	int sizeNo = size == null ? 10 : size.intValue();
         	final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
         	List<PayEvt> payEvts = payEvtDaoService.findPayEvtEntries(firstResult, sizeNo, sortFieldName, sortOrder);

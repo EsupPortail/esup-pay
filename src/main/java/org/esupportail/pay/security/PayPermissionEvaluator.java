@@ -78,7 +78,9 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 		}
 		
 		if("view".equals(permissionKey)) {
-			accessAuth = accessAuth || payEvtDaoService.findPayEvtsByViewerLogins(respLoginList).getResultList().contains(evt);
+			accessAuth = accessAuth 
+                || auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ALL_VIEWER"))
+                || payEvtDaoService.findPayEvtsByViewerLogins(respLoginList).getResultList().contains(evt);
 		}
 
 		return accessAuth;
