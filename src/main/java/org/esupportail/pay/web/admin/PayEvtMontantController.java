@@ -100,6 +100,7 @@ public class PayEvtMontantController {
     }
     
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    @PreAuthorize("hasPermission(#payEvtMontant, 'manage')")
     public String update(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	PayEvtMontantUpdateValidator payEvtMontantValidator = new PayEvtMontantUpdateValidator();
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
@@ -118,6 +119,7 @@ public class PayEvtMontantController {
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    @PreAuthorize("hasPermission(#id, 'manage')")
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         PayEvtMontant payEvtMontant = payEvtMontantDaoService.findPayEvtMontant(id);
     	Long evtId = payEvtMontant.getEvt().getId();
@@ -131,6 +133,7 @@ public class PayEvtMontantController {
     
 
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String create(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
@@ -142,6 +145,7 @@ public class PayEvtMontantController {
     }
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    @PreAuthorize("hasPermission(#id, 'manage')")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, payEvtMontantDaoService.findPayEvtMontant(id));
         return "admin/evtmnts/update";
