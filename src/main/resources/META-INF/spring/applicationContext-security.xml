@@ -191,6 +191,7 @@
 		<beans:constructor-arg>
 			<beans:map>
 				<beans:entry key="ROLE_SU" value="${ldap.groupAdminFilter:}" />
+				<beans:entry key="ROLE_ALL_VIEWER" value="${ldap.groupAllViewerFilter:}" />
 				<beans:entry key="ROLE_VENTILATION" value="${ldap.groupVentilationFilter:}" />
 				<beans:entry key="ROLE_STAT" value="${ldap.groupStatistiqueFilter:}" />
 			</beans:map>
