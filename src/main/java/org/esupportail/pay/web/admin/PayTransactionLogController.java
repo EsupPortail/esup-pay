@@ -64,7 +64,7 @@ public class PayTransactionLogController {
     
 
 	@RequestMapping(value = "/{id}", produces = "text/html")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasPermission(#id, 'view-txlog')")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("paytransactionlog", payTransactionLogDaoService.findPayTransactionLog(id));
