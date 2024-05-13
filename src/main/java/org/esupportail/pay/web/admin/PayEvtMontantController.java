@@ -145,7 +145,7 @@ public class PayEvtMontantController {
     }
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
-    @PreAuthorize("hasPermission(#id, 'manage')")
+    @PreAuthorize("hasPermission(#id, 'manage-montant')")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, payEvtMontantDaoService.findPayEvtMontant(id));
         return "admin/evtmnts/update";

@@ -24,6 +24,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.esupportail.pay.dao.PayEvtDaoService;
+import org.esupportail.pay.dao.PayEvtMontantDaoService;
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.dao.RespLoginDaoService;
 import org.esupportail.pay.domain.PayEvt;
@@ -39,6 +40,9 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 	
 	@Resource
 	PayEvtDaoService payEvtDaoService;
+
+	@Resource
+	PayEvtMontantDaoService payEvtMontantDaoService;
 	
 	@Resource
 	RespLoginDaoService respLoginDaoService;
@@ -68,6 +72,16 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 		        }
 		    }
 		    return false;
+		}
+
+		if ("manage-montant".equals(permissionKey)) {
+			if(targetDomainObject instanceof Long) {
+				PayEvtMontant payEvtMontant = payEvtMontantDaoService.findPayEvtMontant((Long)targetDomainObject);
+				if (payEvtMontant != null) {
+					return hasPermission(auth, payEvtMontant.getEvt().getId(), "manage");
+				}
+			}
+			return false;
 		}
 
 		Long evtId = null;
