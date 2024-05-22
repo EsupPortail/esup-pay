@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
 import org.esupportail.pay.dao.PayEvtDaoService;
@@ -144,8 +145,13 @@ public class PayController {
     	
     	if(evtsMnts.get(0).getSciencesconf()) {
     		log.warn("SciencesConf event montant form must be called from sciencesconf web site.");
-    		log.warn("Redirection sur le site sciencesconf en cours ...");
             String forwardUrl = evts.get(0).getWebSiteUrl();
+			if(StringUtils.isEmpty(forwardUrl)) {
+				log.warn("No webSiteUrl found for evt " + evts.get(0) + " with sciencesconf montant " + evtsMnts.get(0) + " -> redirect to /");
+				forwardUrl = "/";
+			} else {
+				log.warn("Redirection sur le site sciencesconf en cours ... : " + forwardUrl);
+			}
             return "redirect:" + forwardUrl;
     	}
 		
