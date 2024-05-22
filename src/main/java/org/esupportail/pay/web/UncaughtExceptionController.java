@@ -19,6 +19,7 @@ package org.esupportail.pay.web;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -73,6 +74,10 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 	}
 
 	private String getFullRequestURL(HttpServletRequest request) {
+		Object errReqUriObj = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
+		if (errReqUriObj != null) {
+			return (String) errReqUriObj;
+		}
 		String url = request.getRequestURL().toString();
 		if(request.getQueryString()!=null && !request.getQueryString().isEmpty()) {
 			url += "?" + request.getQueryString();
