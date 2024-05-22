@@ -40,6 +40,7 @@ import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.domain.RespLogin;
 import org.esupportail.pay.domain.UploadFile;
+import org.esupportail.pay.security.PayPermissionEvaluator;
 import org.esupportail.pay.services.EvtService;
 import org.esupportail.pay.services.PayBoxServiceManager;
 import org.esupportail.pay.web.validators.PayEvtUpdateValidator;
@@ -98,6 +99,9 @@ public class PayEvtController {
 	
 	@Resource
 	PayTransactionLogDaoService payTransactionLogDaoService;
+
+    @Resource
+    PayPermissionEvaluator payPermissionEvaluator;
 	
     Double defaultDbleMontantMax;
     
@@ -189,6 +193,9 @@ public class PayEvtController {
     @RequestMapping(value = "/{id}", produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'view')")
     public String show(@PathVariable("id") Long id, Model uiModel) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
     	PayEvt evt = payEvtDaoService.findPayEvt(id);
     	evtService.computeRespLogin(evt);
         uiModel.addAttribute("payEvt", evt);
@@ -197,6 +204,8 @@ public class PayEvtController {
         	List<PayEvtMontant> montants = payEvtMontantDaoService.findPayEvtMontantsByEvt(evt).getResultList();
             uiModel.addAttribute("payevtmontants", montants);
         }
+        uiModel.addAttribute("canUpdate", payPermissionEvaluator.hasPermission(auth, evt, "manage"));
+        uiModel.addAttribute("isAdmin", isAdmin);
         return "admin/evts/show";
     }
     
@@ -243,9 +252,10 @@ public class PayEvtController {
        
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+        boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         boolean isAllViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ALL_VIEWER"));
-        boolean isManagerOrViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) ||
-        		auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"));
+        boolean isManager = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER"));
+        boolean isViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"));
 
         String currentUser = auth.getName();
         
@@ -262,12 +272,13 @@ public class PayEvtController {
         	uiModel.addAttribute("payevts", payEvts);
         	float nrOfPages = (float) payEvtDaoService.countPayEvts() / sizeNo;
         	uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else if(isManagerOrViewer) {
+        } else if(isManager || isViewer) {
             List<RespLogin> loginList = evtService.listEvt(currentUser);
             List<PayEvt> payEvts = payEvtDaoService.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList();
             evtService.computeRespLogin(payEvts);
     		uiModel.addAttribute("payevts", payEvts);
         }
+        uiModel.addAttribute("isAdmin", isAdmin);
         
         return "admin/evts/list";
     }

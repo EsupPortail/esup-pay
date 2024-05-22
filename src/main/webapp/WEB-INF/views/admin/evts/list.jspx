@@ -21,9 +21,6 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" id="listEvts" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <sec:authorize access="hasRole('ROLE_ADMIN')">
-        <c:set value="true" var="isAdmin"/>
-    </sec:authorize>
     <spring:url value="/admin/evts?form" var="create_url"/>
     <c:set value="${pageContext.response.locale.language}" var="locale"/>
     <c:set var="url">

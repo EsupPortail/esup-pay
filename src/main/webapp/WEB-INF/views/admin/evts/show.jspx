@@ -23,12 +23,6 @@ xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframew
 xmlns:spring="http://www.springframework.org/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0" id="showEvts">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <sec:authorize access="hasRole('ROLE_ADMIN')">
-        <c:set value="true" var="isAdmin"/>
-    </sec:authorize>
-    <sec:authorize access="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')">
-        <c:set value="true" var="canUpdate"/>
-    </sec:authorize>
     
     <div class="col-lg-1">
     	<spring:url value="/admin/evts/${payEvt.id}/logo" var="logoUrl"/>
