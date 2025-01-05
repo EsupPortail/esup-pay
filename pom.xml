@@ -329,11 +329,13 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<!--finalName>../../webapps/ROOT</finalName-->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.3.1</version>
+				<version>3.4.0</version>
+				<configuration><outdatedCheckPath>/</outdatedCheckPath></configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
