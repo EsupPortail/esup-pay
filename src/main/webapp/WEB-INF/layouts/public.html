@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="esup-pay">
+
+  <!-- Stylesheets -->
+  <link th:href="@{/webjars/jquery-ui-themes/ui-lightness/jquery-ui.min.css}" rel="stylesheet" />
+  <link th:href="@{/webjars/jquery-ui-themes/ui-lightness/theme.css}" rel="stylesheet" />
+  <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/resources/css/esup-pay.css}" rel="stylesheet" />
+  <link th:href="@{/resources/css/esup-pay-print.css}" rel="stylesheet" media="print" />
+  <link th:href="@{/resources/css/footable.bootstrap.min.css}" rel="stylesheet" />
+
+  <!-- Favicon and Icons -->
+  <link th:href="@{/resources/images/favicon.ico}" rel="shortcut icon" />
+  <link th:href="@{/resources/images/apple-touch-icon.png}" rel="apple-touch-icon" sizes="180x180" />
+  <link th:href="@{/resources/images/favicon-32x32.png}" rel="icon" sizes="32x32" type="image/png" />
+  <link th:href="@{/resources/images/favicon-16x16.png}" rel="icon" sizes="16x16" type="image/png" />
+  <link th:href="@{/resources/images/manifest.json}" rel="manifest" />
+  <meta name="theme-color" content="#ffffff" />
+
+  <!-- Scripts -->
+  <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+  <script th:src="@{/resources/js/bootstrapValidator.min.js}"></script>
+  <script th:src="@{/resources/js/esup-pay.js}"></script>
+  <script th:src="@{/webjars/chartjs/dist/chart.umd.js}"></script>
+  <script th:src="@{/resources/js/footable.min.js}"></script>
+
+  <!-- Ajax URLs -->
+  <script th:inline="javascript">
+    var searchLoginsJsonUrl = /*[[@{/admin/searchLoginsJson}]]*/ '';
+  </script>
+
+  <!-- Title -->
+  <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Public</title>
+  <!--<title th:text="#{payboxevt.title.labelLocales[${#locale.language}]}">Default Title</title>-->
+</head>
+<body>
+
+<div th:replace="~{../views/navbar.html :: navbar}"></div>
+
+<div th:replace="~{../views/header.html :: header}"></div>
+
+<!-- Main Container -->
+<div id="main" class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <!-- Dynamic Body -->
+      <main layout:fragment="content"></main>
+    </div>
+  </div>
+</div>
+
+<!-- Footer-->
+<div th:replace="~{../views/footer.html :: footer}"></div>
+
+</body>
+</html>

@@ -99,7 +99,36 @@
 	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="tilesViewResolver">
       <property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView"/>
     </bean>
-  
+
+    <!-- Thymeleaf -->
+    <bean id="tlResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+        <property name="order" value="9"/>
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".html"/>
+        <property name="templateMode" value="HTML"/>
+        <property name="characterEncoding" value="UTF-8"></property>
+    </bean>
+
+    <bean id="tlTemplateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
+        <property name="templateResolver" ref="tlResolver"/>
+        <property name="messageSource" ref="messageSource"/>
+        <property name="enableSpringELCompiler" value="true"/>
+        <property name="additionalDialects">
+            <set>
+                <bean class="nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect"/>
+                <bean class="org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect"/>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="tlViewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="tlTemplateEngine"/>
+        <property name="order" value="1"/>
+        <property name="viewNames" value="*.html"/>
+        <property name="excludedViewNames" value="*.jsp"/>
+    </bean>
+
+    <!-- JSPX -->
     <bean class="org.springframework.web.servlet.view.tiles3.TilesConfigurer" id="tilesConfigurer">
      <property name="definitions">
       <list>
@@ -109,7 +138,8 @@
       </list>
      </property>
     </bean>
-  
+
+
 <bean class="org.esupportail.pay.web.ApplicationConversionServiceFactoryBean" id="applicationConversionService"/>
 
 	<!-- enable support for Expression-based annotations in Spring Security -->

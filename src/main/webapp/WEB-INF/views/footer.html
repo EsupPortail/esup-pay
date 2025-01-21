@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="container" id="footer" th:fragment="footer">
+  <a th:href="${@propertyConfigurer.getProperty('institute.href')}"
+     th:text="${@propertyConfigurer.getProperty('institute.name')}"></a>
+  <span> - </span>
+  <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>
+
+  <span id="language">
+        <span> | </span>
+        <span th:text="#{global_language}"></span>
+        <span>: </span>
+        <th:block th:insert="~{../tags/util/language :: content}"
+             th:with="locale='en', label='English'"></th:block>
+        <th:block th:insert="~{../tags/util/language :: content}"
+             th:with="locale='fr', label='French'"></th:block>
+    </span>
+
+  <th:block th:with="footer_html_add = ${@propertyConfigurer.getProperty('esup-pay.footer-html-add')}">
+      <span th:utext="${footer_html_add}"></span>
+  </th:block>
+</div>
+
+<div th:if="${param.alert_msg != null}">
+  <script th:inline="javascript">
+    var alertMsg = /*[[${#strings.escapeJs(param.alert_msg)}]]*/ '';
+    alert(alertMsg);
+  </script>
+</div>
+</html>

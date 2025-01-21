@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<header id="overview" xmlns:th="http://www.thymeleaf.org" th:fragment="header">
+    <div class="container-fluid">
+        <div class="row-fluid"
+             th:with="institute_name=${@propertyConfigurer.getProperty('institute.name')},
+                        banner=@{/resources/images/credit-card.png},
+                        home=@{/admin}">
+            <span th:text="#{default_title(${institute_name})}"></span>
+
+            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12" id="logoDiv">
+                <a th:href="${home}">
+                    <img alt="" th:src="${banner}"/>
+                </a>
+            </div>
+
+            <div class="col-lg-8 col-md-9 col-sm-9 col-xs-12">
+                <h1>
+                    <span th:text="${default_title}"></span><br/>
+                    <small th:text="${subTitle}"></small>
+                </h1>
+            </div>
+
+            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12"
+                th:with="logo_url=${@propertyConfigurer.getProperty('institute.logo.url')},
+                        logo=${logo_url},
+                        logo_title=${@propertyConfigurer.getProperty('institute.name')},
+                        logo_href=${@propertyConfigurer.getProperty('institute.href')}">
+                <a th:href="${logo_href}">
+                    <img alt="" th:src="${logo}" class="institute-logo"/>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</header>
+</html>

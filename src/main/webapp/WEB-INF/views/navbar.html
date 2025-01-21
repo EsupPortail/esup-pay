@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div class="navbar-default navbar-inverse navbar-fixed-top" th:fragment="navbar">
+    <div class="row" th:with="app_name=#{application_name},
+            logoUrl=${@propertyConfigurer.getProperty('institute.logo-navbar.url')},
+            logo=@{${logoUrl}}">
+        <!-- User Authentication Check -->
+        <div sec:authorize="isAuthenticated()">
+            <div th:with="userName=${#authentication.name},
+                          actif=${active == 'su' ? 'su' : 'notsu'}">
+                <div th:if="${userName}">
+                    <!-- Logout URL -->
+                    <div th:with="logoutUrl='@{/j_spring_cas_security_logout}'">
+                        <!-- Menu -->
+                        <div th:insert="~{../tags/menu/menu.html :: menu}"
+                             th:with="payLogoutMessage=#{pay_logout(${userName})}, payHome=#{pay_home}
+                                      logoAppUrl=${logo}, appName=${app_name}">
+                            <div th:fragment="menuContent">
+                                <!-- ROLE_ALL_VIEWER, ROLE_MANAGER, or ROLE_VIEWER -->
+                                <div sec:authorize="hasAnyRole('ROLE_ALL_VIEWER', 'ROLE_MANAGER', 'ROLE_VIEWER')">
+                                    <a th:href="@{/admin}"
+                                       th:classappend="${actif == 'notsu'}">[[${payHome}]]</a>
+                                </div>
+                                <!-- ROLE_SU -->
+                                <div th:if="${#authorization.expression('hasRole(''ROLE_SU'')')}">
+                                    <a th:href="@{/admin/su}"
+                                       th:classappend="${actif == 'su'}">SU</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                <!-- Supervisor Navigation -->
+        <div th:if="${#authorization.expression('hasRole(''ROLE_PREVIOUS_ADMINISTRATOR'')')}"
+             class="nav navbar-nav navbar-right supervisor-nav">
+                    <form th:action="@{/logout/impersonate}" method="POST" class="form-horizontal">
+                        <input type="submit" class="btn btn-warning" th:value="#{button_exit_su}"/>
+                    </form>
+        </div>
+    </div>
+</div>
+</div>
+</html>

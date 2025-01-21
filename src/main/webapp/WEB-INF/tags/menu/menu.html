@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:if="${empty render or render}" th:fragment="menu">
+    zar
+    <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+    <a th:href="@{/'/'}" th:if="${not empty logoAppUrl}" class="navbar-brand">
+        <img th:src="${logoAppUrl}"
+             class="institute-logo-navbar"
+             alt=""/> </a> <a th:href="@{/'/'}" th:if="${empty logoAppUrl}"
+                              class="navbar-brand" th:text="${appName}">
+
+</a>
+    <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav" th:id="${id}"> <!-- <jsp:doBody /> --> </ul>
+        <div th:if="${not empty urlRightButton}">
+            <span th:with="button = ${labelRightButton}">
+                <span th:if="${not empty iconRightButton}"
+                      th:text="'<span class=&quot;glyphicon glyphicon-' + ${iconRightButton} + '&quot; aria-hidden=&quot;true&quot;></span>'"></span>
+                <ul class="nav navbar-nav navbar-right" id="main-navigation">
+                    <li> <a th:href="${urlRightButton}"
+                            th:title="${labelRightButton}"
+                            class="btn btn-sm btn-success"
+                            th:text="${button}"></a> </li>
+                </ul>
+            </span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{../layouts/public.html}">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome</title>
+    </head>
+    <body>
+        <!-- Main Content to be inserted into the layout's 'content' fragment -->
+        <div layout:fragment="content">
+                <div th:id="${'_title_' + title + '_id'}" class="jumbotron">
+                    <th:block th:with="institute_href=${@propertyConfigurer.getProperty('institute.href')},
+                                       institute_name=${@propertyConfigurer.getProperty('institute.name')}">
+                        <h2>
+                            <span th:text="#{home_msg1}"></span>
+                        </h2>
+                        <p>
+                            <span th:text="#{home_msg2(${institute_name})}"></span>
+                        <hr/>
+                        <small><a th:href="${institute_href}" th:text="${institute_href}"></a></small>
+                    </th:block>
+                </div>
+        </div>
+    </body>
+</html>

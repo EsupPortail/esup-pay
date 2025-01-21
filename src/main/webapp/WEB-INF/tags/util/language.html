@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="content"
+  th:if="${render == null or render}">
+  <th:block th:with="imgUrl='/resources/images/' + ${locale} + '.png',
+                  langSwitchLabel=#{global_language_switch(${label})}">
+    <a th:href="@{/(lang=${locale}, form=${param.form}, find=${param.find}, page=${param.page}, size=${param.size})}"
+       th:title="${langSwitchLabel}"
+       ><img class="flag" th:src="@{${imgUrl}}" th:alt="${langSwitchLabel}" /></a>
+  </th:block>
+</th:block>
+</html>
