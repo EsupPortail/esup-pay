@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr" layout:decorate="~{../layouts/admin.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sd="http://www.thymeleaf.org/spring-data"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+        Welcome
+    </title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="col-md-12">
+        <th:block th:with="locale=${#locale.language}">
+            <th:block th:with="url=#{evts_url}">
+                <th:block th:with="responsables=#{evts_responsables}">
+                    <th:block th:with="lecteurs=#{evts_lecteurs}">
+                        <th:block th:with="compte=#{evts_compte}">
+                            <div sec:authorize="hasRole('ROLE_ADMIN')">
+                                <a class="btn btn-success btn-circle absButton" data-toggle="tooltip"
+                                   href="/admin/evts?form" th:title="#{global_menu_new(#{menu_item_payevt_new_label})}">
+                                   <span class="glyphicon glyphicon-plus">
+                                   </span>
+                                </a>
+                            </div>
+                            <div class="row" id="pl_org_esupportail_pay_domain_PayEvt">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th th:text="#{label_org_esupportail_pay_domain_payevt_title}">
+                                        </th>
+                                        <th th:text="${url}">
+                                        </th>
+                                        <th th:text="${responsables}">
+                                        </th>
+                                        <th th:text="${lecteurs}">
+                                        </th>
+                                        <th th:text="${compte}">
+                                        </th>
+                                        <th th:text="#{label_org_esupportail_pay_domain_payevt_archived}">
+                                        </th>
+                                        <th class="btnCrudTable">
+                                            Voir
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="conf : ${payevts}">
+                                        <td th:text="${conf.title.labelLocales['fr'].translation}">
+                                        </td>
+                                        <td th:text="${conf.webSiteUrl}">
+                                        </td>
+                                        <td th:text="${conf.respLoginsStr}">
+                                        </td>
+                                        <td th:text="${conf.ViewerLoginsStr}">
+                                        </td>
+                                        <td th:text="${conf.payboxServiceKey}">
+                                        </td>
+                                        <td th:text="${conf.archived}">
+                                        </td>
+                                        <td class="utilbox">
+                                            <a class="btn btn-success" th:alt="#{show_label}"
+                                               th:href="@{'/admin/evts/' + ${conf.id}}"
+                                               title="#{show_label}">
+                                                <img class="image" th:alt="#{show_label}"
+                                                     th:src="@{/resources/images/show.png}" title="#{show_label}"/>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <!--<div class="col-md-4 col-md-offset-5">
+                                  <div th:replace="fragments/pagination.html">
+                                  </div>
+                                </div>-->
+                            </div>
+                        </th:block>
+                    </th:block>
+                </th:block>
+            </th:block>
+        </th:block>
+    </div>
+</div>
+<script>
+</script>
+</body>
+</html>
