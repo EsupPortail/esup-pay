@@ -50,6 +50,12 @@
 
 <div th:replace="~{header.html :: header}"></div>
 <div id="main" class="container-fluid">
+  <th:block sec:authorize="isAuthenticated()">
+    <div class="row">
+      <div th:replace="~{menu.html :: menu}">
+      </div>
+    </div>
+  </th:block>
   <div class="row">
     <div layout:fragment="content"></div>
   </div>

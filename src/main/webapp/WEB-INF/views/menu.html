@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html lang="fr" layout:decorate="~{layout(layoutView='admin', layoutMenu='appliconfigs')}
+            " xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" xmlns:sd="http://www.thymeleaf.org/spring-data" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://tiles.apache.org/tags-tiles">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+        Welcome
+    </title>
+</head>
+<body>
+<div th:fragment="menu">
+        <ul class="nav nav-tabs">
+            <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')">
+                <li th:class="${activeMenu == 'adminevts' || activeMenu == 'adminevtmnts' ? 'active' : ''}">
+                    <a th:href="@{/admin/evts(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_evts}">
+                    </a>
+                </li>
+            </th:block>
+            <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER')">
+                <li th:class="${activeMenu == 'adminfees' ? 'active' : ''}">
+                    <a th:href="@{/admin/fees(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_transactions}">
+                    </a>
+                </li>
+            </th:block>
+            <th:block sec:authorize="hasRole('ROLE_STAT')">
+                <li th:class="${activeMenu == 'adminstats' ? 'active' : ''}">
+                    <a th:href="@{/admin/stats}" th:text="#{pay_statistics}">
+                    </a>
+                </li>
+            </th:block>
+            <th:block sec:authorize="hasRole('ROLE_VENTILATION')">
+                <li th:class="${activeMenu == 'adminventilations' ? 'active' : ''}">
+                    <a th:href="@{/admin/ventilations}" th:text="#{menu_ventilations}">
+                    </a>
+                </li>
+            </th:block>
+        </ul>
+        <ul class="breadcrumb bread-primary">
+            <th:block th:if="${payevts != null || payEvt != null || payEvtMontant != null || payboxtransactionlogs != null || payboxtransactionlog != null || activeMenu == 'adminstats'}">
+                <li>
+                    &gt;
+                    <a th:href="@{/admin/}" th:text="#{menu_home}">
+                    </a>
+                </li>
+            </th:block>
+            <th:block th:if="${payevts != null ||  payEvt != null || payEvtMontant != null}">
+                <li>
+                    <a th:href="@{/admin/evts(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{menu_evts}">
+                    </a>
+                </li>
+            </th:block>
+            <th:block th:if="${payEvt != null && payEvt != ''}">
+                <li>
+                    <a th:href="@{/admin/evts/${payEvt.id}}" th:text="${payEvt?.title?.labelLocales['fr'].translation}">
+                    </a>
+                </li>
+            </th:block>
+            <th:block th:if="${payEvtMontant != null && payEvtMontant != '' && payEvt != null && payEvt != ''}">
+                <li>
+                    <a th:href="@{/admin/evts/${payEvt.id}}" th:text="${payEvtMontant?.evt?.title?.labelLocales['fr'].translation}">
+                    </a>
+                </li>
+                <li>
+                   <span
+                    th:text="${payEvtMontant.title.labelLocales['fr'].translation"}>
+                   </span>
+                </li>
+            </th:block>
+            <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER')">
+                <th:block th:if="${paytransactionlogs != null || paytransactionlog != null}">
+                    <li>
+                        <a th:href="@{/admin/fees(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}">
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${paytransactionlog != null}">
+                    <li>
+                        <span>
+                         ${paytransactionlog.idtrans}
+                        </span>
+                    </li>
+                </th:block>
+                <th:block th:if="${activeMenu == 'adminstats'}">
+                    <li>
+                        <a th:href="@{/admin/stats}">
+                        </a>
+                    </li>
+                </th:block>
+            </th:block>
+        </ul>
+</div>
+<script>
+    var adminevtsUrl= '[[@{/admin/evts?page=1&amp;size=${empty param.size ? 10 : param.size}}]]';
+    var adminTxUrl= '[[@{/admin/fees?page=1&amp;size=${empty param.size ? 10 : param.size}}]]';
+    var statsUrl= '[[@{/admin/stats}]]';
+    var ventilationsUrl= '[[@{/admin/ventilations}]]';
+    var adminUrl= '[[@{/admin/}]]';
+    var evtUrl= '[[@{/admin/evts/${payEvt.id}}]]';
+    var evtUrl= '[[@{/admin/evts/${payEvtMontant.evt.id}}]]';
+    var evtMntUrl= '[[@{/admin/evts/${payEvtMontant.evt.id}/${payEvtMontant.id}}]]';
+    var txUrl= '[[@{/admin/fees/${paytransactionlog.id}/${payEvtMontant.id}}]]';
+</script>
+</body>
+</html>

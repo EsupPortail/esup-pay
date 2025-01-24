@@ -280,7 +280,7 @@ public class PayEvtController {
         }
         uiModel.addAttribute("isAdmin", isAdmin);
         
-        return "admin/evts/list";
+        return "admin/evts/list.html";
     }
     
     

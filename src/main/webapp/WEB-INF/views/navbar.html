@@ -19,7 +19,7 @@
                 <div sec:authorize="isAuthenticated()">
                     <th:block
                             th:with="userName=${#authentication.principal.username}, actif=${active == 'su' ? 'su' : 'notsu'}">
-                        <div th:replace="../fragments/menu :: menu(logoAppUrl=${logo_url}, appName=${app_name}, labelRightButton=#{pay_logout(${#authentication.principal.username})}, urlRightButton='/j_spring_cas_security_logout')">
+                        <div th:replace="../fragments/menu_nav :: menu(logoAppUrl=${logo_url}, appName=${app_name}, labelRightButton=#{pay_logout(${#authentication.principal.username})}, urlRightButton='/j_spring_cas_security_logout', iconRightButton='off')">
                             <th:block th:fragment="content">
                                 <th:block sec:authorize="hasAnyRole('ROLE_SU', 'ROLE_ALL_VIEWER', 'ROLE_MANAGER', 'ROLE_VIEWER')">
                                     <li th:class="${actif=='notsu'} ? 'active' : ''" id="home">

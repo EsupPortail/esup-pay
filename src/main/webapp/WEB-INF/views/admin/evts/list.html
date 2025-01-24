@@ -11,21 +11,20 @@
     </title>
 </head>
 <body>
-<div layout:fragment="content">
-    <div class="col-md-12">
+<div layout:fragment="content" style="position: relative">
         <th:block th:with="locale=${#locale.language}">
             <th:block th:with="url=#{evts_url}">
                 <th:block th:with="responsables=#{evts_responsables}">
                     <th:block th:with="lecteurs=#{evts_lecteurs}">
                         <th:block th:with="compte=#{evts_compte}">
-                            <div sec:authorize="hasRole('ROLE_ADMIN')">
+                            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                                 <a class="btn btn-success btn-circle absButton" data-toggle="tooltip"
                                    href="/admin/evts?form" th:title="#{global_menu_new(#{menu_item_payevt_new_label})}">
                                    <span class="glyphicon glyphicon-plus">
                                    </span>
                                 </a>
-                            </div>
-                            <div class="row" id="pl_org_esupportail_pay_domain_PayEvt">
+                            </th:block>
+                            <div class="row" id="title_pl_org_esupportail_pay_domain_PayEvt">
                                 <table class="table table-bordered">
                                     <thead>
                                     <tr>
@@ -61,11 +60,11 @@
                                         <td th:text="${conf.archived}">
                                         </td>
                                         <td class="utilbox">
-                                            <a class="btn btn-success" th:alt="#{show_label}"
+                                            <a class="btn btn-success" th:alt="#{menu_item_payevt_new_label}"
                                                th:href="@{'/admin/evts/' + ${conf.id}}"
-                                               title="#{show_label}">
-                                                <img class="image" th:alt="#{show_label}"
-                                                     th:src="@{/resources/images/show.png}" title="#{show_label}"/>
+                                               th:title="#{menu_item_payevt_new_label}">
+                                                <img class="image" th:alt="#{menu_item_payevt_new_label}"
+                                                     th:src="@{/resources/images/show.png}" th:title="#{menu_item_payevt_new_label}"/>
                                             </a>
                                         </td>
                                     </tr>
@@ -81,7 +80,6 @@
                 </th:block>
             </th:block>
         </th:block>
-    </div>
 </div>
 <script>
 </script>
