@@ -117,6 +117,7 @@
             <set>
                 <bean class="nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect"/>
                 <bean class="org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect"/>
+                <bean class="org.thymeleaf.dialect.springdata.SpringDataDialect"/>
             </set>
         </property>
     </bean>
@@ -139,8 +140,15 @@
      </property>
     </bean>
 
+    <!-- Handle Pagination -->
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
 
-<bean class="org.esupportail.pay.web.ApplicationConversionServiceFactoryBean" id="applicationConversionService"/>
+
+    <bean class="org.esupportail.pay.web.ApplicationConversionServiceFactoryBean" id="applicationConversionService"/>
 
 	<!-- enable support for Expression-based annotations in Spring Security -->
 	<sec:global-method-security pre-post-annotations="enabled">

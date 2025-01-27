@@ -49,6 +49,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.AbstractResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -248,7 +253,7 @@ public class PayEvtController {
     
     @RequestMapping(produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')")
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+    public String list(Model uiModel, @PageableDefault(size = 10, sort = {"archived", "id"}, direction =  Sort.Direction.DESC) Pageable pageable) {
        
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -258,25 +263,24 @@ public class PayEvtController {
         boolean isViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"));
 
         String currentUser = auth.getName();
-        
-        if(sortFieldName == null) {
-        	sortFieldName = "archived, id";
-        	sortOrder = "desc";
-        }
-    	
+
         if(isAllViewer) {
-        	int sizeNo = size == null ? 10 : size.intValue();
-        	final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-        	List<PayEvt> payEvts = payEvtDaoService.findPayEvtEntries(firstResult, sizeNo, sortFieldName, sortOrder);
-        	evtService.computeRespLogin(payEvts);
+            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvts(pageable);
+            List<PayEvt> payEvts = payEvtPage.getContent();
+            evtService.computeRespLogin(payEvts);
         	uiModel.addAttribute("payevts", payEvts);
-        	float nrOfPages = (float) payEvtDaoService.countPayEvts() / sizeNo;
-        	uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+            uiModel.addAttribute("page", payEvtPage);
         } else if(isManager || isViewer) {
             List<RespLogin> loginList = evtService.listEvt(currentUser);
-            List<PayEvt> payEvts = payEvtDaoService.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList();
+            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvtsByRespLoginsOrByViewerLogins(
+                    loginList,
+                    pageable
+            );
+            List<PayEvt> payEvts = payEvtPage.getContent();
             evtService.computeRespLogin(payEvts);
     		uiModel.addAttribute("payevts", payEvts);
+            uiModel.addAttribute("page", payEvtPage);
+
         }
         uiModel.addAttribute("isAdmin", isAdmin);
         

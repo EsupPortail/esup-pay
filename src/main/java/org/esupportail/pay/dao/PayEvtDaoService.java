@@ -26,6 +26,10 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.RespLogin;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,6 +105,54 @@ public class PayEvtDaoService {
             q.setParameter("logins_item" + respLoginsIndex++, _login);
         }
         return q;
+    }
+
+    /**
+     * Select PayEvts for logins in RespLogins or ViewerLogins in a Pageable.
+     * Not just a wrapper to findPayEvtsByRespLoginsOrByViewerLogins, because it
+     * only selects the current page of Pageable.
+     */
+    public Page<PayEvt> findPagePayEvtsByRespLoginsOrByViewerLogins(List<RespLogin> logins, Pageable pageable) {
+        if (logins == null) throw new IllegalArgumentException("The logins argument is required");
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o WHERE");
+        StringBuilder countBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o WHERE");
+
+        StringBuilder whereBuilder = new StringBuilder();
+        for (int i = 0; i < logins.size(); i++) {
+            if (i > 0) whereBuilder.append(" AND");
+            whereBuilder.append(" :logins_item").append(i).append(" MEMBER OF o.respLogins")
+                        .append(" OR :logins_item").append(i).append(" MEMBER OF o.viewerLogins");
+        }
+        queryBuilder.append(whereBuilder);
+        countBuilder.append(whereBuilder);
+
+        Sort.Order sortFieldName = pageable.getSort().iterator().next();
+        String sortOrder = sortFieldName.getDirection().name();
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
+            queryBuilder.append(" ORDER BY :sort_field");
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" :sort_order");
+            }
+        }
+
+        TypedQuery<PayEvt> q = em.createQuery(queryBuilder.toString(), PayEvt.class);
+        TypedQuery<Long> qCount = em.createQuery(countBuilder.toString(), Long.class);
+
+        int respLoginsIndex = 0;
+        for (RespLogin _login: logins) {
+            q.setParameter("logins_item" + respLoginsIndex++, _login);
+            qCount.setParameter("logins_item" + respLoginsIndex++, _login);
+        }
+        q.setParameter("sort_field", sortFieldName.getProperty());
+        q.setParameter("sort_order", sortOrder);
+
+        q.setFirstResult((int) pageable.getOffset());
+        q.setMaxResults(pageable.getPageSize());
+
+        List<PayEvt> results = q.getResultList();
+        Long total = qCount.getSingleResult();
+
+        return new PageImpl<>(results, pageable, total);
     }
     
     public List<Object[]> findSumMontantGroupByEvt(String year){
@@ -247,6 +299,31 @@ public class PayEvtDaoService {
         return em.createQuery(jpaQuery, PayEvt.class).getResultList();
     }
 
+    public Page<PayEvt> findPagePayEvts(Pageable pageable) {
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o");
+        StringBuilder countBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o");
+
+        Sort.Order sortFieldName = pageable.getSort().iterator().next();
+        String sortOrder = sortFieldName.getDirection().name();
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
+            queryBuilder.append("ORDER BY").append(sortFieldName.getProperty());
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(sortOrder);
+            }
+        }
+
+        TypedQuery<PayEvt> q = em.createQuery(queryBuilder.toString(), PayEvt.class);
+        TypedQuery<Long> qCount = em.createQuery(countBuilder.toString(), Long.class);
+
+        q.setFirstResult((int) pageable.getOffset());
+        q.setMaxResults(pageable.getPageSize());
+
+        List<PayEvt> results = q.getResultList();
+        Long total = qCount.getSingleResult();
+
+        return new PageImpl<>(results, pageable, total);
+    }
+
 	public PayEvt findPayEvt(Long id) {
         if (id == null) return null;
         return em.find(PayEvt.class, id);
@@ -281,5 +358,5 @@ public class PayEvtDaoService {
 	public void merge(PayEvt payEvt) {
 		em.merge(payEvt);
 	}
-	
+
 }
