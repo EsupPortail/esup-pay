@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<html lang="fr" layout:decorate="~{../layouts/admin.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+      xmlns:sd="http://www.thymeleaf.org/spring-data"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:spring-form="http://www.springframework.org/tags/form" xmlns:th="http://www.thymeleaf.org"
+      xmlns:tiles="http://tiles.apache.org/tags-tiles">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+        Welcome
+    </title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="col-lg-12">
+        <th:block
+                th:with="enctype = ${multipart != null && multipart != '' && (multipart == 'true' || multipart == true) ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}">
+            <div th:id="'_title_fu_org_esupportail_pay_domain_payevt_id'"
+                 th:title="#{entity_create(${label})}">
+                <form id="payEvt" method="POST" th:object="${payEvt}" th:action="@{'/admin/evts'}"
+                      th:enctype="${enctype}" th:onsubmit="${jsCall}">
+                    <div class="errors" th:if="${#fields.hasErrors()}">
+                        <ul>
+                            <li class="error" th:each="err : ${#fields.errors('*')}" th:text="${err}">
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-lg-6">
+                            <div class="well">
+
+                                <div class="form-group" id="c_org_esupportail_pay_domain_payevt_webSiteUrl">
+                                    <label class="c" for="webSiteUrl">
+                                        <strong th:text="#{label_org_esupportail_pay_domain_payevt_websiteurl}">
+                                        </strong>
+                                    </label>
+                                    <input class="form-control" id="webSiteUrl" name="webSiteUrl"
+                                           type="text"/>
+                                    <span class="errors" id="webSiteUrl" th:errors="*{webSiteUrl}" th:if="${#fields.hasErrors('webSiteUrl')}"></span>
+                                </div>
+                                <div class="form-group"
+                                     id="_c_org_esupportail_pay_domain_payevt_managersEmails">
+                                    <label class="c" for="managersEmails">
+                                        <strong>
+                                           <span th:text="#{label_org_esupportail_pay_domain_payevt_managersemail}">
+                                           </span>
+                                        </strong>
+                                        <a class="btn btn-xs btn-info" href="#" id="AddMoreManagersEmails">
+                                           <span aria-hidden="true" class="glyphicon glyphicon-plus">
+                                           </span>
+                                        </a>
+                                    </label>
+                                    <div id="managersEmails">
+                                        <div class="input-group autocompleteEmail">
+                                            <input class="form-control"
+                                                   id="c_org_esupportail_pay_domain_payevt_managersEmail"
+                                                   name="managersEmails" z="user-managed"/>
+                                            <span class="input-group-addon">
+                                            <a class="btn btn-xs btn-danger removeclass" href="#">
+                                             <span aria-hidden="true" class="glyphicon glyphicon-minus">
+                                             </span>
+                                            </a>
+                                           </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="c_org_esupportail_pay_domain_payevt_mailSubject">
+                                    <label class="c" for="mailSubject">
+                                        <strong th:text="#{label_org_esupportail_pay_domain_payevt_mailsubject}">
+                                        </strong>
+                                    </label>
+                                    <input class="form-control" id="mailSubject" name="mailSubject"
+                                           type="text"/>
+                                    <span class="errors" id="mailSubject" th:errors="*{mailSubject}" th:if="${#fields.hasErrors('mailSubject')}"></span>
+                                </div>
+                                <div class="form-group"
+                                     id="c_org_esupportail_pay_domain_payevt_payCommandPrefix">
+                                    <label class="c" for="payboxCommandPrefix">
+                                        <strong th:text="#{label_org_esupportail_pay_domain_payevt_paycommandprefix}">
+                                        </strong>
+                                    </label>
+                                    <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                        <input class="form-control" id="payboxCommandPrefix"
+                                               name="payboxCommandPrefix" readonly="true" type="text"/>
+                                    </th:block>
+                                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                        <input class="form-control" id="payboxCommandPrefix"
+                                               name="payboxCommandPrefix" type="text"/>
+                                    </th:block>
+                                    <span class="errors" id="payboxCommandPrefix" th:errors="*{payboxCommandPrefix}" th:if="${#fields.hasErrors('payboxCommandPrefix')}"></span>
+                                </div>
+                                <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                    <div class="form-group"
+                                         id="c_org_esupportail_pay_domain_payevt_payServiceKey">
+                                        <label class="c" for="payboxServiceKey">
+                                            <strong th:text="#{label_org_esupportail_pay_domain_payevt_payservicekey}">
+                                            </strong>
+                                        </label>
+                                        <input class="" id="payboxServiceKey" name="payboxServiceKey"
+                                               readonly="true" type="text"/>
+                                        <span class="errors" id="payboxServiceKey" th:errors="*{payboxServiceKey}" th:if="${#fields.hasErrors('payboxServiceKey')}"></span>
+                                    </div>
+                                </th:block>
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <div class="form-group"
+                                         id="c_org_esupportail_pay_domain_payevt_payServiceKey">
+                                        <label class="c" for="_payboxServiceKey_id">
+                                            <strong th:text="#{label_org_esupportail_pay_domain_payevt_payservicekey}">
+                                            </strong>
+                                        </label>
+                                        <select class="form-control" id="_payboxServiceKey_id" name="payboxServiceKey"
+                                                size="1" type="text">
+                                            <th:block th:each="i : ${payboxServiceKeys}">
+                                                <option th:text="${i}" th:value="${i}">
+                                                </option>
+                                            </th:block>
+                                        </select>
+                                        <span class="errors" id="_payboxServiceKey_id" th:errors="*{payboxServiceKey}" th:if="${#fields.hasErrors('payboxServiceKey')}"></span>
+                                    </div>
+                                </th:block>
+                                <div class="form-group"
+                                     id="c_org_esupportail_pay_domain_payevt_defaultOptionalAddedParams">
+                                    <label class="c" for="defaultOptionalAddedParams">
+                                        <strong th:text="#{label_org_esupportail_pay_domain_payevt_defaultoptionaladdedparams}">
+                                        </strong>
+                                    </label>
+                                    <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                        <input class="form-control" id="defaultOptionalAddedParams"
+                                               name="defaultOptionalAddedParams" readonly="true" type="text"/>
+                                    </th:block>
+                                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                        <input class="form-control" id="defaultOptionalAddedParams"
+                                               name="defaultOptionalAddedParams" type="text"/>
+                                    </th:block>
+                                    <span class="errors" id="defaultOptionalAddedParams" th:errors="*{defaultOptionalAddedParams}" th:if="${#fields.hasErrors('defaultOptionalAddedParams')}"></span>
+                                </div>
+                                <div class="form-group"
+                                     id="c_org_esupportail_pay_domain_payEvtMontant_dbleMontantMax">
+                                    <label class="c" for="dbleMontantMax">
+                                        <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_dblemontantmax}">
+                                        </strong>
+                                    </label>
+                                    <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                        <input class="form-control" id="dbleMontantMax" name="dbleMontantMax"
+                                               readonly="true" type="text"/>
+                                    </th:block>
+                                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                        <input class="form-control" id="dbleMontantMax" name="dbleMontantMax"
+                                               type="text"/>
+                                    </th:block>
+                                    <span class="errors" id="_dbleMontantMax_id" th:errors="*{dbleMontantMax}" th:if="${#fields.hasErrors('dbleMontantMax')}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="well">
+                                <fieldset>
+                                    <legend>
+                                        <span th:text="#{form_login_managers}">
+                                        </span>
+                                        <a class="btn btn-xs btn-info" href="#" id="AddMoreLogins">
+                                           <span aria-hidden="true" class="glyphicon glyphicon-plus">
+                                           </span>
+                                        </a>
+                                    </legend>
+                                    <div id="respLogins">
+                                        <div th:each="respLogin : ${payEvt.respLogins}">
+                                            <div class="input-group autocompleteLogin">
+                                                <input class="respLogin form-control" th:value="${respLogin.displayName} + ' (' ${respLogin.login} + ')'"
+                                                       type="text"/>
+                                                <input class="respLogin form-control" name="logins"
+                                                       th:value="${respLogin.login}" type="hidden"/>
+                                                <span class="input-group-addon">
+                                                 <a class="btn btn-xs btn-danger removeclass" href="#">
+                                                  <span aria-hidden="true" class="glyphicon glyphicon-minus">
+                                                  </span>
+                                                 </a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="errors" id="_logins_error_id" th:errors="*{logins}" th:if="${#fields.hasErrors('logins')}"></span>
+                                    </div>
+                                </fieldset>
+                                <br/>
+                                <fieldset>
+                                    <legend>
+                                       <span th:text="#{form_login_readers}">
+                                       </span>
+                                       <a class="btn btn-xs btn-info" href="#" id="AddMoreViewerLogins">
+                                           <span aria-hidden="true" class="glyphicon glyphicon-plus">
+                                           </span>
+                                       </a>
+                                    </legend>
+                                    <div id="viewerLogins">
+                                        <div th:each="viewerLogin : ${payEvt.viewerLogins}">
+                                            <div class="input-group autocompleteLogin">
+                                                <input class="viewerLogin form-control" th:value="${viewerLogin.displayName} + ' (' + ${viewerLogin.login} + ')'"
+                                                       type="text"/>
+                                                <input class="viewerLogin form-control" name="viewerLogins2Add"
+                                                       th:value="${viewerLogin.login}" type="hidden"/>
+                                                <span class="input-group-addon">
+                                                 <a class="btn btn-xs btn-danger removeclass" href="#">
+                                                  <span aria-hidden="true" class="glyphicon glyphicon-minus">
+                                                  </span>
+                                                 </a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="errors" id="_viewerLogins2Add_error_id" th:errors="*{viewerLogins2Add}" th:if="${#fields.hasErrors('viewerLogins2Add')}"></span>
+                                </fieldset>
+
+                                <fieldset>
+                                    <legend>
+                                      <span th:text="#{form_title}">
+                                      </span>
+                                    </legend>
+                                    <div th:each="labelLocales : ${payEvt.title.labelLocales}">
+                                        <div class="form-group">
+                                            <label>
+                                                [[${labelLocales.key}]]
+                                            </label>
+                                            <input class="form-control"
+                                                   required=""
+                                                   th:name="'title.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>
+                                      <span th:text="#{form_payment_legend}">
+                                      </span>
+                                    </legend>
+                                    <div th:each="labelLocales : ${payEvt.defaultMntDescription.labelLocales}">
+                                        <div class="form-group">
+                                            <label>
+                                                [[${labelLocales.key}]]
+                                            </label>
+                                            <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                                <input class="form-control"
+                                                       readonly=""
+                                                       th:name="'defaultMntDescription.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
+                                            </th:block>
+                                            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                                <input class="form-control"
+                                                       th:name="'defaultMntDescription.labelLocales[' + ${labelLocales.key} + '].translation'"
+                                                       th:value="${labelLocales.value.translation}"/>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit" id="fu_org_esupportail_pay_domain_payevt_submit">
+                        <input class="btn btn-success" id="proceed" th:value="#{button_save}" type="submit"/>
+                    </div>
+                </form>
+            </div>
+        </th:block>
+    </div>
+</div>
+<script>
+    var form_url = '[[@{${path}}]]';
+    var searchLoginsJsonUrl = '[[@{/admin/searchLoginsJson}]]';
+</script>
+</body>
+</html>

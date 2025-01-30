@@ -230,7 +230,7 @@ public class PayEvtController {
             evtService.computeLogins(payEvt, respLoginIds, viewerLoginIds);
             evtService.computeRespLogin(payEvt);
             populateEditForm(uiModel, payEvt);
-            return "admin/evts/create";
+            return "admin/evts/create.html";
         }
         uiModel.asMap().clear();
 
@@ -239,7 +239,7 @@ public class PayEvtController {
 	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
         }
 
-        List<String> viewerLoginIds= Arrays.asList();;
+        List<String> viewerLoginIds= Arrays.asList();
         if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
 	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
         }
@@ -294,7 +294,7 @@ public class PayEvtController {
     	PayEvt payEvt = new PayEvt();
     	payEvt.setDbleMontantMax(defaultDbleMontantMax);
         populateEditForm(uiModel, payEvt);
-        return "admin/evts/create";
+        return "admin/evts/create.html";
     }
     
     @PreAuthorize("hasPermission(#id, 'manage')")
