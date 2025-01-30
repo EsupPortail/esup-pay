@@ -1,14 +1,25 @@
 <!DOCTYPE HTML>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
 <html lang="fr" layout:decorate="~{layout(layoutView='admin', layoutMenu='appliconfigs')}
             " xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" xmlns:sd="http://www.thymeleaf.org/spring-data" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://tiles.apache.org/tags-tiles">
-<head>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
-    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>
-        Welcome
-    </title>
-</head>
 <body>
 <div th:fragment="menu">
         <ul class="nav nav-tabs">
@@ -90,17 +101,18 @@
                 </th:block>
             </th:block>
         </ul>
+    <script>
+        var adminevtsUrl= '[[@{/admin/evts?page=1&amp;size=${empty param.size ? 10 : param.size}}]]';
+        var adminTxUrl= '[[@{/admin/fees?page=1&amp;size=${empty param.size ? 10 : param.size}}]]';
+        var statsUrl= '[[@{/admin/stats}]]';
+        var ventilationsUrl= '[[@{/admin/ventilations}]]';
+        var adminUrl= '[[@{/admin/}]]';
+        var evtUrl= '[[@{/admin/evts/${payEvt.id}}]]';
+        var evtUrl= '[[@{/admin/evts/${payEvtMontant.evt.id}}]]';
+        var evtMntUrl= '[[@{/admin/evts/${payEvtMontant.evt.id}/${payEvtMontant.id}}]]';
+        var txUrl= '[[@{/admin/fees/${paytransactionlog.id}/${payEvtMontant.id}}]]';
+    </script>
 </div>
-<script>
-    var adminevtsUrl= '[[@{/admin/evts?page=1&amp;size=${empty param.size ? 10 : param.size}}]]';
-    var adminTxUrl= '[[@{/admin/fees?page=1&amp;size=${empty param.size ? 10 : param.size}}]]';
-    var statsUrl= '[[@{/admin/stats}]]';
-    var ventilationsUrl= '[[@{/admin/ventilations}]]';
-    var adminUrl= '[[@{/admin/}]]';
-    var evtUrl= '[[@{/admin/evts/${payEvt.id}}]]';
-    var evtUrl= '[[@{/admin/evts/${payEvtMontant.evt.id}}]]';
-    var evtMntUrl= '[[@{/admin/evts/${payEvtMontant.evt.id}/${payEvtMontant.id}}]]';
-    var txUrl= '[[@{/admin/fees/${paytransactionlog.id}/${payEvtMontant.id}}]]';
-</script>
+
 </body>
 </html>

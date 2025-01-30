@@ -1,12 +1,31 @@
 <!DOCTYPE html>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
 <html xmlns:th="http://www.thymeleaf.org">
 <div class="container" id="footer" th:fragment="footer">
-  <a th:href="${@propertyConfigurer.getProperty('institute.href')}"
-     th:text="${@propertyConfigurer.getProperty('institute.name')}"></a>
-  <span> - </span>
-  <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>
+    <a th:href="${@propertyConfigurer.getProperty('institute.href')}"
+       th:text="${@propertyConfigurer.getProperty('institute.name')}"></a>
+    <span> - </span>
+    <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>
 
-  <span id="language">
+    <span id="language">
         <span> | </span>
         <span th:text="#{global_language}"></span>
         <span>: </span>
@@ -16,15 +35,15 @@
              th:with="locale='fr', label='French'"></th:block>
     </span>
 
-  <th:block th:with="footer_html_add = ${@propertyConfigurer.getProperty('esup-pay.footer-html-add')}">
-      <span th:utext="${footer_html_add}"></span>
-  </th:block>
-</div>
+    <th:block th:with="footer_html_add = ${@propertyConfigurer.getProperty('esup-pay.footer-html-add')}">
+        <span th:utext="${footer_html_add}"></span>
+    </th:block>
 
-<div th:if="${param.alert_msg != null}">
-  <script th:inline="javascript">
-    var alertMsg = /*[[${#strings.escapeJs(param.alert_msg)}]]*/ '';
-    alert(alertMsg);
-  </script>
+    <div th:if="${param.alert_msg != null}">
+        <script th:inline="javascript">
+            var alertMsg = /*[[${#strings.escapeJs(param.alert_msg)}]]*/ '';
+            alert(alertMsg);
+        </script>
+    </div>
 </div>
 </html>
