@@ -26,6 +26,9 @@ import javax.validation.Valid;
 
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -107,6 +110,13 @@ public class PayEvtMontantDaoService {
         q.setParameter("evt", evt);
         q.setParameter("urlId", urlId);
         return q;
+    }
+
+    public Page<PayEvtMontant> findPagePayEvtMontantsByEvt(PayEvt evt, Pageable pageable) {
+        if (evt == null) throw new IllegalArgumentException("The evt argument is required");
+        TypedQuery<PayEvtMontant> q = em.createQuery("SELECT o FROM PayEvtMontant AS o WHERE o.evt = :evt", PayEvtMontant.class);
+        q.setParameter("evt", evt);
+        return new PageImpl<>(q.getResultList(), pageable, q.getResultList().size());
     }
 
 	public long countPayEvtMontants() {

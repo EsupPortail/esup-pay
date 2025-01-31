@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html lang="fr" layout:decorate="~{../layouts/admin.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sd="http://www.thymeleaf.org/spring-data"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+  <div class="col-md-12">
+    <div class="col-lg-1">
+      <!--!!! Please check, a variable swap was done : logoUrl to ${/admin/evts/${payEvt.id}/logo}. Details: <replace tag="^(form|a|img)" type="path" value="${/admin/evts/${payEvt.id}/logo}" var="logoUrl" warn="true"></replace> !!!-->
+      <img alt="" class="img-responsive" src="@{/admin/evts/${payEvt.id}/logo}" title="logo"/>
+    </div>
+    <div class="col-lg-3">
+      <div class="well">
+        <th:block th:if="${canUpdate}">
+          <!--!!! Please check, a variable swap was done : update_form_url to ${/admin/evts/${payEvt.id}}?form. Details: <replace tag="^(form|a|img)" type="path" value="${/admin/evts/${payEvt.id}}?form" var="update_form_url" warn="true"></replace> !!!-->
+          <a class="btn btn-warning" th:href="@{${'/admin/evts/' + payEvt.id}('form')}">
+            Modifier
+          </a>
+        </th:block>
+        <br/>
+        <br/>
+        <div id="_title_ps_org_esupportail_pay_domain_payevt_id" title="#{entity_show()}">
+          <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_webSiteUrl_id">
+            <dt>
+              [[#{label_org_esupportail_pay_domain_payevt_websiteurl}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_payevt_webSiteUrl_webSiteUrl_id">
+         <span th:text="${payEvt.webSiteUrl}">
+         </span>
+            </dd>
+          </dl>
+          <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_urlId_id">
+            <dt>
+              [[#{label_org_esupportail_pay_domain_payevt_urlid}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_payevt_urlId_urlId_id">
+         <span th:text="${payEvt.urlId}">
+         </span>
+            </dd>
+          </dl>
+          <span th:text="#{label_org_esupportail_pay_domain_payevt_managersemail}">
+       </span>
+          :
+          <ul id="managersEmails">
+            <div th:each="managersEmail : ${payEvt.managersEmails}">
+              <li th:text="${managersEmail}">
+              </li>
+            </div>
+          </ul>
+          <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_mailSubject_id">
+            <dt>
+              [[#{label_org_esupportail_pay_domain_payevt_mailsubject}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_payevt_mailSubject_mailSubject_id">
+         <span th:text="${payEvt.mailSubject}">
+         </span>
+            </dd>
+          </dl>
+          <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_payCommandPrefix_id">
+            <dt>
+              [[#{label_org_esupportail_pay_domain_payevt_paycommandprefix}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_payevt_payCommandPrefix_payboxCommandPrefix_id">
+         <span th:text="${payEvt.payboxCommandPrefix}">
+         </span>
+            </dd>
+          </dl>
+          <span th:text="#{form_login_managers}">
+       </span>
+          <ul>
+            <div th:each="respLogin : ${payEvt.respLogins}">
+              <li th:text="${respLogin.displayName} (${respLogin.login})">
+              </li>
+            </div>
+          </ul>
+          <span th:text="#{form_login_readers}">
+       </span>
+          <ul>
+            <div th:each="viewerLogin : ${payEvt.viewerLogins}">
+              <li th:text="${viewerLogin.displayName} (${viewerLogin.login})">
+              </li>
+            </div>
+          </ul>
+          <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_payServiceKey_id">
+            <dt>
+              [[#{label_org_esupportail_pay_domain_payevt_payservicekey}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_payevt_payServiceKey_payboxServiceKey_id">
+         <span th:text="${payEvt.payboxServiceKey}">
+         </span>
+            </dd>
+          </dl>
+          <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_defaultOptionalAddedParams_id">
+            <dt>
+              [[#{label_org_esupportail_pay_domain_payevt_defaultoptionaladdedparams}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_payevt_defaultOptionalAddedParams_defaultOptionalAddedParams_id">
+         <span th:text="${payEvt.defaultOptionalAddedParams}">
+         </span>
+            </dd>
+          </dl>
+          <dl class="displayTag" id="_s_org_esupportail_pay_domain_payEvtMontant_dbleMontantMax_id">
+            <dt>
+              [[#{label_org_esupportail_pay_domain_payevtmontant_dblemontantmax}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_payEvtMontant_dbleMontantMax_dbleMontantMaxDisplay_id">
+         <span th:text="${payEvt.dbleMontantMaxDisplay}">
+         </span>
+            </dd>
+          </dl>
+          <h4>
+        <span th:text="#{form_title}">
+        </span>
+          </h4>
+          <div th:each="labelLocales : ${payEvt.title.labelLocales}">
+            <div>
+              <label>
+                [[${labelLocales.key}]] :
+              </label>
+              <span>
+          [[${labelLocales.value.translation}]]
+         </span>
+            </div>
+          </div>
+          <h4>
+        <span th:text="#{form_amount_description}">
+        </span>
+          </h4>
+          <div th:each="labelLocales : ${payEvt.defaultMntDescription.labelLocales}">
+            <div>
+              <label>
+                [[${labelLocales.key}]] :
+              </label>
+              <span>
+          [[${labelLocales.value.translation}]]
+         </span>
+            </div>
+          </div>
+          <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_archived_id">
+            <dt>
+              [[#{label_org_esupportail_pay_domain_payevt_archived}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_payevt_archived_archived_id">
+         <span th:text="${payEvt.archived}">
+         </span>
+            </dd>
+          </dl>
+          <div class="quicklinks" th:with="typeName=#{menu_item_payevt_new_label}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="well">
+        <!--!!! Please check, a variable swap was done : feesURL to ${/admin/evts/${payEvt.id}/fees}. Details: <replace tag="^(form|a|img)" type="path" value="${/admin/evts/${payEvt.id}/fees}" var="feesURL" warn="true"></replace> !!!-->
+        <a class="btn btn-success" th:href="@{/admin/evts/${payEvt.id}/fees}">
+       <span th:text="#{form_done_transaction}">
+       </span>
+        </a>
+        <hr/>
+        <!--!!! Please check, a variable swap was done : urlLinkPrefix to ${/evts/${payEvt.urlId}/}. Details: <replace tag="^(form|a|img)" type="path" value="${/evts/${payEvt.urlId}/}" var="urlLinkPrefix" warn="true"></replace> !!!-->
+        <div class="row" id="pl_org_esupportail_pay_domain_payevtmontant">
+          <table class="table table-bordered">
+            <thead>
+            <tr>
+              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_title}">
+              </th>
+              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_dblemontant}">
+              </th>
+              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">
+              </th>
+              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_sciencesconf}">
+              </th>
+              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_urlid}">
+              </th>
+              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_authcas}">
+              </th>
+              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_isenabled}">
+              </th>
+              <th class="btnCrudTable">
+                Modifier
+              </th>
+              <th class="btnCrudTable">
+                Supprimer
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="conf : ${payevtmontants}">
+              <td th:text="${conf.title.labelLocales['fr'].translation}">
+              </td>
+              <td th:text="${conf.dbleMontantDisplay}">
+              </td>
+              <td th:text="${conf.freeAmount}">
+              </td>
+              <td th:text="${conf.sciencesconf}">
+              </td>
+              <td th:text="${conf.urlId}">
+              </td>
+              <td th:text="${conf.authCas}">
+              </td>
+              <td th:text="${conf.isEnabled}">
+              </td>
+              <td class="utilbox">
+                <a class="btn btn-warning" th:alt="#{update_label}" th:href="@{'/admin/evtmnts/' + ${conf.id}(form='')}" th:title="#{update_label}">
+                  <img class="image" th:alt="#{update_label}" th:src="@{/resources/images/update.png}" th:title="#{update_label}"/>
+                </a>
+              </td>
+              <td class="utilbox">
+                <form th:action="@{${'/admin/evtmnts/item.' + l_org_esupportail_pay_domain_payevtmontant}}" th:method="delete">
+                  <input class="btn btn-danger" th:onclick="'return confirm(\'' + #{entity_delete_confirm} + '\')'" th:alt="#{delete_label}" th:src='@{/resources/images/delete.png}' th:title="#{delete_label}" type="image"/>
+                </form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="col-md-4 col-md-offset-5">
+            <nav class="center-block btn-toolbar" th:fragment="pagination">
+              <div class="btn-group">
+                <div class="btn-group dropup" sd:page-size-selector="dropdown" style="margin-top: 20px">
+                </div>
+                <ul class="btn-group pagination" sd:pagination="full">
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script>
+        var logoUrl= "[[@{'/admin/evts/' + ${payEvt.id} + '/logo'}]]";
+        var update_form_url= "[[@{'/admin/evts/' + ${payEvt.id}}]]";
+        var delete_form_url= "[[@{'/admin/evts/' + ${itemId}}]]";
+        var delete_image_url= "[[@{'/resources/images/delete.png'}]]";
+        var update_form_url= "[[@{'/admin/evts/' + ${itemId}}]]";
+        var update_image_url= "[[@{'/resources/images/update.png'}]]";
+        var create_form_url= "[[@{'/admin/evts'}]]";
+        var create_image_url= "[[@{'/resources/images/create.png'}]]";
+        var list_form_url= "[[@{'/admin/evts'}]]";
+        var list_image_url= "[[@{'/resources/images/list.png'}]]";
+        var feesURL= "[[@{'/admin/evts/' + ${payEvt.id} + '/fees'}]]";
+        var urlLinkPrefix= "[[@{'/evts/' + ${payEvt.urlId} + '/'}]]";
+    </script>
+</div>
+
+</html>

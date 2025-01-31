@@ -53,7 +53,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.SortDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -197,7 +196,7 @@ public class PayEvtController {
     
     @RequestMapping(value = "/{id}", produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'view')")
-    public String show(@PathVariable("id") Long id, Model uiModel) {
+    public String show(@PathVariable("id") Long id, Model uiModel, Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -206,12 +205,14 @@ public class PayEvtController {
         uiModel.addAttribute("payEvt", evt);
         uiModel.addAttribute("itemId", id);    
         if(evt!=null) {
-        	List<PayEvtMontant> montants = payEvtMontantDaoService.findPayEvtMontantsByEvt(evt).getResultList();
-            uiModel.addAttribute("payevtmontants", montants);
+            Page<PayEvtMontant> payEvtMontantsPage = payEvtMontantDaoService.findPagePayEvtMontantsByEvt(evt, pageable);
+            List<PayEvtMontant> payEvtsMontants = payEvtMontantsPage.getContent();
+            uiModel.addAttribute("payevtmontants", payEvtsMontants);
+            uiModel.addAttribute("page", payEvtMontantsPage);
         }
         uiModel.addAttribute("canUpdate", payPermissionEvaluator.hasPermission(auth, evt, "manage"));
         uiModel.addAttribute("isAdmin", isAdmin);
-        return "admin/evts/show";
+        return "admin/evts/show.html";
     }
     
     
