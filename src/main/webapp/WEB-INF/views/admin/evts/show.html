@@ -37,7 +37,7 @@
         </th:block>
         <br/>
         <br/>
-        <div id="_title_ps_org_esupportail_pay_domain_payevt_id" title="#{entity_show()}">
+        <div id="_title_ps_org_esupportail_pay_domain_payevt_id" th:title="#{entity_show(#{label_org_esupportail_pay_domain_payevt})}">
           <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_webSiteUrl_id">
             <dt>
               [[#{label_org_esupportail_pay_domain_payevt_websiteurl}]]:
@@ -203,7 +203,7 @@
               </th>
             </tr>
             </thead>
-            <tbody>
+            <tbody th:with="typeName=#{menu_item_payevtmontant_new_label}">
             <tr th:each="conf : ${payevtmontants}">
               <td th:text="${conf.title.labelLocales['fr'].translation}">
               </td>
@@ -213,26 +213,33 @@
               </td>
               <td th:text="${conf.sciencesconf}">
               </td>
-              <td th:text="${conf.urlId}">
-              </td>
+                <td>
+                    <a th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${conf.urlId}}" th:text="${conf.urlId}">
+                    </a>
+                    &nbsp;
+                    <a class="clipboard" th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${conf.urlId}}" title="Copier dans le presse-papier">
+                        <span class="glyphicon glyphicon-copy">
+                        </span>
+                    </a>
+                </td>
               <td th:text="${conf.authCas}">
               </td>
               <td th:text="${conf.isEnabled}">
               </td>
-              <td class="utilbox">
-                <a class="btn btn-warning" th:alt="#{update_label}" th:href="@{'/admin/evtmnts/' + ${conf.id}(form='')}" th:title="#{update_label}">
-                  <img class="image" th:alt="#{update_label}" th:src="@{/resources/images/update.png}" th:title="#{update_label}"/>
+              <td class="utilbox" th:with="update_label=#{entity_update(${typeName})}">
+                <a class="btn btn-warning" th:alt="${update_label}" th:href="@{'/admin/evtmnts/' + ${conf.id}(form='')}" th:title="${update_label}">
+                  <img class="image" th:alt="${update_label}" th:src="@{/resources/images/update.png}" th:title="${update_label}"/>
                 </a>
               </td>
-              <td class="utilbox">
-                <form th:action="@{${'/admin/evtmnts/item.' + l_org_esupportail_pay_domain_payevtmontant}}" th:method="delete">
-                  <input class="btn btn-danger" th:onclick="'return confirm(\'' + #{entity_delete_confirm} + '\')'" th:alt="#{delete_label}" th:src='@{/resources/images/delete.png}' th:title="#{delete_label}" type="image"/>
+              <td class="utilbox" th:with="delete_label=#{entity_delete(${typeName})}">
+                <form th:action="@{'/admin/evtmnts/' + ${conf.id}}" th:method="delete">
+                  <input class="btn btn-danger" th:onclick="'return confirm(\'' + #{entity_delete_confirm} + '\')'" th:alt="${delete_label}" th:src='@{/resources/images/delete.png}' th:title="${delete_label}" type="image"/>
                 </form>
               </td>
             </tr>
             </tbody>
           </table>
-          <div class="col-md-4 col-md-offset-5">
+          <div class="col-md-7 col-md-offset-5">
             <nav class="center-block btn-toolbar" th:fragment="pagination">
               <div class="btn-group">
                 <div class="btn-group dropup" sd:page-size-selector="dropdown" style="margin-top: 20px">
@@ -242,6 +249,16 @@
               </div>
             </nav>
           </div>
+          <th:block th:if="${canUpdate}">
+            <div>
+                <span class="new">
+                <!--!!! Please check, a variable swap was done : newMontantURL to ${/admin/evtmnts?form&evtId=${payEvt.id}}. Details: <replace tag="^(form|a|img)" type="path" value="${/admin/evtmnts?form&amp;evtId=${payEvt.id}}" var="newMontantURL" warn="true"></replace> !!!-->
+                    <a class="btn btn-primary" th:href="@{'/admin/evtmnts'(form, evtId=${payEvt.id})}"
+                       th:text="#{form_create_amount}">
+                    </a>
+                </span>
+            </div>
+          </th:block>
         </div>
       </div>
     </div>
