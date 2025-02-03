@@ -24,27 +24,18 @@
 <div layout:fragment="content">
   <div class="col-md-12">
     <div class="col-lg-1">
-      <!--!!! Please check, a variable swap was done : logoUrl to ${/admin/evts/${payEvt.id}/logo}. Details: <replace tag="^(form|a|img)" type="path" value="${/admin/evts/${payEvt.id}/logo}" var="logoUrl" warn="true"></replace> !!!-->
-      <img alt="" class="img-responsive" src="@{/admin/evts/${payEvt.id}/logo}" title="logo"/>
+        <img alt="" class="img-responsive" src="@{/admin/evts/${payEvt.id}/logo}" title="logo"/>
     </div>
     <div class="col-lg-3">
       <div class="well">
-        <th:block th:if="${canUpdate}">
-          <!--!!! Please check, a variable swap was done : update_form_url to ${/admin/evts/${payEvt.id}}?form. Details: <replace tag="^(form|a|img)" type="path" value="${/admin/evts/${payEvt.id}}?form" var="update_form_url" warn="true"></replace> !!!-->
-          <a class="btn btn-warning" th:href="@{${'/admin/evts/' + payEvt.id}('form')}">
-            Modifier
-          </a>
-        </th:block>
-        <br/>
-        <br/>
         <div id="_title_ps_org_esupportail_pay_domain_payevt_id" th:title="#{entity_show(#{label_org_esupportail_pay_domain_payevt})}">
           <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_webSiteUrl_id">
             <dt>
               [[#{label_org_esupportail_pay_domain_payevt_websiteurl}]]:
             </dt>
             <dd class="box" id="_s_org_esupportail_pay_domain_payevt_webSiteUrl_webSiteUrl_id">
-         <span th:text="${payEvt.webSiteUrl}">
-         </span>
+             <span th:text="${payEvt.webSiteUrl}">
+             </span>
             </dd>
           </dl>
           <dl class="displayTag" id="_s_org_esupportail_pay_domain_payevt_urlId_id">
@@ -163,21 +154,28 @@
          </span>
             </dd>
           </dl>
-          <div class="quicklinks" th:with="typeName=#{menu_item_payevt_new_label}">
-          </div>
+            <div class="quicklinks" th:with="typeName=#{menu_item_payevt_new_label}">
+                <form style="display:inline" th:action="@{'/admin/evts/' + ${itemId}}" sec:authorize="hasRole('ROLE_ADMIN')" th:if="${payevtmontants == null || payevtmontants.empty}" th:method="delete" th:with="delete_label=#{entity_delete(${typeName})}">
+                    <input alt="${delete_label}" class="btn btn-danger" th:onclick="'return confirm(\'' +  #{entity_delete_confirm} + '\')'" th:title="${delete_label}" th:value="${delete_label}" type="submit"/>
+                </form>
+                &nbsp;
+                <th:block th:with="update_label=#{entity_update(${typeName})}"  th:if="${canUpdate}">
+                    <a class="btn btn-warning" th:alt="${update_label}" th:href="@{${'/admin/evts/'+ itemId}(form)}" th:text="${update_label}" th:title="${update_label}">
+                    </a>
+                </th:block>
+                &nbsp;
+            </div>
         </div>
       </div>
     </div>
     <div class="col-lg-8">
       <div class="well">
-        <!--!!! Please check, a variable swap was done : feesURL to ${/admin/evts/${payEvt.id}/fees}. Details: <replace tag="^(form|a|img)" type="path" value="${/admin/evts/${payEvt.id}/fees}" var="feesURL" warn="true"></replace> !!!-->
-        <a class="btn btn-success" th:href="@{/admin/evts/${payEvt.id}/fees}">
-       <span th:text="#{form_done_transaction}">
-       </span>
-        </a>
-        <hr/>
-        <!--!!! Please check, a variable swap was done : urlLinkPrefix to ${/evts/${payEvt.urlId}/}. Details: <replace tag="^(form|a|img)" type="path" value="${/evts/${payEvt.urlId}/}" var="urlLinkPrefix" warn="true"></replace> !!!-->
-        <div class="row" id="pl_org_esupportail_pay_domain_payevtmontant">
+          <a class="btn btn-success" th:href="@{'/admin/evts/' + ${payEvt.id} + '/fees'}">
+              <span th:text="#{form_done_transaction}">
+              </span>
+          </a>
+          <hr/>
+          <div class="row" id="pl_org_esupportail_pay_domain_payevtmontant">
           <table class="table table-bordered">
             <thead>
             <tr>
@@ -195,48 +193,48 @@
               </th>
               <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_isenabled}">
               </th>
-              <th class="btnCrudTable">
+              <th class="btnCrudTable" th:if="${canUpdate}" th:text="#{entity_update(#{menu_item_payevtmontant_new_label})}">
                 Modifier
               </th>
-              <th class="btnCrudTable">
+              <th class="btnCrudTable" th:if="${canUpdate}" th:text="#{entity_delete(#{menu_item_payevtmontant_new_label})}">
                 Supprimer
               </th>
             </tr>
             </thead>
             <tbody th:with="typeName=#{menu_item_payevtmontant_new_label}">
-            <tr th:each="conf : ${payevtmontants}">
-              <td th:text="${conf.title.labelLocales['fr'].translation}">
-              </td>
-              <td th:text="${conf.dbleMontantDisplay}">
-              </td>
-              <td th:text="${conf.freeAmount}">
-              </td>
-              <td th:text="${conf.sciencesconf}">
-              </td>
-                <td>
-                    <a th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${conf.urlId}}" th:text="${conf.urlId}">
+                <tr th:each="conf : ${payevtmontants}">
+                  <td th:text="${conf.title.labelLocales['fr'].translation}">
+                  </td>
+                  <td th:text="${conf.dbleMontantDisplay}">
+                  </td>
+                  <td th:text="${conf.freeAmount}">
+                  </td>
+                  <td th:text="${conf.sciencesconf}">
+                  </td>
+                    <td>
+                        <a th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${conf.urlId}}" th:text="${conf.urlId}">
+                        </a>
+                        &nbsp;
+                        <a class="clipboard" th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${conf.urlId}}" title="Copier dans le presse-papier">
+                            <span class="glyphicon glyphicon-copy">
+                            </span>
+                        </a>
+                    </td>
+                  <td th:text="${conf.authCas}">
+                  </td>
+                  <td th:text="${conf.isEnabled}">
+                  </td>
+                  <td class="utilbox" th:if="${canUpdate}" th:with="update_label=#{entity_update(${typeName})}">
+                    <a class="btn btn-warning" th:alt="${update_label}" th:href="@{'/admin/evtmnts/' + ${conf.id}(form='')}" th:title="${update_label}">
+                      <img class="image" th:alt="${update_label}" th:src="@{/resources/images/update.png}" th:title="${update_label}"/>
                     </a>
-                    &nbsp;
-                    <a class="clipboard" th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${conf.urlId}}" title="Copier dans le presse-papier">
-                        <span class="glyphicon glyphicon-copy">
-                        </span>
-                    </a>
-                </td>
-              <td th:text="${conf.authCas}">
-              </td>
-              <td th:text="${conf.isEnabled}">
-              </td>
-              <td class="utilbox" th:with="update_label=#{entity_update(${typeName})}">
-                <a class="btn btn-warning" th:alt="${update_label}" th:href="@{'/admin/evtmnts/' + ${conf.id}(form='')}" th:title="${update_label}">
-                  <img class="image" th:alt="${update_label}" th:src="@{/resources/images/update.png}" th:title="${update_label}"/>
-                </a>
-              </td>
-              <td class="utilbox" th:with="delete_label=#{entity_delete(${typeName})}">
-                <form th:action="@{'/admin/evtmnts/' + ${conf.id}}" th:method="delete">
-                  <input class="btn btn-danger" th:onclick="'return confirm(\'' + #{entity_delete_confirm} + '\')'" th:alt="${delete_label}" th:src='@{/resources/images/delete.png}' th:title="${delete_label}" type="image"/>
-                </form>
-              </td>
-            </tr>
+                  </td>
+                  <td class="utilbox" th:if="${canUpdate}" th:with="delete_label=#{entity_delete(${typeName})}">
+                    <form th:action="@{'/admin/evtmnts/' + ${conf.id}}" th:method="delete">
+                      <input class="btn btn-danger" th:onclick="'return confirm(\'' + #{entity_delete_confirm} + '\')'" th:alt="${delete_label}" th:src='@{/resources/images/delete.png}' th:title="${delete_label}" type="image"/>
+                    </form>
+                  </td>
+                </tr>
             </tbody>
           </table>
           <div class="col-md-7 col-md-offset-5">
@@ -252,7 +250,6 @@
           <th:block th:if="${canUpdate}">
             <div>
                 <span class="new">
-                <!--!!! Please check, a variable swap was done : newMontantURL to ${/admin/evtmnts?form&evtId=${payEvt.id}}. Details: <replace tag="^(form|a|img)" type="path" value="${/admin/evtmnts?form&amp;evtId=${payEvt.id}}" var="newMontantURL" warn="true"></replace> !!!-->
                     <a class="btn btn-primary" th:href="@{'/admin/evtmnts'(form, evtId=${payEvt.id})}"
                        th:text="#{form_create_amount}">
                     </a>
