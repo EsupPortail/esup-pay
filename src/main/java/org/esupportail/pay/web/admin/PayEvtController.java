@@ -304,7 +304,7 @@ public class PayEvtController {
         PayEvt payEvt = payEvtDaoService.findPayEvt(id);
         evtService.computeRespLogin(payEvt);
         populateEditForm(uiModel, payEvt);
-        return "admin/evts/update";
+        return "admin/evts/update.html";
     }
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")

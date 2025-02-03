@@ -58,7 +58,7 @@
             </th:block>
             <th:block th:if="${payevts != null ||  payEvt != null || payEvtMontant != null}">
                 <li>
-                    <a th:href="@{/admin/evts(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{menu_evts}">
+                    <a th:href="@{/admin/evts(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{menu_evts}">
                     </a>
                 </li>
             </th:block>
@@ -82,7 +82,7 @@
             <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER')">
                 <th:block th:if="${paytransactionlogs != null || paytransactionlog != null}">
                     <li>
-                        <a th:href="@{/admin/fees(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}">
+                        <a th:href="@{/admin/fees(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}">
                         </a>
                     </li>
                 </th:block>
@@ -102,8 +102,8 @@
             </th:block>
         </ul>
     <script>
-        var adminevtsUrl= '[[@{/admin/evts?page=1&amp;size=${empty param.size ? 10 : param.size}}]]';
-        var adminTxUrl= '[[@{/admin/fees?page=1&amp;size=${empty param.size ? 10 : param.size}}]]';
+        var adminevtsUrl= '[[@{/admin/evts?page=0&amp;size=${empty param.size ? 10 : param.size}}]]';
+        var adminTxUrl= '[[@{/admin/fees?page=0&amp;size=${empty param.size ? 10 : param.size}}]]';
         var statsUrl= '[[@{/admin/stats}]]';
         var ventilationsUrl= '[[@{/admin/ventilations}]]';
         var adminUrl= '[[@{/admin/}]]';
