@@ -127,6 +127,7 @@
         <property name="order" value="1"/>
         <property name="viewNames" value="*.html"/>
         <property name="excludedViewNames" value="*.jsp"/>
+        <property name="characterEncoding" value="UTF-8"/>
     </bean>
 
     <!-- JSPX -->
