@@ -1,12 +1,12 @@
 <!DOCTYPE HTML>
-<html lang="fr" layout:decorate="~{../layouts/admin.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" xmlns:sd="http://www.thymeleaf.org/spring-data" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:spring-form="http://www.springframework.org/tags/form" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://tiles.apache.org/tags-tiles">
+<html lang="fr" layout:decorate="~{../layouts/admin.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div layout:fragment="content">
     <div class="col-md-12">
         <div class="col-lg-3">
             <div class="well">
                     <div id="_title_fu_org_esupportail_pay_domain_payevt_logoFile_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevt_logofile})}">
-                        <form enctype="multipart/form-data" th:action="${payEvt.id} + '/addLogoFile'" id="uploadFile" method="POST" th:onsubmit="${jsCall}">
+                        <form th:action="${payEvt.id} + '/addLogoFile'" id="uploadFile" method="POST" th:onsubmit="${jsCall}">
                             <fieldset>
                                 <legend>
                                     <span th:text="#{form_logo}">
@@ -24,8 +24,8 @@
             </div>
         </div>
         <div class="col-lg-9">
-                <div id="_title_fu_org_esupportail_pay_domain_payevt_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevt})}">
-                    <form id="payEvt" enctype="application/x-www-form-urlencoded" method="PUT" action="/admin/evts" th:object="${payEvt}">
+                <div id="_title_fu_org_esupportail_pay_domain_payevt_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevt})}" class="panel panel-default">
+                    <form id="payEvt" enctype="application/x-www-form-urlencoded" th:method="put" th:action="@{'/admin/evts'}" th:object="${payEvt}" class="panel-body">
                         <div class="errors" th:if="${#fields.hasErrors('*')}">
                             <ul>
                                 <li class="error" th:each="err : ${#fields.errors('*')}" th:text="${err}">
@@ -56,7 +56,7 @@
                                             <input class="form-control" id="urlId" name="urlId" readonly="readonly" th:value="${payEvt.urlId}" type="text"/>
                                         </th:block>
                                         <span class="errors" id="_urlId_id" th:errors="*{'urlId'}" th:if="${#fields.hasErrors('urlId')}">
-         </span>
+                                        </span>
                                     </div>
                                     <div class="form-group" id="_c_org_esupportail_pay_domain_payevt_managersEmails">
                                         <label class="c" for="managersEmails">
@@ -72,7 +72,7 @@
                                         <div id="managersEmails">
                                             <div th:each="managersEmail : ${payEvt.managersEmails}">
                                                 <div class="input-group autocompleteEmail">
-                                                    <input class="form-control" id="c_org_esupportail_pay_domain_payevt_managersEmail" name="managersEmails" value="${managersEmail}" z="user-managed"/>
+                                                    <input class="form-control" id="c_org_esupportail_pay_domain_payevt_managersEmail" name="managersEmails" th:value="${managersEmail}" z="user-managed"/>
                                                     <span class="input-group-addon">
                                                      <a class="btn btn-xs btn-danger removeclass" href="#">
                                                       <span aria-hidden="true" class="glyphicon glyphicon-minus">
@@ -89,8 +89,8 @@
                                             </strong>
                                         </label>
                                         <input class="form-control" id="mailSubject" name="mailSubject" th:value="${payEvt.mailSubject}" type="text"/>
-                                        <span class="errors" id="_mailSubject_id" th:errors="*{'mailSubject'}" th:if="${#fields.hasErrors('mailSubject')}">
-         </span>
+                                        <span class="errors" id="_mailSubject_id" th:errors="*{mailSubject}" th:if="${#fields.hasErrors('mailSubject')}">
+                                        </span>
                                     </div>
                                     <div class="form-group" id="c_org_esupportail_pay_domain_payevt_payCommandPrefix">
                                         <label class="c" for="payboxCommandPrefix">
@@ -103,8 +103,8 @@
                                         <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
                                             <input class="form-control" id="payboxCommandPrefix" name="payboxCommandPrefix" readonly="readonly" th:value="${payEvt.payboxCommandPrefix}" type="text"/>
                                         </th:block>
-                                        <span class="errors" id="_payboxCommandPrefix_id" th:errors="*{'payboxCommandPrefix'}" th:if="${#fields.hasErrors('payboxCommandPrefix')}">
-         </span>
+                                        <span class="errors" id="_payboxCommandPrefix_id" th:errors="*{payboxCommandPrefix}" th:if="${#fields.hasErrors('payboxCommandPrefix')}">
+                                        </span>
                                     </div>
                                     <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
                                         <div class="form-group" id="c_org_esupportail_pay_domain_payevt_payServiceKey">
@@ -113,7 +113,7 @@
                                                 </strong>
                                             </label>
                                             <input class="" id="payboxServiceKey" name="payboxServiceKey" readonly="readonly" th:value="${payEvt.payboxServiceKey}" type="text"/>
-                                            <span class="errors" id="_payboxServiceKey_id" th:errors="*{'payboxServiceKey'}" th:if="${#fields.hasErrors('payboxServiceKey')}">
+                                            <span class="errors" id="_payboxServiceKey_id" th:errors="*{payboxServiceKey}" th:if="${#fields.hasErrors('payboxServiceKey')}">
                                             </span>
                                         </div>
                                     </th:block>
@@ -129,7 +129,7 @@
                                                     </option>
                                                 </th:block>
                                             </select>
-                                            <span class="errors" id="_payboxServiceKey_id" th:errors="*{'payboxServiceKey'}" th:if="${#fields.hasErrors('payboxServiceKey')}">
+                                            <span class="errors" id="_payboxServiceKey_id" th:errors="*{payboxServiceKey}" th:if="${#fields.hasErrors('payboxServiceKey')}">
                                             </span>
                                         </div>
                                     </th:block>
@@ -144,8 +144,8 @@
                                         <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
                                             <input class="form-control" id="defaultOptionalAddedParams" name="defaultOptionalAddedParams" readonly="readonly" th:value="${payEvt.defaultOptionalAddedParams}" type="text"/>
                                         </th:block>
-                                        <span class="errors" id="_defaultOptionalAddedParams_id" th:errors="*{'defaultOptionalAddedParams'}" th:if="${#fields.hasErrors('defaultOptionalAddedParams')}">
-         </span>
+                                        <span class="errors" id="_defaultOptionalAddedParams_id" th:errors="*{defaultOptionalAddedParams}" th:if="${#fields.hasErrors('defaultOptionalAddedParams')}">
+                                        </span>
                                     </div>
                                     <div class="form-group" id="c_org_esupportail_pay_domain_payEvtMontant_dbleMontantMax">
                                         <label class="c" for="dbleMontantMax">
@@ -158,8 +158,8 @@
                                         <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
                                             <input class="form-control" id="dbleMontantMax" name="dbleMontantMax" readonly="readonly" th:value="${payEvt.dbleMontantMax}" type="text"/>
                                         </th:block>
-                                        <span class="errors" id="_dbleMontantMax_id" th:errors="*{'dbleMontantMax'}" th:if="${#fields.hasErrors('dbleMontantMax')}">
-         </span>
+                                        <span class="errors" id="_dbleMontantMax_id" th:errors="*{dbleMontantMax}" th:if="${#fields.hasErrors('dbleMontantMax')}">
+                                        </span>
                                     </div>
                                     <fieldset id="_c_org_esupportail_pay_domain_payevt_archived_id">
                                         <legend for="_archived_id" th:text="#{label_org_esupportail_pay_domain_payevt_archived}">
@@ -195,7 +195,7 @@
                                                     </span>
                                                 </div>
                                             </div>
-                                            <span class="errors" id="_logins_error_id" th:errors="*{'logins'}" th:if="${#fields.hasErrors('logins')}">
+                                            <span class="errors" id="_logins_error_id" th:errors="*{logins}" th:if="${#fields.hasErrors('logins')}">
                                             </span>
                                         </div>
                                     </fieldset>
@@ -222,7 +222,7 @@
                                                     </span>
                                                 </div>
                                             </div>
-                                            <span class="errors" id="_viewerLogins2Add_error_id" th:errors="*{'viewerLogins2Add'}" th:if="${#fields.hasErrors('viewerLogins2Add')}">
+                                            <span class="errors" id="_viewerLogins2Add_error_id" th:errors="*{viewerLogins2Add}" th:if="${#fields.hasErrors('viewerLogins2Add')}">
                                             </span>
                                         </div>
                                     </fieldset>
@@ -236,7 +236,7 @@
                                                 <label>
                                                     [[${labelLocales.key}]]
                                                 </label>
-                                                <input class="form-control" th:name="${labelLocales.value.translation}" th:value="${labelLocales.value.translation}"/>
+                                                <input class="form-control" th:name="'title.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
                                             </div>
                                         </div>
                                     </fieldset>
@@ -251,10 +251,10 @@
                                                     [[${labelLocales.key}]]
                                                 </label>
                                                 <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
-                                                    <input class="form-control" th:name="${labelLocales.value.translation}" readonly="readonly" th:value="${labelLocales.value.translation}"/>
+                                                    <input class="form-control" th:name="'defaultMntDescription.labelLocales[' + ${labelLocales.key} + '].translation'" readonly="readonly" th:value="${labelLocales.value.translation}"/>
                                                 </th:block>
                                                 <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                                                    <input class="form-control" th:name="${labelLocales.value.translation}" th:value="${labelLocales.value.translation}"/>
+                                                    <input class="form-control" th:name="'defaultMntDescription.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
                                                 </th:block>
                                             </div>
                                         </div>

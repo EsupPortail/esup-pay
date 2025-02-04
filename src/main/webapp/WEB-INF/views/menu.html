@@ -25,13 +25,13 @@
         <ul class="nav nav-tabs">
             <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')">
                 <li th:class="${activeMenu == 'adminevts' || activeMenu == 'adminevtmnts' ? 'active' : ''}">
-                    <a th:href="@{/admin/evts(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_evts}">
+                    <a th:href="@{/admin/evts(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_evts}">
                     </a>
                 </li>
             </th:block>
             <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER')">
                 <li th:class="${activeMenu == 'adminfees' ? 'active' : ''}">
-                    <a th:href="@{/admin/fees(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_transactions}">
+                    <a th:href="@{/admin/fees(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_transactions}">
                     </a>
                 </li>
             </th:block>
@@ -64,18 +64,18 @@
             </th:block>
             <th:block th:if="${payEvt != null && payEvt != ''}">
                 <li>
-                    <a th:href="@{/admin/evts/${payEvt.id}}" th:text="${payEvt?.title?.labelLocales['fr'].translation}">
+                    <a th:href="@{'/admin/evts/' + ${payEvt.id}}" th:text="${payEvt?.title?.labelLocales['fr'].translation}">
                     </a>
                 </li>
             </th:block>
             <th:block th:if="${payEvtMontant != null && payEvtMontant != '' && payEvt != null && payEvt != ''}">
                 <li>
-                    <a th:href="@{/admin/evts/${payEvt.id}}" th:text="${payEvtMontant?.evt?.title?.labelLocales['fr'].translation}">
+                    <a th:href="@{'/admin/evts/' + ${payEvtMontant.evt.id}}" th:text="${payEvtMontant?.evt?.title?.labelLocales['fr'].translation}">
                     </a>
                 </li>
                 <li>
                    <span
-                    th:text="${payEvtMontant.title.labelLocales['fr'].translation"}>
+                    th:text="${payEvtMontant.title.labelLocales['fr'].translation}">
                    </span>
                 </li>
             </th:block>
@@ -83,34 +83,40 @@
                 <th:block th:if="${paytransactionlogs != null || paytransactionlog != null}">
                     <li>
                         <a th:href="@{/admin/fees(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}">
+                            [[#{menu_txs}]]
                         </a>
                     </li>
                 </th:block>
                 <th:block th:if="${paytransactionlog != null}">
                     <li>
                         <span>
-                         ${paytransactionlog.idtrans}
+                         [[${paytransactionlog.idtrans}]]
                         </span>
                     </li>
                 </th:block>
                 <th:block th:if="${activeMenu == 'adminstats'}">
                     <li>
                         <a th:href="@{/admin/stats}">
+                            [[#{menu_stats}]]
                         </a>
                     </li>
                 </th:block>
             </th:block>
         </ul>
     <script>
-        var adminevtsUrl= '[[@{/admin/evts?page=0&amp;size=${empty param.size ? 10 : param.size}}]]';
-        var adminTxUrl= '[[@{/admin/fees?page=0&amp;size=${empty param.size ? 10 : param.size}}]]';
-        var statsUrl= '[[@{/admin/stats}]]';
-        var ventilationsUrl= '[[@{/admin/ventilations}]]';
-        var adminUrl= '[[@{/admin/}]]';
-        var evtUrl= '[[@{/admin/evts/${payEvt.id}}]]';
-        var evtUrl= '[[@{/admin/evts/${payEvtMontant.evt.id}}]]';
-        var evtMntUrl= '[[@{/admin/evts/${payEvtMontant.evt.id}/${payEvtMontant.id}}]]';
-        var txUrl= '[[@{/admin/fees/${paytransactionlog.id}/${payEvtMontant.id}}]]';
+        var adminevtsUrl= "[[@{'/admin/evts'(page=0, size=${param.size == '' || param.size == null ? 10 : param.size})}]]";
+        var adminTxUrl= "[[@{'/admin/fees'(page=0, size=${param.size == '' || param.size == null ? 10 : param.size})}]]';
+        var statsUrl= "[[@{/admin/stats}]]";
+        var ventilationsUrl= "[[@{/admin/ventilations}]]";
+        var adminUrl= "[[@{/admin/}]]";
+    </script>
+    <script th:if="${payEvt != null && payEvt != '' && (payEvtMontant == null || payEvtMontant == '')}">
+        var evtUrl= "[[@{'/admin/evts/' + ${payEvt.id}}]]";
+    </script>
+    <script th:if="${payEvtMontant != null && payEvtMontant != ''}">
+        var evtUrl= "[[@{'/admin/evts/' + ${payEvtMontant.evt.id}}]]";
+        var evtMntUrl= "[[@{'/admin/evts/' + ${payEvtMontant.evt.id} + '/' + ${payEvtMontant.id}}]]";
+        var txUrl= "[[@{'/admin/fees/' + ${paytransactionlog.id} + '/' + ${payEvtMontant.id}}]]";
     </script>
 </div>
 

@@ -186,7 +186,7 @@ public class PayEvtController {
             evtService.computeLogins(payEvt, respLoginIds, viewerLoginIds);
             evtService.computeRespLogin(payEvt);
             populateEditForm(uiModel, payEvt);
-            return "admin/evts/update";
+            return "admin/evts/update.html";
         }
         uiModel.asMap().clear();        
         evtService.updateEvt(payEvt);
