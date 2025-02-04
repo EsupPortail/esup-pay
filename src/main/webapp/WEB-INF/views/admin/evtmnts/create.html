@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html lang="fr" layout:decorate="~{../layouts/admin.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+ <body>
+  <div layout:fragment="content">
+   <div class="col-md-12">
+    <div id="createEvtmnts" class="container">
+     <div id="_title_fc_org_esupportail_pay_domain_payEvtMontant_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevtmontant})}">
+      <form enctype="application/x-www-form-urlencoded" id="payEvtMontant" method="POST" th:action="@{/admin/evtmnts/addMontant}" th:enctype="${enctype}" th:object="${payEvtMontant}" th:onsubmit="${jsCall}">
+       <div class="errors" th:if="${#fields.hasErrors('*')}">
+        <ul>
+         <li class="error" th:each="err : ${#fields.errors('*')}" th:text="${err}">
+         </li>
+        </ul>
+       </div>
+       <input id="_evt_id" name="evt.id" th:value="${payEvtMontant.evt.id}" type="hidden"/>
+       <div class="form-group" id="c_org_esupportail_pay_domain_payEvtMontant_dbleMontant">
+        <label class="c" for="dbleMontant">
+         <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_dblemontant}">
+         </strong>
+        </label>
+        <input class="form-control" id="dbleMontant" name="dbleMontant" th:value="${payEvtMontant.dbleMontant}" type="text"/>
+        <span class="errors" id="_dbleMontant_error_id" th:errors="*{dbleMontant}" th:if="${#fields.hasErrors('dbleMontant')}">
+        </span>
+       </div>
+       <fieldset>
+        <legend>
+         <span th:text="#{form_title}">
+         </span>
+        </legend>
+        <span class="errors" id="_error_title)" th:errors="*{title}" th:if="${#fields.hasErrors('title')}">
+        </span>
+        <div th:each="labelLocales : ${payEvtMontant.title.labelLocales}">
+         <div class="form-group">
+          <label>
+           [[${labelLocales.key}]] :
+          <input class="form-control" th:name="'title.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
+          </label>
+         </div>
+        </div>
+       </fieldset>
+       <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+        <button th:text="#{button_param}" type="button" class="btn btn-danger" data-toggle="collapse" data-target="#advanced">
+        </button>
+       </th:block>
+       <hr/>
+       <div class="collapse in" id="advanced">
+        <fieldset>
+         <legend>
+          <span th:text="#{form_description}">
+          </span>
+         </legend>
+         <div th:each="labelLocales : ${payEvtMontant.description.labelLocales}">
+          <div class="form-group">
+           <label>
+            [[${labelLocales.key}]] :
+           <input class="form-control" th:name="'description.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
+           </label>
+          </div>
+         </div>
+        </fieldset>
+        <fieldset>
+         <legend>
+          <span th:text="#{form_help}">
+          </span>
+         </legend>
+         <div th:each="labelLocales : ${payEvtMontant.help.labelLocales}">
+          <div class="form-group">
+           <label>
+            [[${labelLocales.key}]] :
+           <input class="form-control" th:name="'help.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
+           </label>
+          </div>
+         </div>
+        </fieldset>
+        <fieldset>
+         <legend>
+          <span th:text="#{form_field1}">
+          </span>
+         </legend>
+         <div th:each="labelLocales : ${payEvtMontant.field1Label.labelLocales}">
+          <div class="form-group">
+           <label>
+            [[${labelLocales.key}]] :
+           <input class="form-control" th:name="'field1Label.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
+           </label>
+          </div>
+         </div>
+        </fieldset>
+        <fieldset>
+         <legend>
+          <span th:text="#{form_field2}">
+          </span>
+         </legend>
+         <div th:each="labelLocales : ${payEvtMontant.field2Label.labelLocales}">
+          <div class="form-group">
+           <label>
+            [[${labelLocales.key}]] :
+           <input class="form-control" th:name="'field2Label.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
+           </label>
+          </div>
+         </div>
+        </fieldset>
+        <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_authCas_id">
+         <legend>Auth CAS</legend>
+         <label for="_authCas_id">
+          <input id="_authCas_id" name="authCas" th:value="${payEvtMontant.authCas}" type="checkbox"/>
+          &nbsp;Oui
+         </label>
+        </fieldset>
+        <div sec:authorize="hasRole('ROLE_ADMIN')">
+         <fieldset id="_c_org_esupportail_pay_domain_payEvtMontant_freeAmount_id">
+          <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">
+          </legend>
+          <label for="_freeAmount_id">
+           <input id="_freeAmount_id" name="freeAmount" th:value="${payEvtMontant.freeAmount}" type="checkbox"/>
+           &nbsp;Oui
+          </label>
+         </fieldset>
+         <fieldset id="_c_org_esupportail_pay_domain_payEvtMontant_sciencesconf_id">
+          <legend>Sciencesconf</legend>
+          <label for="_sciencesconf_id">
+           <input id="_sciencesconf_id" name="sciencesconf" th:value="${payEvtMontant.sciencesconf}" type="checkbox"/>
+           &nbsp;Oui
+          </label>
+         </fieldset>
+         <div class="form-group" id="c_org_esupportail_pay_domain_payEvtMontant_addPrefix">
+          <label class="c" for="_addPrefix_id">
+           <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_addprefix}">
+           </strong>
+          </label>
+          <select class="form-control" id="_addPrefix_id" name="addPrefix" size="1">
+           <th:block th:each="i :${addPrefixList}">
+            <option th:selected="${i == payEvtMontant.addPrefix ? 'true' : 'false'}" th:text="${i}" th:value="${i}">
+            </option>
+           </th:block>
+          </select>
+          <span class="errors" id="_addPrefix_error_id" th:errors="*{addPrefix}" th:if="${#fields.hasErrors('addPrefix')}">
+          </span>
+         </div>
+        </div>
+        <div sec:authorize="!hasRole('ROLE_ADMIN')">
+         <input name="freeAmount" type="hidden" th:value="${payEvtMontant.freeAmount}"/>
+         <input name="sciencesconf" type="hidden" th:value="${payEvtMontant.sciencesconf}"/>
+         <input name="addPrefix" type="hidden" th:value="${payEvtMontant.addPrefix}"/>
+        </div>
+        <div class="form-group" id="c_org_esupportail_pay_domain_payEvtMontant_optionalAddedParams">
+         <label class="c" for="optionalAddedParams">
+          <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_optionaladdedparams}">
+          </strong>
+         </label>
+         <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+          <input class="form-control" id="optionalAddedParams" name="optionalAddedParams" th:value="${payEvtMontant.optionalAddedParams}" type="text"/>
+         </th:block>
+         <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+          <input class="form-control" id="optionalAddedParams" name="optionalAddedParams" th:value="${payEvtMontant.optionalAddedParams}" type="hidden" readonly="readonly"/>
+         </th:block>
+         <span class="errors" id="_optionalAddedParams_error_id" th:errors="*{optionalAddedParams}" th:if="${#fields.hasErrors('optionalAddedParams')}">
+         </span>
+        </div>
+       </div>
+       <div class="submit" th:id="fc_org_esupportail_pay_domain_payEvtMontant_submit">
+        <input class="btn btn-success" id="fc_org_esupportail_pay_domain_payEvtMontant_proceed" th:value="#{button_save}" type="submit"/>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+   <script>
+    var form_url= '[[@{${path}}]]';
+   </script>
+  </div>
+ </body>
+</html>
