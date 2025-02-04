@@ -18,10 +18,8 @@
     limitations under the License.
 
 -->
-<html lang="fr" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
-      xmlns:sd="http://www.thymeleaf.org/spring-data"
+<html lang="fr"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
-<body>
 <div th:fragment="navbar">
     <div class="navbar-default navbar-inverse navbar-fixed-top">
         <th:block th:with="logo_url=${@propertyConfigurer.getProperty('institute.logo-navbar.url')}">
@@ -65,6 +63,4 @@
         var impersonatePath = '[[@{/logout/impersonate}]]';
     </script>
 </div>
-
-</body>
 </html>

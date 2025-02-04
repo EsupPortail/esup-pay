@@ -18,9 +18,11 @@
     limitations under the License.
 
 -->
-<html lang="fr" layout:decorate="~{../layouts/admin.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html layout:decorate="~{../layouts/admin.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sd="http://www.thymeleaf.org/spring-data"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content">
   <div class="col-md-12">
     <div class="col-lg-1">
@@ -265,7 +267,6 @@
         var update_form_url= "[[@{'/admin/evts/' + ${payEvt.id}}]]";
         var delete_form_url= "[[@{'/admin/evts/' + ${itemId}}]]";
         var delete_image_url= "[[@{'/resources/images/delete.png'}]]";
-        var update_form_url= "[[@{'/admin/evts/' + ${itemId}}]]";
         var update_image_url= "[[@{'/resources/images/update.png'}]]";
         var create_form_url= "[[@{'/admin/evts'}]]";
         var create_image_url= "[[@{'/resources/images/create.png'}]]";

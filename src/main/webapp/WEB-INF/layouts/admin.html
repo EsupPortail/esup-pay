@@ -18,46 +18,41 @@
     limitations under the License.
 
 -->
-<html lang="fr" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
   <meta charset="UTF-8"/>
   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta name="generator" content="esup-pay">
 
-  <link href="/webjars/jquery-ui-themes/1.13.2/ui-lightness/jquery-ui.min-49a24c10f11b9b67d5d164125781a22a.css"
-        type="text/css" rel="stylesheet">
-  <link href="/webjars/jquery-ui-themes/1.13.2/ui-lightness/theme-3fca5f068c0f23e9d48d87baa762a546.css"
-        type="text/css" rel="stylesheet">
-  <link href="/webjars/bootstrap/3.4.1/css/bootstrap.min-7f89537eaf606bff49f5cc1a7c24dbca.css" type="text/css"
-        rel="stylesheet">
-  <link href="/resources/css/footable.bootstrap.min-261ca1b6d1947fb918102d0397f59647.css" type="text/css"
-        rel="stylesheet">
-  <link href="/resources/css/esup-pay-43f47bda4c1e922ceb661f99886c2e4f.css" type="text/css" rel="stylesheet">
-  <link media="print" href="/resources/css/esup-pay-print-ee5290028e435044a39357141bd79c16.css" type="text/css"
-        rel="stylesheet">
+  <!-- Stylesheets -->
+  <link th:href="@{/webjars/jquery-ui-themes/ui-lightness/jquery-ui.min.css}" rel="stylesheet" />
+  <link th:href="@{/webjars/jquery-ui-themes/ui-lightness/theme.css}" rel="stylesheet" />
+  <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/resources/css/esup-pay.css}" rel="stylesheet" />
+  <link th:href="@{/resources/css/esup-pay-print.css}" rel="stylesheet" media="print" />
+  <link th:href="@{/resources/css/footable.bootstrap.min.css}" rel="stylesheet" />
 
-  <link href="" sizes="180x180" rel="apple-touch-icon">
-  <link sizes="32x32" href="/resources/images/favicon-32x32.png.ico" type="image/png" rel="icon">
-  <link sizes="16x16" href="/resources/images/favicon-16x16-ce6eafc5e4bb13613178d10e02c2ac7d.png" type="image/png"
-        rel="icon">
-  <link href="/resources/images/manifest-ed14c9a637df6118cdbdedc4dc5e4f6c.json" rel="manifest">
-  <meta content="#ffffff" name="theme-color">
-  <link href="/resources/images/favicon-e182e350b7ccc8f67c2ed2b8243d6a94.ico" rel="SHORTCUT ICON">
+  <!-- Favicon and Icons -->
+  <link th:href="@{/resources/images/favicon.ico}" rel="shortcut icon" />
+  <link th:href="@{/resources/images/apple-touch-icon.png}" rel="apple-touch-icon" sizes="180x180" />
+  <link th:href="@{/resources/images/favicon-32x32.png}" rel="icon" sizes="32x32" type="image/png" />
+  <link th:href="@{/resources/images/favicon-16x16.png}" rel="icon" sizes="16x16" type="image/png" />
+  <link th:href="@{/resources/images/manifest.json}" rel="manifest" />
+  <meta name="theme-color" content="#ffffff" />
 
-  <script type="text/javascript" src="/webjars/jquery/3.6.4/jquery.min-641dd14370106e992d352166f5a07e99.js"></script>
-  <script type="text/javascript"
-          src="/webjars/jquery-ui/1.13.2/jquery-ui.min-1e2047978946a1d271356d0b557a84a3.js"></script>
-  <script type="text/javascript"
-          src="/webjars/bootstrap/3.4.1/js/bootstrap.min-2f34b630ffe30ba2ff2b91e3f3c322a1.js"></script>
-
-  <script type="text/javascript" src="/resources/js/footable.min-170ac2df2a7291eedf9122cb8a4a5684.js"></script>
-  <script type="text/javascript"
-          src="/resources/js/bootstrapValidator.min-4d66f8e07cb1166be60710ba16cc90d6.js"></script>
-  <script type="text/javascript"
-          src="/webjars/chartjs/4.1.2/dist/chart.umd-62ad11917684f09d6349a6f0bbdf268d.js"></script>
-  <script type="text/javascript" src="/resources/js/esup-pay-14916f7f28c04b5918b7c557d1f26988.js"></script>
+  <!-- Scripts -->
+  <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+  <script th:src="@{/resources/js/bootstrapValidator.min.js}"></script>
+  <script th:src="@{/resources/js/esup-pay.js}"></script>
+  <script th:src="@{/webjars/chartjs/dist/chart.umd.js}"></script>
+  <script th:src="@{/resources/js/footable.min.js}"></script>
   <script type="text/javascript">
     var searchLoginsJsonUrl = '/admin/searchLoginsJson';
   </script>
@@ -65,13 +60,13 @@
   <title th:text="${title} + ' - ' + ${subTitle}"></title>
 </head>
 <body>
-<div th:replace="~{navbar.html :: navbar}"></div>
+<div th:replace="~{../fragments/navbar.html :: navbar}"></div>
 
-<div th:replace="~{header.html :: header}"></div>
+<div th:replace="~{../fragments/header.html :: header}"></div>
 <div id="main" class="container-fluid">
   <th:block sec:authorize="isAuthenticated()">
     <div class="row">
-      <div th:replace="~{menu.html :: menu}">
+      <div th:replace="~{../fragments/menu.html :: menu}">
       </div>
     </div>
   </th:block>
@@ -81,6 +76,6 @@
 </div>
 
 <!-- Footer-->
-<div th:replace="~{footer.html :: footer}"></div>
+<div th:replace="~{../fragments/footer.html :: footer}"></div>
 </body>
 </html>

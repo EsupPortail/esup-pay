@@ -18,93 +18,73 @@
     limitations under the License.
 
 -->
-<html lang="fr" layout:decorate="~{../layouts/admin.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html layout:decorate="~{../layouts/admin.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sd="http://www.thymeleaf.org/spring-data"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>
-        Welcome
-    </title>
-</head>
-<body>
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content" style="position: relative">
-        <th:block th:with="locale=${#locale.language}">
-            <th:block th:with="url=#{evts_url}">
-                <th:block th:with="responsables=#{evts_responsables}">
-                    <th:block th:with="lecteurs=#{evts_lecteurs}">
-                        <th:block th:with="compte=#{evts_compte}">
-                            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                                <a class="btn btn-success btn-circle absButton" data-toggle="tooltip"
-                                   href="/admin/evts?form" th:title="#{global_menu_new(#{menu_item_payevt_new_label})}">
-                                   <span class="glyphicon glyphicon-plus">
-                                   </span>
-                                </a>
-                            </th:block>
-                            <div class="row" id="title_pl_org_esupportail_pay_domain_PayEvt">
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th th:text="#{label_org_esupportail_pay_domain_payevt_title}">
-                                        </th>
-                                        <th th:text="${url}">
-                                        </th>
-                                        <th th:text="${responsables}">
-                                        </th>
-                                        <th th:text="${lecteurs}">
-                                        </th>
-                                        <th th:text="${compte}">
-                                        </th>
-                                        <th th:text="#{label_org_esupportail_pay_domain_payevt_archived}">
-                                        </th>
-                                        <th class="btnCrudTable">
-                                            Voir
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="conf : ${payevts}">
-                                        <td th:text="${conf.title.labelLocales['fr'].translation}">
-                                        </td>
-                                        <td th:text="${conf.webSiteUrl}">
-                                        </td>
-                                        <td th:text="${conf.respLoginsStr}">
-                                        </td>
-                                        <td th:text="${conf.ViewerLoginsStr}">
-                                        </td>
-                                        <td th:text="${conf.payboxServiceKey}">
-                                        </td>
-                                        <td th:text="${conf.archived}">
-                                        </td>
-                                        <td class="utilbox">
-                                            <a class="btn btn-success" th:alt="#{menu_item_payevt_new_label}"
-                                               th:href="@{'/admin/evts/' + ${conf.id}}"
-                                               th:title="#{menu_item_payevt_new_label}">
-                                                <img class="image" th:alt="#{menu_item_payevt_new_label}"
-                                                     th:src="@{/resources/images/show.png}" th:title="#{menu_item_payevt_new_label}"/>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <div class="col-md-4 col-md-offset-5">
-                                    <nav class="center-block btn-toolbar" th:fragment="pagination">
-                                        <div class="btn-group">
-                                            <div class="btn-group dropup" sd:page-size-selector="dropdown" style="margin-top: 20px"></div>
-                                            <ul class="btn-group pagination" sd:pagination="full" />
-                                        </div>
-                                    </nav>
-                                </div>
-                            </div>
-                        </th:block>
-                    </th:block>
-                </th:block>
-            </th:block>
-        </th:block>
+    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+        <a class="btn btn-success btn-circle absButton" data-toggle="tooltip"
+           th:href="@{'/admin/evts'(form)}" th:title="#{global_menu_new(#{menu_item_payevt_new_label})}">
+           <span class="glyphicon glyphicon-plus">
+           </span>
+        </a>
+    </th:block>
+    <div class="row" id="title_pl_org_esupportail_pay_domain_PayEvt">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th th:text="#{label_org_esupportail_pay_domain_payevt_title}">
+                </th>
+                <th th:text="#{evts_url}">
+                </th>
+                <th th:text="#{evts_responsables}">
+                </th>
+                <th th:text="#{evts_lecteurs}">
+                </th>
+                <th th:text="#{evts_compte}">
+                </th>
+                <th th:text="#{label_org_esupportail_pay_domain_payevt_archived}">
+                </th>
+                <th class="btnCrudTable">
+                    Voir
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="conf : ${payevts}">
+                <td th:text="${conf.title.labelLocales['fr'].translation}">
+                </td>
+                <td th:text="${conf.webSiteUrl}">
+                </td>
+                <td th:text="${conf.respLoginsStr}">
+                </td>
+                <td th:text="${conf.ViewerLoginsStr}">
+                </td>
+                <td th:text="${conf.payboxServiceKey}">
+                </td>
+                <td th:text="${conf.archived}">
+                </td>
+                <td class="utilbox">
+                    <a class="btn btn-success" th:alt="#{menu_item_payevt_new_label}"
+                       th:href="@{'/admin/evts/' + ${conf.id}}"
+                       th:title="#{menu_item_payevt_new_label}">
+                        <img class="image" th:alt="#{menu_item_payevt_new_label}"
+                             th:src="@{/resources/images/show.png}" th:title="#{menu_item_payevt_new_label}"/>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="col-md-4 col-md-offset-5">
+            <nav class="center-block btn-toolbar" th:fragment="pagination">
+                <div class="btn-group">
+                    <div class="btn-group dropup" sd:page-size-selector="dropdown" style="margin-top: 20px"></div>
+                    <ul class="btn-group pagination" sd:pagination="full"></ul>
+                </div>
+            </nav>
+        </div>
+    </div>
 </div>
-<script>
-</script>
-</body>
 </html>

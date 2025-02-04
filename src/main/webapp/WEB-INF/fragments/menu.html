@@ -18,9 +18,7 @@
     limitations under the License.
 
 -->
-<html lang="fr" layout:decorate="~{layout(layoutView='admin', layoutMenu='appliconfigs')}
-            " xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" xmlns:sd="http://www.thymeleaf.org/spring-data" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://tiles.apache.org/tags-tiles">
-<body>
+<html lang="fr" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="menu">
         <ul class="nav nav-tabs">
             <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')">
@@ -31,7 +29,7 @@
             </th:block>
             <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER')">
                 <li th:class="${activeMenu == 'adminfees' ? 'active' : ''}">
-                    <a th:href="@{/admin/fees(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_transactions}">
+                    <a th:href="@{/admin/fees(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_transactions}">
                     </a>
                 </li>
             </th:block>
@@ -49,26 +47,26 @@
             </th:block>
         </ul>
         <ul class="breadcrumb bread-primary">
-            <th:block th:if="${payevts != null || payEvt != null || payEvtMontant != null || payboxtransactionlogs != null || payboxtransactionlog != null || activeMenu == 'adminstats'}">
+            <th:block th:if="${payEvt != null || payEvtMontant != null || payboxtransactionlogs != null || payboxtransactionlog != null || activeMenu == 'adminstats'}">
                 <li>
                     &gt;
                     <a th:href="@{/admin/}" th:text="#{menu_home}">
                     </a>
                 </li>
             </th:block>
-            <th:block th:if="${payevts != null ||  payEvt != null || payEvtMontant != null}">
+            <th:block th:if="${payEvt != null || payEvtMontant != null}">
                 <li>
                     <a th:href="@{/admin/evts(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{menu_evts}">
                     </a>
                 </li>
             </th:block>
-            <th:block th:if="${payEvt != null && payEvt != ''}">
+            <th:block th:if="${payEvt != null && payEvt.id != null}">
                 <li>
                     <a th:href="@{'/admin/evts/' + ${payEvt.id}}" th:text="${payEvt?.title?.labelLocales['fr'].translation}">
                     </a>
                 </li>
             </th:block>
-            <th:block th:if="${payEvtMontant != null && payEvtMontant != '' && payEvt != null && payEvt != ''}">
+            <th:block th:if="${payEvtMontant != null && payEvtMontant.id != null && payEvt != null && payEvt.id != null}">
                 <li>
                     <a th:href="@{'/admin/evts/' + ${payEvtMontant.evt.id}}" th:text="${payEvtMontant?.evt?.title?.labelLocales['fr'].translation}">
                     </a>
@@ -96,7 +94,7 @@
                 </th:block>
                 <th:block th:if="${activeMenu == 'adminstats'}">
                     <li>
-                        <a th:href="@{/admin/stats}">
+                        <a th:href="@{/WEB-INF/views/admin/stats}">
                             [[#{menu_stats}]]
                         </a>
                     </li>
@@ -105,20 +103,18 @@
         </ul>
     <script>
         var adminevtsUrl= "[[@{'/admin/evts'(page=0, size=${param.size == '' || param.size == null ? 10 : param.size})}]]";
-        var adminTxUrl= "[[@{'/admin/fees'(page=0, size=${param.size == '' || param.size == null ? 10 : param.size})}]]';
+        var adminTxUrl= "[[@{'/admin/fees'(page=0, size=${param.size == '' || param.size == null ? 10 : param.size})}]]";
         var statsUrl= "[[@{/admin/stats}]]";
         var ventilationsUrl= "[[@{/admin/ventilations}]]";
         var adminUrl= "[[@{/admin/}]]";
     </script>
-    <script th:if="${payEvt != null && payEvt != '' && (payEvtMontant == null || payEvtMontant == '')}">
+    <script th:if="${payEvt != null && payEvt.id != null && (payEvtMontant == null || payEvtMontant.id == null)}">
         var evtUrl= "[[@{'/admin/evts/' + ${payEvt.id}}]]";
     </script>
-    <script th:if="${payEvtMontant != null && payEvtMontant != ''}">
+    <script th:if="${payEvtMontant != null && payEvtMontant.id != null}">
         var evtUrl= "[[@{'/admin/evts/' + ${payEvtMontant.evt.id}}]]";
         var evtMntUrl= "[[@{'/admin/evts/' + ${payEvtMontant.evt.id} + '/' + ${payEvtMontant.id}}]]";
         var txUrl= "[[@{'/admin/fees/' + ${paytransactionlog.id} + '/' + ${payEvtMontant.id}}]]";
     </script>
 </div>
-
-</body>
 </html>

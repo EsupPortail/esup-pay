@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-
+<html th:lang="${#locale}"
+      xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <meta charset="UTF-8">
@@ -32,34 +32,29 @@
   <script th:src="@{/resources/js/esup-pay.js}"></script>
   <script th:src="@{/webjars/chartjs/dist/chart.umd.js}"></script>
   <script th:src="@{/resources/js/footable.min.js}"></script>
-
-  <!-- Ajax URLs -->
-  <script th:inline="javascript">
-    var searchLoginsJsonUrl = /*[[@{/admin/searchLoginsJson}]]*/ '';
+  <script type="text/javascript">
+    var searchLoginsJsonUrl = '/admin/searchLoginsJson';
   </script>
 
-  <!-- Title -->
-  <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Public</title>
-  <!--<title th:text="#{payboxevt.title.labelLocales[${#locale.language}]}">Default Title</title>-->
+
+  <title th:text="${title} + ' - ' + ${subTitle}"></title>
 </head>
 <body>
 
-<div th:replace="~{../views/navbar.html :: navbar}"></div>
-
-<div th:replace="~{../views/header.html :: header}"></div>
+<div th:replace="~{../fragments/navbar.html :: navbar}"></div>
+<div th:replace="~{../fragments/header.html :: header}"></div>
 
 <!-- Main Container -->
 <div id="main" class="container">
   <div class="row">
     <div class="col-md-12">
-      <!-- Dynamic Body -->
       <main layout:fragment="content"></main>
     </div>
   </div>
 </div>
 
 <!-- Footer-->
-<div th:replace="~{../views/footer.html :: footer}"></div>
+<div th:replace="~{../fragments/footer.html :: footer}"></div>
 
 </body>
 </html>

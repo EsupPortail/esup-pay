@@ -18,7 +18,7 @@
     limitations under the License.
 
 -->
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <div class="container" id="footer" th:fragment="footer">
     <a th:href="${@propertyConfigurer.getProperty('institute.href')}"
        th:text="${@propertyConfigurer.getProperty('institute.name')}"></a>
@@ -40,8 +40,8 @@
     </th:block>
 
     <div th:if="${param.alert_msg != null}">
-        <script th:inline="javascript">
-            var alertMsg = /*[[${#strings.escapeJs(param.alert_msg)}]]*/ '';
+        <script>
+            var alertMsg = "[[#{strings.escapeJs(param.alert_msg)}]]";
             alert(alertMsg);
         </script>
     </div>

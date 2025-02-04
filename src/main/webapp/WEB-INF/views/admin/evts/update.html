@@ -1,6 +1,27 @@
 <!DOCTYPE HTML>
-<html lang="fr" layout:decorate="~{../layouts/admin.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
-<body>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html layout:decorate="~{../layouts/admin.html}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content">
     <div class="col-md-12">
         <div class="col-lg-3">
@@ -72,7 +93,7 @@
                                         <div id="managersEmails">
                                             <div th:each="managersEmail : ${payEvt.managersEmails}">
                                                 <div class="input-group autocompleteEmail">
-                                                    <input class="form-control" id="c_org_esupportail_pay_domain_payevt_managersEmail" name="managersEmails" th:value="${managersEmail}" z="user-managed"/>
+                                                    <input class="form-control" id="c_org_esupportail_pay_domain_payevt_managersEmail" name="managersEmails" th:value="${managersEmail}"/>
                                                     <span class="input-group-addon">
                                                      <a class="btn btn-xs btn-danger removeclass" href="#">
                                                       <span aria-hidden="true" class="glyphicon glyphicon-minus">
@@ -123,7 +144,7 @@
                                                 <strong th:text="#{label_org_esupportail_pay_domain_payevt_payservicekey}">
                                                 </strong>
                                             </label>
-                                            <select class="form-control" id="_payboxServiceKey_id" name="payboxServiceKey" size="1" type="text">
+                                            <select class="form-control" id="_payboxServiceKey_id" name="payboxServiceKey" size="1">
                                                 <th:block th:each="i :${payboxServiceKeys}">
                                                     <option th:selected="${i == payEvt.payboxServiceKey ? 'true' : 'false'}" th:text="${i}" th:value="${i}">
                                                     </option>
@@ -162,7 +183,7 @@
                                         </span>
                                     </div>
                                     <fieldset id="_c_org_esupportail_pay_domain_payevt_archived_id">
-                                        <legend for="_archived_id" th:text="#{label_org_esupportail_pay_domain_payevt_archived}">
+                                        <legend th:text="#{label_org_esupportail_pay_domain_payevt_archived}">
                                         </legend>
                                         <label>
                                             <input id="_archived_id" name="archived" th:value="${payEvt.archived}" type="checkbox"/>
@@ -274,8 +295,6 @@
     <script>
         var logoUrl= "[[@{'/admin/evts/' + ${payEvt.id} + '/logo'}]]";
         var form_url= '[[@{${path}}]]';
-        var form_url= '[[@{${path}}]]';
     </script>
 </div>
-</body>
 </html>
