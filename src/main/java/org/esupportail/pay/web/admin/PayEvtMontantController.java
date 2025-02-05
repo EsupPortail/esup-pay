@@ -106,7 +106,7 @@ public class PayEvtMontantController {
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
     	if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
-            return "admin/evtmnts/update";
+            return "admin/evtmnts/update.html";
         }
     	payEvtMontantDaoService.merge(payEvtMontant);
         uiModel.asMap().clear();
@@ -148,7 +148,7 @@ public class PayEvtMontantController {
     @PreAuthorize("hasPermission(#id, 'manage-montant')")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, payEvtMontantDaoService.findPayEvtMontant(id));
-        return "admin/evtmnts/update";
+        return "admin/evtmnts/update.html";
     }
 
 	void populateEditForm(Model uiModel, PayEvtMontant payEvtMontant) {
