@@ -94,6 +94,8 @@
     <script>
         var csvImgUrl= "[[@{'/resources/images/csv_text.png'}]]";
         var csvUrl= "[[@{'/admin/csv'}]]";
+    </script>
+    <script th:if="${payEvt != null && payEvt.id != null}">
         var csvUrl= "[[@{'/admin/evts/' + ${payEvt.id} + '/fees/csv'}]]";
     </script>
 </div>
