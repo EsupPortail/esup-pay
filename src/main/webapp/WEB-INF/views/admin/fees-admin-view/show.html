@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html layout:decorate="~{../layouts/admin.html}" th:lang="${#locale}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" xmlns:sd="http://www.thymeleaf.org/spring-data" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:spring-form="http://www.springframework.org/tags/form" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://tiles.apache.org/tags-tiles">
+<body>
+<div layout:fragment="content">
+    <div class="container" id="_title_ps_org_esupportail_pay_domain_PayTransactionLog_id" th:title="#{entity_show(label_org_esupportail_pay_domain_paytransactionlog)}">
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_transactionDate_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_transactiondate}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_transactionDate_transactionDate_id">
+                <span th:text="${paytransactionlog.transactionDate}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_reference_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_reference}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_reference_reference_id">
+                <span th:text="${paytransactionlog.reference}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_montant_id">
+            <dt>Montant (€):
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_montant_montantDevise_id">
+                <span th:text="${paytransactionlog.montantDevise}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_auto_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_auto}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_auto_auto_id">
+                <span th:text="${paytransactionlog.auto}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_erreur_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_erreur}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_erreur_erreur_id">
+                <span th:text="${paytransactionlog.erreur}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_idtrans_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_idtrans}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_idtrans_idtrans_id">
+                <span th:text="${paytransactionlog.idtrans}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_mail_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_mail}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_mail_mail_id">
+                <span th:text="${paytransactionlog.mail}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_field1_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_field1}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_field1_field1_id">
+                <span th:text="${paytransactionlog.field1}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_field2_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_field2}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_field2_field2_id">
+                <span th:text="${paytransactionlog.field2}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_mailSent_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_mailsent}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_mailSent_mailSent_id">
+                <span th:text="${paytransactionlog.mailSent}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_securevers_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_securevers}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_securevers_securevers_id">
+                <span th:text="${paytransactionlog.securevers}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_softdecline_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_softdecline}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_softdecline_softdecline_id">
+                <span th:text="${paytransactionlog.softdecline}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_secureauth_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_secureauth}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_secureauth_secureauth_id">
+                <span th:text="${paytransactionlog.secureauth}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_securegarantie_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_securegarantie}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_securegarantie_securegarantie_id">
+                <span th:text="${paytransactionlog.securegarantie}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog__id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_payevtmontant_shoppingcarttotalquantity}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog__shoppingcartTotalQuantity_id">
+                <span th:text="${paytransactionlog.shoppingcartTotalQuantity}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingFirstname_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_firstname}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingFirstname_billingFirstname_id">
+                <span th:text="${paytransactionlog.billingFirstname}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingLastname_id">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_lastname}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingLastname_billingLastname_id">
+                <span th:text="${paytransactionlog.billingLastname}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingAddress1_id">
+            <dt>
+                [[#{billing.address1}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingAddress1_billingAddress1_id">
+                <span th:text="${paytransactionlog.billingAddress1}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingZipCode_id">
+            <dt>
+                [[#{billing.zipCode}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingZipCode_billingZipCode_id">
+                <span th:text="${paytransactionlog.billingZipCode}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingCity_id">
+            <dt>
+                [[#{billing.city}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingCity_billingCity_id">
+                <span th:text="${paytransactionlog.billingCity}">
+                </span>
+            </dd>
+        </dl>
+        <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingCountryCode_id">
+            <dt>
+                [[#{billing.countryCode}]]:
+            </dt>
+            <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_billingCountryCode_billingCountryCode_id">
+                <span th:text="${paytransactionlog.billingCountryCode}">
+                </span>
+            </dd>
+        </dl>
+    </div>
+</div>
+<script>
+    var delete_form_url= "[[@{'/fees-admin-view/' + ${itemId}}]]";
+    var delete_image_url= "[[@{'/resources/images/delete.png'}]]";
+    var update_form_url= "[[@{'/fees-admin-view/' + ${itemId}}]]";
+    var update_image_url= "[[@{'/resources/images/update.png'}]]";
+    var create_form_url= "[[@{'/fees-admin-view'}]]";
+    var create_image_url= "[[@{'/resources/images/create.png'}]]";
+    var list_form_url= "[[@{'/fees-admin-view'}]]";
+    var list_image_url= "[[@{'/resources/images/list.png'}]]";
+</script>
+</body>
+</html>

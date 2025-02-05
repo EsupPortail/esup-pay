@@ -62,7 +62,7 @@ public class PayTransactionLogController {
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("paytransactionlog", payTransactionLogDaoService.findPayTransactionLog(id));
         uiModel.addAttribute("itemId", id);
-        return "admin/fees-admin-view/show";
+        return "admin/fees-admin-view/show.html";
     }
 
 	void addDateTimeFormatPatterns(Model uiModel) {
