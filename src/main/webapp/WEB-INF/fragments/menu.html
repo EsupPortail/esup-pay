@@ -29,7 +29,7 @@
             </th:block>
             <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER')">
                 <li th:class="${activeMenu == 'adminfees' ? 'active' : ''}">
-                    <a th:href="@{/admin/fees(page=1, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_transactions}">
+                    <a th:href="@{/admin/fees(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{pay_transactions}">
                     </a>
                 </li>
             </th:block>

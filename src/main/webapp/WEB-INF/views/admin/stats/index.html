@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html layout:decorate="~{../layouts/admin.html}"
+      th:lang="${#locale}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div layout:fragment="content">
+    <div class="col-md-12" id="_title_title_id" th:title="${title}">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading row">
+                        <h5 class="col-lg-9">[[#{stats_montant_total}]]</h5>
+                        <form th:action="@{'/admin/stats'}" method="GET">
+                            <select class="col-lg-3 text-info" name="year" onchange="this.form.submit()">
+                                <option value="">
+                                </option>
+                                <th:block th:each="year : ${years}">
+                                    <div th:if="year == param.year">
+                                        <option selected="selected" th:value="${year}">
+                                            [[${year}]]
+                                        </option>
+                                    </div>
+                                    <div th:unless="year == param.year">
+                                        <option th:value="${year}">
+                                            [[${year}]]
+                                        </option>
+                                    </div>
+                                </th:block>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="panel-body">
+                        <canvas height="150" id="montantsEvt" width="450">&nbsp;</canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading row">
+                        <h5 class="col-lg-9">[[#{stats_nombre_total_transaction}]]</h5>
+                        <form th:action="@{'/admin/stats'}" method="GET">
+                            <select class="col-lg-3 text-info" name="year" onchange="this.form.submit()">
+                                <option value="">
+                                </option>
+                                <th:block th:each="year : ${years}">
+                                    <th:block th:if="year == param.year">
+                                        <option selected="selected" th:value="${year}">
+                                            [[${year}]]
+                                        </option>
+                                    </th:block>
+                                    <th:block th:unless="year == param.year">
+                                        <option th:value="${year}">
+                                            [[${year}]]
+                                        </option>
+                                    </th:block>
+                                </th:block>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="panel-body">
+                        <canvas height="150" id="participantsEvt" width="450">&nbsp;</canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h5>[[#{stats_nombre_annuel_transaction}]]</h5>
+                    </div>
+                    <div class="panel-body">
+                        <canvas height="150" id="transactions" width="450">&nbsp;</canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h5>[[#{stats_montant_annuel_transaction}]]</h5>
+                    </div>
+                    <div class="panel-body">
+                        <canvas height="150" id="cumul" width="450">&nbsp;</canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h5>[[#{stats_nombre_mensuel_transaction}]]</h5>
+                    </div>
+                    <div class="panel-body">
+                        <canvas height="150" id="transactionsMonth" width="450">&nbsp;</canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h5>[[#{stats_montant_mensuel_transaction}]]</h5>
+                    </div>
+                    <div class="panel-body">
+                        <canvas height="150" id="cumulMonth" width="450">&nbsp;</canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var statsUrl= "[[@{'/admin/stats/montants'(year=${param.year})}]]";
+        var statsPath= "[[@{'/admin/stats'}]]";
+    </script>
+</div>
+
+</body>
+</html>
