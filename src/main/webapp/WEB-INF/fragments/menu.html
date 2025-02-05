@@ -66,7 +66,7 @@
                     </a>
                 </li>
             </th:block>
-            <th:block th:if="${payEvtMontant != null && payEvtMontant.id != null && payEvt != null && payEvt.id != null}">
+            <th:block th:if="${payEvtMontant != null}">
                 <li>
                     <a th:href="@{'/admin/evts/' + ${payEvtMontant.evt.id}}" th:text="${payEvtMontant?.evt?.title?.labelLocales['fr'].translation}">
                     </a>
@@ -114,6 +114,8 @@
     <script th:if="${payEvtMontant != null && payEvtMontant.id != null}">
         var evtUrl= "[[@{'/admin/evts/' + ${payEvtMontant.evt.id}}]]";
         var evtMntUrl= "[[@{'/admin/evts/' + ${payEvtMontant.evt.id} + '/' + ${payEvtMontant.id}}]]";
+    </script>
+    <script th:if="${paytransactionlog != null && paytransactionlog.id != null && payEvtMontant != null && payEvtMontant.id != null}">
         var txUrl= "[[@{'/admin/fees/' + ${paytransactionlog.id} + '/' + ${payEvtMontant.id}}]]";
     </script>
 </div>
