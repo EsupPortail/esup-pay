@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html layout:decorate="~{../layouts/admin.html}"
+      th:lang="${#locale}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sd="http://www.thymeleaf.org/spring-data"
+      xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+    <div class="col-md-12">
+        <a class="absButton" data-role="button" th:href="@{${listAllTxEvts != null && listAllTxEvts ? '/admin/csv' : '/admin/evts/' + payEvt.id + '/fees/csv'}}">
+            <img alt="CSV" th:src="@{'/resources/images/csv_text.png'}"/>
+        </a>
+        <div class="row" id="pl_org_esupportail_pay_domain_PayTransactionLog">
+                <th:block th:if="${listAllTxEvts == null || !listAllTxEvts}">
+                    <h3>
+                        [[${payEvt.title.labelLocales['fr'].translation}]]
+                    </h3>
+                </th:block>
+                <th:block th:if="${total != null}">
+                    <i>
+                        [[${page.getContent().size()}]] transactions pour un total de [[${total}]]
+                    </i>
+                </th:block>
+                <div th:id="${listAllTxEvts != null && listAllTxEvts ? listFees : listFees2}">
+                    <table class="table table-bordered" th:with="typeName=#{menu_item_paytransactionlog_new_label}">
+                        <thead>
+                        <tr>
+                            <th>Evt</th>
+                            <th >EvtMnt</th>
+                            <th>
+                                <a class="sorting" sd:pagination-sort="transactionDate" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_transactiondate}">
+                                </a>
+                            </th>
+                            <th>
+                                <a class="sorting" sd:pagination-sort="mail" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_mail}">
+                                </a>
+                            </th>
+                            <th>
+                                <a class="sorting" sd:pagination-sort="montant">Montant (€)</a>
+                            </th>
+                            <th>
+                                <a class="sorting" sd:pagination-sort="field1" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_field1}">
+                                </a>
+                            </th>
+                            <th>
+                                <a class="sorting" sd:pagination-sort="field2" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_field2}">
+                                </a>
+                            </th>
+                            <th th:text="#{label_org_esupportail_pay_domain_paytransactionlog_mailsent}">
+                            </th>
+                            <th class="btnCrudTable" th:text="#{entity_show(${typeName})}">
+                                Voir
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="row : ${page}">
+                            <td th:text="${row.payEvtMontant.evt.title.labelLocales['fr'].translation}">
+                            </td>
+                            <td th:text="${row.payEvtMontant.title.labelLocales['fr'].translation}">
+                            </td>
+                            <td th:text="${#temporals.format(row.transactionDate.toLocalDateTime(), 'MEDIUM', #locale)}">
+                            </td>
+                            <td th:text="${row.mail}">
+                            </td>
+                            <td th:text="${row.montantDevise}">
+                            </td>
+                            <td th:text="${row.field1}">
+                            </td>
+                            <td th:text="${row.field2}">
+                            </td>
+                            <td th:text="${row.mailSent}">
+                            </td>
+                            <td class="utilbox">
+                                <a class="btn btn-success" th:alt="#{menu_item_paytransactionlog_new_label}" th:href="@{'/admin/fees/' + ${row.id}}" title="#{menu_item_paytransactionlog_new_label}">
+                                    <img class="image" th:alt="#{menu_item_paytransactionlog_new_label}" th:src="@{/resources/images/show.png}" title="#{menu_item_paytransactionlog_new_label}"/>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="col-md-4 col-md-offset-5">
+                        <nav class="center-block btn-toolbar" th:fragment="pagination">
+                            <div class="btn-group">
+                                <div class="btn-group dropup" sd:page-size-selector="dropdown" style="margin-top: 20px">
+                                </div>
+                                <ul class="btn-group pagination" sd:pagination="full">
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <script>
+        var csvImgUrl= "[[@{'/resources/images/csv_text.png'}]]";
+        var csvUrl= "[[@{'/admin/csv'}]]";
+    </script>
+    <script th:if="${payEvt != null && payEvt.id != null}">
+        var csvUrl= "[[@{'/admin/evts/' + ${payEvt.id} + '/fees/csv'}]]";
+    </script>
+</div>
+</html>

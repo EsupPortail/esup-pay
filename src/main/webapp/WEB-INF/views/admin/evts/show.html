@@ -80,7 +80,7 @@
        </span>
           <ul>
             <div th:each="respLogin : ${payEvt.respLogins}">
-              <li th:text="${respLogin.displayName} (${respLogin.login})">
+              <li th:text="${respLogin.displayName} + ' (' + ${respLogin.login} + ')'">
               </li>
             </div>
           </ul>
@@ -88,7 +88,7 @@
        </span>
           <ul>
             <div th:each="viewerLogin : ${payEvt.viewerLogins}">
-              <li th:text="${viewerLogin.displayName} (${viewerLogin.login})">
+              <li th:text="${viewerLogin.displayName} + ' (' + ${viewerLogin.login} + ')'">
               </li>
             </div>
           </ul>

@@ -118,6 +118,7 @@
                 <bean class="nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect"/>
                 <bean class="org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect"/>
                 <bean class="org.thymeleaf.dialect.springdata.SpringDataDialect"/>
+                <bean class="org.thymeleaf.extras.java8time.dialect.Java8TimeDialect"/>
             </set>
         </property>
     </bean>

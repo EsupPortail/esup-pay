@@ -1,0 +1,277 @@
+<!DOCTYPE HTML>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html layout:decorate="~{../layouts/admin.html}"
+      th:lang="${#locale}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+    <div class="container">
+        <div class="jumbotron" id="_title_fu_org_esupportail_pay_domain_PayEvtMontant_id" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevtmontant})}">
+            <form enctype="application/x-www-form-urlencoded" id="payEvt" th:method="PUT" th:action="@{/admin/evtmnts}" th:object="${payEvtMontant}">
+                <div class="errors" th:if="${#fields.hasErrors('*')}">
+                    <ul>
+                        <li class="error" th:each="err : ${#fields.errors('*')}" th:text="${err}">
+                        </li>
+                    </ul>
+                </div>
+                <input type="hidden" th:field="*{evt.version}"/>
+                <input id="_evt_id" th:field="*{evt.id}" type="hidden"/>
+                <div sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
+                     <span th:text="#{label_org_esupportail_pay_domain_payevtmontant_isenabled}">
+                     </span>
+                    : [[${payEvtMontant.isEnabled}]]
+                    <input name="isEnabled" type="hidden" th:value="*{isEnabled}"/>
+                </div>
+                <div sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
+                    <fieldset id="_c_org_esupportail_pay_domain_PayEvtMontant_isEnabled_id">
+                        <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_isenabled}">
+                        </legend>
+                        <label for="_isEnabled_id">
+                            <input id="_isEnabled_id" name="isEnabled" th:value="*{isEnabled}" type="checkbox"  th:checked="*{isEnabled}"/>
+                            &nbsp;
+                        </label>
+                    </fieldset>
+                </div>
+                <div class="form-group" id="c_org_esupportail_pay_domain_payevtmontant_dbleMontant">
+                    <label class="c" for="dbleMontant">
+                        <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_dblemontant}">
+                        </strong>
+                    </label>
+                    <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
+                        <input class="form-control" id="dbleMontant" name="dbleMontant" readonly="readonly" th:value="*{dbleMontant}" type="text"/>
+                    </th:block>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
+                        <input class="form-control" id="dbleMontant" name="dbleMontant" th:value="*{dbleMontant}" type="text"/>
+                    </th:block>
+                    <span class="errors" id="_dbleMontant_error_id" th:errors="*{dbleMontant}" th:if="${#fields.hasErrors('dbleMontant')}">
+                    </span>
+                </div>
+                <div class="form-group" id="c_org_esupportail_pay_domain_payevtmontant_urlId">
+                    <label class="c" for="urlId">
+                        <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_urlid}">
+                        </strong>
+                    </label>
+                    <input class="form-control" id="urlId" name="urlId" readonly="readonly" th:value="*{urlId}" type="text"/>
+                    <span class="errors" id="_urlId_error_id" th:errors="*{urlId}" th:if="${#fields.hasErrors('urlId')}">
+                    </span>
+                </div>
+                <fieldset>
+                    <legend>
+                      <span th:text="#{form_title}">
+                      </span>
+                    </legend>
+                    <span class="errors" id="_error_title" th:errors="*{title}" th:if="${#fields.hasErrors('title')}">
+                    </span>
+                    <div th:each="labelLocales : *{title.labelLocales}">
+                        <div class="form-group">
+                            <label>
+                                [[${labelLocales.key}]] :
+                            </label>
+                            <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
+                                <input class="form-control" th:name="'title.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
+                            </th:block>
+                            <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
+                                <input class="form-control" th:name="'title.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
+                            </th:block>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="form-group" id="c_org_esupportail_pay_domain_payevtmontant_shoppingcartTotalQuantity">
+                    <label class="c" for="shoppingcartTotalQuantity">
+                        <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_shoppingcarttotalquantity}">
+                        </strong>
+                    </label>
+                    <input class="form-control" id="shoppingcartTotalQuantity" name="shoppingcartTotalQuantity" th:value="*{shoppingcartTotalQuantity}" type="text"/>
+                    <span class="errors" id="_shoppingcartTotalQuantity_error_id" th:errors="*{shoppingcartTotalQuantity}" th:if="${#fields.hasErrors('shoppingcartTotalQuantity')}">
+                    </span>
+                </div>
+                <fieldset id="_c_org_esupportail_pay_domain_PayEvtMontant_isBillingAddressRequired_id">
+                    <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_isbillingaddressrequired}">
+                    </legend>
+                    <label for="_isBillingAddressRequired_id">
+                        <input id="_isBillingAddressRequired_id" name="isBillingAddressRequired" th:value="*{isBillingAddressRequired}" th:checked="*{isBillingAddressRequired}"type="checkbox"/>
+                        &nbsp;
+                    </label>
+                </fieldset>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                    <button th:text="#{button_param}" type="button" class="btn btn-danger" data-toggle="collapse" data-target="#advanced">
+                    </button>
+                </th:block>
+                <hr/>
+                <div class="collapse" id="advanced">
+                    <fieldset>
+                        <legend>
+                           <span th:text="#{form_description}">
+                           </span>
+                        </legend>
+                        <div th:each="labelLocales : *{description.labelLocales}">
+                            <div class="form-group">
+                                <label>
+                                    [[${labelLocales.key}]] :
+                                </label>
+                                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
+                                    <input class="form-control" th:name="'description.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
+                                </th:block>
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
+                                    <input class="form-control" th:name="'description.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
+                                </th:block>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>
+                           <span th:text="#{form_help}">
+                           </span>
+                        </legend>
+                        <div th:each="labelLocales : *{help.labelLocales}">
+                            <div class="form-group">
+                                <label>
+                                    [[${labelLocales.key}]] :
+                                </label>
+                                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
+                                    <input class="form-control" th:name="'help.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
+                                </th:block>
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
+                                    <input class="form-control" th:name="'help.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
+                                </th:block>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>
+                           <span th:text="#{form_field1}">
+                           </span>
+                        </legend>
+                        <div th:each="labelLocales : *{field1Label.labelLocales}">
+                            <div class="form-group">
+                                <label>
+                                    [[${labelLocales.key}]] :
+                                </label>
+                                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
+                                    <input class="form-control" th:name="'field1Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
+                                </th:block>
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
+                                    <input class="form-control" th:name="'field1Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
+                                </th:block>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>
+                           <span th:text="#{form_field2}">
+                           </span>
+                        </legend>
+                        <div th:each="labelLocales : *{field2Label.labelLocales}">
+                            <div class="form-group">
+                                <label>
+                                    [[${labelLocales.key}]] :
+                                </label>
+                                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
+                                    <input class="form-control" th:name="'field2Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
+                                </th:block>
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
+                                    <input class="form-control" th:name="'field2Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
+                                </th:block>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_authCas_id">
+                        <legend>Auth CAS</legend>
+                        <label for="_authCas_id">
+                            <input id="_authCas_id" name="authCas" th:value="*{authCas}" th:checked="*{authCas}" type="checkbox"/>
+                            &nbsp;Oui
+                        </label>
+                    </fieldset>
+                    <div sec:authorize="hasRole('ROLE_ADMIN')">
+                        <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_freeAmount_id">
+                            <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">
+                            </legend>
+                            <label for="_freeAmount_id">
+                                <input id="_freeAmount_id" name="freeAmount" th:value="*{freeAmount}" th:checked="*{freeAmount}" type="checkbox"/>
+                                &nbsp;Oui
+                            </label>
+                        </fieldset>
+                        <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_sciencesconf_id">
+                            <legend>Sciencesconf</legend>
+                            <label for="_sciencesconf_id">
+                                <input id="_sciencesconf_id" name="sciencesconf" th:value="*{sciencesconf}" th:checked="*{sciencesconf}" type="checkbox"/>
+                                &nbsp;Oui
+                            </label>
+                        </fieldset>
+                        <div class="form-group" id="c_org_esupportail_pay_domain_payevtmontant_addPrefix">
+                            <label class="c" for="_addPrefix_id">
+                                <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_addprefix}">
+                                </strong>
+                            </label>
+                            <select class="form-control" id="_addPrefix_id" name="addPrefix" size="1">
+                                <th:block th:each="i :${addPrefixList}">
+                                    <option th:selected="${i == payEvtMontant.addPrefix ? 'true' : 'false'}" th:text="${i}" th:value="${i}">
+                                    </option>
+                                </th:block>
+                            </select>
+                            <span class="errors" id="_addPrefix_error_id" th:errors="*{addPrefix}" th:if="${#fields.hasErrors('addPrefix')}">
+                            </span>
+                        </div>
+                    </div>
+                    <div sec:authorize="!hasRole('ROLE_ADMIN')">
+                        <input name="freeAmount" type="hidden" th:value="*{freeAmount}"/>
+                        <input name="sciencesconf" type="hidden" th:value="*{sciencesconf}"/>
+                        <input name="addPrefix" type="hidden" th:value="*{addPrefix}"/>
+                    </div>
+                    <div class="form-group" id="c_org_esupportail_pay_domain_payEvtMontant_optionalAddedParams">
+                        <label class="c" for="optionalAddedParams">
+                            <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_optionaladdedparams}">
+                            </strong>
+                        </label>
+                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                            <input class="form-control" id="optionalAddedParams" name="optionalAddedParams" th:value="*{optionalAddedParams}" type="text"/>
+                        </th:block>
+                        <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                            <input class="form-control" id="optionalAddedParams" name="optionalAddedParams" readonly="readonly" th:value="*{optionalAddedParams}" type="text"/>
+                        </th:block>
+                        <span class="errors" id="_optionalAddedParams_error_id" th:errors="*{optionalAddedParams}" th:if="${#fields.hasErrors('optionalAddedParams')}">
+                        </span>
+                    </div>
+                </div>
+                <input name="title.id" type="hidden" th:value="*{title.id}"/>
+                <input name="title.version" type="hidden" th:value="*{title.version}"/>
+                <input name="description.id" type="hidden" th:value="*{description.id}"/>
+                <input name="description.version" type="hidden" th:value="*{description.version}"/>
+                <input name="help.id" type="hidden" th:value="*{help.id}"/>
+                <input name="help.version" type="hidden" th:value="*{help.version}"/>
+                <input name="field1Label.id" type="hidden" th:value="*{field1Label.id}"/>
+                <input name="field1Label.version" type="hidden" th:value="*{field1Label.version}"/>
+                <input name="field2Label.id" type="hidden" th:value="*{field2Label.id}"/>
+                <input name="field2Label.version" type="hidden" th:value="*{field2Label.version}"/>
+                <div class="submit" th:id="fu_org_esupportail_pay_domain_PayEvtMontant_submit">
+                    <input class="btn btn-success" id="fu_org_esupportail_pay_domain_PayEvtMontant_proceed" th:value="#{button_save}" type="submit"/>
+                </div>
+                <input id="_id_id" name="id" th:value="*{id}" type="hidden"/>
+                <input id="_Version_id" name="Version" th:value="*{Version}" type="hidden"/>
+            </form>
+        </div>
+    </div>
+    <script>
+        var form_url= '[[@{${path}}]]';
+    </script>
+</div>
+</html>

@@ -29,6 +29,10 @@ import javax.persistence.TypedQuery;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -69,7 +73,32 @@ public class PayTransactionLogDaoService {
         q.setParameter("payEvt", payEvt);
         return q;
     }
-    
+
+    public Page<PayTransactionLog> findPagePayTransactionLogsByPayEvt(PayEvt payEvt, Pageable pageable) {
+        if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)");
+        String queryCount = "SELECT COUNT(o) from PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)";
+
+        Sort.Order sortFieldName = pageable.getSort().iterator().next();
+        String sortOrder = sortFieldName.getDirection().name();
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
+            queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
+            System.out.println(sortOrder);
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" ").append(sortOrder);
+            }
+        }
+
+        TypedQuery<PayTransactionLog> q = em.createQuery(queryBuilder.toString(), PayTransactionLog.class);
+        TypedQuery<Long> qCount = em.createQuery(queryCount, Long.class);
+        q.setParameter("payEvt", payEvt);
+        qCount.setParameter("payEvt", payEvt);
+
+        q.setFirstResult((int) pageable.getOffset());
+        q.setMaxResults(pageable.getPageSize());
+        return new PageImpl<>(q.getResultList(), pageable, qCount.getSingleResult());
+    }
+
     public List<Object[]> findNbTransactionByYear (){
         
         String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year, COUNT(TO_CHAR(transaction_date, 'YYYY')) FROM pay_transaction_log GROUP BY year"
@@ -138,7 +167,28 @@ public class PayTransactionLogDaoService {
         return em.createQuery(jpaQuery, PayTransactionLog.class).getResultList();
     }
 
-	public PayTransactionLog findPayTransactionLog(Long id) {
+    public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable) {
+        StringBuilder queryBuilder = new StringBuilder("FROM PayTransactionLog");
+
+        Sort.Order sortFieldName = pageable.getSort().iterator().next();
+        String sortOrder = sortFieldName.getDirection().name();
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
+            queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
+            System.out.println(sortOrder);
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" ").append(sortOrder);
+            }
+        }
+
+        TypedQuery<PayTransactionLog> q = em.createQuery(queryBuilder.toString(), PayTransactionLog.class);
+        q.setFirstResult((int) pageable.getOffset());
+        q.setMaxResults(pageable.getPageSize());
+        TypedQuery<Long> qCount = em.createQuery("SELECT COUNT(o) FROM PayTransactionLog AS o", Long.class);
+        return new PageImpl<>(q.getResultList(), pageable, qCount.getSingleResult());
+    }
+
+
+    public PayTransactionLog findPayTransactionLog(Long id) {
         if (id == null) return null;
         return em.find(PayTransactionLog.class, id);
     }
