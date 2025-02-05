@@ -306,9 +306,9 @@ public class PayEvtDaoService {
         Sort.Order sortFieldName = pageable.getSort().iterator().next();
         String sortOrder = sortFieldName.getDirection().name();
         if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
-            queryBuilder.append("ORDER BY").append(sortFieldName.getProperty());
+            queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(sortOrder);
+                queryBuilder.append(" ").append(sortOrder);
             }
         }
 

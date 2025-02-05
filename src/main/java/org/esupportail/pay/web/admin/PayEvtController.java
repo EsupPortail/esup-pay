@@ -320,18 +320,18 @@ public class PayEvtController {
     
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees", produces = "text/html")
-    public String fees(@PathVariable("id") Long id, @RequestParam(defaultValue = "transactionDate") String sortFieldName, @RequestParam(defaultValue = "desc") String sortOrder, Model uiModel) {
+    public String fees(@PathVariable("id") Long id, Model uiModel, Pageable pageable ) {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        List<PayTransactionLog> paytransactionlogs = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, sortFieldName, sortOrder).getResultList();
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, pageable);
+        List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
         long total = 0L;
         for(PayTransactionLog ptl : paytransactionlogs) {
             total += Long.valueOf(ptl.getMontant());
         }
         uiModel.addAttribute("total", String.format("%,.2f€", Double.valueOf(total) / 100.0));
-        uiModel.addAttribute("paytransactionlogs", paytransactionlogs);
-        uiModel.addAttribute("payTransactionLog_transactiondate_date_format", DateTimeFormat.patternForStyle("MM", LocaleContextHolder.getLocale()));
         uiModel.addAttribute("payEvt", payEvt);
-        return "admin/fees-admin-view/list";
+        uiModel.addAttribute("page", payTxLogPage);
+        return "admin/fees-admin-view/list.html";
     }
     
     @PreAuthorize("hasPermission(#id, 'view')")
