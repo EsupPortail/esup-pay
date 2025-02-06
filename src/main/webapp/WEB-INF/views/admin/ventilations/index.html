@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html layout:decorate="~{../layouts/admin.html}"
+      th:lang="${#locale}"
+      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+  <div layout:fragment="content">
+   <div class="col-md-12">
+    <div class="jumbotron" id="_title_title_id" th:title="${title}">
+     <div class="panel panel-default">
+      <div class="panel-heading" role="tab">
+       <h2 class="panel-title alert alert-info">
+        <a aria-controls="collapseOne" aria-expanded="true" data-parent="#accordion" data-toggle="collapse" role="button" href="#collapse-exports">
+         Upload des Exports Paybox
+        </a>
+       </h2>
+      </div>
+      <div class="row panel-collapse collapse" id="collapse-exports">
+       <div class="col-lg-4 col-lg-offset-1 well">
+         <div id="_title_fu_org_esupportail_pay_domain_payevt_logoFile_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevt_logofile})}">
+          <form enctype="multipart/form-data" id="uploadFile" method="POST" th:action="@{'/admin/ventilations/addExportTransactionFile'}">
+                      <fieldset>
+            <legend>
+             Export Transactions Paybox
+            </legend>
+            <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="required" type="file"/>
+           </fieldset>
+           <div class="submit" th:id="fu_org_esupportail_pay_domain_payevt_logoFile_submit">
+            <input class="btn btn-success" id="fu_org_esupportail_pay_domain_payevt_logoFile_proceed" th:value="Sauver" type="submit"/>
+           </div>
+          </form>
+         </div>
+       </div>
+       <div class="col-lg-4 col-lg-offset-1 well">
+         <div id="_title_fu_org_esupportail_pay_domain_payevt_logoFile_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevt_logofile})}">
+          <form enctype="multipart/form-data" id="uploadFile" method="POST" th:action="@{'/admin/ventilations/addExportRemiseFile'}">
+           <fieldset>
+            <legend>
+             Export Remises Paybox
+            </legend>
+            <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="" type="file"/>
+           </fieldset>
+           <div class="submit" id="fu_org_esupportail_pay_domain_payevt_logoFile_submit">
+            <input class="btn btn-success" id="fu_org_esupportail_pay_domain_payevt_logoFile_proceed" value="Sauver" type="submit"/>
+           </div>
+          </form>
+         </div>
+       </div>
+      </div>
+     </div>
+     <div class="row well text-center">
+      <div class="col-lg-2 col-lg-offset-3">
+       <a class="btn btn-lg btn-primary" th:href="@{'/admin/ventilations'(dateMonth=${dateMonthBefore})}" th:text="${dateMonthBefore}" type="button">
+        <span aria-hidden="true" class="glyphicon glyphicon-chevron-left">
+        </span>
+       </a>
+      </div>
+      <div class="col-lg-2">
+       <a class="btn btn-lg btn-success" th:href="@{'/admin/ventilations'(dateMonth=${dateMonth})}" th:text="${dateMonth}" type="button">
+       </a>
+      </div>
+      <div class="col-lg-2">
+       <a class="btn btn-lg btn-primary" th:href="@{'/admin/ventilations'(dateMonth=${dateMonthAfter})}" th:text="${dateMonthAfter}" type="button">
+        <span aria-hidden="true" class="glyphicon glyphicon-chevron-right">
+        </span>
+       </a>
+      </div>
+     </div>
+     <div class="panel panel-default" role="tab">
+      <th:block th:each="ventilation, ventilationStatus : ${ventilations}">
+       <div class="panel-heading" role="tab">
+        <h2 th:class="'panel-title alert ' + ${ventilation.consistentMontant ? 'alert-success' : 'alert-danger'}">
+         <a aria-controls="collapseOne" aria-expanded="true" data-parent="#accordion" data-toggle="collapse" role="button" th:href="'#collapse-' + ${ventilationStatus.index}">
+             [[${ventilation.date}]] - [[${ventilation.remise.numContrat}]] - [[${ventilation.remise.numRemise}]]
+         </a>
+        </h2>
+       </div>
+       <div class="panel-collapse collapse" th:id="'collapse-' + ${ventilationStatus.index}">
+        <h3>
+         Remise [[${ventilation.remise.numRemise}]]
+        </h3>
+        <dl>
+         <dt>
+          Remise banque
+         </dt>
+         <span th:text="${#numbers.formatDecimal(ventilation.remise.montant/100, 1, 2)} + '€'"></span>
+         <dt>
+          Nombre de transactions
+         </dt>
+         <span>[[${ventilation.remise.nbTransactions}]]</span>
+        </dl>
+        <h3>
+         Transactions
+        </h3>
+        <dl>
+         <dt>
+          Total
+         </dt>
+         <span th:text="${#numbers.formatDecimal(ventilation.totalMontantTransactions/100, 1, 2)} + '€'"></span>
+         <dt>
+          Nombre de transactions
+         </dt>
+         <span>[[${ventilation.nbTransactions}]]</span>
+         <th:block th:if="${ventilation.nbTransactionsCreditRemboursement > 0}">
+          <span class="text-warning">
+           dont [[${ventilation.nbTransactionsCreditRemboursement}]] remboursement(s)/crédit(s)
+          </span>
+         </th:block>
+         <dt>
+          Détail
+         </dt>
+         <dl>
+          <th:block th:each="t, evtStatus : ${ventilation.montantsEvts}">
+           <dt>
+            [[${t.key.titleFr}]] [['[' + ${ventilation.transactions[t.key].size()} + ']']]
+           </dt>
+           <span th:text="${#numbers.formatDecimal(t.value/100, 1, 2)} + '€'"></span>
+           <br/>
+           <a aria-controls="collapseOne" aria-expanded="true" data-parent="#accordion" data-toggle="collapse" role="button" th:href="'#collapse-' + ${ventilationStatus} + '-' + ${evtStatus.index}">
+            +
+           </a>
+           <ul class="panel-collapse collapse" th:id="'collapse-' + ${ventilationStatus.index} + '-' + ${evtStatus.index}">
+            <th:block th:each="tx : ${ventilation.transactions[t.key]}">
+             <li>
+              <th:block th:if="${tx.typeTransaction != 'DEBIT'}">
+               <span class="text-warning">
+                [['[' + ${tx.typeTransaction}+ ']']]
+               </span>
+              </th:block>
+              <span th:text="${#numbers.formatDecimal(tx.montant/100, 1, 2)} + '€'"></span>
+              : [[${tx.reference}]]
+             </li>
+            </th:block>
+           </ul>
+          </th:block>
+         </dl>
+        </dl>
+       </div>
+      </th:block>
+     </div>
+    </div>
+   </div>
+      <script>
+          var form_url= '[[@{${path}}]]';
+          var form_url= '[[@{${path}}]]';
+          var ventilationsUrl= "[[@{'/admin/ventilations'}]]";
+      </script>
+  </div>
+</html>
