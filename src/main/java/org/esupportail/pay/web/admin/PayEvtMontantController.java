@@ -62,6 +62,9 @@ public class PayEvtMontantController {
     
 	@Resource
 	LabelDaoService labelDaoService;
+
+    @Resource
+    PayEvtMontantUpdateValidator payEvtMontantValidator;
 	
     @ModelAttribute("addPrefixList")
     public List<String> getAddPrefixList() {
@@ -81,7 +84,6 @@ public class PayEvtMontantController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html", value="/addMontant")
     @PreAuthorize("hasPermission(#payEvtMontant, 'manage')")
     public String addMontant(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	PayEvtMontantUpdateValidator payEvtMontantValidator = new PayEvtMontantUpdateValidator();
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
     	if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
@@ -103,7 +105,6 @@ public class PayEvtMontantController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     @PreAuthorize("hasPermission(#payEvtMontant, 'manage')")
     public String update(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	PayEvtMontantUpdateValidator payEvtMontantValidator = new PayEvtMontantUpdateValidator();
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
     	if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);

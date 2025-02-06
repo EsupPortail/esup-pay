@@ -20,9 +20,11 @@ package org.esupportail.pay.web.validators;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+@Service
 public class PayEvtMontantUpdateValidator implements Validator {
 
 	@Override
