@@ -39,9 +39,9 @@
         <span th:utext="${footer_html_add}"></span>
     </th:block>
 
-    <div th:if="${param.alert_msg != null}">
+    <div th:if="${alert_msg != null}">
         <script>
-            var alertMsg = "[[#{strings.escapeJs(param.alert_msg)}]]";
+            var alertMsg = `[[#{${alert_msg}}]]`;
             alert(alertMsg);
         </script>
     </div>

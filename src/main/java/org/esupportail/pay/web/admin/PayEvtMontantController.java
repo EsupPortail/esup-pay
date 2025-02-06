@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
@@ -120,13 +121,13 @@ public class PayEvtMontantController {
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'manage')")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, RedirectAttributes uiModel) {
         PayEvtMontant payEvtMontant = payEvtMontantDaoService.findPayEvtMontant(id);
     	Long evtId = payEvtMontant.getEvt().getId();
     	if(payEvtMontantDaoService.isDeletable(payEvtMontant)) {
     		payEvtMontantDaoService.remove(payEvtMontant);
     	} else {
-    		uiModel.addAttribute("alert_msg", "pay_admin_evtmontant_delete_abort");
+    		uiModel.addFlashAttribute("alert_msg", "pay_admin_evtmontant_delete_abort");
     	}
         return "redirect:/admin/evts/" + evtId;
     }
