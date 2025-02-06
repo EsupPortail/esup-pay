@@ -61,7 +61,7 @@ public class VentilationController {
 		uiModel.addAttribute("dateMonthBefore", simpleDateFormat.format(DateUtils.addMonths(dateMonth,-1)));
 		uiModel.addAttribute("dateMonthAfter", simpleDateFormat.format(DateUtils.addMonths(dateMonth,+1)));
 		uiModel.addAttribute("dateMonth", simpleDateFormat.format(dateMonth));
-    	return "admin/ventilations";
+    	return "admin/ventilations/index.html";
     }
 	
 	@RequestMapping(value = "/addExportTransactionFile", method = RequestMethod.POST, produces = "text/html")

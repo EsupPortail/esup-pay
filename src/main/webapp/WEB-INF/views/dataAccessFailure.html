@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html layout:decorate="~{../layouts/public.html}" th:lang="${#locale}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+  <div class="container">
+    <div class="jumbotron" id="_title_title_id" title="#{error_dataaccessfailure_title}">
+      <h2>
+        [[#{error_dataaccessfailure_title}]]
+      </h2>
+      <p th:text="#{error_dataaccessfailure_problemdescription}"></p>
+      <th:block sec:authorize="isAuthenticated()">
+        <th:block th:if="${exception != null}">
+          <h4 th:text="#{exception_details}"></h4>
+          <!--!!! Please check, a variable swap was done : message to exception_message. Details: <replace type="message" value="exception_message" var="message" warn="true"></replace> !!!-->
+          <div class="jumbotron" id="_title_message_id" openpane="false" th:title="#{exception_message}">
+            <p th:text="${exception.localizedMessage}"></p>
+          </div>
+          <!--!!! Please check, a variable swap was done : stacktrace to exception_stacktrace. Details: <replace type="message" value="exception_stacktrace" var="stacktrace" warn="true"></replace> !!!-->
+          <div class="jumbotron" id="_title_exception_id" openpane="false" th:title="#{exception_stacktrace}">
+            <th:block th:each="trace : ${exception.stackTrace}">
+              <p th:text="${trace}"></p>
+              <br/>
+            </th:block>
+          </div>
+        </th:block>
+      </th:block>
+    </div>
+  </div>
+</div>
+</html>
