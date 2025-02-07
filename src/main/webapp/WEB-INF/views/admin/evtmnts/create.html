@@ -125,7 +125,7 @@
         <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_authCas_id">
          <legend>Auth CAS</legend>
          <label for="_authCas_id">
-          <input id="_authCas_id" name="authCas" th:value="${payEvtMontant.authCas}" th:checked="${payEvtMontant.authCas}" type="checkbox"/>
+          <input id="_authCas_id" th:field="${payEvtMontant.authCas}" type="checkbox"/>
           &nbsp;Oui
          </label>
         </fieldset>
@@ -134,14 +134,14 @@
           <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">
           </legend>
           <label for="_freeAmount_id">
-           <input id="_freeAmount_id" name="freeAmount" th:value="${payEvtMontant.freeAmount}" th:checked="${payEvtMontant.freeAmount}" type="checkbox"/>
+           <input id="_freeAmount_id" th:field="${payEvtMontant.freeAmount}" type="checkbox"/>
            &nbsp;Oui
           </label>
          </fieldset>
          <fieldset id="_c_org_esupportail_pay_domain_payEvtMontant_sciencesconf_id">
           <legend>Sciencesconf</legend>
           <label for="_sciencesconf_id">
-           <input id="_sciencesconf_id" name="sciencesconf" th:value="${payEvtMontant.sciencesconf}" th:checked="${payEvtMontant.sciencesconf}" type="checkbox"/>
+           <input id="_sciencesconf_id" th:field="${payEvtMontant.sciencesconf}" type="checkbox"/>
            &nbsp;Oui
           </label>
          </fieldset>

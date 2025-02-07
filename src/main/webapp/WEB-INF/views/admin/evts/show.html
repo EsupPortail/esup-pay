@@ -204,35 +204,35 @@
             </tr>
             </thead>
             <tbody th:with="typeName=#{menu_item_payevtmontant_new_label}">
-                <tr th:each="conf : ${payevtmontants}">
-                  <td th:text="${conf.title.labelLocales['fr'].translation}">
+                <tr th:each="payevtmontant : ${payevtmontants}">
+                  <td th:text="${payevtmontant.title.labelLocales['fr'].translation}">
                   </td>
-                  <td th:text="${conf.dbleMontantDisplay}">
+                  <td th:text="${payevtmontant.dbleMontantDisplay}">
                   </td>
-                  <td th:text="${conf.freeAmount}">
+                  <td th:text="${payevtmontant.freeAmount}">
                   </td>
-                  <td th:text="${conf.sciencesconf}">
+                  <td th:text="${payevtmontant.sciencesconf}">
                   </td>
                     <td>
-                        <a th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${conf.urlId}}" th:text="${conf.urlId}">
+                        <a th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${payevtmontant.urlId}}" th:text="${payevtmontant.urlId}">
                         </a>
                         &nbsp;
-                        <a class="clipboard" th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${conf.urlId}}" title="Copier dans le presse-papier">
+                        <a class="clipboard" th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${payevtmontant.urlId}}" title="Copier dans le presse-papier">
                             <span class="glyphicon glyphicon-copy">
                             </span>
                         </a>
                     </td>
-                  <td th:text="${conf.authCas}">
+                  <td th:text="${payevtmontant.authCas}">
                   </td>
-                  <td th:text="${conf.isEnabled}">
+                  <td th:text="${payevtmontant.isEnabled}">
                   </td>
                   <td class="utilbox" th:if="${canUpdate}" th:with="update_label=#{entity_update(${typeName})}">
-                    <a class="btn btn-warning" th:alt="${update_label}" th:href="@{'/admin/evtmnts/' + ${conf.id}(form='')}" th:title="${update_label}">
+                    <a class="btn btn-warning" th:alt="${update_label}" th:href="@{'/admin/evtmnts/' + ${payevtmontant.id}(form='')}" th:title="${update_label}">
                       <img class="image" th:alt="${update_label}" th:src="@{'/resources/images/update.png'}" th:title="${update_label}"/>
                     </a>
                   </td>
                   <td class="utilbox" th:if="${canUpdate}" th:with="delete_label=#{entity_delete(${typeName})}">
-                    <form th:action="@{'/admin/evtmnts/' + ${conf.id}}" th:method="delete">
+                    <form th:action="@{'/admin/evtmnts/' + ${payevtmontant.id}}" th:method="delete">
                       <input class="btn btn-danger" th:onclick="'return confirm(\'' + #{entity_delete_confirm} + '\')'" th:alt="${delete_label}" th:src="@{'/resources/images/delete.png'}" th:title="${delete_label}" type="image"/>
                     </form>
                   </td>

@@ -53,22 +53,22 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="conf : ${payevts}">
-                <td th:text="${conf.title.labelLocales['fr'].translation}">
+            <tr th:each="payevt : ${payevts}">
+                <td th:text="${payevt.title.labelLocales['fr'].translation}">
                 </td>
-                <td th:text="${conf.webSiteUrl}">
+                <td th:text="${payevt.webSiteUrl}">
                 </td>
-                <td th:text="${conf.respLoginsStr}">
+                <td th:text="${payevt.respLoginsStr}">
                 </td>
-                <td th:text="${conf.ViewerLoginsStr}">
+                <td th:text="${payevt.ViewerLoginsStr}">
                 </td>
-                <td th:text="${conf.payboxServiceKey}">
+                <td th:text="${payevt.payboxServiceKey}">
                 </td>
-                <td th:text="${conf.archived}">
+                <td th:text="${payevt.archived}">
                 </td>
                 <td class="utilbox">
                     <a class="btn btn-success" th:alt="#{menu_item_payevt_new_label}"
-                       th:href="@{'/admin/evts/' + ${conf.id}}"
+                       th:href="@{'/admin/evts/' + ${payevt.id}}"
                        th:title="#{menu_item_payevt_new_label}">
                         <img class="image" th:alt="#{menu_item_payevt_new_label}"
                              th:src="@{/resources/images/show.png}" th:title="#{menu_item_payevt_new_label}"/>
