@@ -16,16 +16,16 @@
                                 <option value="">
                                 </option>
                                 <th:block th:each="year : ${years}">
-                                    <div th:if="year == param.year">
+                                    <th:block th:if="${#strings.toString(year) == #strings.toString(param.year)}">
                                         <option selected="selected" th:value="${year}">
                                             [[${year}]]
                                         </option>
-                                    </div>
-                                    <div th:unless="year == param.year">
+                                    </th:block>
+                                    <th:block th:unless="${#strings.toString(year) == #strings.toString(param.year)}">
                                         <option th:value="${year}">
                                             [[${year}]]
                                         </option>
-                                    </div>
+                                    </th:block>
                                 </th:block>
                             </select>
                         </form>
@@ -44,12 +44,12 @@
                                 <option value="">
                                 </option>
                                 <th:block th:each="year : ${years}">
-                                    <th:block th:if="year == param.year">
+                                    <th:block th:if="${#strings.toString(year) == #strings.toString(param.year)}">
                                         <option selected="selected" th:value="${year}">
                                             [[${year}]]
                                         </option>
                                     </th:block>
-                                    <th:block th:unless="year == param.year">
+                                    <th:block th:unless="${#strings.toString(year) == #strings.toString(param.year)}">
                                         <option th:value="${year}">
                                             [[${year}]]
                                         </option>

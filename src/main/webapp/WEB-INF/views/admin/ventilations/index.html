@@ -135,7 +135,7 @@
            </dt>
            <span th:text="${#numbers.formatDecimal(t.value/100, 1, 2)} + '€'"></span>
            <br/>
-           <a aria-controls="collapseOne" aria-expanded="true" data-parent="#accordion" data-toggle="collapse" role="button" th:href="'#collapse-' + ${ventilationStatus} + '-' + ${evtStatus.index}">
+           <a aria-controls="collapseOne" aria-expanded="true" data-parent="#accordion" data-toggle="collapse" role="button" th:href="'#collapse-' + ${ventilationStatus.index} + '-' + ${evtStatus.index}">
             +
            </a>
            <ul class="panel-collapse collapse" th:id="'collapse-' + ${ventilationStatus.index} + '-' + ${evtStatus.index}">

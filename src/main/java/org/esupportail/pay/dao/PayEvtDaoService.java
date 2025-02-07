@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PayEvtDaoService {
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("id", "archived, id", "logoFile", "payboxServiceKey", "title", "webSiteUrl", "urlId", "managersEmail", "mailSubject", "payboxCommandPrefix", "respLogins", "viewerLogins", "defaultMntDescription", "logins", "viewerLogins2Add");
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("id", "archived", "archived, id", "logoFile", "payboxServiceKey", "title", "webSiteUrl", "urlId", "managersEmail", "mailSubject", "payboxCommandPrefix", "respLogins", "viewerLogins", "defaultMntDescription", "logins", "viewerLogins2Add");
 	
 
 	@PersistenceContext
@@ -112,7 +112,7 @@ public class PayEvtDaoService {
      * Not just a wrapper to findPayEvtsByRespLoginsOrByViewerLogins, because it
      * only selects the current page of Pageable.
      */
-    public Page<PayEvt> findPagePayEvtsByRespLoginsOrByViewerLogins(List<RespLogin> logins, Pageable pageable) {
+    public Page<PayEvt> findPagePayEvtsByRespLoginsOrByViewerLogins(List<RespLogin> logins, Pageable pageable, List<Sort.Order> orders) {
         if (logins == null) throw new IllegalArgumentException("The logins argument is required");
         StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o WHERE");
         StringBuilder countBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o WHERE");
@@ -126,12 +126,17 @@ public class PayEvtDaoService {
         queryBuilder.append(whereBuilder);
         countBuilder.append(whereBuilder);
 
-        Sort.Order sortFieldName = pageable.getSort().iterator().next();
-        String sortOrder = sortFieldName.getDirection().name();
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
-            queryBuilder.append(" ORDER BY :sort_field");
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" :sort_order");
+        if (orders != null && !orders.isEmpty()) {
+            queryBuilder.append(" ORDER BY ");
+            for (int i = 0; i<orders.size();  i++) {
+                String sortOrder = orders.get(i).getDirection().name();
+                if (fieldNames4OrderClauseFilter.contains(orders.get(i).getProperty())) {
+                    queryBuilder.append(orders.get(i).getProperty());
+                    if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                        queryBuilder.append(" ").append(sortOrder);
+                    }
+                }
+                if (i < orders.size() - 1) queryBuilder.append(", ");
             }
         }
 
@@ -143,8 +148,6 @@ public class PayEvtDaoService {
             q.setParameter("logins_item" + respLoginsIndex++, _login);
             qCount.setParameter("logins_item" + respLoginsIndex++, _login);
         }
-        q.setParameter("sort_field", sortFieldName.getProperty());
-        q.setParameter("sort_order", sortOrder);
 
         q.setFirstResult((int) pageable.getOffset());
         q.setMaxResults(pageable.getPageSize());
@@ -299,16 +302,21 @@ public class PayEvtDaoService {
         return em.createQuery(jpaQuery, PayEvt.class).getResultList();
     }
 
-    public Page<PayEvt> findPagePayEvts(Pageable pageable) {
+    public Page<PayEvt> findPagePayEvts(Pageable pageable, List<Sort.Order> orders) {
         StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o");
         StringBuilder countBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o");
 
-        Sort.Order sortFieldName = pageable.getSort().iterator().next();
-        String sortOrder = sortFieldName.getDirection().name();
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
+        if (orders != null && !orders.isEmpty()) {
+            queryBuilder.append(" ORDER BY ");
+            for (int i = 0; i<orders.size();  i++) {
+                String sortOrder = orders.get(i).getDirection().name();
+                if (fieldNames4OrderClauseFilter.contains(orders.get(i).getProperty())) {
+                    queryBuilder.append(orders.get(i).getProperty());
+                    if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                        queryBuilder.append(" ").append(sortOrder);
+                    }
+                }
+                if (i < orders.size() - 1) queryBuilder.append(", ");
             }
         }
 

@@ -19,7 +19,7 @@
 
 -->
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<div class="container" id="footer" th:fragment="footer">
+<div class="container" id="footer" th:fragment="footer" style="z-index: 10">
     <a th:href="${@propertyConfigurer.getProperty('institute.href')}"
        th:text="${@propertyConfigurer.getProperty('institute.name')}"></a>
     <span> - </span>

@@ -19,6 +19,7 @@ package org.esupportail.pay.web.admin;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -254,8 +255,11 @@ public class PayEvtController {
     
     @RequestMapping(produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')")
-    public String list(Model uiModel, @PageableDefault(size = 10, sort = {"archived", "id"}, direction =  Sort.Direction.DESC) Pageable pageable) {
-       
+    public String list(Model uiModel, @PageableDefault(size = 10) Pageable pageable) {
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, "archived"));
+        orders.add(new Sort.Order(Sort.Direction.DESC, "id"));
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -266,7 +270,7 @@ public class PayEvtController {
         String currentUser = auth.getName();
 
         if(isAllViewer) {
-            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvts(pageable);
+            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvts(pageable, orders);
             List<PayEvt> payEvts = payEvtPage.getContent();
             evtService.computeRespLogin(payEvts);
         	uiModel.addAttribute("payevts", payEvts);
@@ -275,7 +279,8 @@ public class PayEvtController {
             List<RespLogin> loginList = evtService.listEvt(currentUser);
             Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvtsByRespLoginsOrByViewerLogins(
                     loginList,
-                    pageable
+                    pageable,
+                    orders
             );
             List<PayEvt> payEvts = payEvtPage.getContent();
             evtService.computeRespLogin(payEvts);
