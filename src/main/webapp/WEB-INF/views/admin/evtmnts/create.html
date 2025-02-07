@@ -29,7 +29,7 @@
      <div id="_title_fc_org_esupportail_pay_domain_payEvtMontant_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevtmontant})}">
       <form enctype="application/x-www-form-urlencoded" id="payEvtMontant" method="POST" th:action="@{/admin/evtmnts/addMontant}" th:enctype="${enctype}" th:object="${payEvtMontant}" th:onsubmit="${jsCall}">
        <div class="errors" th:if="${#fields.hasErrors('*')}">
-        <ul>
+        <ul class="list-unstyled">
          <li class="error" th:each="err : ${#fields.errors('*')}" th:text="${err}">
          </li>
         </ul>

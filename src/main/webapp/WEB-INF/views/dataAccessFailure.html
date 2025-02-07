@@ -33,11 +33,9 @@
       <th:block sec:authorize="isAuthenticated()">
         <div class="row" th:if="${exception != null}">
           <h3 th:text="#{exception_details}"></h3>
-          <!--!!! Please check, a variable swap was done : message to exception_message. Details: <replace type="message" value="exception_message" var="message" warn="true"></replace> !!!-->
           <div class="col-md-12" id="_title_message_id" th:title="#{exception_message}">
             <p><mark th:text="${exception.localizedMessage}"></mark></p>
           </div>
-          <!--!!! Please check, a variable swap was done : stacktrace to exception_stacktrace. Details: <replace type="message" value="exception_stacktrace" var="stacktrace" warn="true"></replace> !!!-->
           <div class="col-md-12" id="_title_exception_id" th:title="#{exception_stacktrace}">
             <th:block th:each="trace : ${exception.stackTrace}">
               <small th:text="${trace}"></small>

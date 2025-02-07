@@ -48,7 +48,7 @@
                 <div id="_title_fu_org_esupportail_pay_domain_payevt_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevt})}" class="panel panel-default">
                     <form id="payEvt" enctype="application/x-www-form-urlencoded" th:method="put" th:action="@{'/admin/evts'}" th:object="${payEvt}" class="panel-body">
                         <div class="errors" th:if="${#fields.hasErrors('*')}">
-                            <ul>
+                            <ul class="list-unstyled">
                                 <li class="error" th:each="err : ${#fields.errors('*')}" th:text="${err}">
                                 </li>
                             </ul>
