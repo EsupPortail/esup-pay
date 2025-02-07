@@ -27,15 +27,15 @@
         <div class="col-lg-3">
             <div class="well">
                     <div id="_title_fu_org_esupportail_pay_domain_payevt_logoFile_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevt_logofile})}">
-                        <form th:action="${payEvt.id} + '/addLogoFile'" id="uploadFile" method="POST" th:onsubmit="${jsCall}">
+                        <form th:action="${payEvt.id} + '/addLogoFile'" enctype="multipart/form-data" id="uploadFile" method="POST" th:onsubmit="${jsCall}">
                             <fieldset>
                                 <legend>
                                     <span th:text="#{form_logo}">
                                     </span>
                                 </legend>
-                                <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="" type="file"/>
+                                <input id="c_org_esupportail_pay_domain_payevt_logoFile" name="logoFile" required="required" type="file"/>
                                 <br/>
-                                <img alt="" th:src="@{'/admin/evts/' + ${payEvt.id} + '/logo'}" title="logo" class="col-md-12"/>
+                                <img alt="logo" th:src="@{'/admin/evts/' + ${payEvt.id} + '/logo'}" title="logo" class="col-md-12"/>
                             </fieldset>
                             <div class="submit" id="fu_org_esupportail_pay_domain_payevt_logoFile_submit">
                                 <input class="btn btn-success" id="fu_org_esupportail_pay_domain_payevt_logoFile_proceed" th:value="#{button_save}" type="submit"/>
