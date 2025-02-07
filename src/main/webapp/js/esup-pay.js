@@ -1,7 +1,7 @@
 // csrf 
 $(function () {
-var token = $("meta[name='_csrf']").attr("content");
-var header = $("meta[name='_csrf_header']").attr("content");
+var token = $("input[name='_csrf']").attr("value");
+var header = "X-CSRF-TOKEN"
 if (token) $(document).ajaxSend(function(e, xhr, options) {
 	xhr.setRequestHeader(header, token);
 });
