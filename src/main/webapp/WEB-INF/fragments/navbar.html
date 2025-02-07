@@ -24,37 +24,34 @@
     <div class="navbar-default navbar-inverse navbar-fixed-top">
         <th:block th:with="logo_url=${@propertyConfigurer.getProperty('institute.logo-navbar.url')}">
             <div class="row">
-                <div sec:authorize="isAuthenticated()">
+                <th:block sec:authorize="isAuthenticated()">
                     <th:block
                             th:with="userName=${#authentication.principal.username}, actif=${active == 'su' ? 'su' : 'notsu'}">
                         <div th:replace="../fragments/menu_nav :: menu(logoAppUrl=${logo_url}, appName=${app_name}, labelRightButton=#{pay_logout(${#authentication.principal.username})}, urlRightButton='/j_spring_cas_security_logout', iconRightButton='off')">
                             <th:block th:fragment="content">
                                 <th:block sec:authorize="hasAnyRole('ROLE_SU', 'ROLE_ALL_VIEWER', 'ROLE_MANAGER', 'ROLE_VIEWER')">
                                     <li th:class="${actif=='notsu'} ? 'active' : ''" id="home">
-                                        <a href="/admin" th:title="#{pay_home}" th:text="#{pay_home}">
-                                            H
-                                        </a>
+                                        <a href="/admin" th:title="#{pay_home}" th:text="#{pay_home}"></a>
                                     </li>
                                 </th:block>
                                 <th:block sec:authorize="hasRole('ROLE_SU')">
-                                        <li th:class="${actif=='su'} ? 'active' : ''" id="su">
-                                            <a href="/admin/su" title="SU">
-                                                SU
-                                            </a>
-                                        </li>
-                                    </th:block>
+                                    <li th:class="${actif=='su'} ? 'active' : ''" id="su">
+                                        <a href="/admin/su" title="SU">SU</a>
+                                    </li>
                                 </th:block>
+                            </th:block>
                           </div>
                     </th:block>
-                </div>
-                <div sec:authorize="hasRole('ROLE_PREVIOUS_ADMINISTRATOR')">
+                </th:block>
+                <th:block sec:authorize="hasRole('ROLE_PREVIOUS_ADMINISTRATOR')">
                     <ul class="nav navbar-nav navbar-right supervisor-nav">
                         <li>
-                            <span th:text="#{button_exit_su}">
-                            </span>
+                            <form class="form-horizontal" th:action="@{/logout/impersonate}" method="POST">
+                                <input type="submit" class="btn btn-warning" th:value="#{button_exit_su}">
+                            </form>
                         </li>
                     </ul>
-                </div>
+                </th:block>
             </div>
         </th:block>
     </div>

@@ -38,10 +38,9 @@
     <th:block th:with="footer_html_add = ${@propertyConfigurer.getProperty('esup-pay.footer-html-add')}">
         <span th:utext="${footer_html_add}"></span>
     </th:block>
-
     <div th:if="${alert_msg != null}">
-        <script>
-            var alertMsg = `[[#{${alert_msg}}]]`;
+        <script th:inline="javascript">
+            var alertMsg = /*[[#{${alert_msg}}]]*/ "";
             alert(alertMsg);
         </script>
     </div>

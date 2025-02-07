@@ -3,7 +3,7 @@ $(function () {
 var token = $("input[name='_csrf']").attr("value");
 var header = "X-CSRF-TOKEN"
 if (token) $(document).ajaxSend(function(e, xhr, options) {
-	xhr.setRequestHeader(header, token);
+	if (options.type != "GET") xhr.setRequestHeader(header, token);
 });
 });
 
