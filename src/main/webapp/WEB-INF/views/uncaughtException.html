@@ -27,21 +27,20 @@
     <div class="jumbotron" id="_title_title_id" th:title="#{error_uncaughtexception_title}">
       <h2>[[#{error_uncaughtexception_title}]]
       </h2>
-      <p th:text="#{error_resourcenotfound_problemdescription}"></p>
+      <p class="lead" th:text="#{error_resourcenotfound_problemdescription}"></p>
+      <hr/>
       <th:block sec:authorize="isAuthenticated()">
-        <th:block th:if="${exception != null}">
-          <h4 th:text="#{exception_details}"></h4>
-          <div class="jumbotron" id="_title__message_id" openpane="false" th:title="#{exception_message}">
-            <p th:text="${exception.localizedMessage}"></p>
+        <div th:if="${exception != null}" class="row">
+          <h3 th:text="#{exception_details}"></h3>
+          <div id="_title__message_id" th:title="#{exception_message}" class="col-md-12">
+            <p><mark th:text="${exception.localizedMessage}"></mark></p>
           </div>
-          <div class="jumbotron" id="_title__exception_id" openpane="false" th:title="#{exception_stacktrace}">
+          <div id="_title__exception_id" th:title="#{exception_stacktrace}" class="col-md-12">
             <th:block th:each="trace : ${exception.stackTrace}">
-              <p th:text="${trace}"></p>
-              <br/>
+              <small th:text="${trace}"></small>
             </th:block>
           </div>
-          </p>
-        </th:block>
+        </div>
       </th:block>
     </div>
   </div>

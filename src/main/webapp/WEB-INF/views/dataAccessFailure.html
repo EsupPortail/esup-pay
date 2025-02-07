@@ -28,22 +28,22 @@
       <h2>
         [[#{error_dataaccessfailure_title}]]
       </h2>
-      <p th:text="#{error_dataaccessfailure_problemdescription}"></p>
+      <p class="lead" th:text="#{error_dataaccessfailure_problemdescription}"></p>
+      <hr/>
       <th:block sec:authorize="isAuthenticated()">
-        <th:block th:if="${exception != null}">
-          <h4 th:text="#{exception_details}"></h4>
+        <div class="row" th:if="${exception != null}">
+          <h3 th:text="#{exception_details}"></h3>
           <!--!!! Please check, a variable swap was done : message to exception_message. Details: <replace type="message" value="exception_message" var="message" warn="true"></replace> !!!-->
-          <div class="jumbotron" id="_title_message_id" openpane="false" th:title="#{exception_message}">
-            <p th:text="${exception.localizedMessage}"></p>
+          <div class="col-md-12" id="_title_message_id" th:title="#{exception_message}">
+            <p><mark th:text="${exception.localizedMessage}"></mark></p>
           </div>
           <!--!!! Please check, a variable swap was done : stacktrace to exception_stacktrace. Details: <replace type="message" value="exception_stacktrace" var="stacktrace" warn="true"></replace> !!!-->
-          <div class="jumbotron" id="_title_exception_id" openpane="false" th:title="#{exception_stacktrace}">
+          <div class="col-md-12" id="_title_exception_id" th:title="#{exception_stacktrace}">
             <th:block th:each="trace : ${exception.stackTrace}">
-              <p th:text="${trace}"></p>
-              <br/>
+              <small th:text="${trace}"></small>
             </th:block>
           </div>
-        </th:block>
+        </div>
       </th:block>
     </div>
   </div>
