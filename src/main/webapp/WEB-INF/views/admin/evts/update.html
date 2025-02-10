@@ -186,7 +186,7 @@
                                         <legend th:text="#{label_org_esupportail_pay_domain_payevt_archived}">
                                         </legend>
                                         <label>
-                                            <input id="_archived_id" name="archived" th:value="${payEvt.archived}" th:checked="${payEvt.archived}" type="checkbox"/>
+                                            <input id="_archived_id" th:field="*{archived}" type="checkbox"/>
                                             &nbsp;Oui
                                         </label>
                                     </fieldset>
