@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
     Licensed to ESUP-Portail under one or more contributor license
@@ -18,9 +17,15 @@
     limitations under the License.
 
 -->
-<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
-<tiles-definitions>
-    <definition extends="admin" name="admin/ventilations">
-        <put-attribute name="body" value="/WEB-INF/views/admin/ventilations/index.jspx"/>
-    </definition>
-</tiles-definitions>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="content"
+  th:if="${render == null or render}">
+  <th:block th:with="imgUrl='/resources/images/' + ${locale} + '.png',
+                  langSwitchLabel=#{global_language_switch(${label})}">
+    <a th:href="@{/(lang=${locale}, form=${param.form}, find=${param.find}, page=${param.page}, size=${param.size})}"
+       th:title="${langSwitchLabel}"
+       ><img class="flag" th:src="@{${imgUrl}}" th:alt="${langSwitchLabel}" /></a>
+  </th:block>
+</th:block>
+</html>

@@ -96,7 +96,7 @@ public class PayController {
 				auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_STAT")))) {
         	return "redirect:/admin";
         }
-       return "index.html";
+       return "index";
     }
 
     @RequestMapping("evts/{evtUrlId}")

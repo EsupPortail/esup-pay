@@ -49,13 +49,13 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 		mav.addObject("url", url);
 		if(ex instanceof DataAccessException) {
 			log.error("Request: " + url + " raised " + ex.getMessage());
-			mav.setViewName("dataAccessFailure.html");
+			mav.setViewName("dataAccessFailure");
 		} else if(ex instanceof EntityNotFoundException) {
 			log.warn("Request: " + url + " raised " + ex.getMessage());
-			mav.setViewName("resourceNotFound.html");
+			mav.setViewName("resourceNotFound");
 		} else {
 			log.error("Request: " + url + " raised " + ex.getMessage());
-			mav.setViewName("uncaughtException.html");
+			mav.setViewName("uncaughtException");
 		}
 		log.debug("Request: " + url + " raised " + ex, ex);
 		return mav;
@@ -69,7 +69,7 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 		mav.addObject("url", url);
 		log.error("Request: " + url + " raised uncaught exception ");
 		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		mav.setViewName("uncaughtException.html");
+		mav.setViewName("uncaughtException");
 		return mav;
 	}
 
@@ -94,7 +94,7 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 		mav.addObject("url", url);
 		log.warn("Request: " + url + " not found");
 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-		mav.setViewName("resourceNotFound.html");
+		mav.setViewName("resourceNotFound");
 		return mav;
 	}
 	
@@ -106,8 +106,7 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 	@RequestMapping(value = "/denied")
     public String handelErrorDenied(final HttpServletResponse response) {
 		 response.setContentType("text/html");
-		 return "denied.html";
+		 return "denied";
     }
 	
 }
-

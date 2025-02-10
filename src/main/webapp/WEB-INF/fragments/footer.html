@@ -29,9 +29,9 @@
         <span> | </span>
         <span th:text="#{global_language}"></span>
         <span>: </span>
-        <th:block th:insert="~{../tags/util/language :: content}"
+        <th:block th:insert="~{../fragments/language :: content}"
              th:with="locale='en', label='English'"></th:block>
-        <th:block th:insert="~{../tags/util/language :: content}"
+        <th:block th:insert="~{../fragments/language :: content}"
              th:with="locale='fr', label='French'"></th:block>
     </span>
 

@@ -52,7 +52,7 @@ public class PayTransactionLogController {
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("listAllTxEvts", true);
         uiModel.addAttribute("page", payTxLogPage);
-        return "admin/fees-admin-view/list.html";
+        return "admin/fees-admin-view/list";
     }
     
 
@@ -62,11 +62,10 @@ public class PayTransactionLogController {
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("paytransactionlog", payTransactionLogDaoService.findPayTransactionLog(id));
         uiModel.addAttribute("itemId", id);
-        return "admin/fees-admin-view/show.html";
+        return "admin/fees-admin-view/show";
     }
 
 	void addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("payTransactionLog_transactiondate_date_format", DateTimeFormat.patternForStyle("MM", LocaleContextHolder.getLocale()));
     }
 }
-

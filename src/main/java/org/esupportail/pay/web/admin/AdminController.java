@@ -33,7 +33,7 @@ public class AdminController {
 	@RequestMapping("/admin/su")
 	public String su(Model uiModel) {		
 		uiModel.addAttribute("active", "su");
-		return "admin/su.html";
+		return "admin/su";
 	}
 	
 	@RequestMapping("/admin")

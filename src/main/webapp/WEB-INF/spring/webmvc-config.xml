@@ -69,9 +69,9 @@
     </mvc:interceptors>
 
     <!-- Selects a static view for rendering without the need for an explicit controller -->
-    <mvc:view-controller path="/resourceNotFound.html" status-code="404"/>
-    <mvc:view-controller path="/dataAccessFailure.html"/>
-    <mvc:view-controller path="/denied.html" status-code="403"/>
+    <mvc:view-controller path="/resourceNotFound" status-code="404"/>
+    <mvc:view-controller path="/dataAccessFailure"/>
+    <mvc:view-controller path="/denied" status-code="403"/>
     
     <bean id="webExpressionHandler" 
     	class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
@@ -94,21 +94,23 @@
     <!-- Store preferred theme configuration in a cookie -->
     <bean class="org.springframework.web.servlet.theme.CookieThemeResolver" id="themeResolver" p:cookieName="theme" p:defaultThemeName="standard"/>
 
-    <!-- Enable this for integration of file upload functionality -->
-    
-	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" id="tilesViewResolver">
-      <property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView"/>
+    <!-- Thymeleaf integration with Spring MVC : Decide which view should be handled by THymeleaf and configure how the
+         template is sent to the browser -->
+    <bean id="tlViewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="tlTemplateEngine"/>
+        <property name="order" value="1"/>
+        <property name="viewNames" value="*"/>
+        <property name="characterEncoding" value="UTF-8"/>
     </bean>
-
-    <!-- Thymeleaf -->
+    <!-- Thymeleaf template resolver serving HTML 5: locate and load template files -->
     <bean id="tlResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
         <property name="order" value="9"/>
         <property name="prefix" value="/WEB-INF/views/"/>
         <property name="suffix" value=".html"/>
         <property name="templateMode" value="HTML"/>
-        <property name="characterEncoding" value="UTF-8"></property>
+        <property name="characterEncoding" value="UTF-8"/>
     </bean>
-
+    <!-- Core processing engine : Uses the resolver to get templates and processes Thymeleaf expressions -->
     <bean id="tlTemplateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
         <property name="templateResolver" ref="tlResolver"/>
         <property name="messageSource" ref="messageSource"/>
@@ -121,25 +123,6 @@
                 <bean class="org.thymeleaf.extras.java8time.dialect.Java8TimeDialect"/>
             </set>
         </property>
-    </bean>
-
-    <bean id="tlViewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
-        <property name="templateEngine" ref="tlTemplateEngine"/>
-        <property name="order" value="1"/>
-        <property name="viewNames" value="*.html"/>
-        <property name="excludedViewNames" value="*.jsp"/>
-        <property name="characterEncoding" value="UTF-8"/>
-    </bean>
-
-    <!-- JSPX -->
-    <bean class="org.springframework.web.servlet.view.tiles3.TilesConfigurer" id="tilesConfigurer">
-     <property name="definitions">
-      <list>
-        <value>/WEB-INF/layouts/layouts.xml</value>
-        <!-- Scan views directory for Tiles configurations -->
-        <value>/WEB-INF/views/**/views.xml</value>
-      </list>
-     </property>
     </bean>
 
     <!-- Handle Pagination -->

@@ -43,7 +43,7 @@ public class StatsController {
 	@RequestMapping
     public String getStats(Model uiModel) {
 		uiModel.addAttribute("years", statsService.getDistinctYears());
-    	return "admin/stats/index.html";
+    	return "admin/stats/index";
     }
 
 	@RequestMapping(value="/montants", headers = "Accept=application/json; charset=utf-8")

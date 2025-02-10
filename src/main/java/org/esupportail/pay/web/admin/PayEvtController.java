@@ -187,7 +187,7 @@ public class PayEvtController {
             evtService.computeLogins(payEvt, respLoginIds, viewerLoginIds);
             evtService.computeRespLogin(payEvt);
             populateEditForm(uiModel, payEvt);
-            return "admin/evts/update.html";
+            return "admin/evts/update";
         }
         uiModel.asMap().clear();        
         evtService.updateEvt(payEvt);
@@ -213,7 +213,7 @@ public class PayEvtController {
         }
         uiModel.addAttribute("canUpdate", payPermissionEvaluator.hasPermission(auth, evt, "manage"));
         uiModel.addAttribute("isAdmin", isAdmin);
-        return "admin/evts/show.html";
+        return "admin/evts/show";
     }
     
     
@@ -232,7 +232,7 @@ public class PayEvtController {
             evtService.computeLogins(payEvt, respLoginIds, viewerLoginIds);
             evtService.computeRespLogin(payEvt);
             populateEditForm(uiModel, payEvt);
-            return "admin/evts/create.html";
+            return "admin/evts/create";
         }
         uiModel.asMap().clear();
 
@@ -290,7 +290,7 @@ public class PayEvtController {
         }
         uiModel.addAttribute("isAdmin", isAdmin);
         
-        return "admin/evts/list.html";
+        return "admin/evts/list";
     }
     
     
@@ -300,7 +300,7 @@ public class PayEvtController {
     	PayEvt payEvt = new PayEvt();
     	payEvt.setDbleMontantMax(defaultDbleMontantMax);
         populateEditForm(uiModel, payEvt);
-        return "admin/evts/create.html";
+        return "admin/evts/create";
     }
     
     @PreAuthorize("hasPermission(#id, 'manage')")
@@ -309,7 +309,7 @@ public class PayEvtController {
         PayEvt payEvt = payEvtDaoService.findPayEvt(id);
         evtService.computeRespLogin(payEvt);
         populateEditForm(uiModel, payEvt);
-        return "admin/evts/update.html";
+        return "admin/evts/update";
     }
     
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -336,7 +336,7 @@ public class PayEvtController {
         uiModel.addAttribute("total", String.format("%,.2f€", Double.valueOf(total) / 100.0));
         uiModel.addAttribute("payEvt", payEvt);
         uiModel.addAttribute("page", payTxLogPage);
-        return "admin/fees-admin-view/list.html";
+        return "admin/fees-admin-view/list";
     }
     
     @PreAuthorize("hasPermission(#id, 'view')")

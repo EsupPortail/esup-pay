@@ -78,7 +78,7 @@ public class PayEvtMontantController {
     	PayEvt evt =  payEvtDaoService.findPayEvt(evtId);
     	payEvtMontant.setEvtWithDefaultParametersIfNeeded(evt);
         uiModel.addAttribute("payEvtMontant", payEvtMontant);
-        return "admin/evtmnts/create.html";
+        return "admin/evtmnts/create";
     }
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html", value="/addMontant")
@@ -87,7 +87,7 @@ public class PayEvtMontantController {
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
     	if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
-            return "admin/evtmnts/create.html";
+            return "admin/evtmnts/create";
         }
         uiModel.asMap().clear();
         PayEvt evt = payEvtDaoService.findPayEvt(payEvtMontant.getEvt().getId());
@@ -108,7 +108,7 @@ public class PayEvtMontantController {
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
     	if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
-            return "admin/evtmnts/update.html";
+            return "admin/evtmnts/update";
         }
     	payEvtMontantDaoService.merge(payEvtMontant);
         uiModel.asMap().clear();
@@ -139,7 +139,7 @@ public class PayEvtMontantController {
     public String create(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
-            return "admin/evtmnts/create.html";
+            return "admin/evtmnts/create";
         }
         uiModel.asMap().clear();
         payEvtMontantDaoService.persist(payEvtMontant);
@@ -150,7 +150,7 @@ public class PayEvtMontantController {
     @PreAuthorize("hasPermission(#id, 'manage-montant')")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, payEvtMontantDaoService.findPayEvtMontant(id));
-        return "admin/evtmnts/update.html";
+        return "admin/evtmnts/update";
     }
 
 	void populateEditForm(Model uiModel, PayEvtMontant payEvtMontant) {
