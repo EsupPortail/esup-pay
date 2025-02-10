@@ -487,7 +487,7 @@
 			<plugin>
 				<groupId>org.jasig.maven</groupId>
 				<artifactId>maven-notice-plugin</artifactId>
-				<version>1.0.4</version>
+				<version>1.1.0</version>
 				<configuration>
 					<noticeTemplate>src/etc/NOTICE.template</noticeTemplate>
 					<licenseMapping>
@@ -495,6 +495,18 @@
 						<param>src/etc/license-mappings.xml</param>
 					</licenseMapping>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>javax.xml.bind</groupId>
+						<artifactId>jaxb-api</artifactId>
+						<version>2.3.1</version>
+					</dependency>
+					<dependency>
+						<groupId>com.sun.xml.bind</groupId>
+						<artifactId>jaxb-impl</artifactId>
+						<version>2.3.9</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 			<plugin>
