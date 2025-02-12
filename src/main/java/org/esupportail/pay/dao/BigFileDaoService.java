@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.esupportail.pay.domain.BigFile;
 import org.hibernate.LobHelper;

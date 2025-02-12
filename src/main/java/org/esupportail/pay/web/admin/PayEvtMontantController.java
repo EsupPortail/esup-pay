@@ -19,9 +19,9 @@ package org.esupportail.pay.web.admin;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import org.esupportail.pay.dao.LabelDaoService;
 import org.esupportail.pay.dao.PayEvtDaoService;

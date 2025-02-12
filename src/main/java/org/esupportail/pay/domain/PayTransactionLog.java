@@ -18,8 +18,8 @@
 package org.esupportail.pay.domain;
 import java.util.Date;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -107,4 +107,3 @@ public class PayTransactionLog {
     }
     
 }
-

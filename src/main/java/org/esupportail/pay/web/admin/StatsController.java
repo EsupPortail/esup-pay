@@ -17,7 +17,7 @@
  */
 package org.esupportail.pay.web.admin;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.services.StatsService;

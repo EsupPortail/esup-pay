@@ -21,10 +21,10 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.PayEvtMontant;

@@ -71,7 +71,10 @@
  		"org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
  		<beans:property name="permissionEvaluator" ref="payPermissionEvaluator"/>
 	</beans:bean>
-	
+
+	<beans:bean id="SecurityExpressionHandler" class=
+		"org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler"/>
+
 	<beans:bean class="org.esupportail.pay.security.PayPermissionEvaluator" id="payPermissionEvaluator"/>
 	
 	<beans:bean id="resourceUrlEncodingFilter"
@@ -95,7 +98,7 @@
 	<!-- CAS -->
 
 	<!-- This filter handles a Single Logout Request from the CAS Server -->
-	<beans:bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter" />
+	<beans:bean id="singleLogoutFilter" class="org.apereo.cas.client.session.SingleSignOutFilter" />
 	
 	<!-- This filter redirects to the CAS Server to signal Single Logout should 
 		be performed -->
@@ -139,7 +142,7 @@
 		<beans:property name="serviceProperties" ref="serviceProperties" />
 		<beans:property name="ticketValidator">
 			<beans:bean
-				class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+				class="org.apereo.cas.client.validation.Cas20ServiceTicketValidator">
 				<beans:constructor-arg index="0"
 					value="${cas.url}" />
 			</beans:bean>

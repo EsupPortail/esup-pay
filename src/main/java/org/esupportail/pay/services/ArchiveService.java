@@ -19,8 +19,8 @@ package org.esupportail.pay.services;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.persistence.TypedQuery;
+import jakarta.annotation.Resource;
+import jakarta.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
@@ -106,4 +106,3 @@ public class ArchiveService {
 	}
 	
 }
-

@@ -18,8 +18,8 @@
  package org.esupportail.pay.dao;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Service;
 
@@ -71,4 +71,3 @@ public class LabelLocaleDaoService {
     }
 
 }
-

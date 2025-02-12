@@ -33,7 +33,7 @@
     <!-- Turns on support for mapping requests to Spring MVC @Controller methods
          Also registers default Formatters and Validators for use across all @Controllers -->
     <mvc:annotation-driven conversion-service="applicationConversionService"/>
-    
+
     <mvc:resources location="/, classpath:/META-INF/web-resources/" mapping="/resources/**" order="1">
     	<mvc:cache-control cache-public="true" max-age="86400"/>
     	<mvc:resource-chain resource-cache="true">
@@ -96,14 +96,14 @@
 
     <!-- Thymeleaf integration with Spring MVC : Decide which view should be handled by THymeleaf and configure how the
          template is sent to the browser -->
-    <bean id="tlViewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+    <bean id="tlViewResolver" class="org.thymeleaf.spring6.view.ThymeleafViewResolver">
         <property name="templateEngine" ref="tlTemplateEngine"/>
         <property name="order" value="1"/>
         <property name="viewNames" value="*"/>
         <property name="characterEncoding" value="UTF-8"/>
     </bean>
     <!-- Thymeleaf template resolver serving HTML 5: locate and load template files -->
-    <bean id="tlResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+    <bean id="tlResolver" class="org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver">
         <property name="order" value="9"/>
         <property name="prefix" value="/WEB-INF/views/"/>
         <property name="suffix" value=".html"/>
@@ -111,14 +111,14 @@
         <property name="characterEncoding" value="UTF-8"/>
     </bean>
     <!-- Core processing engine : Uses the resolver to get templates and processes Thymeleaf expressions -->
-    <bean id="tlTemplateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
+    <bean id="tlTemplateEngine" class="org.thymeleaf.spring6.SpringTemplateEngine">
         <property name="templateResolver" ref="tlResolver"/>
         <property name="messageSource" ref="messageSource"/>
         <property name="enableSpringELCompiler" value="true"/>
         <property name="additionalDialects">
             <set>
                 <bean class="nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect"/>
-                <bean class="org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect"/>
+                <bean class="org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect"/>
                 <bean class="org.thymeleaf.dialect.springdata.SpringDataDialect"/>
                 <bean class="org.thymeleaf.extras.java8time.dialect.Java8TimeDialect"/>
             </set>

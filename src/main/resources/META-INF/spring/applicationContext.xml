@@ -66,9 +66,11 @@
         <property name="host" value="${email.host}"/>
     </bean>
     
-    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="filterMultipartResolver"/>
+    <bean class="org.springframework.web.multipart.support.StandardServletMultipartResolver" id="filterMultipartResolver"/>
 
 	<bean id="restTemplate"
 		class="org.springframework.web.client.RestTemplate"/>
-        
+
+    <bean id="mvcHandlerMappingIntrospector" class="org.springframework.web.servlet.handler.HandlerMappingIntrospector"/>
+
 </beans>

@@ -23,16 +23,16 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
-public class ConfigInterceptor extends HandlerInterceptorAdapter {
+public class ConfigInterceptor implements HandlerInterceptor {
 
 	@Value("ESUP-PAY ${institute.name:''}")
 	private String title;

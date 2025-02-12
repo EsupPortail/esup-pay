@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.esupportail.pay.domain.LdapResult;
 import org.esupportail.pay.domain.RespLogin;

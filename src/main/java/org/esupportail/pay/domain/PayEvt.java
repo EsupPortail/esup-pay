@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.services.PayBoxService;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
