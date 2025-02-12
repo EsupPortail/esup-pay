@@ -182,9 +182,10 @@ public class PayController {
     
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.POST)
     public String form(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, 
-    		@RequestParam String mail, @RequestParam String field1, @RequestParam String field2, @RequestParam(required=false, value="amount") String amountString,
-    		@RequestParam(required=false) String billingFirstname, @RequestParam(required=false) String billingLastname, @RequestParam(required=false) String billingAddress1, 
-    		@RequestParam(required=false) String billingZipCode, @RequestParam(required=false) String billingCity, @RequestParam(required=false) String billingCountryCode
+    		@RequestParam("mail") String mail, @RequestParam("field1") String field1, @RequestParam("field2") String field2, @RequestParam(required=false, value="amount") String amountString,
+    		@RequestParam(required=false, value="billingFirstName") String billingFirstname, @RequestParam(required=false, value="billingLastName") String billingLastname,
+		    @RequestParam(required=false, value="billingAddress1") String billingAddress1, @RequestParam(required=false, value="billingZipCode") String billingZipCode,
+	        @RequestParam(required=false, value="billingCity") String billingCity, @RequestParam(required=false, value="billingCountryCode") String billingCountryCode
     		) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " form called");
     	
@@ -254,7 +255,8 @@ public class PayController {
     
     
     @RequestMapping(value="/", params = "reference")
-    public String payboxForward(Model uiModel, @RequestParam String reference, @RequestParam(required = false) String erreur, @RequestParam(required = false) String signature, HttpServletRequest request, HttpServletResponse response) {
+    public String payboxForward(Model uiModel, @RequestParam("reference") String reference, @RequestParam(required = false, name="erreur") String erreur,
+								@RequestParam(required = false, name="signature") String signature, HttpServletRequest request, HttpServletResponse response) {
     	EmailFieldsMapReference emailFieldsMapReference = payBoxServiceManager.getEmailFieldsMapReference(reference);
     	String forwardUrl = payBoxServiceManager.getWebSite(reference);
     	if(emailFieldsMapReference!=null && emailFieldsMapReference.getPayEvtMontant().getSciencesconf()) {
@@ -277,9 +279,12 @@ public class PayController {
      */
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.POST, params="confid")
     public String sciencesConfForm(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, 
-    		@RequestParam String confid, @RequestParam String uid, @RequestParam String lastname, @RequestParam String firstname, @RequestParam String mail, @RequestParam String fees, @RequestParam String returnurl,
-    		@RequestParam(required=false) String billingFirstname, @RequestParam(required=false) String billingLastname, @RequestParam(required=false) String billingAddress1, 
-    		@RequestParam(required=false) String billingZipCode, @RequestParam(required=false) String billingCity, @RequestParam(required=false) String billingCountryCode) {
+    		@RequestParam("confid") String confid, @RequestParam("uid") String uid, @RequestParam("lastname") String lastname, @RequestParam("firstname") String firstname,
+		    @RequestParam("mail") String mail, @RequestParam("fees") String fees, @RequestParam("returnurl") String returnurl,
+    		@RequestParam(required=false, name="billingFirstName") String billingFirstname,
+			@RequestParam(required=false, name="billingLastName") String billingLastname, @RequestParam(required=false, name="billingAddress1") String billingAddress1,
+    		@RequestParam(required=false, name="billingZipCode") String billingZipCode, @RequestParam(required=false, name="billingCity") String billingCity,
+			@RequestParam(required=false, name="billingCountryCode") String billingCountryCode) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called via sciencesconf");
     	log.info("confid " + confid + " - uid : " + uid + " - lastname : " + lastname + " - firstname : " + firstname + " - mail : " + mail + " - fees : " + fees + " - returnurl : " + returnurl );
     	

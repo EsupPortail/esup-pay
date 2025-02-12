@@ -48,7 +48,7 @@ public class StatsController {
 
 	@RequestMapping(value="/montants", headers = "Accept=application/json; charset=utf-8")
 	@ResponseBody 
-	public String getmontants(@RequestParam(required = false) String year) {
+	public String getmontants(@RequestParam(name="year", required = false) String year) {
 		String flexJsonString = "Aucune statistique à récupérer";
 		try {
 			JSONSerializer serializer = new JSONSerializer();

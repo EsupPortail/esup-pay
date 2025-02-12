@@ -50,7 +50,7 @@ public class LdapPeopleController {
 
     @RequestMapping(value="/admin/searchLoginsJson", headers = "Accept=application/json", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> searchLoginsJson(Model uiModel, @RequestParam String loginPrefix) {
+    public ResponseEntity<String> searchLoginsJson(Model uiModel, @RequestParam("loginPrefix") String loginPrefix) {
     			
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");

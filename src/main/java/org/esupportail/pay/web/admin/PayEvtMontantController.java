@@ -73,7 +73,7 @@ public class PayEvtMontantController {
     
     @RequestMapping(params = "form", produces = "text/html")
     @PreAuthorize("hasPermission(#evtId, 'manage')")
-    public String createForm(Model uiModel, @RequestParam(required=true) Long evtId) {
+    public String createForm(Model uiModel, @RequestParam(name="evtId", required=true) Long evtId) {
     	PayEvtMontant payEvtMontant = new PayEvtMontant();
     	PayEvt evt =  payEvtDaoService.findPayEvt(evtId);
     	payEvtMontant.setEvtWithDefaultParametersIfNeeded(evt);

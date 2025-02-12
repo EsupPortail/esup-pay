@@ -19,17 +19,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.MapKey;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,7 +32,8 @@ public class Label {
 	public static enum LOCALE_IDS {fr, en};
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pay_evt_seq_gen")
+	@SequenceGenerator(name = "pay_evt_seq_gen", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

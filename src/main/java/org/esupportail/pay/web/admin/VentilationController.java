@@ -52,7 +52,7 @@ public class VentilationController {
 	ExportService exportService;
 	
 	@RequestMapping
-    public String getVentilations(Model uiModel, @RequestParam(required=false) @DateTimeFormat(pattern = "MM.yyyy") Date dateMonth) {
+    public String getVentilations(Model uiModel, @RequestParam(name="dateMonth", required=false) @DateTimeFormat(pattern = "MM.yyyy") Date dateMonth) {
 		if(dateMonth == null) {
 			dateMonth = getActualMonth();
 		}

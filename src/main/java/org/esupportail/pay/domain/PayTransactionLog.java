@@ -33,7 +33,8 @@ import lombok.Setter;
 public class PayTransactionLog {
 	  
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pay_evt_seq_gen")
+    @SequenceGenerator(name = "pay_evt_seq_gen", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

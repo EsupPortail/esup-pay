@@ -26,7 +26,7 @@
     <div class="col-md-12">
         <div class="col-lg-3">
             <div class="well">
-                    <div id="_title_fu_org_esupportail_pay_domain_payevt_logoFile_id'" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevt_logofile})}">
+                    <div id="_title_fu_org_esupportail_pay_domain_payevt_logoFile_id" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevt_logofile})}">
                         <form th:action="${payEvt.id} + '/addLogoFile'" enctype="multipart/form-data" id="uploadFile" method="POST" th:onsubmit="${jsCall}">
                             <fieldset>
                                 <legend>
@@ -252,6 +252,8 @@
                                             <span th:text="#{form_title}">
                                             </span>
                                         </legend>
+                                        <input type="hidden" th:field="*{title.id}"/>
+                                        <input type="hidden" th:field="*{title.version}"/>
                                         <div th:each="labelLocales : ${payEvt.title.labelLocales}">
                                             <div class="form-group">
                                                 <label>
@@ -266,6 +268,8 @@
                                           <span th:text="#{form_payment_legend}">
                                           </span>
                                         </legend>
+                                        <input type="hidden" th:field="*{defaultMntDescription.id}"/>
+                                        <input type="hidden" th:field="*{defaultMntDescription.version}"/>
                                         <div th:each="labelLocales : ${payEvt.defaultMntDescription.labelLocales}">
                                             <div class="form-group">
                                                 <label>
@@ -286,8 +290,8 @@
                         <div class="submit" id="fu_org_esupportail_pay_domain_payevt_submit">
                             <input class="btn btn-success" id="fu_org_esupportail_pay_domain_payevt_proceed" th:value="#{button_save}" type="submit"/>
                         </div>
-                        <input id="_id_id" name="id" th:value="${payEvt.id}" type="hidden"/>
-                        <input id="_Version_id" name="Version" th:value="${payEvt.Version}" type="hidden"/>
+                        <input id="_id_id" th:field="*{id}" type="hidden"/>
+                        <input id="_Version_id" th:field="*{version}" type="hidden"/>
                     </form>
                 </div>
         </div>
