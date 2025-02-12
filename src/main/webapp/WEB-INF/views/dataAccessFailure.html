@@ -31,13 +31,13 @@
       <p class="lead" th:text="#{error_dataaccessfailure_problemdescription}"></p>
       <hr/>
       <th:block sec:authorize="isAuthenticated()">
-        <div class="row" th:if="${exception != null}">
+        <div th:if="${exceptionLocalized != null}" class="row">
           <h3 th:text="#{exception_details}"></h3>
-          <div class="col-md-12" id="_title_message_id" th:title="#{exception_message}">
-            <p><mark th:text="${exception.localizedMessage}"></mark></p>
+          <div id="_title__message_id" th:title="#{exception_message}" class="col-md-12">
+            <p><mark th:text="${exceptionLocalized}"></mark></p>
           </div>
-          <div class="col-md-12" id="_title_exception_id" th:title="#{exception_stacktrace}">
-            <th:block th:each="trace : ${exception.stackTrace}">
+          <div id="_title__exception_id" th:title="#{exception_stacktrace}" class="col-md-12">
+            <th:block th:each="trace : ${exceptionStackTrace}">
               <small th:text="${trace}"></small>
             </th:block>
           </div>

@@ -41,7 +41,8 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 			Exception ex) {
 		request.getRequestURL();
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("exception", ex);
+		mav.addObject("exceptionLocalized", ex.getLocalizedMessage());
+		mav.addObject("exceptionStackTrace", ex.getStackTrace());
 		String url = getFullRequestURL(request);
 		if(request.getQueryString()!=null && !request.getQueryString().isEmpty()) {
 			url += "?" + request.getQueryString();
