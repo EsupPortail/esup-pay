@@ -145,8 +145,9 @@ public class PayEvtDaoService {
 
         int respLoginsIndex = 0;
         for (RespLogin _login: logins) {
-            q.setParameter("logins_item" + respLoginsIndex++, _login);
-            qCount.setParameter("logins_item" + respLoginsIndex++, _login);
+            q.setParameter("logins_item" + respLoginsIndex, _login);
+            qCount.setParameter("logins_item" + respLoginsIndex, _login);
+            respLoginsIndex++;
         }
 
         q.setFirstResult((int) pageable.getOffset());
