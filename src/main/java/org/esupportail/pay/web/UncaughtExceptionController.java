@@ -55,7 +55,7 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 			log.warn("Request: " + url + " raised " + ex.getMessage());
 			mav.setViewName("resourceNotFound");
 		} else {
-			log.error("Request: " + url + " raised " + ex.getMessage());
+			log.error("Request: " + url + " raised " + ex.getMessage(), ex);
 			mav.setViewName("uncaughtException");
 		}
 		log.debug("Request: " + url + " raised " + ex, ex);
