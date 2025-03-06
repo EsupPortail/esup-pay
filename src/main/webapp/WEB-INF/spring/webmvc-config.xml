@@ -29,10 +29,6 @@
     <context:component-scan base-package="org.esupportail.pay.web" use-default-filters="false">
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
-    
-    <!-- Turns on support for mapping requests to Spring MVC @Controller methods
-         Also registers default Formatters and Validators for use across all @Controllers -->
-    <mvc:annotation-driven conversion-service="applicationConversionService"/>
 
     <mvc:resources location="/, classpath:/META-INF/web-resources/" mapping="/resources/**" order="1">
     	<mvc:cache-control cache-public="true" max-age="86400"/>
@@ -61,12 +57,6 @@
     <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource 
     requests to the container's default Servlet -->
     <mvc:default-servlet-handler/>
-
-    <!-- Register "global" interceptor beans to apply to all registered HandlerMappings -->
-    <mvc:interceptors>
-        <bean class="org.springframework.web.servlet.theme.ThemeChangeInterceptor"/>
-        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="lang"/>
-    </mvc:interceptors>
 
     <!-- Selects a static view for rendering without the need for an explicit controller -->
     <mvc:view-controller path="/resourceNotFound" status-code="404"/>
@@ -125,9 +115,11 @@
         </property>
     </bean>
 
-    <!-- Handle Pagination -->
-    <mvc:annotation-driven>
+    <!-- Turns on support for mapping requests to Spring MVC @Controller methods
+     Also registers default Formatters and Validators for use across all @Controllers -->
+    <mvc:annotation-driven conversion-service="applicationConversionService">
         <mvc:argument-resolvers>
+            <!-- Handle Pagination -->
             <bean class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
         </mvc:argument-resolvers>
     </mvc:annotation-driven>
@@ -139,8 +131,11 @@
 	<sec:global-method-security pre-post-annotations="enabled">
 		<sec:expression-handler ref="expressionHandler" />
 	</sec:global-method-security>
-	
+
+    <!-- Register "global" interceptor beans to apply to all registered HandlerMappings -->
     <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.theme.ThemeChangeInterceptor"/>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="lang"/>
         <bean class="org.esupportail.pay.web.ConfigInterceptor" autowire="constructor" />
     </mvc:interceptors>
     
