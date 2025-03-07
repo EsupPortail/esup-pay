@@ -72,7 +72,7 @@
  		<beans:property name="permissionEvaluator" ref="payPermissionEvaluator"/>
 	</beans:bean>
 
-	<beans:bean id="SecurityExpressionHandler" class=
+	<beans:bean id="securityExpressionHandler" class=
 		"org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler"/>
 
 	<beans:bean class="org.esupportail.pay.security.PayPermissionEvaluator" id="payPermissionEvaluator"/>
