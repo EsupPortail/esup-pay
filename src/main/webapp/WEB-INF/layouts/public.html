@@ -61,7 +61,13 @@
 <body>
 
 <div th:replace="~{../fragments/navbar.html :: navbar}"></div>
-<div th:replace="~{../fragments/header.html :: header}"></div>
+
+<th:block th:if="${payevt != null}">
+<div th:replace="~{../fragments/header_anonyme.html :: header}"></div>
+</th:block>
+<th:block th:if="${payevt == null}">
+  <div th:replace="~{../fragments/header.html :: header}"></div>
+</th:block>
 
 <!-- Main Container -->
 <div id="main" class="container">
