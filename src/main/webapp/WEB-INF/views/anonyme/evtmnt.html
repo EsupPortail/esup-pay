@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html layout:decorate="~{../layouts/public.html}" th:lang="${#locale}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div layout:fragment="content">
+    <div class="container">
+    <th:block th:with="locale=${#locale.language}">
+        <div class="row" th:if="${payevtmontant.freeAmount == null}">
+            <div class="col-lg-12">
+                <h2>
+                    [[${payevtmontant.description.getTranslation(locale)}]] : [[${payevtmontant.dbleMontantDisplay}]]
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4>
+                        [[${payevtmontant.help.getTranslation(locale)}]]
+                    </h4>
+                </div>
+                <form th:action="@{''}" th:method="POST" class="panel-body bv-form"
+                      id="registerForm">
+                    <th:block th:if="${error != null} and ${!error.isEmpty()}">
+                        <div class="errors">
+                            <th:block th:text="#{${error}}">
+                            </th:block>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${payevtmontant.freeAmount}">
+                        <div class="form-group">
+                            <label class="control-label" for="amount" th:text="#{amount}">
+                            </label>
+                            <input class="form-control" name="amount" id="amount" type="text"/>
+                        </div>
+                    </th:block>
+                    <div class="form-group">
+                        <label for="mail" th:text="#{pay_registration_fees_mail}">
+                        </label>
+                        <input class="form-control" name="mail" id="mail" th:placeholder="#{pay_registration_fees_mail_hint}" type="text" th:value="${mail}"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="field1">
+                            [[${payevtmontant.field1Label.getTranslation(locale)}]]
+                        </label>
+                        <input class="form-control" name="field1" id="field1" type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="field2">
+                            [[${payevtmontant.field2Label.getTranslation(locale)}]]
+                        </label>
+                        <input class="form-control" name="field2" id="field2" type="text"/>
+                    </div>
+                    <th:block th:if="${payevtmontant.isBillingAddressRequired}">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" th:text="#{billing.address}">
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label class="control-label" for="billingFirstname" th:text="#{billing.firstname}">
+                                    </label>
+                                    <input class="form-control" name="billingFirstname" id="billingFirstname" type="text"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="billingLastname" th:text="#{billing.lastname}">
+                                    </label>
+                                    <input class="form-control" name="billingLastname" id="billingLastname" type="text"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="billingAddress1" th:text="#{billing.address1}">
+                                    </label>
+                                    <input class="form-control" name="billingAddress1" id="billingAddress1" type="text"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="billingZipCode" th:text="#{billing.zipCode}">
+                                    </label>
+                                    <input class="form-control" name="billingZipCode" id="billingZipCode" type="text"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="billingCity" th:text="#{billing.city}">
+                                    </label>
+                                    <input class="form-control" name="billingCity" id="billingCity" type="text"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="billingCountryCode" th:text="#{billing.countryCode}">
+                                    </label>
+                                    <select class="form-control" name="billingCountryCode" id="billingCountryCode">
+                                        <th:block th:each="countryCode : ${countryCodes}">
+                                            <th:block th:if="${countryCode.numeric} == '250'">
+                                                <option selected="" th:value="${countryCode.numeric}">
+                                                    [[${countryCode.name}]]
+                                                </option>
+                                            </th:block>
+                                            <th:block th:unless="${countryCode.numeric} == '250'">
+                                                <option value="${countryCode.numeric}">
+                                                    [[${countryCode.name}]]
+                                                </option>
+                                            </th:block>
+                                        </th:block>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                    <div class="form-group">
+                        <button class="btn btn-success" type="submit" th:text="#{pay_registration_fees_validate}">
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </th:block>
+    </div>
+    <script type="text/javascript">
+        var pay_registration_fees_validator_notempty = 'can not be empty';
+        var pay_registration_fees_validator_mail_message = 'The email is required and cannot be empty';
+        var pay_registration_fees_validator_mail_notempty = 'The input is not a valid email address';
+        var pay_registration_fees_validator_amount = 'Incorrect amount';
+
+        // allow forcing some parameter values using URL hash fragment
+        // Examples:
+        // "field1=xx" makes "field1" readonly, with value "xx"
+        // "default_field1=xx" keeps "field1" editable, with initial value "xx"
+        new URLSearchParams(location.hash.replace(/^#/, '')).forEach(function (v, k) {
+            let default_ = k.match(/^default_(.*)/);
+            let elt = document.forms[0][default_ ? default_[1] : k];
+            if (elt != null) {
+                elt.value = v;
+                if (!default_) {
+                    elt.readOnly = true;
+                }
+            }
+        })
+    </script>
+</div>
+</body>
+</html>

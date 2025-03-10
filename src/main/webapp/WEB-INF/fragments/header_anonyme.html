@@ -1,0 +1,38 @@
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<header id="overview"  th:fragment="header">
+  <div class="container">
+    <div class="row">
+      <th:block th:with="locale=${#locale == 'fr' || #locale == 'fr_FR' || #locale == 'fr_CA' || #locale == 'fr_BE' || #locale == 'fr_CH' ? 'fr' : 'en'}">
+        <th:block th:with="title=${payevt.title.labelLocales.get(locale)},
+                        subTitle=${payevtmontant.title.labelLocales.get(locale)}">
+        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12" id="logoDiv">
+          <a th:href="@{${payevt.webSiteUrl}}" th:title="${title}">
+            <img alt="Logo formulaire" class="img-responsive" th:src="@{'/logo/' + ${payevt.urlId}}"/>
+          </a>
+        </div>
+        <div class="col-lg-8 col-md-9 col-sm-9 col-xs-12">
+          <h1>[[${title}]]
+            <br/>
+            <small>[[${subTitle}]]</small>
+          </h1>
+        </div>
+        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
+          <th:block th:with="logo_url=${@propertyConfigurer.getProperty('institute.logo.url')},
+                            logo_title=${@propertyConfigurer.getProperty('institute.name')},
+                            logo_href=${@propertyConfigurer.getProperty('institute.href')} ">
+            <a th:href="${logo_href}" th:title="${logo_title}">
+              <img alt="Logo ESUP" class="institute-logo" th:src="@{${logo_url}}"/>
+            </a>
+          </th:block>
+        </div>
+      </th:block>
+      </th:block>
+    </div>
+  </div>
+  <script>
+    var banner= "[[@{'/logo/' + ${payevt.urlId}}]]";
+    var home= "[[@{${payevt.webSiteUrl}}]]";
+    var logo= "[[@{${logo_url}}]]";
+  </script>
+</header>
+</html>

@@ -99,24 +99,13 @@ public class PayController {
        return "index";
     }
 
-    @RequestMapping("evts/{evtUrlId}")
-    public String indexEvt(@PathVariable("evtUrlId") String evtUrlId, Model uiModel) {
-    	log.info("Evt " + evtUrlId + " called");
-    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
-    	if(evts.size() == 0) {
-    		throw new EntityNotFoundException();
-    	} 
-    	uiModel.addAttribute("payevt", evts.get(0));
-        return "evt";
-    }
-
 	@RequestMapping(value = "logo/{evtUrlId}")
 	public void getLogoFileEvt(@PathVariable("evtUrlId") String evtUrlId, HttpServletRequest request, HttpServletResponse response) {
 		try {
 	    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
 	    	if(evts.size() == 0) {
 	    		throw new EntityNotFoundException();
-	    	} 
+	    	}
 			PayEvt evt = evts.get(0);   
 			if(evt.getLogoFile().getBinaryFile() != null) {
 				IOUtils.copy(evt.getLogoFile().getBinaryFile().getBinaryStream(), response.getOutputStream());
@@ -160,7 +149,7 @@ public class PayController {
     	
     	if(!evtsMnts.get(0).getIsEnabled()) {
     		log.info("PayEvtMontant " + mntUrlId + "in " + evts.get(0) + " found but is not enabled");
-    		return "amountFormDisabled";
+    		return "anonyme/amountFormDisabled";
     	}
 	
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -175,7 +164,7 @@ public class PayController {
     	countryCodes.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
     	uiModel.addAttribute("countryCodes",countryCodes);
     	
-        return "evtmnt";
+        return "anonyme/evtmnt";
     }
 
     
@@ -233,24 +222,24 @@ public class PayController {
 
 		if(mail.contains("+")) {
 			uiModel.addAttribute("error", "no_plus_mail");
-			return "evtmnt";
+			return "anonyme/evtmnt";
 		}
 
     	if(amount==null) {
     		uiModel.addAttribute("error", "amount_cant_be_null");
-    		 return "evtmnt";
+    		 return "anonyme/evtmnt";
     	}
 		if(payevt.getDbleMontantMax() != null && amount > payevt.getDbleMontantMax()) {
 			uiModel.addAttribute("error", "dbleMontant_too_high");
 			log.warn("Try to pay amount too high : " + mail + ", " + field1 + ", " + field2 + ", " + amount);
-			 return "evtmnt";
+			 return "anonyme/evtmnt";
 	    }
     		
     	PayBoxForm payBoxForm = payBoxServiceManager.getPayBoxForm(payevt, mail, field1, field2, amount, payevtmontant, 
     			billingFirstname, billingLastname, billingAddress1, billingZipCode, billingCity, billingCountryCode);
 
 	    uiModel.addAttribute("payBoxForm", payBoxForm);
-        return "evtmntForm";
+        return "anonyme/evtmntForm";
     }
     
     
@@ -320,7 +309,7 @@ public class PayController {
         scienceConfReferenceDaoService.persist(scienceConfReference);
 
 	    uiModel.addAttribute("payBoxForm", payBoxForm);
-        return "evtmntForm";
+        return "anonyme/evtmntForm";
     }
  
 }
