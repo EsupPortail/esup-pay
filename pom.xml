@@ -417,6 +417,14 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
+					<!-- IMPORTANT : compile with parameters arg so that the generated classes contains method parameters names
+						used by spring security to bind parameters to method arguments so that it can be used in @PreAuthorize annotations like :
+    					@PreAuthorize("hasPermission(#id, 'view')")
+    					with '@PathVariable("id") Long id ' on the method signature
+					-->
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
 					<release>11</release>
 				</configuration>
 			</plugin>
