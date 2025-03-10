@@ -22,7 +22,7 @@
 <header id="overview"  th:fragment="header">
   <div class="container">
     <div class="row">
-      <th:block th:with="locale=${#locale == 'fr' || #locale == 'fr_FR' || #locale == 'fr_CA' || #locale == 'fr_BE' || #locale == 'fr_CH' ? 'fr' : 'en'}">
+      <th:block th:with="locale=${(#locale.toString() == 'fr' || #locale.toString() == 'fr_FR' || #locale.toString() == 'fr_CA' || #locale.toString() == 'fr_BE' || #locale.toString() == 'fr_CH') ? 'fr' : 'en'}">
         <th:block th:with="title=${payevt.title.labelLocales.get(locale)},
                         subTitle=${payevtmontant.title.labelLocales.get(locale)}">
         <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12" id="logoDiv">
