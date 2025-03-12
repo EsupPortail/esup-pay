@@ -23,7 +23,8 @@
   th:if="${render == null or render}">
   <th:block th:with="imgUrl='/resources/images/' + ${locale} + '.png',
                   langSwitchLabel=#{global_language_switch(${label})}">
-    <a th:href="@{/(lang=${locale}, form=${param.form}, find=${param.find}, page=${param.page}, size=${param.size})}"
+    <a th:with="urlBuilder=${T(org.esupportail.pay.web.ServletUriComponentsBuilderWrapper)}"
+       th:href="@{${urlBuilder.fromCurrentRequest().build().getPath() + '?' + urlBuilder.fromCurrentRequest().replaceQueryParam('lang', locale).build().getQuery()}}"
        th:title="${langSwitchLabel}"
        ><img class="flag" th:src="@{${imgUrl}}" th:alt="${langSwitchLabel}" /></a>
   </th:block>
