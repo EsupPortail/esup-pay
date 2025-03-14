@@ -17,15 +17,11 @@
  */
 package org.esupportail.pay.web.anonyme;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
+import com.neovisionaries.i18n.CountryCode;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -33,11 +29,7 @@ import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
 import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.PayEvtMontantDaoService;
 import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
-import org.esupportail.pay.domain.EmailFieldsMapReference;
-import org.esupportail.pay.domain.PayBoxForm;
-import org.esupportail.pay.domain.PayEvt;
-import org.esupportail.pay.domain.PayEvtMontant;
-import org.esupportail.pay.domain.ScienceConfReference;
+import org.esupportail.pay.domain.*;
 import org.esupportail.pay.exceptions.EntityNotFoundException;
 import org.esupportail.pay.services.PayBoxServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +38,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.ldap.userdetails.InetOrgPerson;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -55,7 +48,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.ServletContextResource;
 
-import com.neovisionaries.i18n.CountryCode;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @Transactional
@@ -119,7 +114,8 @@ public class PayController {
 	}
 
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.GET)
-    public String indexEvtMnt(@PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, Model uiModel) {
+    public String indexEvtMnt(@PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId,
+							  Model uiModel) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called");
     	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
     	if(evts.size() == 0) {
@@ -163,7 +159,7 @@ public class PayController {
     	List<CountryCode> countryCodes = Arrays.asList(CountryCode.values());
     	countryCodes.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
     	uiModel.addAttribute("countryCodes",countryCodes);
-    	
+
         return "anonyme/evtmnt";
     }
 
@@ -174,7 +170,8 @@ public class PayController {
     		@RequestParam("mail") String mail, @RequestParam("field1") String field1, @RequestParam("field2") String field2, @RequestParam(required=false, value="amount") String amountString,
     		@RequestParam(required=false, value="billingFirstName") String billingFirstname, @RequestParam(required=false, value="billingLastName") String billingLastname,
 		    @RequestParam(required=false, value="billingAddress1") String billingAddress1, @RequestParam(required=false, value="billingZipCode") String billingZipCode,
-	        @RequestParam(required=false, value="billingCity") String billingCity, @RequestParam(required=false, value="billingCountryCode") String billingCountryCode
+	        @RequestParam(required=false, value="billingCity") String billingCity, @RequestParam(required=false, value="billingCountryCode") String billingCountryCode,
+			HttpServletRequest request
     		) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " form called");
     	
@@ -238,6 +235,10 @@ public class PayController {
     	PayBoxForm payBoxForm = payBoxServiceManager.getPayBoxForm(payevt, mail, field1, field2, amount, payevtmontant, 
     			billingFirstname, billingLastname, billingAddress1, billingZipCode, billingCity, billingCountryCode);
 
+
+		// Hack : disable CSRF here for paybox form
+		request.setAttribute( CsrfToken.class.getName(), null);
+
 	    uiModel.addAttribute("payBoxForm", payBoxForm);
         return "anonyme/evtmntForm";
     }
@@ -273,7 +274,8 @@ public class PayController {
     		@RequestParam(required=false, name="billingFirstName") String billingFirstname,
 			@RequestParam(required=false, name="billingLastName") String billingLastname, @RequestParam(required=false, name="billingAddress1") String billingAddress1,
     		@RequestParam(required=false, name="billingZipCode") String billingZipCode, @RequestParam(required=false, name="billingCity") String billingCity,
-			@RequestParam(required=false, name="billingCountryCode") String billingCountryCode) {
+			@RequestParam(required=false, name="billingCountryCode") String billingCountryCode,
+			HttpServletRequest request) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called via sciencesconf");
     	log.info("confid " + confid + " - uid : " + uid + " - lastname : " + lastname + " - firstname : " + firstname + " - mail : " + mail + " - fees : " + fees + " - returnurl : " + returnurl );
     	
@@ -307,6 +309,9 @@ public class PayController {
         scienceConfReference.setEmailFieldsMapReference(emailFieldsMapReference);
         scienceConfReference.setDateCreated(new Date());
         scienceConfReferenceDaoService.persist(scienceConfReference);
+
+		// Hack : disable CSRF here for paybox form
+		request.setAttribute( CsrfToken.class.getName(), null);
 
 	    uiModel.addAttribute("payBoxForm", payBoxForm);
         return "anonyme/evtmntForm";
