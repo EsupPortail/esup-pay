@@ -99,7 +99,7 @@ public class PayEvtMontantController {
         }
         
         payEvtMontantDaoService.persist(payEvtMontant);
-        return "redirect:/admin/evts/" + encodeUrlPathSegment(evt.getId().toString(), httpServletRequest);
+        return "redirect:/admin/evtmnts/" + encodeUrlPathSegment(payEvtMontant.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
