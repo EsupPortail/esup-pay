@@ -251,6 +251,32 @@
                         <span class="errors" id="_optionalAddedParams_error_id" th:errors="*{optionalAddedParams}" th:if="${#fields.hasErrors('optionalAddedParams')}">
                         </span>
                     </div>
+                    <div class="form-group">
+                        <label class="c" for="montantTotalMax">
+                            <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_disableautomatic_montanttotalmax}">
+                            </strong>
+                        </label>
+                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                            <input class="form-control" th:field="*{montantTotalMax}" type="text"/>
+                        </th:block>
+                        <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                            <input class="form-control" readonly="readonly" th:field="*{montantTotalMax}" type="text"/>
+                        </th:block>
+                        <span class="errors" id="_montantTotalMax_error_id" th:errors="*{montantTotalMax}" th:if="${#fields.hasErrors('montantTotalMax')}">
+                    </div>
+                    <div class="form-group">
+                        <label class="c" for="nbTransactionsMax">
+                            <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_disableautomatic_nbtransmax}">
+                            </strong>
+                        </label>
+                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                            <input class="form-control" th:field="*{nbTransactionsMax}" type="text"/>
+                        </th:block>
+                        <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                            <input class="form-control" th:field="*{nbTransactionsMax}" readonly="readonly" type="text"/>
+                        </th:block>
+                        <span class="errors" id="_nbTransactionsMax_error_id" th:errors="*{nbTransactionsMax}" th:if="${#fields.hasErrors('nbTransactionsMax')}">
+                    </div>
                 </div>
                 <input name="title.id" type="hidden" th:value="*{title.id}"/>
                 <input name="title.version" type="hidden" th:value="*{title.version}"/>

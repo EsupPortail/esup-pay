@@ -89,6 +89,10 @@ public class PayEvtMontant {
     Integer shoppingcartTotalQuantity = 1;
     
     Boolean isBillingAddressRequired = false;
+
+    Long montantTotalMax = -1L;
+
+    Long nbTransactionsMax = -1L;
     
     public String getDbleMontantDisplay() {
     	return String.format(Locale.FRANCE, "%,.2f€", dbleMontant);
