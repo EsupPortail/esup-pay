@@ -25,13 +25,25 @@
 	<developers>
 		<developer>
 			<name>Vincent Bonamy</name>
-			<organization>Université de Rouen</organization>
+			<organization>Université de Rouen Normandie</organization>
+		</developer>
+		<developer>
+			<name>Thomas Dargent</name>
+			<organization>Université de Rouen Normandie</organization>
 		</developer>
 	</developers>
 	<contributors>
 		<contributor>
 			<name>Jean-Pierre Tran</name>
-			<organization>Université de Rouen</organization>
+			<organization>Université de Rouen Normandie</organization>
+		</contributor>
+		<contributor>
+			<name>Valentin Hagnéré</name>
+			<organization>Université de Rouen Normandie</organization>
+		</contributor>
+		<contributor>
+			<name>Pascael Rigaux</name>
+			<organization>Université Paris 1 Panthéon-Sorbonne</organization>
 		</contributor>
 	</contributors>
 	<mailingLists>
