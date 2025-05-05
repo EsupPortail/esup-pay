@@ -176,7 +176,7 @@
           </a>
           <hr/>
           <div class="row" id="pl_org_esupportail_pay_domain_payevtmontant">
-          <table class="table table-bordered">
+          <table class="table table-bordered" th:if="${payevtmontants.size() > 0}">
             <thead>
             <tr>
               <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_title}">
@@ -237,16 +237,6 @@
                 </tr>
             </tbody>
           </table>
-          <div class="col-md-7 col-md-offset-5">
-            <nav class="center-block btn-toolbar" th:fragment="pagination">
-              <div class="btn-group">
-                <div class="btn-group dropup" sd:page-size-selector="dropdown" style="margin-top: 20px">
-                </div>
-                <ul class="btn-group pagination" sd:pagination="full">
-                </ul>
-              </div>
-            </nav>
-          </div>
           <th:block th:if="${canUpdate}">
             <div>
                 <span class="new">

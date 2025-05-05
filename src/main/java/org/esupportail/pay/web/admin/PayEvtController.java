@@ -197,7 +197,7 @@ public class PayEvtController {
     
     @RequestMapping(value = "/{id}", produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'view')")
-    public String show(@PathVariable("id") Long id, Model uiModel, Pageable pageable) {
+    public String show(@PathVariable("id") Long id, Model uiModel) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -206,10 +206,9 @@ public class PayEvtController {
         uiModel.addAttribute("payEvt", evt);
         uiModel.addAttribute("itemId", id);    
         if(evt!=null) {
-            Page<PayEvtMontant> payEvtMontantsPage = payEvtMontantDaoService.findPagePayEvtMontantsByEvt(evt, pageable);
+            Page<PayEvtMontant> payEvtMontantsPage = payEvtMontantDaoService.findPagePayEvtMontantsByEvt(evt, Pageable.unpaged());
             List<PayEvtMontant> payEvtsMontants = payEvtMontantsPage.getContent();
             uiModel.addAttribute("payevtmontants", payEvtsMontants);
-            uiModel.addAttribute("page", payEvtMontantsPage);
         }
         uiModel.addAttribute("canUpdate", payPermissionEvaluator.hasPermission(auth, evt, "manage"));
         uiModel.addAttribute("isAdmin", isAdmin);
