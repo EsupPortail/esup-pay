@@ -20,7 +20,8 @@ For a current list of the dependencies of this project, please see the pom.xml i
 the other files included in this project. 
 
 This project includes:
-  AntLR Parser Generator under BSD License
+  Angus Activation Registries under EDL 1.0
+  ANTLR 4 Runtime under BSD-3-Clause
   Apache Commons Codec under Apache-2.0
   Apache Commons DBCP under Apache-2.0
   Apache Commons FileUpload under Apache-2.0
@@ -31,9 +32,9 @@ This project includes:
   Apache Commons Text under Apache-2.0
   Apache Groovy under The Apache Software License, Version 2.0
   Apache Standard Taglib Implementation under The Apache Software License, Version 2.0
+  Apereo CAS Client for Java - Core under Apache License, Version 2.0
   AspectJ Weaver under Eclipse Public License - v 2.0
   attoparser under The Apache Software License, Version 2.0
-  Bean Validation API under Apache License 2.0
   Bootstrap under Apache License, Version 2.0
   Bouncy Castle ASN.1 Extension and Utility APIs under Bouncy Castle Licence
   Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
@@ -46,41 +47,41 @@ This project includes:
   ClassMate under Apache License, Version 2.0
   Commons Pool under The Apache Software License, Version 2.0
   compiler under Apache License 2.0
-  dom4j under BSD 3-clause New License
   esup-pay under Apache License, Version 2.0
-  Expression Language API (2.1 Maintenance Release) under Apache License, Version 2.0
-  Extended StAX API under Dual license consisting of the CDDL v1.1 and GPL v2
-  fastinfoset under Apache License, Version 2.0
   flexjson under The Apache Software License, Version 2.0
   groovy-extensions under The Apache Software License, Version 2.0
-  Hibernate Commons Annotations under GNU Library General Public License v2.1 or later
+  Hibernate Commons Annotations under Apache License Version 2.0
   Hibernate ORM - hibernate-core under GNU Library General Public License v2.1 or later
-  Hibernate ORM - hibernate-entitymanager under GNU Library General Public License v2.1 or later
   Hibernate Validator Engine under Apache License 2.0
-  hibernate-types-52 under The Apache Software License, Version 2.0
-  istack common utility code runtime under CDDL 1.1 or GPL2 w/ CPE
+  hibernate-types-60 under The Apache Software License, Version 2.0
+  istack common utility code runtime under Eclipse Distribution License - v 1.0
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
-  Jakarta Bean Validation API under Apache License 2.0
-  Jasig CAS Client for Java - Core under Apache License Version 2.0
-  Java Annotation Indexer under Apache License, Version 2.0
-  Java Servlet API under CDDL + GPLv2 with classpath exception
-  Java Transaction API under Common Development and Distribution License or GNU General Public License, Version 2 with the Classpath Exception
-  JavaBeans Activation Framework (JAF) under Common Development and Distribution License (CDDL) v1.0
-  JavaMail API (compat) under CDDL or GPLv2+CE
-  Javassist under MPL 1.1 or LGPL 2.1 or Apache License 2.0
-  javax.annotation API under CDDL + GPLv2 with classpath exception
-  javax.persistence-api under Eclipse Public License v1.0 or Eclipse Distribution License v. 1.0
-  javax.transaction API under EPL 2.0 or GPL2 w/ CPE
-  JAXB Runtime under CDDL+GPL License
+  Jakarta Activation API under EDL 1.0
+  Jakarta Annotations API under EPL 2.0 or GPL2 w/ CPE
+  Jakarta Dependency Injection under The Apache Software License, Version 2.0
+  Jakarta Expression Language API under Eclipse Public License v. 2.0 or GNU General Public License, version 2 with the GNU Classpath Exception
+  Jakarta Mail API under EPL 2.0 or GPL2 w/ CPE or EDL 1.0
+  Jakarta Persistence API under Eclipse Public License v. 2.0 or Eclipse Distribution License v. 1.0
+  Jakarta Servlet under EPL 2.0 or GPL2 w/ CPE
+  Jakarta Validation API under Apache License 2.0
+  Jakarta XML Binding API under Eclipse Distribution License - v 1.0
+  jakarta.transaction API under EPL 2.0 or GPL2 w/ CPE
+  Jandex: Core under Apache License, Version 2.0
+  JAXB Core under Eclipse Distribution License - v 1.0
+  JAXB Runtime under Eclipse Distribution License - v 1.0
   jaxb-api under CDDL 1.1 or GPL2 w/ CPE
   JBoss Logging 3 under Apache License, version 2.0
+  JCIP Annotations under Apache License under Apache License, Version 2.0
   Joda-Time under Apache License, Version 2.0
   jquery under MIT License
   jQuery UI under MIT License
   jQuery UI Themes under MIT License
+  micrometer-commons under The Apache Software License, Version 2.0
+  micrometer-observation under The Apache Software License, Version 2.0
   Neo Visionaries Internationalization Package under The Apache Software License, Version 2.0
+  Nimbus JOSE+JWT under The Apache Software License, Version 2.0
   PostgreSQL JDBC Driver under BSD-2-Clause
   Project Lombok under The MIT License
   reload4j under The Apache Software License, Version 2.0
@@ -102,9 +103,6 @@ This project includes:
   Spring Transaction under Apache License, Version 2.0
   Spring Web under Apache License, Version 2.0
   Spring Web MVC under Apache License, Version 2.0
-  spring-boot under Apache License, Version 2.0
-  spring-boot-autoconfigure under Apache License, Version 2.0
-  spring-boot-devtools under Apache License, Version 2.0
   spring-ldap-core under Apache License, Version 2.0
   spring-security-acl under Apache License, Version 2.0
   spring-security-cas under Apache License, Version 2.0
@@ -118,10 +116,10 @@ This project includes:
   Thymeleaf Spring Data Dialect under Apache License, Version 2.0
   thymeleaf-expression-processor under The Apache Software License, Version 2.0
   thymeleaf-extras-java8time under The Apache Software License, Version 2.0
-  thymeleaf-extras-springsecurity5 under The Apache Software License, Version 2.0
+  thymeleaf-extras-springsecurity6 under The Apache Software License, Version 2.0
   thymeleaf-layout-dialect under The Apache Software License, Version 2.0
-  thymeleaf-spring5 under The Apache Software License, Version 2.0
-  TXW2 Runtime under CDDL+GPL License
+  thymeleaf-spring6 under The Apache Software License, Version 2.0
+  TXW2 Runtime under Eclipse Distribution License - v 1.0
   unbescape under The Apache Software License, Version 2.0
   webjars-locator under MIT
   webjars-locator-core under MIT
