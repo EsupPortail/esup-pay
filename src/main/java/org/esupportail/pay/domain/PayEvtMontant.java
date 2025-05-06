@@ -154,4 +154,18 @@ public class PayEvtMontant {
 		return authCas != null && authCas;
 	}
 
+    public Long getMontantTotalMax() {
+        if (montantTotalMax == null || montantTotalMax < 0) {
+            return -1L;
+        }
+        return montantTotalMax;
+    }
+
+    public Long getNbTransactionsMax() {
+        if (nbTransactionsMax == null || nbTransactionsMax < 0) {
+            return -1L;
+        }
+        return nbTransactionsMax;
+    }
+
 }

@@ -167,6 +167,13 @@ public class PayTransactionLogDaoService {
         return ((Long) q.getSingleResult());
     }
 
+    public TypedQuery<PayTransactionLog> findPayTransactionLogsByPayEvtMontant(PayEvtMontant payEvtMontant) {
+        if (payEvtMontant == null) throw new IllegalArgumentException("The payEvtMontant argument is required");
+        TypedQuery q = em.createQuery("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant = :payEvtMontant", PayTransactionLog.class);
+        q.setParameter("payEvtMontant", payEvtMontant);
+        return q;
+    }
+
 	public TypedQuery<PayTransactionLog> findPayTransactionLogsByIdtransEquals(String idtrans) {
         if (idtrans == null || idtrans.length() == 0) throw new IllegalArgumentException("The idtrans argument is required");
         

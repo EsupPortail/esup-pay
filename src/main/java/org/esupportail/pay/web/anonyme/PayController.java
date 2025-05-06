@@ -25,13 +25,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
-import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
+import org.esupportail.pay.dao.*;
 import org.esupportail.pay.domain.*;
 import org.esupportail.pay.exceptions.EntityNotFoundException;
 import org.esupportail.pay.services.PayBoxServiceManager;
+import org.esupportail.pay.services.PayEvtMontantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.security.core.Authentication;
@@ -79,6 +77,10 @@ public class PayController {
 	
 	@Resource
 	ScienceConfReferenceDaoService scienceConfReferenceDaoService;
+
+	@Resource
+	PayEvtMontantService payEvtMontantService;
+
 	
     @RequestMapping("/")
     public String index(Model uiModel) {
@@ -142,11 +144,11 @@ public class PayController {
 		
     	uiModel.addAttribute("payevt", evts.get(0));
     	uiModel.addAttribute("payevtmontant", evtsMnts.get(0));
-    	
-    	if(!evtsMnts.get(0).getIsEnabled()) {
-    		log.info("PayEvtMontant " + mntUrlId + "in " + evts.get(0) + " found but is not enabled");
-    		return "anonyme/amountFormDisabled";
-    	}
+
+		// check if the mnt event is enabled
+		if(!payEvtMontantService.checkEvtMontantEnabled(evtsMnts.get(0))) {
+			return "anonyme/amountFormDisabled";
+		}
 	
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     	if(auth!=null && auth.isAuthenticated() && auth.getPrincipal() instanceof InetOrgPerson) {
@@ -202,6 +204,11 @@ public class PayController {
     		throw new EntityNotFoundException();
     	} 
     	PayEvtMontant payevtmontant = evtsMnts.get(0);
+
+		// check if the mnt event is enabled
+		if(!payEvtMontantService.checkEvtMontantEnabled(payevtmontant)) {
+			return "anonyme/amountFormDisabled";
+		}
     	
     	uiModel.addAttribute("payevt", payevt);
     	uiModel.addAttribute("payevtmontant", payevtmontant);
@@ -292,6 +299,11 @@ public class PayController {
     		throw new EntityNotFoundException();
     	} 
     	PayEvtMontant payevtmontant = evtsMnts.get(0);
+
+		// check if the mnt event is enabled
+		if(!payEvtMontantService.checkEvtMontantEnabled(payevtmontant)) {
+			return "anonyme/amountFormDisabled";
+		}
     	
     	uiModel.addAttribute("payevt", payevt);
     	uiModel.addAttribute("payevtmontant", payevtmontant);

@@ -63,6 +63,7 @@ public class PayBoxServiceManager {
 			log.error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
+
 		return payboxServices.get(payboxevt.getPayboxServiceKey()).getPayBoxForm(mail, field1, field2, montant, payboxEvtMontant,
 				billingFirstname, billingLastname, billingAddress1, billingZipCode, billingCity, billingCountryCode);
 	}
