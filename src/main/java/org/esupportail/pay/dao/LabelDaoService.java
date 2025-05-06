@@ -26,48 +26,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LabelDaoService {
-	
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("labelLocales");
 
 	@PersistenceContext
     transient EntityManager em;
-
-	public long countLabels() {
-        return em.createQuery("SELECT COUNT(o) FROM Label o", Long.class).getSingleResult();
-    }
 
 	public List<Label> findAllLabels() {
         return em.createQuery("SELECT o FROM Label o", Label.class).getResultList();
     }
 
-	public List<Label> findAllLabels(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM Label o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, Label.class).getResultList();
-    }
-
-	public Label findLabel(Long id) {
-        if (id == null) return null;
-        return em.find(Label.class, id);
-    }
-
-	public List<Label> findLabelEntries(int firstResult, int maxResults) {
-        return em.createQuery("SELECT o FROM Label o", Label.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	public List<Label> findLabelEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM Label o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, Label.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
 }

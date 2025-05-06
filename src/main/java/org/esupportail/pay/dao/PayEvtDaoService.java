@@ -37,75 +37,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class PayEvtDaoService {
 
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("id", "archived", "archived, id", "logoFile", "payboxServiceKey", "title", "webSiteUrl", "urlId", "managersEmail", "mailSubject", "payboxCommandPrefix", "respLogins", "viewerLogins", "defaultMntDescription", "logins", "viewerLogins2Add");
-	
 
 	@PersistenceContext
     EntityManager em;
-	
-	public TypedQuery<PayEvt> findPayEvtsByRespLogins(List<RespLogin> respLogins, String sortFieldName, String sortOrder) {
-        if (respLogins == null) throw new IllegalArgumentException("The respLogins argument is required");
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o WHERE");
-        for (int i = 0; i < respLogins.size(); i++) {
-            if (i > 0) queryBuilder.append(" AND");
-            queryBuilder.append(" :respLogins_item").append(i).append(" MEMBER OF o.respLogins");
-        }
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-        	queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" " + sortOrder);
-            }
-        }
-        TypedQuery<PayEvt> q = em.createQuery(queryBuilder.toString(), PayEvt.class);
-        int respLoginsIndex = 0;
-        for (RespLogin _resplogin: respLogins) {
-            q.setParameter("respLogins_item" + respLoginsIndex++, _resplogin);
-        }
-        return q;
-    }
-    
-    
-    public TypedQuery<PayEvt> findPayEvtsByViewerLogins(List<RespLogin> viewerLogins, String sortFieldName, String sortOrder) {
-        if (viewerLogins == null) throw new IllegalArgumentException("The viewerLogins argument is required");
-        
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o WHERE");
-        for (int i = 0; i < viewerLogins.size(); i++) {
-            if (i > 0) queryBuilder.append(" AND");
-            queryBuilder.append(" :viewerLogins_item").append(i).append(" MEMBER OF o.viewerLogins");
-        }
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-        	queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" " + sortOrder);
-            }
-        }
-        TypedQuery<PayEvt> q = em.createQuery(queryBuilder.toString(), PayEvt.class);
-        int viewerLoginsIndex = 0;
-        for (RespLogin _viewerLogin: viewerLogins) {
-            q.setParameter("respLogins_item" + viewerLoginsIndex++, _viewerLogin);
-        }
-        return q;
-    }
-    
-    public TypedQuery<PayEvt> findPayEvtsByRespLoginsOrByViewerLogins(List<RespLogin> logins, String sortFieldName, String sortOrder) {
-        if (logins == null) throw new IllegalArgumentException("The logins argument is required");
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o WHERE");
-        for (int i = 0; i < logins.size(); i++) {
-            if (i > 0) queryBuilder.append(" AND");
-            queryBuilder.append(" :logins_item").append(i).append(" MEMBER OF o.respLogins").append(" OR :logins_item").append(i).append(" MEMBER OF o.viewerLogins");
-        }
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-        	queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" " + sortOrder);
-            }
-        }
-        TypedQuery<PayEvt> q = em.createQuery(queryBuilder.toString(), PayEvt.class);
-        int respLoginsIndex = 0;
-        for (RespLogin _login: logins) {
-            q.setParameter("logins_item" + respLoginsIndex++, _login);
-        }
-        return q;
-    }
 
     /**
      * Select PayEvts for logins in RespLogins or ViewerLogins in a Pageable.
@@ -189,46 +123,6 @@ public class PayEvtDaoService {
         return q.getResultList();
     }
 
-	public Long countFindPayEvtsByRespLogins(List<RespLogin> respLogins) {
-        if (respLogins == null) throw new IllegalArgumentException("The respLogins argument is required");
-        
-        StringBuilder queryBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o WHERE");
-        for (int i = 0; i < respLogins.size(); i++) {
-            if (i > 0) queryBuilder.append(" AND");
-            queryBuilder.append(" :respLogins_item").append(i).append(" MEMBER OF o.respLogins");
-        }
-        TypedQuery q = em.createQuery(queryBuilder.toString(), Long.class);
-        int respLoginsIndex = 0;
-        for (RespLogin _resplogin: respLogins) {
-            q.setParameter("respLogins_item" + respLoginsIndex++, _resplogin);
-        }
-        return ((Long) q.getSingleResult());
-    }
-
-	public Long countFindPayEvtsByUrlIdEquals(String urlId) {
-        if (urlId == null || urlId.length() == 0) throw new IllegalArgumentException("The urlId argument is required");
-        
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM PayEvt AS o WHERE o.urlId = :urlId", Long.class);
-        q.setParameter("urlId", urlId);
-        return ((Long) q.getSingleResult());
-    }
-
-	public Long countFindPayEvtsByViewerLogins(List<RespLogin> viewerLogins) {
-        if (viewerLogins == null) throw new IllegalArgumentException("The viewerLogins argument is required");
-        
-        StringBuilder queryBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o WHERE");
-        for (int i = 0; i < viewerLogins.size(); i++) {
-            if (i > 0) queryBuilder.append(" AND");
-            queryBuilder.append(" :viewerLogins_item").append(i).append(" MEMBER OF o.viewerLogins");
-        }
-        TypedQuery q = em.createQuery(queryBuilder.toString(), Long.class);
-        int viewerLoginsIndex = 0;
-        for (RespLogin _resplogin: viewerLogins) {
-            q.setParameter("viewerLogins_item" + viewerLoginsIndex++, _resplogin);
-        }
-        return ((Long) q.getSingleResult());
-    }
-
 	public TypedQuery<PayEvt> findPayEvtsByRespLogins(List<RespLogin> respLogins) {
         if (respLogins == null) throw new IllegalArgumentException("The respLogins argument is required");
         
@@ -253,21 +147,6 @@ public class PayEvtDaoService {
         return q;
     }
 
-	public TypedQuery<PayEvt> findPayEvtsByUrlIdEquals(String urlId, String sortFieldName, String sortOrder) {
-        if (urlId == null || urlId.length() == 0) throw new IllegalArgumentException("The urlId argument is required");
-        
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o WHERE o.urlId = :urlId");
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
-        TypedQuery<PayEvt> q = em.createQuery(queryBuilder.toString(), PayEvt.class);
-        q.setParameter("urlId", urlId);
-        return q;
-    }
-
 	public TypedQuery<PayEvt> findPayEvtsByViewerLogins(List<RespLogin> viewerLogins) {
         if (viewerLogins == null) throw new IllegalArgumentException("The viewerLogins argument is required");
         
@@ -284,23 +163,8 @@ public class PayEvtDaoService {
         return q;
     }
 
-	public long countPayEvts() {
-        return em.createQuery("SELECT COUNT(o) FROM PayEvt o", Long.class).getSingleResult();
-    }
-
 	public List<PayEvt> findAllPayEvts() {
         return em.createQuery("SELECT o FROM PayEvt o", PayEvt.class).getResultList();
-    }
-
-	public List<PayEvt> findAllPayEvts(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM PayEvt o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, PayEvt.class).getResultList();
     }
 
     public Page<PayEvt> findPagePayEvts(Pageable pageable, List<Sort.Order> orders) {
@@ -336,10 +200,6 @@ public class PayEvtDaoService {
 	public PayEvt findPayEvt(Long id) {
         if (id == null) return null;
         return em.find(PayEvt.class, id);
-    }
-
-	public List<PayEvt> findPayEvtEntries(int firstResult, int maxResults) {
-        return em.createQuery("SELECT o FROM PayEvt o", PayEvt.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
 	public List<PayEvt> findPayEvtEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {

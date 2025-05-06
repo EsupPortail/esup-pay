@@ -43,22 +43,6 @@ public class PayTransactionLogDaoService {
 	@PersistenceContext
     EntityManager em;
 
-    public Long countFindPayTransactionLogsByPayEvt(PayEvt payEvt) {
-        if (payEvt == null) throw new IllegalArgumentException("The payEvtMontant argument is required");
-        
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)", Long.class);
-        q.setParameter("payEvt", payEvt);
-        return ((Long) q.getSingleResult());
-    }
-
-    public TypedQuery<PayTransactionLog> findPayTransactionLogsByPayEvt(PayEvt payEvt) {
-        if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
-        
-        TypedQuery<PayTransactionLog> q = em.createQuery("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)", PayTransactionLog.class);
-        q.setParameter("payEvt", payEvt);
-        return q;
-    }
-
     public TypedQuery<PayTransactionLog> findPayTransactionLogsByPayEvt(PayEvt payEvt, String sortFieldName, String sortOrder) {
         if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
         
@@ -148,25 +132,6 @@ public class PayTransactionLogDaoService {
 		return q.getResultList();	
 	}
 
-	public long countPayTransactionLogs() {
-        return em.createQuery("SELECT COUNT(o) FROM PayTransactionLog o", Long.class).getSingleResult();
-    }
-
-	public List<PayTransactionLog> findAllPayTransactionLogs() {
-        return em.createQuery("SELECT o FROM PayTransactionLog o", PayTransactionLog.class).getResultList();
-    }
-
-	public List<PayTransactionLog> findAllPayTransactionLogs(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM PayTransactionLog o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, PayTransactionLog.class).getResultList();
-    }
-
     public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable) {
         StringBuilder queryBuilder = new StringBuilder("FROM PayTransactionLog");
 
@@ -193,28 +158,6 @@ public class PayTransactionLogDaoService {
         return em.find(PayTransactionLog.class, id);
     }
 
-	public List<PayTransactionLog> findPayTransactionLogEntries(int firstResult, int maxResults) {
-        return em.createQuery("SELECT o FROM PayTransactionLog o", PayTransactionLog.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	public List<PayTransactionLog> findPayTransactionLogEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM PayTransactionLog o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, PayTransactionLog.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	public Long countFindPayTransactionLogsByIdtransEquals(String idtrans) {
-        if (idtrans == null || idtrans.length() == 0) throw new IllegalArgumentException("The idtrans argument is required");
-        
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM PayTransactionLog AS o WHERE o.idtrans = :idtrans", Long.class);
-        q.setParameter("idtrans", idtrans);
-        return ((Long) q.getSingleResult());
-    }
 
 	public Long countFindPayTransactionLogsByPayEvtMontant(PayEvtMontant payEvtMontant) {
         if (payEvtMontant == null) throw new IllegalArgumentException("The payEvtMontant argument is required");
@@ -229,44 +172,6 @@ public class PayTransactionLogDaoService {
         
         TypedQuery<PayTransactionLog> q = em.createQuery("SELECT o FROM PayTransactionLog AS o WHERE o.idtrans = :idtrans", PayTransactionLog.class);
         q.setParameter("idtrans", idtrans);
-        return q;
-    }
-
-	public TypedQuery<PayTransactionLog> findPayTransactionLogsByIdtransEquals(String idtrans, String sortFieldName, String sortOrder) {
-        if (idtrans == null || idtrans.length() == 0) throw new IllegalArgumentException("The idtrans argument is required");
-        
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayTransactionLog AS o WHERE o.idtrans = :idtrans");
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
-        TypedQuery<PayTransactionLog> q = em.createQuery(queryBuilder.toString(), PayTransactionLog.class);
-        q.setParameter("idtrans", idtrans);
-        return q;
-    }
-
-	public TypedQuery<PayTransactionLog> findPayTransactionLogsByPayEvtMontant(PayEvtMontant payEvtMontant) {
-        if (payEvtMontant == null) throw new IllegalArgumentException("The payEvtMontant argument is required");
-        
-        TypedQuery<PayTransactionLog> q = em.createQuery("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant = :payEvtMontant", PayTransactionLog.class);
-        q.setParameter("payEvtMontant", payEvtMontant);
-        return q;
-    }
-
-	public TypedQuery<PayTransactionLog> findPayTransactionLogsByPayEvtMontant(PayEvtMontant payEvtMontant, String sortFieldName, String sortOrder) {
-        if (payEvtMontant == null) throw new IllegalArgumentException("The payEvtMontant argument is required");
-        
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant = :payEvtMontant");
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
-        TypedQuery<PayTransactionLog> q = em.createQuery(queryBuilder.toString(), PayTransactionLog.class);
-        q.setParameter("payEvtMontant", payEvtMontant);
         return q;
     }
 

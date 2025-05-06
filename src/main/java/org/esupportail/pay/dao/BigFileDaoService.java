@@ -30,9 +30,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BigFileDaoService {
-	
-	public final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("binaryFile");
-	
+
 	@PersistenceContext
     transient EntityManager em;
 	
@@ -43,45 +41,6 @@ public class BigFileDaoService {
         LobHelper helper = session.getLobHelper(); 
         Blob binaryFile = helper.createBlob(inputStream, length);
         bigFile.setBinaryFile(binaryFile);
-    }
-	
-	public long countBigFiles() {
-        return em.createQuery("SELECT COUNT(o) FROM BigFile o", Long.class).getSingleResult();
-    }
-
-	public List<BigFile> findAllBigFiles() {
-        return em.createQuery("SELECT o FROM BigFile o", BigFile.class).getResultList();
-    }
-
-	public List<BigFile> findAllBigFiles(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM BigFile o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, BigFile.class).getResultList();
-    }
-
-	public BigFile findBigFile(Long id) {
-        if (id == null) return null;
-        return em.find(BigFile.class, id);
-    }
-
-	public List<BigFile> findBigFileEntries(int firstResult, int maxResults) {
-        return em.createQuery("SELECT o FROM BigFile o", BigFile.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	public List<BigFile> findBigFileEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM BigFile o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, BigFile.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
 	public void persist(BigFile bigFile) {

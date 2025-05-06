@@ -28,9 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RespLoginDaoService {
-	
-	public final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("login");
-	
+
 	@PersistenceContext
     EntityManager em;
 
@@ -48,74 +46,12 @@ public class RespLoginDaoService {
 		return respLogin;
 	}
 
-	public Long countFindRespLoginsByLoginEquals(String login) {
-        if (login == null || login.length() == 0) throw new IllegalArgumentException("The login argument is required");
-        
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM RespLogin AS o WHERE o.login = :login", Long.class);
-        q.setParameter("login", login);
-        return ((Long) q.getSingleResult());
-    }
-
 	public TypedQuery<RespLogin> findRespLoginsByLoginEquals(String login) {
         if (login == null || login.length() == 0) throw new IllegalArgumentException("The login argument is required");
         
         TypedQuery<RespLogin> q = em.createQuery("SELECT o FROM RespLogin AS o WHERE o.login = :login", RespLogin.class);
         q.setParameter("login", login);
         return q;
-    }
-
-	public TypedQuery<RespLogin> findRespLoginsByLoginEquals(String login, String sortFieldName, String sortOrder) {
-        if (login == null || login.length() == 0) throw new IllegalArgumentException("The login argument is required");
-        
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM RespLogin AS o WHERE o.login = :login");
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
-        TypedQuery<RespLogin> q = em.createQuery(queryBuilder.toString(), RespLogin.class);
-        q.setParameter("login", login);
-        return q;
-    }
-
-	public long countRespLogins() {
-        return em.createQuery("SELECT COUNT(o) FROM RespLogin o", Long.class).getSingleResult();
-    }
-
-	public List<RespLogin> findAllRespLogins() {
-        return em.createQuery("SELECT o FROM RespLogin o", RespLogin.class).getResultList();
-    }
-
-	public List<RespLogin> findAllRespLogins(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM RespLogin o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, RespLogin.class).getResultList();
-    }
-
-	public RespLogin findRespLogin(Long id) {
-        if (id == null) return null;
-        return em.find(RespLogin.class, id);
-    }
-
-	public List<RespLogin> findRespLoginEntries(int firstResult, int maxResults) {
-        return em.createQuery("SELECT o FROM RespLogin o", RespLogin.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	public List<RespLogin> findRespLoginEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM RespLogin o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, RespLogin.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 	
 	@Transactional

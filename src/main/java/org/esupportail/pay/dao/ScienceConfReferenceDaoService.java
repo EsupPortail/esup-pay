@@ -29,77 +29,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ScienceConfReferenceDaoService {
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("emailFieldsMapReference", "uid", "confid", "returnurl", "dateCreated");
-
 	@PersistenceContext
     EntityManager em;
-
-	public long countScienceConfReferences() {
-        return em.createQuery("SELECT COUNT(o) FROM ScienceConfReference o", Long.class).getSingleResult();
-    }
-
-	public List<ScienceConfReference> findAllScienceConfReferences() {
-        return em.createQuery("SELECT o FROM ScienceConfReference o", ScienceConfReference.class).getResultList();
-    }
-
-	public List<ScienceConfReference> findAllScienceConfReferences(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM ScienceConfReference o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, ScienceConfReference.class).getResultList();
-    }
-
-	public ScienceConfReference findScienceConfReference(Long id) {
-        if (id == null) return null;
-        return em.find(ScienceConfReference.class, id);
-    }
-
-	public List<ScienceConfReference> findScienceConfReferenceEntries(int firstResult, int maxResults) {
-        return em.createQuery("SELECT o FROM ScienceConfReference o", ScienceConfReference.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	public List<ScienceConfReference> findScienceConfReferenceEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM ScienceConfReference o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, ScienceConfReference.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	public Long countFindScienceConfReferencesByEmailFieldsMapReference(EmailFieldsMapReference emailFieldsMapReference) {
-        if (emailFieldsMapReference == null) throw new IllegalArgumentException("The emailFieldsMapReference argument is required");
-        
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ScienceConfReference AS o WHERE o.emailFieldsMapReference = :emailFieldsMapReference", Long.class);
-        q.setParameter("emailFieldsMapReference", emailFieldsMapReference);
-        return ((Long) q.getSingleResult());
-    }
 
 	public TypedQuery<ScienceConfReference> findScienceConfReferencesByEmailFieldsMapReference(EmailFieldsMapReference emailFieldsMapReference) {
         if (emailFieldsMapReference == null) throw new IllegalArgumentException("The emailFieldsMapReference argument is required");
         
         TypedQuery<ScienceConfReference> q = em.createQuery("SELECT o FROM ScienceConfReference AS o WHERE o.emailFieldsMapReference = :emailFieldsMapReference", ScienceConfReference.class);
-        q.setParameter("emailFieldsMapReference", emailFieldsMapReference);
-        return q;
-    }
-
-	public TypedQuery<ScienceConfReference> findScienceConfReferencesByEmailFieldsMapReference(EmailFieldsMapReference emailFieldsMapReference, String sortFieldName, String sortOrder) {
-        if (emailFieldsMapReference == null) throw new IllegalArgumentException("The emailFieldsMapReference argument is required");
-        
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ScienceConfReference AS o WHERE o.emailFieldsMapReference = :emailFieldsMapReference");
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
-        TypedQuery<ScienceConfReference> q = em.createQuery(queryBuilder.toString(), ScienceConfReference.class);
         q.setParameter("emailFieldsMapReference", emailFieldsMapReference);
         return q;
     }
