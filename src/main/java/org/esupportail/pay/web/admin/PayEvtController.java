@@ -176,11 +176,11 @@ public class PayEvtController {
     	payEvtUpdateValidator.validate(payEvt, bindingResult);
     	if (bindingResult.hasErrors()) {
     		log.debug(bindingResult.getAllErrors());
-            List<String> respLoginIds= Arrays.asList();
+            List<String> respLoginIds= List.of();
             if(httpServletRequest.getParameterValues("logins") != null) {
     	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
             }
-            List<String> viewerLoginIds= Arrays.asList();;
+            List<String> viewerLoginIds= List.of();
             if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
     	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
             }
@@ -220,11 +220,11 @@ public class PayEvtController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String create(@Valid PayEvt payEvt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            List<String> respLoginIds= Arrays.asList();
+            List<String> respLoginIds= List.of();
             if(httpServletRequest.getParameterValues("logins") != null) {
     	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
             }
-            List<String> viewerLoginIds= Arrays.asList();;
+            List<String> viewerLoginIds= List.of();
             if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
     	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
             }
@@ -235,12 +235,12 @@ public class PayEvtController {
         }
         uiModel.asMap().clear();
 
-        List<String> respLoginIds= Arrays.asList();
+        List<String> respLoginIds= List.of();
         if(httpServletRequest.getParameterValues("logins") != null) {
 	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
         }
 
-        List<String> viewerLoginIds= Arrays.asList();
+        List<String> viewerLoginIds= List.of();
         if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
 	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
         }
@@ -340,7 +340,7 @@ public class PayEvtController {
     
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees/csv", produces = "text/html")
-    public void csvFees(@PathVariable("id") Long id, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+    public void csvFees(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
     	TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc");
     	csvController.generateAndReturnCsv(response, txLogsQuery);

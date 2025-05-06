@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -205,8 +206,8 @@ public class ExportService {
 		}
 	}
 
-	public void consumeExportTransactionCsvFile(InputStream input) throws FileNotFoundException, IOException, ParseException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(input, "iso-8859-1"));
+	public void consumeExportTransactionCsvFile(InputStream input) throws IOException, ParseException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(input, StandardCharsets.ISO_8859_1));
 		String line;
 		in.readLine(); // ignore header line;
 		while ((line = in.readLine()) != null) {
@@ -214,8 +215,8 @@ public class ExportService {
 		}
 	}
 	
-	public void consumeExportRemiseCsvFile(InputStream input) throws FileNotFoundException, IOException, ParseException {
-			BufferedReader in = new BufferedReader(new InputStreamReader(input, "iso-8859-1"));
+	public void consumeExportRemiseCsvFile(InputStream input) throws IOException, ParseException {
+			BufferedReader in = new BufferedReader(new InputStreamReader(input, StandardCharsets.ISO_8859_1));
 			String line;
 			in.readLine(); // ignore header line;
 			while ((line = in.readLine()) != null) {

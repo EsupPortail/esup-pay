@@ -37,7 +37,7 @@ public class ExceptionHandlingAsyncTaskExecutor implements AsyncTaskExecutor {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	private AsyncTaskExecutor executor;
+	private final AsyncTaskExecutor executor;
 
 	public ExceptionHandlingAsyncTaskExecutor(AsyncTaskExecutor executor) {
 		this.executor = executor;

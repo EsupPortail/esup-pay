@@ -37,7 +37,7 @@ public class EsupPayCsrfSecurityRequestMatcher implements RequestMatcher {
 
 	private final Logger log = Logger.getLogger(getClass());
 	  
-	private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
+	private final Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
     
 	@Resource
     PayEvtMontantDaoService payEvtMontantDaoService;

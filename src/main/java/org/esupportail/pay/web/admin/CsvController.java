@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,7 +56,7 @@ public class CsvController {
 	private String separator;
 	
 	@RequestMapping
-    public void getCsv(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+    public void getCsv(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc");
 		
@@ -64,7 +65,7 @@ public class CsvController {
     }
 
 	public void generateAndReturnCsv(HttpServletResponse response, TypedQuery<PayTransactionLog> txLogsQuery)
-			throws UnsupportedEncodingException, IOException {
+			throws IOException {
 		StopWatch stopWatch = new StopWatch("Stream - build CSV and send it");
 		stopWatch.start();
 		
@@ -72,9 +73,9 @@ public class CsvController {
         response.setCharacterEncoding("utf-8");   
         response.setHeader("Content-Disposition","attachment; filename=\"esup-pay-transaction-log.csv\"");
         
-		Writer writer = new OutputStreamWriter(response.getOutputStream(), "UTF8");
+		Writer writer = new OutputStreamWriter(response.getOutputStream(), StandardCharsets.UTF_8);
 		
-		List<String> headers = Arrays.asList(new String[] {"Date transaction", "payEvt", "payEvtMontant", "mail", "field1", "field2", "montant", "ID transaction"});
+		List<String> headers = Arrays.asList("Date transaction", "payEvt", "payEvtMontant", "mail", "field1", "field2", "montant", "ID transaction");
 		String csv = StringUtils.join(headers, separator);
 		writer.write(csv);
 

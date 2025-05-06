@@ -169,7 +169,7 @@ public class PayEvtDaoService {
 
     public Page<PayEvt> findPagePayEvts(Pageable pageable, List<Sort.Order> orders) {
         StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o");
-        StringBuilder countBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o");
+        String countBuilder = "SELECT COUNT(o) FROM PayEvt AS o";
 
         if (orders != null && !orders.isEmpty()) {
             queryBuilder.append(" ORDER BY ");
@@ -186,7 +186,7 @@ public class PayEvtDaoService {
         }
 
         TypedQuery<PayEvt> q = em.createQuery(queryBuilder.toString(), PayEvt.class);
-        TypedQuery<Long> qCount = em.createQuery(countBuilder.toString(), Long.class);
+        TypedQuery<Long> qCount = em.createQuery(countBuilder, Long.class);
 
         q.setFirstResult((int) pageable.getOffset());
         q.setMaxResults(pageable.getPageSize());

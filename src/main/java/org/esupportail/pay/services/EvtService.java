@@ -97,7 +97,7 @@ public class EvtService {
 
     public List<RespLogin> listEvt(String currentUser) {
         RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(currentUser);
-        return Arrays.asList(new RespLogin[] {respLogin});
+        return Arrays.asList(respLogin);
     }
 
     public void computeRespLogin(List<PayEvt> payEvts) {

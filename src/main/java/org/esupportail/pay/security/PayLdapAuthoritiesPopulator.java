@@ -138,13 +138,13 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 		}
 		
 		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(username);
-		List<RespLogin> respLoginList = Arrays.asList(new RespLogin[] {respLogin});
+		List<RespLogin> respLoginList = Arrays.asList(respLogin);
 		if(!payEvtDaoService.findPayEvtsByRespLogins(respLoginList).getResultList().isEmpty()) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
 		}
 		
 		RespLogin viewerLogin = respLoginDaoService.findOrCreateRespLogin(username);
-		List<RespLogin> viewerLoginList = Arrays.asList(new RespLogin[] {viewerLogin});
+		List<RespLogin> viewerLoginList = Arrays.asList(viewerLogin);
 		if(!payEvtDaoService.findPayEvtsByViewerLogins(viewerLoginList).getResultList().isEmpty()) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_VIEWER"));
 		}

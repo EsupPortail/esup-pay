@@ -29,9 +29,9 @@ import lombok.Setter;
 @Setter
 public class Label {
     
-	public static enum LOCALE_IDS {fr, en};
+	public enum LOCALE_IDS {fr, en}
 
-	@Id
+    @Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pay_evt_seq_gen")
 	@SequenceGenerator(name = "pay_evt_seq_gen", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "id")

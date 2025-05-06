@@ -169,7 +169,7 @@ public class PayBoxForm {
 
 	public void setOptionalAddedParams(String optionalAddedParams2) {
 		if(optionalAddedParams2!=null && !optionalAddedParams2.isEmpty()) {
-			List<String> params = Arrays.asList(optionalAddedParams2.split("&"));
+			String[] params = optionalAddedParams2.split("&");
 			for(String param : params) {
 				List<String> paramNameAndValue = Arrays.asList(param.split("="));
 				if(paramNameAndValue.size()<2) {

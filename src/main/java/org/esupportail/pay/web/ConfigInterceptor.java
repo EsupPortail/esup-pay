@@ -76,8 +76,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
 					for (String key : keys) {
 						if (path.startsWith(key)) {
 							subTitle = subTitles.get(key);
-							;
-							activeMenu = key.replaceAll("/", "");
+                            activeMenu = key.replaceAll("/", "");
 							break;
 						}
 					}

@@ -102,7 +102,7 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 	private boolean hasPermissionOnEvt(Authentication auth, Long evtId, String permissionKey) {
 		PayEvt evt = payEvtDaoService.findPayEvt(evtId);
 		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(auth.getName());
-		List<RespLogin> respLoginList = Arrays.asList(new RespLogin[] {respLogin});
+		List<RespLogin> respLoginList = Arrays.asList(respLogin);
 
 		boolean accessAuth = false;
 

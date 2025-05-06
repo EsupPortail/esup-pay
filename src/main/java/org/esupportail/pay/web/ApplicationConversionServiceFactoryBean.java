@@ -48,7 +48,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<PayEvt, String> getPayEvtToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<org.esupportail.pay.domain.PayEvt, java.lang.String>() {
             public String convert(PayEvt payboxEvt) {
-                return new StringBuilder().append(payboxEvt.getPayboxServiceKey()).append(' ').append(payboxEvt.getWebSiteUrl()).append(' ').append(payboxEvt.getUrlId()).append(' ').append(payboxEvt.getManagersEmails()).toString();
+                return payboxEvt.getPayboxServiceKey() + ' ' + payboxEvt.getWebSiteUrl() + ' ' + payboxEvt.getUrlId() + ' ' + payboxEvt.getManagersEmails();
             }
         };
     }
@@ -72,7 +72,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<PayEvtMontant, String> getPayEvtMontantToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<org.esupportail.pay.domain.PayEvtMontant, java.lang.String>() {
             public String convert(PayEvtMontant payboxEvtMontant) {
-                return new StringBuilder().append(payboxEvtMontant.getDbleMontant()).append(' ').append(payboxEvtMontant.getUrlId()).append(' ').append(payboxEvtMontant.getAddPrefix()).toString();
+                return String.valueOf(payboxEvtMontant.getDbleMontant()) + ' ' + payboxEvtMontant.getUrlId() + ' ' + payboxEvtMontant.getAddPrefix();
             }
         };
     }
@@ -96,7 +96,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<PayTransactionLog, String> getPayTransactionLogToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<org.esupportail.pay.domain.PayTransactionLog, java.lang.String>() {
             public String convert(PayTransactionLog payboxTransactionLog) {
-                return new StringBuilder().append(payboxTransactionLog.getTransactionDate()).append(' ').append(payboxTransactionLog.getField1()).append(' ').append(payboxTransactionLog.getField2()).toString();
+                return String.valueOf(payboxTransactionLog.getTransactionDate()) + ' ' + payboxTransactionLog.getField1() + ' ' + payboxTransactionLog.getField2();
             }
         };
     }

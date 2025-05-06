@@ -65,7 +65,7 @@ public class LdapPeopleController {
             ldapResult.setUid(loginPrefix);
             ldapResult.setDisplayName(loginPrefix);
             ldapResult.setEmail(loginPrefix);
-            String loginsJson = new JSONSerializer().serialize( Arrays.asList(ldapResult));
+            String loginsJson = new JSONSerializer().serialize(List.of(ldapResult));
             return new ResponseEntity<String>(loginsJson, headers, HttpStatus.OK);
         }
     }    
