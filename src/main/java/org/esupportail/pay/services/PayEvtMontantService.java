@@ -46,7 +46,7 @@ public class PayEvtMontantService {
     EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
 
     public boolean checkEvtMontantEnabled(PayEvtMontant payEvtMontant) {
-        if(payEvtMontant.getIsEnabled()) {
+        if(!payEvtMontant.getIsEnabled()) {
             log.info("PayEvtMontant {} found but is not enabled", payEvtMontant);
             return false;
         }
