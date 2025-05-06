@@ -67,5 +67,5 @@ public class EmailFieldsMapReference {
 	private String billingCity;
 	
 	private String billingCountryCode;
-	
+
 }

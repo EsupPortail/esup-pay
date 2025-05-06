@@ -268,16 +268,16 @@ public class PayBoxService {
 
     public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String securevers, String softdecline, String secureauth, String securegarantie, String signature, String queryString) {
         List<PayTransactionLog> txLogs = payTransactionLogDaoService.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
-        boolean newTxLog = txLogs.size() == 0;
         PayTransactionLog txLog = txLogs.size() > 0 ? txLogs.get(0) : null;
-        if (txLog == null) {
-            txLog = new PayTransactionLog();
-        } else {
+        if (txLog != null) {
             if ("00000".equals(txLog.getErreur())) {
                 log.info("This transaction + " + idtrans + " is already OK");
-                return true;
+            } else {
+                log.info("This transaction + " + idtrans + " is already KO : " + txLog.getErreur());
             }
+            return true;
         }
+        txLog = new PayTransactionLog();
         txLog.setMontant(montant);
         txLog.setReference(reference);
         txLog.setAuto(auto);
@@ -292,19 +292,20 @@ public class PayBoxService {
 
         List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {
-            txLog.setField1(emailMapFirstLastNames.get(0).getField1());
-            txLog.setField2(emailMapFirstLastNames.get(0).getField2());
-            txLog.setMail(emailMapFirstLastNames.get(0).getMail());
-            txLog.setShoppingcartTotalQuantity(emailMapFirstLastNames.get(0).getShoppingcartTotalQuantity());
-            txLog.setBillingFirstname(emailMapFirstLastNames.get(0).getBillingFirstname());
-            txLog.setBillingLastname(emailMapFirstLastNames.get(0).getBillingLastname());
-            txLog.setBillingAddress1(emailMapFirstLastNames.get(0).getBillingAddress1());
-            txLog.setBillingZipCode(emailMapFirstLastNames.get(0).getBillingZipCode());
-            txLog.setBillingCity(emailMapFirstLastNames.get(0).getBillingCity());
-            txLog.setBillingCountryCode(emailMapFirstLastNames.get(0).getBillingCountryCode());
-            PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
+            EmailFieldsMapReference emailFieldsMapReference = emailMapFirstLastNames.get(0);
+            txLog.setField1(emailFieldsMapReference.getField1());
+            txLog.setField2(emailFieldsMapReference.getField2());
+            txLog.setMail(emailFieldsMapReference.getMail());
+            txLog.setShoppingcartTotalQuantity(emailFieldsMapReference.getShoppingcartTotalQuantity());
+            txLog.setBillingFirstname(emailFieldsMapReference.getBillingFirstname());
+            txLog.setBillingLastname(emailFieldsMapReference.getBillingLastname());
+            txLog.setBillingAddress1(emailFieldsMapReference.getBillingAddress1());
+            txLog.setBillingZipCode(emailFieldsMapReference.getBillingZipCode());
+            txLog.setBillingCity(emailFieldsMapReference.getBillingCity());
+            txLog.setBillingCountryCode(emailFieldsMapReference.getBillingCountryCode());
+            PayEvtMontant evtMontant = emailFieldsMapReference.getPayEvtMontant();
             PayEvt evt = evtMontant.getEvt();
-            txLog.setPayEvtMontant(emailMapFirstLastNames.get(0).getPayEvtMontant());
+            txLog.setPayEvtMontant(emailFieldsMapReference.getPayEvtMontant());
             if (this.checkPayboxSignature(queryString, signature)) {
                 if ("00000".equals(erreur)) {
                     log.info("Transaction : " + reference + " pour un montant de " + montant + " OK !");
@@ -327,8 +328,8 @@ public class PayBoxService {
                         log.error("Exception during sending email to : " + mailTo , ex);
                         txLog.setMailSent(false);
                     }
-                    if(emailMapFirstLastNames.get(0).getPayEvtMontant().getSciencesconf()) {
-                        ScienceConfReference scienceConfReference = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailMapFirstLastNames.get(0)).getSingleResult();
+                    if(emailFieldsMapReference.getPayEvtMontant().getSciencesconf()) {
+                        ScienceConfReference scienceConfReference = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference).getSingleResult();
                         HttpHeaders headers = new HttpHeaders();
                         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
                         MultiValueMap<String, String> formVars = new LinkedMultiValueMap<String, String>();
@@ -345,9 +346,8 @@ public class PayBoxService {
                             log.warn("Problème de retour de paiement avec sciencesconf ? " + StringUtils.join(formVars) + " -> " + sciencesconfResponse);
                         }
                     }
-                    if (newTxLog) {
-                        payTransactionLogDaoService.persist(txLog);
-                    }
+                    payTransactionLogDaoService.persist(txLog);
+                    emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
                 } else {
                     log.info("'Erreur' " + erreur + "  (annulation) lors de la transaction paybox : " + reference + " pour un montant de " + montant);
                 }
