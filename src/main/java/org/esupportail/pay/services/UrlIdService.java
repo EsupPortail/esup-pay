@@ -19,8 +19,9 @@ package org.esupportail.pay.services;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -43,12 +44,8 @@ public class UrlIdService {
 	public String generateUrlId4PayEvt(String title) {
 		String urlId = title.replaceAll("[^\\p{L}\\p{Nd}]+", "");
 		urlId = StringUtils.stripAccents(urlId);
-		try {
-			urlId = URLEncoder.encode(urlId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			log.warn("UnsupportedEncodingException encoding " + urlId, e);
-		}
-		int i = 1;
+        urlId = URLEncoder.encode(urlId, StandardCharsets.UTF_8);
+        int i = 1;
 		while(!payEvtDaoService.findPayEvtsByUrlIdEquals(urlId).getResultList().isEmpty()) {
 			urlId = urlId + i++;
 		}
@@ -58,12 +55,8 @@ public class UrlIdService {
 	public String generateUrlId4PayEvtMontant(PayEvt payboxEvt, String title) {
 		String urlId = title.replaceAll("[^\\p{L}\\p{Nd}]+", "");
 		urlId = StringUtils.stripAccents(urlId);
-		try {
-			urlId = URLEncoder.encode(urlId, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			log.warn("UnsupportedEncodingException encoding " + urlId, e);
-		}
-		int i = 1;
+        urlId = URLEncoder.encode(urlId, StandardCharsets.UTF_8);
+        int i = 1;
 		while(!payEvtMontantDaoService.findPayEvtMontantsByEvtAndUrlIdEquals(payboxEvt, urlId).getResultList().isEmpty()) {
 			urlId = urlId + i++;
 		}

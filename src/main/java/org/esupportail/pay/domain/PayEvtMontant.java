@@ -18,19 +18,10 @@
  package org.esupportail.pay.domain;
 import java.util.Locale;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Version;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 
@@ -43,7 +34,8 @@ import lombok.Setter;
 public class PayEvtMontant {
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pay_evt_seq_gen")
+    @SequenceGenerator(name = "pay_evt_seq_gen", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
@@ -97,6 +89,10 @@ public class PayEvtMontant {
     Integer shoppingcartTotalQuantity = 1;
     
     Boolean isBillingAddressRequired = false;
+
+    Long montantTotalMax = -1L;
+
+    Long nbTransactionsMax = -1L;
     
     public String getDbleMontantDisplay() {
     	return String.format(Locale.FRANCE, "%,.2f€", dbleMontant);
@@ -157,5 +153,19 @@ public class PayEvtMontant {
 	public Boolean getAuthCas() {
 		return authCas != null && authCas;
 	}
+
+    public Long getMontantTotalMax() {
+        if (montantTotalMax == null || montantTotalMax < 0) {
+            return -1L;
+        }
+        return montantTotalMax;
+    }
+
+    public Long getNbTransactionsMax() {
+        if (nbTransactionsMax == null || nbTransactionsMax < 0) {
+            return -1L;
+        }
+        return nbTransactionsMax;
+    }
 
 }

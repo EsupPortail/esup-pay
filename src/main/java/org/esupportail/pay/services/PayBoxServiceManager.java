@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
@@ -63,6 +63,7 @@ public class PayBoxServiceManager {
 			log.error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
+
 		return payboxServices.get(payboxevt.getPayboxServiceKey()).getPayBoxForm(mail, field1, field2, montant, payboxEvtMontant,
 				billingFirstname, billingLastname, billingAddress1, billingZipCode, billingCity, billingCountryCode);
 	}

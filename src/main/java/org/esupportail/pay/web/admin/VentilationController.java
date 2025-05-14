@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
@@ -52,7 +52,7 @@ public class VentilationController {
 	ExportService exportService;
 	
 	@RequestMapping
-    public String getVentilations(Model uiModel, @RequestParam(required=false) @DateTimeFormat(pattern = "MM.yyyy") Date dateMonth) {
+    public String getVentilations(Model uiModel, @RequestParam(name="dateMonth", required=false) @DateTimeFormat(pattern = "MM.yyyy") Date dateMonth) {
 		if(dateMonth == null) {
 			dateMonth = getActualMonth();
 		}
@@ -61,7 +61,7 @@ public class VentilationController {
 		uiModel.addAttribute("dateMonthBefore", simpleDateFormat.format(DateUtils.addMonths(dateMonth,-1)));
 		uiModel.addAttribute("dateMonthAfter", simpleDateFormat.format(DateUtils.addMonths(dateMonth,+1)));
 		uiModel.addAttribute("dateMonth", simpleDateFormat.format(dateMonth));
-    	return "admin/ventilations";
+    	return "admin/ventilations/index";
     }
 	
 	@RequestMapping(value = "/addExportTransactionFile", method = RequestMethod.POST, produces = "text/html")

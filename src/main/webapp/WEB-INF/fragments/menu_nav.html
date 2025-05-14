@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="menu">
+    <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+    <a th:href="@{'/'}" class="navbar-brand">
+        <img th:src="${logoAppUrl}"
+             class="institute-logo-navbar"
+             alt="Logo App"/>
+    </a>
+    <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav" id="_navbar">
+            <!-- When the fragment is called, menu items can be put between the tags. This content is displayed here -->
+            <th:block th:replace="this :: content"/>
+        </ul>
+        <div th:if="${urlRightButton != '' && urlRightButton != null}">
+            <th:block th:with="button = ${iconRightButton != '' && iconRightButton != null} ?
+                                            '<span class=&quot;glyphicon glyphicon-' + ${iconRightButton} + '&quot; aria-hidden=&quot;true&quot;></span>'
+                                            : ${labelRightButton}"
+            >
+                <ul class="nav navbar-nav navbar-right" id="main-navigation">
+                    <li>
+                        <a th:href="${urlRightButton}"
+                            th:title="${labelRightButton}"
+                            class="btn btn-sm btn-success"
+                            th:utext="${button}">
+
+                        </a>
+                    </li>
+                </ul>
+            </th:block>
+        </div>
+    </div>
+</div>
+</html>

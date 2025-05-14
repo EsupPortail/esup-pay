@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<header id="overview"  th:fragment="header">
+  <div class="container">
+    <div class="row">
+      <th:block th:with="locale=${(#locale.toString() == 'fr' || #locale.toString() == 'fr_FR' || #locale.toString() == 'fr_CA' || #locale.toString() == 'fr_BE' || #locale.toString() == 'fr_CH') ? 'fr' : 'en'}">
+        <th:block th:with="title=${payevt.title.labelLocales.get(locale)},
+                        subTitle=${payevtmontant.title.labelLocales.get(locale)}">
+        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12" id="logoDiv">
+          <a th:href="@{${payevt.webSiteUrl}}" th:title="${title}">
+            <img alt="Logo formulaire" class="img-responsive" th:src="@{'/logo/' + ${payevt.urlId}}"/>
+          </a>
+        </div>
+        <div class="col-lg-8 col-md-9 col-sm-9 col-xs-12">
+          <h1>[[${title}]]
+            <br/>
+            <small>[[${subTitle}]]</small>
+          </h1>
+        </div>
+        <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
+          <th:block th:with="logo_url=${@propertyConfigurer.getProperty('institute.logo.url')},
+                            logo_title=${@propertyConfigurer.getProperty('institute.name')},
+                            logo_href=${@propertyConfigurer.getProperty('institute.href')} ">
+            <a th:href="${logo_href}" th:title="${logo_title}">
+              <img alt="Logo ESUP" class="institute-logo" th:src="@{${logo_url}}"/>
+            </a>
+          </th:block>
+        </div>
+      </th:block>
+      </th:block>
+    </div>
+  </div>
+  <script>
+    var banner= "[[@{'/logo/' + ${payevt.urlId}}]]";
+    var home= "[[@{${payevt.webSiteUrl}}]]";
+    var logo= "[[@{${logo_url}}]]";
+  </script>
+</header>
+</html>

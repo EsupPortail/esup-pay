@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.esupportail.pay.domain.LdapResult;
 import org.esupportail.pay.domain.RespLogin;
@@ -50,7 +50,7 @@ public class LdapPeopleController {
 
     @RequestMapping(value="/admin/searchLoginsJson", headers = "Accept=application/json", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> searchLoginsJson(Model uiModel, @RequestParam String loginPrefix) {
+    public ResponseEntity<String> searchLoginsJson(Model uiModel, @RequestParam("loginPrefix") String loginPrefix) {
     			
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
@@ -65,7 +65,7 @@ public class LdapPeopleController {
             ldapResult.setUid(loginPrefix);
             ldapResult.setDisplayName(loginPrefix);
             ldapResult.setEmail(loginPrefix);
-            String loginsJson = new JSONSerializer().serialize( Arrays.asList(ldapResult));
+            String loginsJson = new JSONSerializer().serialize(List.of(ldapResult));
             return new ResponseEntity<String>(loginsJson, headers, HttpStatus.OK);
         }
     }    

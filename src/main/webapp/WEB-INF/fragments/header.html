@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<header id="overview"  th:fragment="header">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12" id="logoDiv">
+                <a th:href="@{/admin}">
+                    <img alt="" th:src="@{/resources/images/credit-card.png}"/>
+                </a>
+            </div>
+
+            <div class="col-lg-8 col-md-9 col-sm-9 col-xs-12">
+                <h1>
+                    <th:block th:text="#{default_title(${@propertyConfigurer.getProperty('institute.name')})}"></th:block><br/>
+                    <small th:text="${subTitle}"></small>
+                </h1>
+            </div>
+
+            <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12"
+                th:with="logo_url=${@propertyConfigurer.getProperty('institute.logo.url')},
+                        logo=${logo_url},
+                        logo_title=${@propertyConfigurer.getProperty('institute.name')},
+                        logo_href=${@propertyConfigurer.getProperty('institute.href')}">
+                <a th:href="${logo_href}">
+                    <img alt="" th:src="${logo}" class="institute-logo"/>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+</html>

@@ -18,20 +18,21 @@
  package org.esupportail.pay.dao;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.validation.Valid;
 
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PayEvtMontantDaoService {
-
-	public final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("evt", "title", "description", "help", "field1Label", "field2Label", "dbleMontant", "urlId", "freeAmount", "sciencesconf", "addPrefix", "optionalAddedParams", "isEnabled");
 
 	@PersistenceContext
     EntityManager em;	
@@ -46,43 +47,6 @@ public class PayEvtMontantDaoService {
     	return payTransactionLogDaoService.countFindPayTransactionLogsByPayEvtMontant(payEvtMontant) < 1 
     			&& emailFieldsMapReferenceDaoService.countFindEmailFieldsMapReferencesByPayEvtMontant(payEvtMontant) < 1;
     }
-	
-	public Long countFindPayEvtMontantsByEvt(PayEvt evt) {
-        if (evt == null) throw new IllegalArgumentException("The evt argument is required");
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM PayEvtMontant AS o WHERE o.evt = :evt", Long.class);
-        q.setParameter("evt", evt);
-        return ((Long) q.getSingleResult());
-    }
-
-	public Long countFindPayEvtMontantsByEvtAndUrlIdEquals(PayEvt evt, String urlId) {
-        if (evt == null) throw new IllegalArgumentException("The evt argument is required");
-        if (urlId == null || urlId.length() == 0) throw new IllegalArgumentException("The urlId argument is required");
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM PayEvtMontant AS o WHERE o.evt = :evt AND o.urlId = :urlId", Long.class);
-        q.setParameter("evt", evt);
-        q.setParameter("urlId", urlId);
-        return ((Long) q.getSingleResult());
-    }
-
-	public TypedQuery<PayEvtMontant> findPayEvtMontantsByEvt(PayEvt evt) {
-        if (evt == null) throw new IllegalArgumentException("The evt argument is required");
-        TypedQuery<PayEvtMontant> q = em.createQuery("SELECT o FROM PayEvtMontant AS o WHERE o.evt = :evt", PayEvtMontant.class);
-        q.setParameter("evt", evt);
-        return q;
-    }
-
-	public TypedQuery<PayEvtMontant> findPayEvtMontantsByEvt(PayEvt evt, String sortFieldName, String sortOrder) {
-        if (evt == null) throw new IllegalArgumentException("The evt argument is required");
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvtMontant AS o WHERE o.evt = :evt");
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
-        TypedQuery<PayEvtMontant> q = em.createQuery(queryBuilder.toString(), PayEvtMontant.class);
-        q.setParameter("evt", evt);
-        return q;
-    }
 
 	public TypedQuery<PayEvtMontant> findPayEvtMontantsByEvtAndUrlIdEquals(PayEvt evt, String urlId) {
         if (evt == null) throw new IllegalArgumentException("The evt argument is required");
@@ -93,59 +57,16 @@ public class PayEvtMontantDaoService {
         return q;
     }
 
-	public TypedQuery<PayEvtMontant> findPayEvtMontantsByEvtAndUrlIdEquals(PayEvt evt, String urlId, String sortFieldName, String sortOrder) {
+    public Page<PayEvtMontant> findPagePayEvtMontantsByEvt(PayEvt evt, Pageable pageable) {
         if (evt == null) throw new IllegalArgumentException("The evt argument is required");
-        if (urlId == null || urlId.length() == 0) throw new IllegalArgumentException("The urlId argument is required");
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvtMontant AS o WHERE o.evt = :evt AND o.urlId = :urlId");
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName);
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
-        TypedQuery<PayEvtMontant> q = em.createQuery(queryBuilder.toString(), PayEvtMontant.class);
+        TypedQuery<PayEvtMontant> q = em.createQuery("SELECT o FROM PayEvtMontant AS o WHERE o.evt = :evt", PayEvtMontant.class);
         q.setParameter("evt", evt);
-        q.setParameter("urlId", urlId);
-        return q;
-    }
-
-	public long countPayEvtMontants() {
-        return em.createQuery("SELECT COUNT(o) FROM PayEvtMontant o", Long.class).getSingleResult();
-    }
-
-	public List<PayEvtMontant> findAllPayEvtMontants() {
-        return em.createQuery("SELECT o FROM PayEvtMontant o", PayEvtMontant.class).getResultList();
-    }
-
-	public List<PayEvtMontant> findAllPayEvtMontants(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM PayEvtMontant o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, PayEvtMontant.class).getResultList();
+        return new PageImpl<>(q.getResultList(), pageable, q.getResultList().size());
     }
 
 	public PayEvtMontant findPayEvtMontant(Long id) {
         if (id == null) return null;
         return em.find(PayEvtMontant.class, id);
-    }
-
-	public List<PayEvtMontant> findPayEvtMontantEntries(int firstResult, int maxResults) {
-        return em.createQuery("SELECT o FROM PayEvtMontant o", PayEvtMontant.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
-    }
-
-	public List<PayEvtMontant> findPayEvtMontantEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM PayEvtMontant o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
-        return em.createQuery(jpaQuery, PayEvtMontant.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
 	public void persist(@Valid PayEvtMontant payEvtMontant) {

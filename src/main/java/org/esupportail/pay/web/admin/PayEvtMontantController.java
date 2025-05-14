@@ -19,9 +19,9 @@ package org.esupportail.pay.web.admin;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import org.esupportail.pay.dao.LabelDaoService;
 import org.esupportail.pay.dao.PayEvtDaoService;
@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
@@ -61,15 +62,18 @@ public class PayEvtMontantController {
     
 	@Resource
 	LabelDaoService labelDaoService;
+
+    @Resource
+    PayEvtMontantUpdateValidator payEvtMontantValidator;
 	
     @ModelAttribute("addPrefixList")
     public List<String> getAddPrefixList() {
-    	return Arrays.asList(new String[]{"", "field1", "field2"});
+    	return Arrays.asList("", "field1", "field2");
     }
     
     @RequestMapping(params = "form", produces = "text/html")
     @PreAuthorize("hasPermission(#evtId, 'manage')")
-    public String createForm(Model uiModel, @RequestParam(required=true) Long evtId) {
+    public String createForm(Model uiModel, @RequestParam(name="evtId", required=true) Long evtId) {
     	PayEvtMontant payEvtMontant = new PayEvtMontant();
     	PayEvt evt =  payEvtDaoService.findPayEvt(evtId);
     	payEvtMontant.setEvtWithDefaultParametersIfNeeded(evt);
@@ -80,7 +84,6 @@ public class PayEvtMontantController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html", value="/addMontant")
     @PreAuthorize("hasPermission(#payEvtMontant, 'manage')")
     public String addMontant(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	PayEvtMontantUpdateValidator payEvtMontantValidator = new PayEvtMontantUpdateValidator();
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
     	if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
@@ -96,12 +99,12 @@ public class PayEvtMontantController {
         }
         
         payEvtMontantDaoService.persist(payEvtMontant);
-        return "redirect:/admin/evts/" + encodeUrlPathSegment(evt.getId().toString(), httpServletRequest);
+        return "redirect:/admin/evtmnts/" + encodeUrlPathSegment(payEvtMontant.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    @PreAuthorize("hasPermission(#payEvtMontant, 'manage')")
     public String update(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-    	PayEvtMontantUpdateValidator payEvtMontantValidator = new PayEvtMontantUpdateValidator();
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
     	if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
@@ -118,19 +121,21 @@ public class PayEvtMontantController {
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    @PreAuthorize("hasPermission(#id, 'manage')")
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, RedirectAttributes uiModel) {
         PayEvtMontant payEvtMontant = payEvtMontantDaoService.findPayEvtMontant(id);
     	Long evtId = payEvtMontant.getEvt().getId();
     	if(payEvtMontantDaoService.isDeletable(payEvtMontant)) {
     		payEvtMontantDaoService.remove(payEvtMontant);
     	} else {
-    		uiModel.addAttribute("alert_msg", "pay_admin_evtmontant_delete_abort");
+    		uiModel.addFlashAttribute("alert_msg", "pay_admin_evtmontant_delete_abort");
     	}
         return "redirect:/admin/evts/" + evtId;
     }
     
 
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String create(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
@@ -141,21 +146,8 @@ public class PayEvtMontantController {
         return "redirect:/admin/evtmnts/" + encodeUrlPathSegment(payEvtMontant.getId().toString(), httpServletRequest);
     }
 
-	@RequestMapping(produces = "text/html")
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
-        if (page != null || size != null) {
-            int sizeNo = size == null ? 10 : size.intValue();
-            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("payevtmontants", payEvtMontantDaoService.findPayEvtMontantEntries(firstResult, sizeNo, sortFieldName, sortOrder));
-            float nrOfPages = (float) payEvtMontantDaoService.countPayEvtMontants() / sizeNo;
-            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else {
-            uiModel.addAttribute("payevtmontants", payEvtMontantDaoService.findAllPayEvtMontants(sortFieldName, sortOrder));
-        }
-        return "admin/evtmnts/list";
-    }
-
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    @PreAuthorize("hasPermission(#id, 'manage-montant')")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, payEvtMontantDaoService.findPayEvtMontant(id));
         return "admin/evtmnts/update";

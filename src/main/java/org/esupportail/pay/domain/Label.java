@@ -19,17 +19,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
-import javax.persistence.Version;
+import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,10 +29,11 @@ import lombok.Setter;
 @Setter
 public class Label {
     
-	public static enum LOCALE_IDS {fr, en};
+	public enum LOCALE_IDS {fr, en}
 
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pay_evt_seq_gen")
+	@SequenceGenerator(name = "pay_evt_seq_gen", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
@@ -68,4 +59,7 @@ public class Label {
 		return this.getLabelLocales().get(localeId.toString()).getTranslation();
 	}
 
+	public String getTranslation(String localeId) {
+		return this.getTranslation(localeId.equals("fr") ? LOCALE_IDS.fr : LOCALE_IDS.en);
+	}
 }

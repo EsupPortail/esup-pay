@@ -24,5 +24,10 @@
         <version>0.2</version>
 	<license>Apache License, Version 2.0</license>
     </artifact>
-
+    <artifact>
+        <groupId>org.apereo.cas.client</groupId>
+        <artifactId>cas-client-core</artifactId>
+        <version>4.0.4</version>
+	<license>Apache License, Version 2.0</license>        
+    </artifact>
 </license-lookup>

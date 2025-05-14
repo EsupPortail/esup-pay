@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.PayEvtDaoService;
@@ -37,7 +37,7 @@ public class EsupPayCsrfSecurityRequestMatcher implements RequestMatcher {
 
 	private final Logger log = Logger.getLogger(getClass());
 	  
-	private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
+	private final Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
     
 	@Resource
     PayEvtMontantDaoService payEvtMontantDaoService;

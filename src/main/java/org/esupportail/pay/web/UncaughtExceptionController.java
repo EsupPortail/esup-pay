@@ -19,8 +19,9 @@ package org.esupportail.pay.web;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.exceptions.EntityNotFoundException;
@@ -40,7 +41,8 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 			Exception ex) {
 		request.getRequestURL();
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("exception", ex);
+		mav.addObject("exceptionLocalized", ex.getLocalizedMessage());
+		mav.addObject("exceptionStackTrace", ex.getStackTrace());
 		String url = getFullRequestURL(request);
 		if(request.getQueryString()!=null && !request.getQueryString().isEmpty()) {
 			url += "?" + request.getQueryString();
@@ -53,7 +55,7 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 			log.warn("Request: " + url + " raised " + ex.getMessage());
 			mav.setViewName("resourceNotFound");
 		} else {
-			log.error("Request: " + url + " raised " + ex.getMessage());
+			log.error("Request: " + url + " raised " + ex.getMessage(), ex);
 			mav.setViewName("uncaughtException");
 		}
 		log.debug("Request: " + url + " raised " + ex, ex);
@@ -73,6 +75,10 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 	}
 
 	private String getFullRequestURL(HttpServletRequest request) {
+		Object errReqUriObj = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
+		if (errReqUriObj != null) {
+			return (String) errReqUriObj;
+		}
 		String url = request.getRequestURL().toString();
 		if(request.getQueryString()!=null && !request.getQueryString().isEmpty()) {
 			url += "?" + request.getQueryString();
@@ -105,4 +111,3 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
     }
 	
 }
-

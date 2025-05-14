@@ -19,8 +19,8 @@ Cette application utilise CAS+LDAP pour autoriser uniquement certains membres de
 * un LDAP avec un groupe regroupant les administrateurs de l'application esup-pay qui pourront créer des évènements esup-pay - ce groupe peut-être un posixGroup ou un groupOfNames
 * un compte Paybox - esup-pay utilise l'intégration paybox version hmac (sans module cgi) - il faut donc un compte paybox avec un hmac de configuré. 
 * une base de données PostgreSQL
-* JDK 11
-* Tomcat 9
+* JDK 17
+* Tomcat 10
 
 Précisions supplémentaires : 
 * esup-pay est complètement indépendant de l'ENT esup-uportal
@@ -47,10 +47,10 @@ Pour des configurations avancées, il est également possible de modifier les fi
 ## Installation 
 
 ### Pré-requis
-* Java OpenJDK 11 : le mieux est de l'installer via le système de paquets de votre linux.
+* Java OpenJDK 17 : le mieux est de l'installer via le système de paquets de votre linux.
 * Maven : le mieux est de l'installer via le système de paquets de votre linux.
-* Postgresql (8 ou 9, ...) : le mieux est de l'installer via le système de paquets de votre linux.
-* Tomcat (Tomcat 9)
+* Postgresql (15, ...) : le mieux est de l'installer via le système de paquets de votre linux.
+* Tomcat (Tomcat 10)
 
 ### PostgreSQL
 * pg_hba.conf : ajout de 
@@ -106,14 +106,6 @@ apt-get install postgresql-contrib
 
 Puis la création de l'extension lo se fait via un super-user:
 
-* avec postgresql 8 :
-```
-psql
-\c esuppay
-\i /usr/share/postgresql/8.4/contrib/lo.sql
-```
-
-* avec postgresql 9 ou supérieur :
 ```
 psql
 \c esuppay
@@ -126,7 +118,7 @@ Et enfin ajout du trigger* :
 CREATE TRIGGER t_big_file BEFORE UPDATE OR DELETE ON big_file  FOR EACH ROW EXECUTE PROCEDURE lo_manage(binary_file);
 ```
 
-CF http://docs.postgresqlfr.org/8.3/lo.html
+CF https://doc.postgresql.fr/15/lo.html
 
 \* afin que les tables soient préalablement créées, notamment la table big_file sur lequel on souhaite mettre le trigger lo_manage, vous devez démarrer l'application une fois ; en n'oubliant pas ensuite, pour ne pas écraser la base au redémarrage, de __modifier src/main/resources/META-INF/persistence.xml : create-> update__ - cf ci-dessous.
 
@@ -141,7 +133,7 @@ Pour faciliter le développement, un docker-compose est livré avec esup-pay. Ce
 
 Vous pouvez ainsi lancer depuis le répertoire __docker4dev__ :
 ```
-docker-compose up
+docker compose up
 ```
 
 Puis depuis le répertoire principal, vous lancez le jetty ainsi :

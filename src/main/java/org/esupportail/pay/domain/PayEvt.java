@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.services.PayBoxService;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +37,8 @@ import java.util.List;
 public class PayEvt {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pay_evt_seq_gen")
+    @SequenceGenerator(name = "pay_evt_seq_gen", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

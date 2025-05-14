@@ -19,15 +19,16 @@ package org.esupportail.pay.web.admin;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.persistence.TypedQuery;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.persistence.TypedQuery;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -40,6 +41,7 @@ import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.domain.RespLogin;
 import org.esupportail.pay.domain.UploadFile;
+import org.esupportail.pay.security.PayPermissionEvaluator;
 import org.esupportail.pay.services.EvtService;
 import org.esupportail.pay.services.PayBoxServiceManager;
 import org.esupportail.pay.web.validators.PayEvtUpdateValidator;
@@ -48,6 +50,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.AbstractResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -98,6 +104,9 @@ public class PayEvtController {
 	
 	@Resource
 	PayTransactionLogDaoService payTransactionLogDaoService;
+
+    @Resource
+    PayPermissionEvaluator payPermissionEvaluator;
 	
     Double defaultDbleMontantMax;
     
@@ -167,11 +176,11 @@ public class PayEvtController {
     	payEvtUpdateValidator.validate(payEvt, bindingResult);
     	if (bindingResult.hasErrors()) {
     		log.debug(bindingResult.getAllErrors());
-            List<String> respLoginIds= Arrays.asList();
+            List<String> respLoginIds= List.of();
             if(httpServletRequest.getParameterValues("logins") != null) {
     	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
             }
-            List<String> viewerLoginIds= Arrays.asList();;
+            List<String> viewerLoginIds= List.of();
             if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
     	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
             }
@@ -189,14 +198,20 @@ public class PayEvtController {
     @RequestMapping(value = "/{id}", produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'view')")
     public String show(@PathVariable("id") Long id, Model uiModel) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
     	PayEvt evt = payEvtDaoService.findPayEvt(id);
     	evtService.computeRespLogin(evt);
         uiModel.addAttribute("payEvt", evt);
         uiModel.addAttribute("itemId", id);    
         if(evt!=null) {
-        	List<PayEvtMontant> montants = payEvtMontantDaoService.findPayEvtMontantsByEvt(evt).getResultList();
-            uiModel.addAttribute("payevtmontants", montants);
+            Page<PayEvtMontant> payEvtMontantsPage = payEvtMontantDaoService.findPagePayEvtMontantsByEvt(evt, Pageable.unpaged());
+            List<PayEvtMontant> payEvtsMontants = payEvtMontantsPage.getContent();
+            uiModel.addAttribute("payevtmontants", payEvtsMontants);
         }
+        uiModel.addAttribute("canUpdate", payPermissionEvaluator.hasPermission(auth, evt, "manage"));
+        uiModel.addAttribute("isAdmin", isAdmin);
         return "admin/evts/show";
     }
     
@@ -205,11 +220,11 @@ public class PayEvtController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String create(@Valid PayEvt payEvt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            List<String> respLoginIds= Arrays.asList();
+            List<String> respLoginIds= List.of();
             if(httpServletRequest.getParameterValues("logins") != null) {
     	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
             }
-            List<String> viewerLoginIds= Arrays.asList();;
+            List<String> viewerLoginIds= List.of();
             if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
     	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
             }
@@ -220,12 +235,12 @@ public class PayEvtController {
         }
         uiModel.asMap().clear();
 
-        List<String> respLoginIds= Arrays.asList();
+        List<String> respLoginIds= List.of();
         if(httpServletRequest.getParameterValues("logins") != null) {
 	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));
         }
 
-        List<String> viewerLoginIds= Arrays.asList();;
+        List<String> viewerLoginIds= List.of();
         if(httpServletRequest.getParameterValues("viewerLogins2Add") != null) {
 	        viewerLoginIds = Arrays.asList(httpServletRequest.getParameterValues("viewerLogins2Add"));
         }
@@ -238,36 +253,41 @@ public class PayEvtController {
     
     
     @RequestMapping(produces = "text/html")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')")
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
-       
+    @PreAuthorize("hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')")
+    public String list(Model uiModel, @PageableDefault(size = 10) Pageable pageable) {
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, "archived"));
+        orders.add(new Sort.Order(Sort.Direction.DESC, "id"));
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        boolean isManagerOrViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) ||
-        		auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"));
+        boolean isAllViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ALL_VIEWER"));
+        boolean isManager = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER"));
+        boolean isViewer = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"));
 
         String currentUser = auth.getName();
-        
-        if(sortFieldName == null) {
-        	sortFieldName = "archived, id";
-        	sortOrder = "desc";
-        }
-    	
-        if(isAdmin) {
-        	int sizeNo = size == null ? 10 : size.intValue();
-        	final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-        	List<PayEvt> payEvts = payEvtDaoService.findPayEvtEntries(firstResult, sizeNo, sortFieldName, sortOrder);
-        	evtService.computeRespLogin(payEvts);
+
+        if(isAllViewer) {
+            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvts(pageable, orders);
+            List<PayEvt> payEvts = payEvtPage.getContent();
+            evtService.computeRespLogin(payEvts);
         	uiModel.addAttribute("payevts", payEvts);
-        	float nrOfPages = (float) payEvtDaoService.countPayEvts() / sizeNo;
-        	uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else if(isManagerOrViewer) {
+            uiModel.addAttribute("page", payEvtPage);
+        } else if(isManager || isViewer) {
             List<RespLogin> loginList = evtService.listEvt(currentUser);
-            List<PayEvt> payEvts = payEvtDaoService.findPayEvtsByRespLoginsOrByViewerLogins(loginList, sortFieldName, sortOrder).getResultList();
+            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvtsByRespLoginsOrByViewerLogins(
+                    loginList,
+                    pageable,
+                    orders
+            );
+            List<PayEvt> payEvts = payEvtPage.getContent();
             evtService.computeRespLogin(payEvts);
     		uiModel.addAttribute("payevts", payEvts);
+            uiModel.addAttribute("page", payEvtPage);
+
         }
+        uiModel.addAttribute("isAdmin", isAdmin);
         
         return "admin/evts/list";
     }
@@ -297,30 +317,30 @@ public class PayEvtController {
         PayEvt payEvt = payEvtDaoService.findPayEvt(id);
         payEvtDaoService.remove(payEvt);
         uiModel.asMap().clear();
-        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
+        uiModel.addAttribute("page", (page == null) ? "0" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/admin/evts";
     }
     
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees", produces = "text/html")
-    public String fees(@PathVariable("id") Long id, @RequestParam(defaultValue = "transactionDate") String sortFieldName, @RequestParam(defaultValue = "desc") String sortOrder, Model uiModel) {
+    public String fees(@PathVariable("id") Long id, Model uiModel, @PageableDefault(sort="transactionDate", direction=Sort.Direction.DESC) Pageable pageable) {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        List<PayTransactionLog> paytransactionlogs = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, sortFieldName, sortOrder).getResultList();
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, pageable);
+        List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
         long total = 0L;
         for(PayTransactionLog ptl : paytransactionlogs) {
             total += Long.valueOf(ptl.getMontant());
         }
         uiModel.addAttribute("total", String.format("%,.2f€", Double.valueOf(total) / 100.0));
-        uiModel.addAttribute("paytransactionlogs", paytransactionlogs);
-        uiModel.addAttribute("payTransactionLog_transactiondate_date_format", DateTimeFormat.patternForStyle("MM", LocaleContextHolder.getLocale()));
         uiModel.addAttribute("payEvt", payEvt);
+        uiModel.addAttribute("page", payTxLogPage);
         return "admin/fees-admin-view/list";
     }
     
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees/csv", produces = "text/html")
-    public void csvFees(@PathVariable("id") Long id, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+    public void csvFees(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
     	TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc");
     	csvController.generateAndReturnCsv(response, txLogsQuery);

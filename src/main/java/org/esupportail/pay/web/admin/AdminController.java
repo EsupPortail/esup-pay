@@ -42,12 +42,12 @@ public class AdminController {
 		if(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) ||
 				auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER")) ||
 				auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VIEWER"))) {
-			return "redirect:/admin/evts?page=1";
+			return "redirect:/admin/evts?page=0";
 		} else if(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_VENTILATION"))) {
 			return "redirect:/admin/ventilations";
 		} else if(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_STAT"))) {
 			return "redirect:/admin/stats";
 		}
-		return "redirect:/admin/evts?page=1";
+		return "redirect:/admin/evts?page=0";
 	}
 }

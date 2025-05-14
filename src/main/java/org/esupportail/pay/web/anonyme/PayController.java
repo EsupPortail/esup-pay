@@ -17,34 +17,26 @@
  */
 package org.esupportail.pay.web.anonyme;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.neovisionaries.i18n.CountryCode;
+import jakarta.annotation.Resource;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
-import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
-import org.esupportail.pay.domain.EmailFieldsMapReference;
-import org.esupportail.pay.domain.PayBoxForm;
-import org.esupportail.pay.domain.PayEvt;
-import org.esupportail.pay.domain.PayEvtMontant;
-import org.esupportail.pay.domain.ScienceConfReference;
+import org.esupportail.pay.dao.*;
+import org.esupportail.pay.domain.*;
 import org.esupportail.pay.exceptions.EntityNotFoundException;
 import org.esupportail.pay.services.PayBoxServiceManager;
+import org.esupportail.pay.services.PayEvtMontantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.ldap.userdetails.InetOrgPerson;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -54,7 +46,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.ServletContextResource;
 
-import com.neovisionaries.i18n.CountryCode;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @Transactional
@@ -83,6 +77,10 @@ public class PayController {
 	
 	@Resource
 	ScienceConfReferenceDaoService scienceConfReferenceDaoService;
+
+	@Resource
+	PayEvtMontantService payEvtMontantService;
+
 	
     @RequestMapping("/")
     public String index(Model uiModel) {
@@ -98,24 +96,13 @@ public class PayController {
        return "index";
     }
 
-    @RequestMapping("evts/{evtUrlId}")
-    public String indexEvt(@PathVariable("evtUrlId") String evtUrlId, Model uiModel) {
-    	log.info("Evt " + evtUrlId + " called");
-    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
-    	if(evts.size() == 0) {
-    		throw new EntityNotFoundException();
-    	} 
-    	uiModel.addAttribute("payevt", evts.get(0));
-        return "evt";
-    }
-
 	@RequestMapping(value = "logo/{evtUrlId}")
 	public void getLogoFileEvt(@PathVariable("evtUrlId") String evtUrlId, HttpServletRequest request, HttpServletResponse response) {
 		try {
 	    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
 	    	if(evts.size() == 0) {
 	    		throw new EntityNotFoundException();
-	    	} 
+	    	}
 			PayEvt evt = evts.get(0);   
 			if(evt.getLogoFile().getBinaryFile() != null) {
 				IOUtils.copy(evt.getLogoFile().getBinaryFile().getBinaryStream(), response.getOutputStream());
@@ -129,7 +116,8 @@ public class PayController {
 	}
 
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.GET)
-    public String indexEvtMnt(@PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, Model uiModel) {
+    public String indexEvtMnt(@PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId,
+							  Model uiModel) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called");
     	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
     	if(evts.size() == 0) {
@@ -144,18 +132,23 @@ public class PayController {
     	
     	if(evtsMnts.get(0).getSciencesconf()) {
     		log.warn("SciencesConf event montant form must be called from sciencesconf web site.");
-    		log.warn("Redirection sur le site sciencesconf en cours ...");
             String forwardUrl = evts.get(0).getWebSiteUrl();
+			if(StringUtils.isEmpty(forwardUrl)) {
+				log.warn("No webSiteUrl found for evt " + evts.get(0) + " with sciencesconf montant " + evtsMnts.get(0) + " -> redirect to /");
+				forwardUrl = "/";
+			} else {
+				log.warn("Redirection sur le site sciencesconf en cours ... : " + forwardUrl);
+			}
             return "redirect:" + forwardUrl;
     	}
 		
     	uiModel.addAttribute("payevt", evts.get(0));
     	uiModel.addAttribute("payevtmontant", evtsMnts.get(0));
-    	
-    	if(!evtsMnts.get(0).getIsEnabled()) {
-    		log.info("PayEvtMontant " + mntUrlId + "in " + evts.get(0) + " found but is not enabled");
-    		return "amountFormDisabled";
-    	}
+
+		// check if the mnt event is enabled
+		if(!payEvtMontantService.checkEvtMontantEnabled(evtsMnts.get(0))) {
+			return "anonyme/amountFormDisabled";
+		}
 	
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     	if(auth!=null && auth.isAuthenticated() && auth.getPrincipal() instanceof InetOrgPerson) {
@@ -168,17 +161,19 @@ public class PayController {
     	List<CountryCode> countryCodes = Arrays.asList(CountryCode.values());
     	countryCodes.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
     	uiModel.addAttribute("countryCodes",countryCodes);
-    	
-        return "evtmnt";
+
+        return "anonyme/evtmnt";
     }
 
     
     
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.POST)
     public String form(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, 
-    		@RequestParam String mail, @RequestParam String field1, @RequestParam String field2, @RequestParam(required=false, value="amount") String amountString,
-    		@RequestParam(required=false) String billingFirstname, @RequestParam(required=false) String billingLastname, @RequestParam(required=false) String billingAddress1, 
-    		@RequestParam(required=false) String billingZipCode, @RequestParam(required=false) String billingCity, @RequestParam(required=false) String billingCountryCode
+    		@RequestParam("mail") String mail, @RequestParam("field1") String field1, @RequestParam("field2") String field2, @RequestParam(required=false, value="amount") String amountString,
+    		@RequestParam(required=false, value="billingFirstName") String billingFirstname, @RequestParam(required=false, value="billingLastName") String billingLastname,
+		    @RequestParam(required=false, value="billingAddress1") String billingAddress1, @RequestParam(required=false, value="billingZipCode") String billingZipCode,
+	        @RequestParam(required=false, value="billingCity") String billingCity, @RequestParam(required=false, value="billingCountryCode") String billingCountryCode,
+			HttpServletRequest request
     		) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " form called");
     	
@@ -209,6 +204,11 @@ public class PayController {
     		throw new EntityNotFoundException();
     	} 
     	PayEvtMontant payevtmontant = evtsMnts.get(0);
+
+		// check if the mnt event is enabled
+		if(!payEvtMontantService.checkEvtMontantEnabled(payevtmontant)) {
+			return "anonyme/amountFormDisabled";
+		}
     	
     	uiModel.addAttribute("payevt", payevt);
     	uiModel.addAttribute("payevtmontant", payevtmontant);
@@ -226,29 +226,34 @@ public class PayController {
 
 		if(mail.contains("+")) {
 			uiModel.addAttribute("error", "no_plus_mail");
-			return "evtmnt";
+			return "anonyme/evtmnt";
 		}
 
     	if(amount==null) {
     		uiModel.addAttribute("error", "amount_cant_be_null");
-    		 return "evtmnt";
+    		 return "anonyme/evtmnt";
     	}
 		if(payevt.getDbleMontantMax() != null && amount > payevt.getDbleMontantMax()) {
 			uiModel.addAttribute("error", "dbleMontant_too_high");
 			log.warn("Try to pay amount too high : " + mail + ", " + field1 + ", " + field2 + ", " + amount);
-			 return "evtmnt";
+			 return "anonyme/evtmnt";
 	    }
     		
     	PayBoxForm payBoxForm = payBoxServiceManager.getPayBoxForm(payevt, mail, field1, field2, amount, payevtmontant, 
     			billingFirstname, billingLastname, billingAddress1, billingZipCode, billingCity, billingCountryCode);
 
+
+		// Hack : disable CSRF here for paybox form
+		request.setAttribute( CsrfToken.class.getName(), null);
+
 	    uiModel.addAttribute("payBoxForm", payBoxForm);
-        return "evtmntForm";
+        return "anonyme/evtmntForm";
     }
     
     
     @RequestMapping(value="/", params = "reference")
-    public String payboxForward(Model uiModel, @RequestParam String reference, @RequestParam(required = false) String erreur, @RequestParam(required = false) String signature, HttpServletRequest request, HttpServletResponse response) {
+    public String payboxForward(Model uiModel, @RequestParam("reference") String reference, @RequestParam(required = false, name="erreur") String erreur,
+								@RequestParam(required = false, name="signature") String signature, HttpServletRequest request, HttpServletResponse response) {
     	EmailFieldsMapReference emailFieldsMapReference = payBoxServiceManager.getEmailFieldsMapReference(reference);
     	String forwardUrl = payBoxServiceManager.getWebSite(reference);
     	if(emailFieldsMapReference!=null && emailFieldsMapReference.getPayEvtMontant().getSciencesconf()) {
@@ -271,9 +276,13 @@ public class PayController {
      */
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.POST, params="confid")
     public String sciencesConfForm(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, 
-    		@RequestParam String confid, @RequestParam String uid, @RequestParam String lastname, @RequestParam String firstname, @RequestParam String mail, @RequestParam String fees, @RequestParam String returnurl,
-    		@RequestParam(required=false) String billingFirstname, @RequestParam(required=false) String billingLastname, @RequestParam(required=false) String billingAddress1, 
-    		@RequestParam(required=false) String billingZipCode, @RequestParam(required=false) String billingCity, @RequestParam(required=false) String billingCountryCode) {
+    		@RequestParam("confid") String confid, @RequestParam("uid") String uid, @RequestParam("lastname") String lastname, @RequestParam("firstname") String firstname,
+		    @RequestParam("mail") String mail, @RequestParam("fees") String fees, @RequestParam("returnurl") String returnurl,
+    		@RequestParam(required=false, name="billingFirstName") String billingFirstname,
+			@RequestParam(required=false, name="billingLastName") String billingLastname, @RequestParam(required=false, name="billingAddress1") String billingAddress1,
+    		@RequestParam(required=false, name="billingZipCode") String billingZipCode, @RequestParam(required=false, name="billingCity") String billingCity,
+			@RequestParam(required=false, name="billingCountryCode") String billingCountryCode,
+			HttpServletRequest request) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called via sciencesconf");
     	log.info("confid " + confid + " - uid : " + uid + " - lastname : " + lastname + " - firstname : " + firstname + " - mail : " + mail + " - fees : " + fees + " - returnurl : " + returnurl );
     	
@@ -290,6 +299,11 @@ public class PayController {
     		throw new EntityNotFoundException();
     	} 
     	PayEvtMontant payevtmontant = evtsMnts.get(0);
+
+		// check if the mnt event is enabled
+		if(!payEvtMontantService.checkEvtMontantEnabled(payevtmontant)) {
+			return "anonyme/amountFormDisabled";
+		}
     	
     	uiModel.addAttribute("payevt", payevt);
     	uiModel.addAttribute("payevtmontant", payevtmontant);
@@ -308,8 +322,11 @@ public class PayController {
         scienceConfReference.setDateCreated(new Date());
         scienceConfReferenceDaoService.persist(scienceConfReference);
 
+		// Hack : disable CSRF here for paybox form
+		request.setAttribute( CsrfToken.class.getName(), null);
+
 	    uiModel.addAttribute("payBoxForm", payBoxForm);
-        return "evtmntForm";
+        return "anonyme/evtmntForm";
     }
  
 }

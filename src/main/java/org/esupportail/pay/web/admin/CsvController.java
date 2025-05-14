@@ -21,14 +21,15 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.persistence.TypedQuery;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
+import jakarta.persistence.TypedQuery;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -55,7 +56,7 @@ public class CsvController {
 	private String separator;
 	
 	@RequestMapping
-    public void getCsv(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
+    public void getCsv(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc");
 		
@@ -64,7 +65,7 @@ public class CsvController {
     }
 
 	public void generateAndReturnCsv(HttpServletResponse response, TypedQuery<PayTransactionLog> txLogsQuery)
-			throws UnsupportedEncodingException, IOException {
+			throws IOException {
 		StopWatch stopWatch = new StopWatch("Stream - build CSV and send it");
 		stopWatch.start();
 		
@@ -72,16 +73,16 @@ public class CsvController {
         response.setCharacterEncoding("utf-8");   
         response.setHeader("Content-Disposition","attachment; filename=\"esup-pay-transaction-log.csv\"");
         
-		Writer writer = new OutputStreamWriter(response.getOutputStream(), "UTF8");
+		Writer writer = new OutputStreamWriter(response.getOutputStream(), StandardCharsets.UTF_8);
 		
-		List<String> headers = Arrays.asList(new String[] {"Date transaction", "payEvt", "payEvtMontant", "mail", "field1", "field2", "montant", "ID transaction"});
+		List<String> headers = Arrays.asList("Date transaction", "payEvt", "payEvtMontant", "mail", "field1", "field2", "montant", "ID transaction");
 		String csv = StringUtils.join(headers, separator);
 		writer.write(csv);
 
         int offset = 0;
         int nbLine = 0;
         List<PayTransactionLog> txLogs;
-        while ((txLogs = txLogsQuery.setFirstResult(offset).setMaxResults(1000).getResultList()).size() > 0) {
+        while ((txLogs = txLogsQuery.setFirstResult(offset).setMaxResults(100000).getResultList()).size() > 0) {
         	log.debug("Build CSV Iteration - offset : " + offset);
 	    	for(PayTransactionLog txLog : txLogs) {
 	    		List<String> entries = new ArrayList<String>();

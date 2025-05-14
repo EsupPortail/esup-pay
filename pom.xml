@@ -6,7 +6,7 @@
 	<groupId>org.esupportail</groupId>
 	<artifactId>esup-pay</artifactId>
 	<packaging>war</packaging>
-	<version>1.5.4-SNAPSHOT</version>
+	<version>2.0.1-SNAPSHOT</version>
 	<name>esup-pay</name>
 
 	<description>EsupPay is a web application that allow ldap users authenticated with jasig cas managing payments forms (only paybox platform is supported).</description>
@@ -25,13 +25,25 @@
 	<developers>
 		<developer>
 			<name>Vincent Bonamy</name>
-			<organization>Université de Rouen</organization>
+			<organization>Université de Rouen Normandie</organization>
+		</developer>
+		<developer>
+			<name>Thomas Dargent</name>
+			<organization>Université de Rouen Normandie</organization>
 		</developer>
 	</developers>
 	<contributors>
 		<contributor>
 			<name>Jean-Pierre Tran</name>
-			<organization>Université de Rouen</organization>
+			<organization>Université de Rouen Normandie</organization>
+		</contributor>
+		<contributor>
+			<name>Valentin Hagnéré</name>
+			<organization>Université de Rouen Normandie</organization>
+		</contributor>
+		<contributor>
+			<name>Pascal Rigaux</name>
+			<organization>Université Paris 1 Panthéon-Sorbonne</organization>
 		</contributor>
 	</contributors>
 	<mailingLists>
@@ -48,12 +60,12 @@
 
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<slf4j.version>2.0.5</slf4j.version>
-		<spring.version>5.3.31</spring.version>
-		<spring-security.version>5.8.9</spring-security.version>
-		<hibernate.version>5.4.33</hibernate.version>
+		<slf4j.version>2.0.17</slf4j.version>
+		<spring.version>6.2.6</spring.version>
+		<spring-security.version>6.4.5</spring-security.version>
+		<hibernate.version>6.6.13.Final</hibernate.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -72,9 +84,9 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.1.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Spring dependencies -->
@@ -107,16 +119,16 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.7.1</version>
+			<version>42.7.5</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
+			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate.version}</version>
 			<exclusions>
 				<exclusion>
-					<groupId>javax.activation</groupId>
-					<artifactId>javax.activation-api</artifactId>
+					<groupId>jakarta.activation</groupId>
+					<artifactId>jakarta.activation-api</artifactId>
 				</exclusion>
 				<exclusion>
 					<artifactId>jboss-logging</artifactId>
@@ -125,28 +137,13 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>cglib</groupId>
-					<artifactId>cglib</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>dom4j</groupId>
-					<artifactId>dom4j</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>7.0.1.Final</version>
+			<version>7.0.5.Final</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.vladmihalcea</groupId>
-		    <artifactId>hibernate-types-52</artifactId>
+		    <artifactId>hibernate-types-60</artifactId>
 		    <version>2.21.1</version>
 		    <exclusions>
 		    	<exclusion>
@@ -160,9 +157,9 @@
 		    </exclusions>
 		</dependency>
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>2.0.1.Final</version>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>3.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>
@@ -187,7 +184,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-dbcp2</artifactId>
-			<version>2.11.0</version>
+			<version>2.13.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -205,21 +202,9 @@
 			<version>1.5</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>javax.servlet.jsp-api</artifactId>
-			<version>2.3.3</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp.jstl</groupId>
-			<artifactId>javax.servlet.jsp.jstl-api</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
-			<version>2.2.1-b04</version>
+			<groupId>jakarta.el</groupId>
+			<artifactId>jakarta.el-api</artifactId>
+			<version>6.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -230,22 +215,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.15</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tiles</groupId>
-			<artifactId>tiles-jsp</artifactId>
-			<version>3.0.8</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>jcl-over-slf4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
+			<version>1.18.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -255,7 +225,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.11.0</version>
+			<version>2.19.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -319,7 +289,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator</artifactId>
@@ -335,7 +304,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>bootstrap</artifactId>
@@ -381,19 +349,24 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>javax.annotation-api</artifactId>
-			<version>1.3.1</version>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
+			<version>3.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.7</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>jakarta.mail</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.projectlombok</groupId>
 		    <artifactId>lombok</artifactId>
-		    <version>1.18.26</version>
+		    <version>1.18.36</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.taglibs</groupId>
@@ -408,7 +381,37 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.15.2</version>
+			<version>2.17.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf-spring6</artifactId>
+			<version>3.1.3.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+			<version>3.1.3.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+			<version>3.0.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>2.7.18</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.jpenren</groupId>
+			<artifactId>thymeleaf-spring-data-dialect</artifactId>
+			<version>3.6.0</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -426,6 +429,14 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
+					<!-- IMPORTANT : compile with parameters arg so that the generated classes contains method parameters names
+						used by spring security to bind parameters to method arguments so that it can be used in @PreAuthorize annotations like :
+    					@PreAuthorize("hasPermission(#id, 'view')")
+    					with '@PathVariable("id") Long id ' on the method signature
+					-->
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
 					<release>11</release>
 				</configuration>
 			</plugin>
@@ -437,7 +448,6 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -481,7 +491,7 @@
 			<plugin>
 				<groupId>org.jasig.maven</groupId>
 				<artifactId>maven-notice-plugin</artifactId>
-				<version>1.0.4</version>
+				<version>1.1.0</version>
 				<configuration>
 					<noticeTemplate>src/etc/NOTICE.template</noticeTemplate>
 					<licenseMapping>
@@ -489,6 +499,18 @@
 						<param>src/etc/license-mappings.xml</param>
 					</licenseMapping>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>jakarta.xml.bind</groupId>
+						<artifactId>jakarta.xml.bind-api</artifactId>
+						<version>4.0.2</version>
+					</dependency>
+					<dependency>
+						<groupId>com.sun.xml.bind</groupId>
+						<artifactId>jaxb-impl</artifactId>
+						<version>2.3.9</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 			<plugin>
@@ -524,9 +546,9 @@
 				</executions>
 			</plugin>
 			<plugin>
-			    <groupId>org.eclipse.jetty</groupId>
-			    <artifactId>jetty-maven-plugin</artifactId>
-			    <version>10.0.5</version>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>11.0.24</version>
 			</plugin>
 		</plugins>
 

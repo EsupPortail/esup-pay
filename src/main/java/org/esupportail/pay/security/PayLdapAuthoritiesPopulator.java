@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.dao.PayEvtDaoService;
@@ -132,15 +132,19 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_STAT"));
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_VENTILATION"));
 		}
+		// ADMIN implies ALL_VIEWER
+		if(extraRoles.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+			extraRoles.add(new SimpleGrantedAuthority("ROLE_ALL_VIEWER"));
+		}
 		
 		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(username);
-		List<RespLogin> respLoginList = Arrays.asList(new RespLogin[] {respLogin});
+		List<RespLogin> respLoginList = Arrays.asList(respLogin);
 		if(!payEvtDaoService.findPayEvtsByRespLogins(respLoginList).getResultList().isEmpty()) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
 		}
 		
 		RespLogin viewerLogin = respLoginDaoService.findOrCreateRespLogin(username);
-		List<RespLogin> viewerLoginList = Arrays.asList(new RespLogin[] {viewerLogin});
+		List<RespLogin> viewerLoginList = Arrays.asList(viewerLogin);
 		if(!payEvtDaoService.findPayEvtsByViewerLogins(viewerLoginList).getResultList().isEmpty()) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_VIEWER"));
 		}

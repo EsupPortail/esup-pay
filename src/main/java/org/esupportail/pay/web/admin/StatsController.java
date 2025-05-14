@@ -17,7 +17,7 @@
  */
 package org.esupportail.pay.web.admin;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.esupportail.pay.services.StatsService;
@@ -43,12 +43,12 @@ public class StatsController {
 	@RequestMapping
     public String getStats(Model uiModel) {
 		uiModel.addAttribute("years", statsService.getDistinctYears());
-    	return "admin/stats";
+    	return "admin/stats/index";
     }
 
 	@RequestMapping(value="/montants", headers = "Accept=application/json; charset=utf-8")
 	@ResponseBody 
-	public String getmontants(@RequestParam(required = false) String year) {
+	public String getmontants(@RequestParam(name="year", required = false) String year) {
 		String flexJsonString = "Aucune statistique à récupérer";
 		try {
 			JSONSerializer serializer = new JSONSerializer();

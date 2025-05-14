@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html layout:decorate="~{../layouts/public.html}" th:lang="${#locale}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div layout:fragment="content">
+  <div class="container">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h4 th:text="#{pay_confirm_transaction(${payBoxForm.montantDisplay})}"></h4>
+        <small th:text="#{pay_confirm_transaction_help}"></small>
+      </div>
+      <div class="panel-body text-center">
+        <form th:action="${payBoxForm.actionUrl}" method="POST">
+          <th:block th:each="payBoxParam : ${payBoxForm.orderedParams}">
+            <input th:name="${payBoxParam.key}" type="hidden" th:value="${payBoxParam.value}"/>
+          </th:block>
+          <input name="PBX_HMAC" type="hidden" th:value="${payBoxForm.hmac}"/>
+          <input class="btn btn-success btn-lg" type="submit" th:value="${payBoxForm.montantDisplay}"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
