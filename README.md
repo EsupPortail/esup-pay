@@ -106,14 +106,6 @@ apt-get install postgresql-contrib
 
 Puis la création de l'extension lo se fait via un super-user:
 
-* avec postgresql 8 :
-```
-psql
-\c esuppay
-\i /usr/share/postgresql/8.4/contrib/lo.sql
-```
-
-* avec postgresql 9 ou supérieur :
 ```
 psql
 \c esuppay
@@ -126,7 +118,7 @@ Et enfin ajout du trigger* :
 CREATE TRIGGER t_big_file BEFORE UPDATE OR DELETE ON big_file  FOR EACH ROW EXECUTE PROCEDURE lo_manage(binary_file);
 ```
 
-CF http://docs.postgresqlfr.org/8.3/lo.html
+CF https://doc.postgresql.fr/15/lo.html
 
 \* afin que les tables soient préalablement créées, notamment la table big_file sur lequel on souhaite mettre le trigger lo_manage, vous devez démarrer l'application une fois ; en n'oubliant pas ensuite, pour ne pas écraser la base au redémarrage, de __modifier src/main/resources/META-INF/persistence.xml : create-> update__ - cf ci-dessous.
 
@@ -141,7 +133,7 @@ Pour faciliter le développement, un docker-compose est livré avec esup-pay. Ce
 
 Vous pouvez ainsi lancer depuis le répertoire __docker4dev__ :
 ```
-docker-compose up
+docker compose up
 ```
 
 Puis depuis le répertoire principal, vous lancez le jetty ainsi :
