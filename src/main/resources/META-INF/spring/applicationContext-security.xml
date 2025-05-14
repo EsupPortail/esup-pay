@@ -108,6 +108,7 @@
 		<beans:property name="userRoles">
 			<beans:map>
 				<beans:entry key="ROLE_ADMIN" value="admin@univ-rouen.fr"/>
+				<beans:entry key="ROLE_ALL_VIEWER" value="admin@univ-rouen.fr;comptable@univ-rouen.fr"/>
 				<beans:entry key="ROLE_VENTILATION" value="admin@univ-rouen.fr" />
 				<beans:entry key="ROLE_STAT" value="admin@univ-rouen.fr" />
 			</beans:map>
