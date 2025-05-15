@@ -229,7 +229,7 @@ public class PayBoxService {
         for (String payboxActionUrl : payboxActionUrls) {
             try {
                 URL url = new URL(payboxActionUrl);
-                URL url2test = new URL(String.format("%s://%s", url.getProtocol(), url.getHost()));
+                URL url2test = new URL(String.format("%s://%s/load.html", url.getProtocol(), url.getHost()));
                 URLConnection connection = url2test.openConnection();
                 connection.connect();
                 connection.getInputStream().read();
