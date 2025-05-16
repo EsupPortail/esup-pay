@@ -68,7 +68,7 @@ public class EmailFieldsMapReferenceDaoService {
 
 	public Query findEmailFieldsMapReferencesNotPayedByPayEvtMontantCreatedAfterDate(PayEvtMontant payEvtMontant, Date createdAfterDate) {
 		if (payEvtMontant == null) throw new IllegalArgumentException("The payEvtMontant argument is required");
-		Query q = em.createQuery("SELECT o FROM EmailFieldsMapReference AS o WHERE o.payEvtMontant = :payEvtMontant AND o.dateCreated > :createdAfterDate AND (o.isPayed == null OR o.isPayed == false )", EmailFieldsMapReference.class);
+		Query q = em.createQuery("SELECT o FROM EmailFieldsMapReference AS o WHERE o.payEvtMontant = :payEvtMontant AND o.dateCreated > :createdAfterDate AND (o.isPayed = null OR o.isPayed = false )", EmailFieldsMapReference.class);
 		q.setParameter("payEvtMontant", payEvtMontant);
 		q.setParameter("createdAfterDate", createdAfterDate);
 		return q;
