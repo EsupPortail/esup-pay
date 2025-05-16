@@ -102,7 +102,7 @@
          <dt>
           Remise banque
          </dt>
-         <span th:text="${#numbers.formatDecimal(ventilation.remise.montant/100, 1, 2)} + '€'"></span>
+         <span th:text="${#numbers.formatDecimal(ventilation.remise.montant/100.0, 1, 2)} + '€'"></span>
          <dt>
           Nombre de transactions
          </dt>
@@ -115,7 +115,7 @@
          <dt>
           Total
          </dt>
-         <span th:text="${#numbers.formatDecimal(ventilation.totalMontantTransactions/100, 1, 2)} + '€'"></span>
+         <span th:text="${#numbers.formatDecimal(ventilation.totalMontantTransactions/100.0, 1, 2)} + '€'"></span>
          <dt>
           Nombre de transactions
          </dt>
@@ -133,7 +133,7 @@
            <dt>
             [[${t.key.titleFr}]] [['[' + ${ventilation.transactions[t.key].size()} + ']']]
            </dt>
-           <span th:text="${#numbers.formatDecimal(t.value/100, 1, 2)} + '€'"></span>
+           <span th:text="${#numbers.formatDecimal(t.value/100.0, 1, 2)} + '€'"></span>
            <br/>
            <a aria-controls="collapseOne" aria-expanded="true" data-parent="#accordion" data-toggle="collapse" role="button" th:href="'#collapse-' + ${ventilationStatus.index} + '-' + ${evtStatus.index}">
             +
@@ -146,7 +146,7 @@
                 [['[' + ${tx.typeTransaction}+ ']']]
                </span>
               </th:block>
-              <span th:text="${#numbers.formatDecimal(tx.montant/100, 1, 2)} + '€'"></span>
+              <span th:text="${#numbers.formatDecimal(tx.montant/100.0, 1, 2)} + '€'"></span>
               : [[${tx.reference}]]
              </li>
             </th:block>
