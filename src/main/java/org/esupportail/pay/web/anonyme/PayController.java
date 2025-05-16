@@ -288,7 +288,11 @@ public class PayController {
     	log.info("confid " + confid + " - uid : " + uid + " - lastname : " + lastname + " - firstname : " + firstname + " - mail : " + mail + " - fees : " + fees + " - returnurl : " + returnurl );
 
 		if(StringUtils.isEmpty(fees)) {
-			String warnMessage = "Fee is empty - here the params for POST on /evts/" + evtUrlId + "/" + mntUrlId  + " : " + request.getParameterMap();
+			String requestParams = request.getParameterMap().entrySet().stream()
+					.map(entry -> entry.getKey() + "=" + Arrays.toString(entry.getValue()))
+					.reduce((a, b) -> a + ", " + b)
+					.orElse("");
+			String warnMessage = "Fee is empty - here the params for POST on /evts/" + evtUrlId + "/" + mntUrlId  + " : " + requestParams;
 			log.warn(warnMessage);
 			throw new RuntimeException("Aucun montant transmis ? - " + warnMessage);
 		}
