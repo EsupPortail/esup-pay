@@ -24,7 +24,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.dao.*;
 import org.esupportail.pay.domain.*;
 import org.esupportail.pay.exceptions.EntityNotFoundException;
@@ -54,7 +55,7 @@ import java.util.List;
 @Transactional
 public class PayController {
 
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private static final String AROBAS_IS_FIRST_CHAR_REGEX = "^@{1,}";
     private static final String AROBASE_IS_LAST_CHAR_REGEX = "@{1,}$";

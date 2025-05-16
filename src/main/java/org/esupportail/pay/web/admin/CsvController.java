@@ -32,7 +32,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.PayTransactionLog;
@@ -47,7 +48,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Transactional
 public class CsvController {
 
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Resource
 	PayTransactionLogDaoService payTransactionLogDaoService;

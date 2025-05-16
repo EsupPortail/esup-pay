@@ -26,7 +26,8 @@ import java.util.Date;
 import jakarta.annotation.Resource;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.domain.UploadFile;
 import org.esupportail.pay.services.ExportService;
 import org.esupportail.pay.services.VentilationService;
@@ -43,7 +44,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Transactional
 public class VentilationController {
 
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Resource
 	VentilationService ventilationService;

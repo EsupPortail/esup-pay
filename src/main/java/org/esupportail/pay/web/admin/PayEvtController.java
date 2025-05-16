@@ -31,7 +31,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.dao.BigFileDaoService;
 import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.PayEvtMontantDaoService;
@@ -76,7 +77,7 @@ import org.springframework.web.util.WebUtils;
 @Transactional
 public class PayEvtController {
 
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	ServletContext servletContext;
@@ -121,7 +122,7 @@ public class PayEvtController {
     @PreAuthorize("hasPermission(#id, 'manage')")
 	public String addLogoFile(@PathVariable("id") Long id, UploadFile uploadFile, BindingResult bindingResult, Model uiModel, HttpServletRequest request) throws IOException {
 		if (bindingResult.hasErrors()) {
-			log.warn(bindingResult.getAllErrors());
+			log.warn("Binding Errors on addLogoFile : {}", bindingResult.getAllErrors());
 			return "redirect:/admin/evts/" + id.toString();
 		}
 		uiModel.asMap().clear();
@@ -175,7 +176,7 @@ public class PayEvtController {
     public String update(@Valid PayEvt payEvt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
     	payEvtUpdateValidator.validate(payEvt, bindingResult);
     	if (bindingResult.hasErrors()) {
-    		log.debug(bindingResult.getAllErrors());
+    		log.debug("Binding errors on update payvet : {}", bindingResult.getAllErrors());
             List<String> respLoginIds= List.of();
             if(httpServletRequest.getParameterValues("logins") != null) {
     	        respLoginIds = Arrays.asList(httpServletRequest.getParameterValues("logins"));

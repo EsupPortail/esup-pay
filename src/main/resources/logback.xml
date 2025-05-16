@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to EsupPortail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    EsupPortail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<configuration>
+
+	<!-- default configuration from springboot -->
+	<include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+	    <file>logs/esup-pay.log</file>
+	    <append>true</append>
+	    <immediateFlush>true</immediateFlush>
+	    <encoder>
+	      <pattern>[%-5level] %date{dd/MM/yyyy HH:mm:ss} %logger{35} - %msg%n</pattern>
+	    </encoder>
+	</appender>
+
+	
+	<appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+		<smtpHost>smtp</smtpHost>
+		<smtpPort>25</smtpPort>
+		<to>esup-pay@mon-univ.fr</to>
+		<from>esup-pay@mon-univ.fr</from>
+		<subject>%-5level - esup-pay %date{dd/MM/yyyy HH:mm:ss}
+		</subject>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>[%-5level] %date{dd/MM/yyyy HH:mm:ss} [%-20thread]
+				%logger{36} - %msg%n</pattern>
+		</layout>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+	</appender>
+	
+	<logger name="org.esupportail.pay" level="error" additivity="false">
+        <appender-ref ref="EMAIL"/>
+    </logger>
+    
+    <logger name="org.esupportail.pay" level="info" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+    
+    <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="info" additivity="false">
+   	 	<appender-ref ref="FILE"/>
+	</logger>
+    
+
+	<root level="warn">
+		<appender-ref ref="FILE"/>
+	</root>	
+
+</configuration>

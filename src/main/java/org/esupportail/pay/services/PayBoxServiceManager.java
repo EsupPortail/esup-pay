@@ -24,7 +24,8 @@ import java.util.Map;
 
 import jakarta.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.PayBoxForm;
@@ -37,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PayBoxServiceManager {
 
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     
     @Resource
     EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;

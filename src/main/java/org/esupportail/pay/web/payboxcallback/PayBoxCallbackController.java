@@ -20,7 +20,8 @@ package org.esupportail.pay.web.payboxcallback;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.services.PayBoxServiceManager;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class PayBoxCallbackController {
 
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Resource 
 	PayBoxServiceManager payBoxServiceManager;

@@ -22,7 +22,8 @@ import java.util.List;
 import jakarta.annotation.Resource;
 import jakarta.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
@@ -38,7 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ArchiveService {
 	
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	static final String ARCHIVED = "archived";
 	

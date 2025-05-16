@@ -17,7 +17,8 @@
  */
 package org.esupportail.pay.security;
 
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.access.event.AuthorizationFailureEvent;
 import org.springframework.security.web.FilterInvocation;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PayboxCallbackAuthorizationFailureEventListener {
 
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@EventListener
 	public void authorizationFailureEventCatch(AuthorizationFailureEvent authorizationFailureEvent) {
