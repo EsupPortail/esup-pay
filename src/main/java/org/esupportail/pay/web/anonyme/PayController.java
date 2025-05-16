@@ -286,7 +286,13 @@ public class PayController {
 			HttpServletRequest request) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called via sciencesconf");
     	log.info("confid " + confid + " - uid : " + uid + " - lastname : " + lastname + " - firstname : " + firstname + " - mail : " + mail + " - fees : " + fees + " - returnurl : " + returnurl );
-    	
+
+		if(StringUtils.isEmpty(fees)) {
+			String warnMessage = "Fee is empty - here the params for POST on /evts/" + evtUrlId + "/" + mntUrlId  + " : " + request.getParameterMap();
+			log.warn(warnMessage);
+			throw new RuntimeException("Aucun montant transmis ? - " + warnMessage);
+		}
+
     	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
     	if(evts.size() == 0) {
     		log.warn("PayEvt " + evtUrlId + " not found");
