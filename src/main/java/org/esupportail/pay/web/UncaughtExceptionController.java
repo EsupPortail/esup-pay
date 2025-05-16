@@ -60,6 +60,7 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 			mav.setViewName("uncaughtException");
 		}
 		log.debug("Request: " + url + " raised " + ex, ex);
+		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		return mav;
 	}
 	
