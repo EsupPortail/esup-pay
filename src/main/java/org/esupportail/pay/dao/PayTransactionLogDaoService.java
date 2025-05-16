@@ -67,7 +67,6 @@ public class PayTransactionLogDaoService {
         String sortOrder = sortFieldName.getDirection().name();
         if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
             queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
-            System.out.println(sortOrder);
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 queryBuilder.append(" ").append(sortOrder);
             }
@@ -139,7 +138,6 @@ public class PayTransactionLogDaoService {
         String sortOrder = sortFieldName.getDirection().name();
         if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
             queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
-            System.out.println(sortOrder);
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 queryBuilder.append(" ").append(sortOrder);
             }
