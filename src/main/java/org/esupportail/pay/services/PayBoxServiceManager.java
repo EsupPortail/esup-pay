@@ -96,6 +96,11 @@ public class PayBoxServiceManager {
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt payboxevt = evtMontant.getEvt();
+            PayBoxService  payBoxService = payboxServices.get(payboxevt.getPayboxServiceKey());
+            if(payBoxService==null) {
+                log.error("Pas de compte paybox associé à " + payboxevt.getPayboxServiceKey() + " en configuration d'esup-pay !");
+                return false;
+            }
             return payboxServices.get(payboxevt.getPayboxServiceKey()).payboxCallback(montant, reference, auto, erreur, idtrans, securevers, softdecline, secureauth, securegarantie, signature, queryString);
         }
         log.error("reference ne correspond pas à un montant/evt et donc à un service paybox !? reference : " + reference);
