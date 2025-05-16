@@ -55,7 +55,7 @@ public class PayEvtMontantService {
             List<PayTransactionLog> logs = payTransactionLogDaoService.findPayTransactionLogsByPayEvtMontant(payEvtMontant).getResultList();
             Date today = new Date();
             Date createdAfterDate = new Date(today.getTime() - transactionLockSecondsPeriodForLimit * 1000);
-            List<EmailFieldsMapReference> emailFieldsMapReferences = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByPayEvtMontantCreatedAfterDate(payEvtMontant, createdAfterDate).getResultList();
+            List<EmailFieldsMapReference> emailFieldsMapReferences = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesNotPayedByPayEvtMontantCreatedAfterDate(payEvtMontant, createdAfterDate).getResultList();
             long montantTotal = 0;
             long nbTransactions = 0;
             for(PayTransactionLog log : logs) {

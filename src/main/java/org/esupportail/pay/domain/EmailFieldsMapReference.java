@@ -68,4 +68,6 @@ public class EmailFieldsMapReference {
 	
 	private String billingCountryCode;
 
+    private Boolean isPayed = false;
+
 }

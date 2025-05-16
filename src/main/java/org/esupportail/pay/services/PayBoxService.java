@@ -326,7 +326,7 @@ public class PayBoxService {
                     message += "Reference : " + reference + "\n";
 
                     try {
-                        // this.sendMessage(mailFrom, subject, mailTo, message);
+                        this.sendMessage(mailFrom, subject, mailTo, message);
                         txLog.setMailSent(true);
                     } catch (Exception ex) {
                         log.error("Exception during sending email to : " + mailTo , ex);
@@ -349,10 +349,8 @@ public class PayBoxService {
                         } else {
                             log.warn("Problème de retour de paiement avec sciencesconf ? " + StringUtils.join(formVars) + " -> " + sciencesconfResponse);
                         }
-                    } else {
-                        // si sciencesconf  emailFieldsMapReference ne peut pas être supprimé car référencé par ScienceConfReference
-                        emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
                     }
+                    emailFieldsMapReference.setIsPayed(true);
                     payTransactionLogDaoService.persist(txLog);
                 } else {
                     log.info("'Erreur' " + erreur + "  (annulation) lors de la transaction paybox : " + reference + " pour un montant de " + montant);
