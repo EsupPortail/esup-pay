@@ -76,9 +76,10 @@ public class PayTransactionLogDaoService {
         TypedQuery<Long> qCount = em.createQuery(queryCount, Long.class);
         q.setParameter("payEvt", payEvt);
         qCount.setParameter("payEvt", payEvt);
-
-        q.setFirstResult((int) pageable.getOffset());
-        q.setMaxResults(pageable.getPageSize());
+        if(pageable.isPaged()) {
+            q.setFirstResult((int) pageable.getOffset());
+            q.setMaxResults(pageable.getPageSize());
+        }
         return new PageImpl<>(q.getResultList(), pageable, qCount.getSingleResult());
     }
 

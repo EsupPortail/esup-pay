@@ -325,9 +325,9 @@ public class PayEvtController {
     
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees", produces = "text/html")
-    public String fees(@PathVariable("id") Long id, Model uiModel, @PageableDefault(sort="transactionDate", direction=Sort.Direction.DESC) Pageable pageable) {
+    public String fees(@PathVariable("id") Long id, Model uiModel) {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, pageable);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate")));
         List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
         long total = 0L;
         for(PayTransactionLog ptl : paytransactionlogs) {
