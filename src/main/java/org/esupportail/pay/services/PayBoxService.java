@@ -349,9 +349,11 @@ public class PayBoxService {
                         } else {
                             log.warn("Problème de retour de paiement avec sciencesconf ? " + StringUtils.join(formVars) + " -> " + sciencesconfResponse);
                         }
+                    } else {
+                        // si sciencesconf  emailFieldsMapReference ne peut pas être supprimé car référencé par ScienceConfReference
+                        emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
                     }
                     payTransactionLogDaoService.persist(txLog);
-                    emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
                 } else {
                     log.info("'Erreur' " + erreur + "  (annulation) lors de la transaction paybox : " + reference + " pour un montant de " + montant);
                 }

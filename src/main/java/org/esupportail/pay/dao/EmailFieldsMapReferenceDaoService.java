@@ -37,7 +37,7 @@ public class EmailFieldsMapReferenceDaoService {
     EntityManager em;
 
 	public List<EmailFieldsMapReference> findOldEmailFieldsMapReferences(long oldDays) {
-		Query q = em.createQuery("select ref from EmailFieldsMapReference ref where ref.dateCreated is null or ref.dateCreated < :oldDate");
+		Query q = em.createQuery("select ref from EmailFieldsMapReference ref where ref.dateCreated is null or ref.dateCreated < :oldDate AND ref not in (select emailFieldsMapReference from ScienceConfReference)");
 		q.setParameter("oldDate", Date.from(Instant.now().minus(Duration.ofDays(oldDays))));
 		return q.getResultList();		
 	}
@@ -73,4 +73,5 @@ public class EmailFieldsMapReferenceDaoService {
 		q.setParameter("createdAfterDate", createdAfterDate);
 		return q;
 	}
+
 }
