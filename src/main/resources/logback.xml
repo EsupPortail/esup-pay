@@ -24,6 +24,13 @@
 	<!-- default configuration from springboot -->
 	<include resource="org/springframework/boot/logging/logback/base.xml"/>
 
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<target>System.out</target>
+		<encoder>
+			<pattern>[%-5level] %date{dd/MM/yyyy HH:mm:ss} %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
 	    <file>logs/esup-pay.log</file>
 	    <append>true</append>
@@ -37,8 +44,8 @@
 	<appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
 		<smtpHost>smtp</smtpHost>
 		<smtpPort>25</smtpPort>
-		<to>esup-pay@mon-univ.fr</to>
-		<from>esup-pay@mon-univ.fr</from>
+		<to>esup-pay@example.org</to>
+		<from>esup-pay@example.org</from>
 		<subject>%-5level - esup-pay %date{dd/MM/yyyy HH:mm:ss}
 		</subject>
 		<layout class="ch.qos.logback.classic.PatternLayout">
@@ -55,15 +62,18 @@
     </logger>
     
     <logger name="org.esupportail.pay" level="info" additivity="false">
+		<appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>
     
     <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="info" additivity="false">
+		<appender-ref ref="CONSOLE"/>
    	 	<appender-ref ref="FILE"/>
 	</logger>
     
 
 	<root level="warn">
+		<appender-ref ref="CONSOLE"/>
 		<appender-ref ref="FILE"/>
 	</root>	
 
