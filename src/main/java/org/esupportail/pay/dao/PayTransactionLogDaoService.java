@@ -191,4 +191,16 @@ public class PayTransactionLogDaoService {
         Query q = em.createNativeQuery(sql);
         return q.getResultList();
     }
+
+    public PayTransactionLog findPayTransactionLogByReference(String reference) {
+        if (reference == null || reference.length() == 0) throw new IllegalArgumentException("The reference argument is required");
+        TypedQuery<PayTransactionLog> q = em.createQuery("SELECT o FROM PayTransactionLog AS o WHERE o.reference = :reference", PayTransactionLog.class);
+        q.setParameter("reference", reference);
+        List<PayTransactionLog> resultList = q.getResultList();
+        if (resultList.isEmpty()) {
+            return null;
+        } else {
+            return resultList.get(0);
+        }
+    }
 }

@@ -326,7 +326,7 @@ public class PayBoxService {
                     message += "Reference : " + reference + "\n";
 
                     try {
-                        this.sendMessage(mailFrom, subject, mailTo, message);
+                        // this.sendMessage(mailFrom, subject, mailTo, message);
                         txLog.setMailSent(true);
                     } catch (Exception ex) {
                         log.error("Exception during sending email to : " + mailTo , ex);
