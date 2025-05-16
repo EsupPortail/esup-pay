@@ -33,7 +33,7 @@
     <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav" id="_navbar">
             <!-- When the fragment is called, menu items can be put between the tags. This content is displayed here -->
-            <th:block th:replace="this :: content"/>
+            <th:block th:replace="~{this :: content}"/>
         </ul>
         <div th:if="${urlRightButton != '' && urlRightButton != null}">
             <th:block th:with="button = ${iconRightButton != '' && iconRightButton != null} ?
