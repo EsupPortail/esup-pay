@@ -20,7 +20,8 @@ package org.esupportail.pay.services;
 import jakarta.annotation.Resource;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
@@ -53,7 +54,7 @@ import java.util.TimeZone;
 
 public class PayBoxService {
 
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private static final String RETOUR_VARIABLES = "montant:M;reference:R;auto:A;erreur:E;idtrans:S;securevers:v;softdecline:e;secureauth:F;securegarantie:G;signature:K";
 
@@ -229,7 +230,7 @@ public class PayBoxService {
         for (String payboxActionUrl : payboxActionUrls) {
             try {
                 URL url = new URL(payboxActionUrl);
-                URL url2test = new URL(String.format("%s://%s", url.getProtocol(), url.getHost()));
+                URL url2test = new URL(String.format("%s://%s/load.html", url.getProtocol(), url.getHost()));
                 URLConnection connection = url2test.openConnection();
                 connection.connect();
                 connection.getInputStream().read();
@@ -349,8 +350,8 @@ public class PayBoxService {
                             log.warn("Problème de retour de paiement avec sciencesconf ? " + StringUtils.join(formVars) + " -> " + sciencesconfResponse);
                         }
                     }
+                    emailFieldsMapReference.setIsPayed(true);
                     payTransactionLogDaoService.persist(txLog);
-                    emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
                 } else {
                     log.info("'Erreur' " + erreur + "  (annulation) lors de la transaction paybox : " + reference + " pour un montant de " + montant);
                 }

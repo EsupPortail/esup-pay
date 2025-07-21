@@ -19,7 +19,8 @@ package org.esupportail.pay.web.admin;
 
 import jakarta.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.services.StatsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,7 @@ import flexjson.JSONSerializer;
 @Transactional
 public class StatsController {
 
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Resource
 	StatsService statsService;

@@ -67,7 +67,6 @@ public class PayTransactionLogDaoService {
         String sortOrder = sortFieldName.getDirection().name();
         if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
             queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
-            System.out.println(sortOrder);
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 queryBuilder.append(" ").append(sortOrder);
             }
@@ -77,9 +76,10 @@ public class PayTransactionLogDaoService {
         TypedQuery<Long> qCount = em.createQuery(queryCount, Long.class);
         q.setParameter("payEvt", payEvt);
         qCount.setParameter("payEvt", payEvt);
-
-        q.setFirstResult((int) pageable.getOffset());
-        q.setMaxResults(pageable.getPageSize());
+        if(pageable.isPaged()) {
+            q.setFirstResult((int) pageable.getOffset());
+            q.setMaxResults(pageable.getPageSize());
+        }
         return new PageImpl<>(q.getResultList(), pageable, qCount.getSingleResult());
     }
 
@@ -139,7 +139,6 @@ public class PayTransactionLogDaoService {
         String sortOrder = sortFieldName.getDirection().name();
         if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
             queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
-            System.out.println(sortOrder);
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 queryBuilder.append(" ").append(sortOrder);
             }
@@ -191,5 +190,17 @@ public class PayTransactionLogDaoService {
                 + " ORDER BY year DESC";
         Query q = em.createNativeQuery(sql);
         return q.getResultList();
+    }
+
+    public PayTransactionLog findPayTransactionLogByReference(String reference) {
+        if (reference == null || reference.length() == 0) throw new IllegalArgumentException("The reference argument is required");
+        TypedQuery<PayTransactionLog> q = em.createQuery("SELECT o FROM PayTransactionLog AS o WHERE o.reference = :reference", PayTransactionLog.class);
+        q.setParameter("reference", reference);
+        List<PayTransactionLog> resultList = q.getResultList();
+        if (resultList.isEmpty()) {
+            return null;
+        } else {
+            return resultList.get(0);
+        }
     }
 }

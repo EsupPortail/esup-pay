@@ -24,7 +24,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.dao.*;
 import org.esupportail.pay.domain.*;
 import org.esupportail.pay.exceptions.EntityNotFoundException;
@@ -54,7 +55,7 @@ import java.util.List;
 @Transactional
 public class PayController {
 
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private static final String AROBAS_IS_FIRST_CHAR_REGEX = "^@{1,}";
     private static final String AROBASE_IS_LAST_CHAR_REGEX = "@{1,}$";
@@ -285,7 +286,17 @@ public class PayController {
 			HttpServletRequest request) {
     	log.info("Evt " + evtUrlId + " - mnt " + mntUrlId + " called via sciencesconf");
     	log.info("confid " + confid + " - uid : " + uid + " - lastname : " + lastname + " - firstname : " + firstname + " - mail : " + mail + " - fees : " + fees + " - returnurl : " + returnurl );
-    	
+
+		if(StringUtils.isEmpty(fees)) {
+			String requestParams = request.getParameterMap().entrySet().stream()
+					.map(entry -> entry.getKey() + "=" + Arrays.toString(entry.getValue()))
+					.reduce((a, b) -> a + ", " + b)
+					.orElse("");
+			String warnMessage = "Fee is empty - here the params for POST on /evts/" + evtUrlId + "/" + mntUrlId  + " : " + requestParams;
+			log.warn(warnMessage);
+			throw new RuntimeException("Aucun montant transmis ? - " + warnMessage);
+		}
+
     	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
     	if(evts.size() == 0) {
     		log.warn("PayEvt " + evtUrlId + " not found");

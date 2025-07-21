@@ -24,7 +24,8 @@ import java.nio.charset.StandardCharsets;
 import jakarta.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.PayEvtMontantDaoService;
 import org.esupportail.pay.domain.PayEvt;
@@ -33,7 +34,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UrlIdService {
 
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 	
     @Resource
 	PayEvtDaoService payEvtDaoService;

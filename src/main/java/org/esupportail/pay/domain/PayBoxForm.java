@@ -26,13 +26,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Getter
 @Setter
 public class PayBoxForm {
 
-	private final static Logger log = Logger.getLogger(PayBoxForm.class);
+	private final static Logger log = LoggerFactory.getLogger(PayBoxForm.class);
 
 	private static String PBX_SHOPPINGCART_XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
 			+ "<shoppingcart>"

@@ -4,7 +4,7 @@ services:
   openldap:
     image: osixia/openldap:1.5.0
     environment:
-      LDAP_DOMAIN: "univ-ville.fr"
+      LDAP_DOMAIN: "example.org"
     command: --copy-service
     volumes:
      - ./ldap-config:/container/service/slapd/assets/config/bootstrap/ldif/custom

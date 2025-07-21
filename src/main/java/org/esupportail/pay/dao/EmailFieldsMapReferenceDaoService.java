@@ -37,7 +37,7 @@ public class EmailFieldsMapReferenceDaoService {
     EntityManager em;
 
 	public List<EmailFieldsMapReference> findOldEmailFieldsMapReferences(long oldDays) {
-		Query q = em.createQuery("select ref from EmailFieldsMapReference ref where ref.dateCreated is null or ref.dateCreated < :oldDate");
+		Query q = em.createQuery("select ref from EmailFieldsMapReference ref where ref.dateCreated is null or ref.dateCreated < :oldDate AND ref not in (select emailFieldsMapReference from ScienceConfReference)");
 		q.setParameter("oldDate", Date.from(Instant.now().minus(Duration.ofDays(oldDays))));
 		return q.getResultList();		
 	}
@@ -66,11 +66,12 @@ public class EmailFieldsMapReferenceDaoService {
 		em.persist(emailMapFirstLastName);
 	}
 
-	public Query findEmailFieldsMapReferencesByPayEvtMontantCreatedAfterDate(PayEvtMontant payEvtMontant, Date createdAfterDate) {
+	public Query findEmailFieldsMapReferencesNotPayedByPayEvtMontantCreatedAfterDate(PayEvtMontant payEvtMontant, Date createdAfterDate) {
 		if (payEvtMontant == null) throw new IllegalArgumentException("The payEvtMontant argument is required");
-		Query q = em.createQuery("SELECT o FROM EmailFieldsMapReference AS o WHERE o.payEvtMontant = :payEvtMontant AND o.dateCreated > :createdAfterDate", EmailFieldsMapReference.class);
+		Query q = em.createQuery("SELECT o FROM EmailFieldsMapReference AS o WHERE o.payEvtMontant = :payEvtMontant AND o.dateCreated > :createdAfterDate AND (o.isPayed = null OR o.isPayed = false )", EmailFieldsMapReference.class);
 		q.setParameter("payEvtMontant", payEvtMontant);
 		q.setParameter("createdAfterDate", createdAfterDate);
 		return q;
 	}
+
 }

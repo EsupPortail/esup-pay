@@ -1,9 +1,9 @@
-dn: ou=people,dc=univ-ville,dc=fr
+dn: ou=people,dc=example,dc=org
 changetype: add
 ou: people
 objectclass: organizationalunit
 
-dn: uid=admin,ou=people,dc=univ-ville,dc=fr
+dn: uid=admin,ou=people,dc=example,dc=org
 changetype: add
 uid: admin
 sn: admin
@@ -11,9 +11,9 @@ cn: admin
 displayName: Admin Esup
 objectClass: inetOrgPerson
 userPassword: esup
-mail: admin@univ-ville.fr
+mail: admin@example.org
 
-dn: uid=ventil,ou=people,dc=univ-ville,dc=fr
+dn: uid=ventil,ou=people,dc=example,dc=org
 changetype: add
 uid: ventil
 sn: ventil
@@ -21,9 +21,9 @@ cn: ventil
 displayName: Ventil Esup
 objectClass: inetOrgPerson
 userPassword: esup
-mail: ventil@univ-ville.fr
+mail: ventil@example.org
 
-dn: uid=stat,ou=people,dc=univ-ville,dc=fr
+dn: uid=stat,ou=people,dc=example,dc=org
 changetype: add
 uid: stat
 sn: stat
@@ -31,31 +31,31 @@ cn: stat
 displayName: Stat Esup
 objectClass: inetOrgPerson
 userPassword: esup
-mail: stat@univ-ville.fr
+mail: stat@example.org
 
-dn: ou=groups,dc=univ-ville,dc=fr
+dn: ou=groups,dc=example,dc=org
 changetype: add
 ou: groups
 objectclass: organizationalunit
 
-dn: cn=for.esuppay.admin,ou=groups,dc=univ-ville,dc=fr
+dn: cn=for.esuppay.admin,ou=groups,dc=example,dc=org
 changetype: add
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: for.esuppay.admin
-uniqueMember: uid=admin,ou=people,dc=univ-ville,dc=fr
+uniqueMember: uid=admin,ou=people,dc=example,dc=org
 
-dn: cn=for.esuppay.statistique,ou=groups,dc=univ-ville,dc=fr
+dn: cn=for.esuppay.statistique,ou=groups,dc=example,dc=org
 changetype: add
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: for.esuppay.statistique
-uniqueMember: uid=stat,ou=people,dc=univ-ville,dc=fr
+uniqueMember: uid=stat,ou=people,dc=example,dc=org
 
-dn: cn=for.esuppay.ventilation,ou=groups,dc=univ-ville,dc=fr
+dn: cn=for.esuppay.ventilation,ou=groups,dc=example,dc=org
 changetype: add
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: for.esuppay.ventilation
-uniqueMember: uid=ventil,ou=people,dc=univ-ville,dc=fr
+uniqueMember: uid=ventil,ou=people,dc=example,dc=org
 

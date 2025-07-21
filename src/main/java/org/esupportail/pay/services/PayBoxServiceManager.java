@@ -17,30 +17,31 @@
  */
 package org.esupportail.pay.services;
 
+import jakarta.annotation.Resource;
+import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
+import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.annotation.Resource;
-
-import org.apache.log4j.Logger;
-import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
-import org.esupportail.pay.domain.EmailFieldsMapReference;
-import org.esupportail.pay.domain.PayBoxForm;
-import org.esupportail.pay.domain.PayEvt;
-import org.esupportail.pay.domain.PayEvtMontant;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 public class PayBoxServiceManager {
 
-    private final Logger log = Logger.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     
     @Resource
     EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
+
+    @Resource
+    PayTransactionLogDaoService payTransactionLogDaoService;
     
     @Value("${institute.href}")
     String instituteHref;
@@ -67,15 +68,25 @@ public class PayBoxServiceManager {
 		return payboxServices.get(payboxevt.getPayboxServiceKey()).getPayBoxForm(mail, field1, field2, montant, payboxEvtMontant,
 				billingFirstname, billingLastname, billingAddress1, billingZipCode, billingCity, billingCountryCode);
 	}
-	
+
+    @Transactional(readOnly = true)
 	public String getWebSite(String reference) {
+        String webSite = instituteHref;
         List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt evt = evtMontant.getEvt();
-            return evt.getWebSiteUrl();
+            webSite = evt.getWebSiteUrl();
+        } else {
+            // Paiement déjà ok par paybox -> transactionLog
+            PayTransactionLog transactionLog = payTransactionLogDaoService.findPayTransactionLogByReference(reference);
+            if (transactionLog != null) {
+                PayEvt evt = transactionLog.getPayEvtMontant().getEvt();
+                webSite = evt.getWebSiteUrl();
+            }
         }
-        return instituteHref;
+        log.info("website for reference {} : {}", reference, webSite);
+        return webSite;
 	}
 	
 	public EmailFieldsMapReference getEmailFieldsMapReference(String reference) {
@@ -95,6 +106,11 @@ public class PayBoxServiceManager {
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt payboxevt = evtMontant.getEvt();
+            PayBoxService  payBoxService = payboxServices.get(payboxevt.getPayboxServiceKey());
+            if(payBoxService==null) {
+                log.error("Pas de compte paybox associé à " + payboxevt.getPayboxServiceKey() + " en configuration d'esup-pay !");
+                return false;
+            }
             return payboxServices.get(payboxevt.getPayboxServiceKey()).payboxCallback(montant, reference, auto, erreur, idtrans, securevers, softdecline, secureauth, securegarantie, signature, queryString);
         }
         log.error("reference ne correspond pas à un montant/evt et donc à un service paybox !? reference : " + reference);
