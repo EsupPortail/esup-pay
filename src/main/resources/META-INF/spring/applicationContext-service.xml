@@ -54,7 +54,7 @@
 		<constructor-arg ref="ldapContextSourcePool" />
 	</bean>
 
-	<task:annotation-driven executor="exceptionHandlingTaskExecutor" mode="aspectj"/>
+	<task:annotation-driven executor="exceptionHandlingTaskExecutor"/>
     <task:executor id="synchroExecutorPool" pool-size="1"/>
     <bean id="exceptionHandlingTaskExecutor" class="org.esupportail.pay.exceptions.ExceptionHandlingAsyncTaskExecutor">
         <constructor-arg ref="synchroExecutorPool" />
