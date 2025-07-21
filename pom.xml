@@ -62,7 +62,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.version>6.2.6</spring.version>
+		<spring.version>6.2.7</spring.version>
 		<spring-security.version>6.4.5</spring-security.version>
 		<hibernate.version>6.6.13.Final</hibernate.version>
 	</properties>
