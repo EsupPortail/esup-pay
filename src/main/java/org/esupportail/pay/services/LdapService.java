@@ -17,16 +17,6 @@
  */
 package org.esupportail.pay.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import jakarta.annotation.Resource;
-
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchControls;
-
 import org.apache.commons.lang3.time.StopWatch;
 import org.esupportail.pay.domain.LdapResult;
 import org.esupportail.pay.domain.RespLogin;
@@ -40,6 +30,12 @@ import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.LikeFilter;
 import org.springframework.ldap.filter.OrFilter;
 import org.springframework.stereotype.Service;
+
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchControls;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class LdapService {
@@ -71,7 +67,7 @@ public class LdapService {
 		this.ldapSearchEqAttrs = Arrays.asList(ldapSearchEqAttr.split(","));
 	}
 
-	public int countSearchUids(List<String> uids) {
+	public int countSearchUids(Set<String> uids) {
 		if(ldapTemplate == null) {
 			return 0;
 		}
