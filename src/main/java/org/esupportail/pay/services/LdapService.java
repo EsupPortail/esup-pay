@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import jakarta.annotation.Resource;
+
+import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 
@@ -67,6 +69,20 @@ public class LdapService {
 	@Value("${ldap.searchEqAttrs}")
 	public void setLdapSearchEqAttr(String ldapSearchEqAttr) {
 		this.ldapSearchEqAttrs = Arrays.asList(ldapSearchEqAttr.split(","));
+	}
+
+	public int countSearchUids(List<String> uids) {
+		if(ldapTemplate == null) {
+			return 0;
+		}
+		AndFilter filter = new AndFilter();
+		filter.and(new EqualsFilter("objectclass", "person"));
+		OrFilter orFilter = new OrFilter();
+		for (String uid : uids) {
+			orFilter.or(new EqualsFilter(ldapUidAttr, uid));
+		}
+		filter.and(orFilter);
+		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String[]{}, (AttributesMapper<? extends Object>) attrs -> null).size();
 	}
 
 	public List<LdapResult> search(String login) {
