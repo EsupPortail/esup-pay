@@ -82,7 +82,16 @@ public class LdapService {
 			orFilter.or(new EqualsFilter(ldapUidAttr, uid));
 		}
 		filter.and(orFilter);
-		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String[]{}, (AttributesMapper<? extends Object>) attrs -> null).size();
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		int count = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String[]{}, (AttributesMapper<? extends Object>) attrs -> null).size();
+		stopWatch.stop();
+		if(stopWatch.getTime()>100) {
+			log.warn("LDAP count for " + uids.size() + " logins with filter " + filter.encode() + " took " + stopWatch.getTime() + " ms, found " + count + " - check your indexes.");
+		} else  {
+			log.debug("LDAP count for " + uids.size() + " logins in " + stopWatch.getTime() + " ms, found " + count);
+		}
+		return count;
 	}
 
 	public List<LdapResult> search(String login) {
@@ -101,7 +110,16 @@ public class LdapService {
 			orFilter.or(new EqualsFilter(ldapSearchAttr, login));
 		}
 		filter.and(orFilter);
-		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		List<LdapResult>  result = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
+		stopWatch.stop();
+		if(stopWatch.getTime()>500) {
+			log.warn("LDAP search for " + login + " with filter " + filter.encode() + " took " + stopWatch.getTime() + " ms, " + result.size() + " results - check your indexes.");
+		} else  {
+			log.debug("LDAP search for " + login + " in " + stopWatch.getTime() + " ms, " + result.size() + " results");
+		}
+		return result;
 	}
 
 	public void computeRespLogin(List<RespLogin> respLogins) {
@@ -129,7 +147,7 @@ public class LdapService {
 		if(stopWatch.getTime()>1000) {
 			log.warn("LDAP search for " + respLogins.size() + " logins with filter " + filter.encode() + " took " + stopWatch.getTime() + " ms, " + ldapResults.size() + " results - check your indexes.");
 		} else  {
-			log.info("LDAP search for " + respLogins.size() + " logins in " + stopWatch.getTime() + " ms, " + ldapResults.size() + " results");
+			log.debug("LDAP search for " + respLogins.size() + " logins in " + stopWatch.getTime() + " ms, " + ldapResults.size() + " results");
 		}
 		for (RespLogin respLogin : respLogins) {
 			for (LdapResult ldapResult : ldapResults) {
