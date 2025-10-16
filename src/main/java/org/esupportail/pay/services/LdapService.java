@@ -25,8 +25,10 @@ import jakarta.annotation.Resource;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.esupportail.pay.domain.LdapResult;
 import org.esupportail.pay.domain.RespLogin;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.core.AttributesMapper;
@@ -39,6 +41,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LdapService {
+
+	Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
 
 	@Autowired(required = false)
 	LdapTemplate ldapTemplate;
@@ -102,7 +106,15 @@ public class LdapService {
 			orFilter.or(new EqualsFilter(ldapUidAttr, respLogin.getLogin()));
 		}
 		filter.and(orFilter);
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
+		stopWatch.stop();
+		if(stopWatch.getTime()>1000) {
+			log.warn("LDAP search for " + respLogins.size() + " logins with filter " + filter.encode() + " took " + stopWatch.getTime() + " ms, " + ldapResults.size() + " results - check your indexes.");
+		} else  {
+			log.info("LDAP search for " + respLogins.size() + " logins in " + stopWatch.getTime() + " ms, " + ldapResults.size() + " results");
+		}
 		for (RespLogin respLogin : respLogins) {
 			for (LdapResult ldapResult : ldapResults) {
 				if (respLogin.getLogin().equals(ldapResult.getUid())) {
