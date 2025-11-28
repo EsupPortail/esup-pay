@@ -27,10 +27,7 @@
 
     <http security="none" pattern="/webjars/**" />
 
-	<http pattern="/payboxcallback**" entry-point-ref="http403EntryPoint" create-session="stateless">
-		<intercept-url access="${payboxIpRestriction}" pattern="/payboxcallback**" />
-		<csrf disabled="true"/>
-	</http>
+	<http security="none"  pattern="/payboxcallback**"/>
 
 	<!-- HTTP security configurations -->
 	<http auto-config="false" disable-url-rewriting="true"
@@ -58,8 +55,6 @@
     	<custom-filter ref="resourceUrlEncodingFilter" position="LAST"/>
     	<csrf request-matcher-ref="esupPayCsrfSecurityRequestMatcher"/>
 	</http>
-
-	<beans:bean id="http403EntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
 
 	<authentication-manager alias="authenticationManager">
 		<!-- SHA-256 values can be produced using 'echo -n your_desired_password 
