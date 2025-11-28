@@ -25,16 +25,16 @@ import org.esupportail.pay.dao.PayTransactionLogDaoService;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 
-@Configurable
 /**
  * A central place to register application converters and formatters. 
  */
-public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean {
+public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean implements InitializingBean {
    
 	@Resource
     PayEvtMontantDaoService payEvtMontantDaoService;
@@ -129,6 +129,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         registry.addConverter(getStringToPayTransactionLogConverter());
     }
 
+    @Override
 	public void afterPropertiesSet() {
         super.afterPropertiesSet();
         installLabelConverters(getObject());

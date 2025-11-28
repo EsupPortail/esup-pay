@@ -17,19 +17,17 @@
  */
 package org.esupportail.pay.web.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
-
+import org.esupportail.pay.services.StatsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.esupportail.pay.services.StatsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import flexjson.JSONSerializer;
 
 @RequestMapping("/admin/stats")
 @Controller
@@ -50,16 +48,16 @@ public class StatsController {
 	@RequestMapping(value="/montants", headers = "Accept=application/json; charset=utf-8")
 	@ResponseBody 
 	public String getmontants(@RequestParam(name="year", required = false) String year) {
-		String flexJsonString = "Aucune statistique à récupérer";
+        String json = "Aucune statistique à récupérer";
 		try {
-			JSONSerializer serializer = new JSONSerializer();
-			flexJsonString = serializer.deepSerialize(statsService.getStats(year));
+            ObjectMapper objectMapper = new ObjectMapper();
+            json = objectMapper.writeValueAsString(statsService.getStats(year));
 			
 		} catch (Exception e) {
 			log.warn("Impossible de récupérer les statistiques", e);
 		}
 		
-    	return flexJsonString;
+    	return json;
 
 	}
 }

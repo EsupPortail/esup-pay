@@ -18,7 +18,9 @@
 package org.esupportail.pay.web.validators;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import jakarta.annotation.Resource;
@@ -67,17 +69,15 @@ public class PayEvtUpdateValidator implements Validator {
 	    }
 
 		if(evt.getLogins() != null) {
-			for(String login : evt.getLogins()) {
-				if(ldapService.search(login) != null && ldapService.search(login).size()<1) {
-					errors.rejectValue("logins", "login_not_found");
-				}
+			Set<String> logins = new HashSet<>(evt.getLogins());
+			if(ldapService.countSearchUids(logins) != logins.size()) {
+				errors.rejectValue("logins", "login_not_found");
 			}
 		}
 		if(evt.getViewerLogins2Add() != null) {
-			for(String login : evt.getViewerLogins2Add()) {
-				if(ldapService.search(login) != null && ldapService.search(login).size()<1) {
-					errors.rejectValue("viewerLogins2Add", "login_not_found");
-				}
+			Set<String> logins = new HashSet<>(evt.getViewerLogins2Add());
+			if(ldapService.countSearchUids(logins) != logins.size()) {
+				errors.rejectValue("viewerLogins2Add", "login_not_found");
 			}
 		}
 		if(evt.getDefaultOptionalAddedParams() != null && !evt.getDefaultOptionalAddedParams().isEmpty()) {

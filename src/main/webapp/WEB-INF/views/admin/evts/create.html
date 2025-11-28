@@ -121,7 +121,7 @@
                                     <select class="form-control" id="_payboxServiceKey_id" name="payboxServiceKey"
                                             size="1">
                                         <th:block th:each="key : ${payboxServiceKeys}">
-                                            <option th:text="${key}" th:value="${key} + ' '" th:selected="${key == payboxServiceKey ? 'true' : 'false'}" >
+                                            <option th:text="${key}" th:value="${key}" th:selected="${key == payboxServiceKey ? 'true' : 'false'}" >
                                             </option>
                                         </th:block>
                                     </select>

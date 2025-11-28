@@ -75,7 +75,7 @@ public class EvtService {
 		List<RespLogin> respLogins = new ArrayList<RespLogin>();
         if(respLoginIds!=null && !respLoginIds.isEmpty()) {
             for(String login: respLoginIds) {
-            	if(login != null && !login.isEmpty()) {
+            	if(login != null && !login.isEmpty() && !respLogins.stream().anyMatch(r -> r.getLogin().equals(login))) {
 	                RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(login);
 	                respLogins.add(respLogin);
             	}
@@ -86,7 +86,7 @@ public class EvtService {
         List<RespLogin> viewerLogins = new ArrayList<RespLogin>();
         if(viewerLoginIds!=null && !viewerLoginIds.isEmpty()) {
             for(String login: viewerLoginIds) {
-            	if(login != null && !login.isEmpty()) {
+            	if(login != null && !login.isEmpty() && !viewerLogins.stream().anyMatch(r -> r.getLogin().equals(login))) {
             		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(login);
             		viewerLogins.add(respLogin);
             	}

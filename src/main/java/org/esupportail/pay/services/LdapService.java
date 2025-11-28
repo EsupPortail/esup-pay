@@ -17,16 +17,10 @@
  */
 package org.esupportail.pay.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import jakarta.annotation.Resource;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchControls;
-
+import org.apache.commons.lang3.time.StopWatch;
 import org.esupportail.pay.domain.LdapResult;
 import org.esupportail.pay.domain.RespLogin;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.core.AttributesMapper;
@@ -37,8 +31,16 @@ import org.springframework.ldap.filter.LikeFilter;
 import org.springframework.ldap.filter.OrFilter;
 import org.springframework.stereotype.Service;
 
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchControls;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class LdapService {
+
+	Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
 
 	@Autowired(required = false)
 	LdapTemplate ldapTemplate;
@@ -65,6 +67,29 @@ public class LdapService {
 		this.ldapSearchEqAttrs = Arrays.asList(ldapSearchEqAttr.split(","));
 	}
 
+	public int countSearchUids(Set<String> uids) {
+		if(ldapTemplate == null) {
+			return 0;
+		}
+		AndFilter filter = new AndFilter();
+		filter.and(new EqualsFilter("objectclass", "person"));
+		OrFilter orFilter = new OrFilter();
+		for (String uid : uids) {
+			orFilter.or(new EqualsFilter(ldapUidAttr, uid));
+		}
+		filter.and(orFilter);
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		int count = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String[]{}, (AttributesMapper<? extends Object>) attrs -> null).size();
+		stopWatch.stop();
+		if(stopWatch.getTime()>100) {
+			log.warn("LDAP count for " + uids.size() + " logins with filter " + filter.encode() + " took " + stopWatch.getTime() + " ms, found " + count + " - check your indexes.");
+		} else  {
+			log.debug("LDAP count for " + uids.size() + " logins in " + stopWatch.getTime() + " ms, found " + count);
+		}
+		return count;
+	}
+
 	public List<LdapResult> search(String login) {
 		if(ldapTemplate == null) {
 			return null;
@@ -81,7 +106,16 @@ public class LdapService {
 			orFilter.or(new EqualsFilter(ldapSearchAttr, login));
 		}
 		filter.and(orFilter);
-		return ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		List<LdapResult>  result = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
+		stopWatch.stop();
+		if(stopWatch.getTime()>500) {
+			log.warn("LDAP search for " + login + " with filter " + filter.encode() + " took " + stopWatch.getTime() + " ms, " + result.size() + " results - check your indexes.");
+		} else  {
+			log.debug("LDAP search for " + login + " in " + stopWatch.getTime() + " ms, " + result.size() + " results");
+		}
+		return result;
 	}
 
 	public void computeRespLogin(List<RespLogin> respLogins) {
@@ -102,7 +136,15 @@ public class LdapService {
 			orFilter.or(new EqualsFilter(ldapUidAttr, respLogin.getLogin()));
 		}
 		filter.and(orFilter);
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		List<LdapResult> ldapResults = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
+		stopWatch.stop();
+		if(stopWatch.getTime()>1000) {
+			log.warn("LDAP search for " + respLogins.size() + " logins with filter " + filter.encode() + " took " + stopWatch.getTime() + " ms, " + ldapResults.size() + " results - check your indexes.");
+		} else  {
+			log.debug("LDAP search for " + respLogins.size() + " logins in " + stopWatch.getTime() + " ms, " + ldapResults.size() + " results");
+		}
 		for (RespLogin respLogin : respLogins) {
 			for (LdapResult ldapResult : ldapResults) {
 				if (respLogin.getLogin().equals(ldapResult.getUid())) {

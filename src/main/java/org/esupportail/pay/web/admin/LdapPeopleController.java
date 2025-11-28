@@ -17,17 +17,11 @@
  */
 package org.esupportail.pay.web.admin;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
-
 import org.esupportail.pay.domain.LdapResult;
-import org.esupportail.pay.domain.RespLogin;
 import org.esupportail.pay.services.LdapService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import flexjson.JSONSerializer;
+import java.util.List;
 
 @Controller
 @PropertySource("classpath:META-INF/spring/esup-pay.properties")
@@ -50,22 +44,23 @@ public class LdapPeopleController {
 
     @RequestMapping(value="/admin/searchLoginsJson", headers = "Accept=application/json", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> searchLoginsJson(Model uiModel, @RequestParam("loginPrefix") String loginPrefix) {
+    public ResponseEntity<String> searchLoginsJson(Model uiModel, @RequestParam("loginPrefix") String loginPrefix) throws JsonProcessingException {
     			
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
 
         List<LdapResult> ldapResults = ldapService.search(loginPrefix + "*");
+        ObjectMapper objectMapper = new ObjectMapper();
 
         if(ldapResults != null) {
-            String loginsJson = new JSONSerializer().serialize(ldapResults);
+            String loginsJson = objectMapper.writeValueAsString(ldapResults);
             return new ResponseEntity<String>(loginsJson, headers, HttpStatus.OK);
         } else {
             LdapResult ldapResult = new LdapResult();
             ldapResult.setUid(loginPrefix);
             ldapResult.setDisplayName(loginPrefix);
             ldapResult.setEmail(loginPrefix);
-            String loginsJson = new JSONSerializer().serialize(List.of(ldapResult));
+            String loginsJson = objectMapper.writeValueAsString(List.of(ldapResult));
             return new ResponseEntity<String>(loginsJson, headers, HttpStatus.OK);
         }
     }    

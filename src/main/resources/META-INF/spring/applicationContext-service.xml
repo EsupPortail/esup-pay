@@ -30,7 +30,8 @@
 						http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
 						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<task:annotation-driven executor="exceptionHandlingTaskExecutor" mode="aspectj"/>
+	<task:annotation-driven executor="exceptionHandlingTaskExecutor"/>
+
     <task:executor id="synchroExecutorPool" pool-size="1"/>
     <bean id="exceptionHandlingTaskExecutor" class="org.esupportail.pay.exceptions.ExceptionHandlingAsyncTaskExecutor">
         <constructor-arg ref="synchroExecutorPool" />
