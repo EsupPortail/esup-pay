@@ -58,6 +58,8 @@
 		<beans:property name="authenticationManager" ref="authenticationManager" />
 	</beans:bean>
 
+	<beans:bean id="http403EntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+	
 	<authentication-manager alias="authenticationManager">
 		<!-- SHA-256 values can be produced using 'echo -n your_desired_password 
 			| sha256sum' (using normal *nix environments) -->
