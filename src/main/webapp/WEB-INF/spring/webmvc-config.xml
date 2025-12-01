@@ -99,6 +99,7 @@
         <property name="suffix" value=".html"/>
         <property name="templateMode" value="HTML"/>
         <property name="characterEncoding" value="UTF-8"/>
+        <!--property name="cacheable" value="false"/-->
     </bean>
     <!-- Core processing engine : Uses the resolver to get templates and processes Thymeleaf expressions -->
     <bean id="tlTemplateEngine" class="org.thymeleaf.spring6.SpringTemplateEngine">
