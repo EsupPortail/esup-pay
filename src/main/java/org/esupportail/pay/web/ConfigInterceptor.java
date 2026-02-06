@@ -71,6 +71,7 @@ public class ConfigInterceptor implements HandlerInterceptor {
 				String activeMenu = path.replaceAll("/", "");
 
 				if (subTitle == null) {
+					subTitle = "";
 					List<String> keys = new Vector<String>(subTitles.keySet());
 					Collections.reverse(keys);
 					for (String key : keys) {
