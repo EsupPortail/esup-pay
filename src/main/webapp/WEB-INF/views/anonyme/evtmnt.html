@@ -71,8 +71,11 @@
                     </div>
                     <th:block th:if="${payevtmontant.isBillingAddressRequired}">
                         <div class="panel panel-default">
-                            <div class="panel-heading" th:text="#{billing.address}">
+                            <div class="panel-heading">
+                                <span th:text="#{billing.address}"></span>
+                                <span style="margin-left: 0.5rem" class="glyphicon glyphicon-question-sign" onclick="document.getElementById('billing.address.help').style.display = 'block' " />
                             </div>
+                            <div class="panel-heading" id="billing.address.help" style="display: none" th:utext="#{billing.address.help}"></div>
                             <div class="panel-body">
                                 <div class="form-group">
                                     <label class="control-label" for="billingFirstname" th:text="#{billing.firstname}">

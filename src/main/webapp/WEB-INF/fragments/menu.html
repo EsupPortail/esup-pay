@@ -47,13 +47,6 @@
             </th:block>
         </ul>
         <ul class="breadcrumb bread-primary">
-            <th:block th:if="${payEvt != null || payEvtMontant != null || payboxtransactionlogs != null || payboxtransactionlog != null || activeMenu == 'adminstats'}">
-                <li>
-                    &gt;
-                    <a th:href="@{/admin/}" th:text="#{menu_home}">
-                    </a>
-                </li>
-            </th:block>
             <th:block th:if="${payEvt != null || payEvtMontant != null}">
                 <li>
                     <a th:href="@{/admin/evts(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}" th:text="#{menu_evts}">
@@ -62,13 +55,13 @@
             </th:block>
             <th:block th:if="${payEvt != null && payEvt.id != null}">
                 <li>
-                    <a th:href="@{'/admin/evts/' + ${payEvt.id}}" th:text="${payEvt?.title?.labelLocales['fr'].translation}">
+                    <a th:href="@{/admin/evts/{id}(id=${payEvt.id})}" th:text="${payEvt?.title?.labelLocales['fr'].translation}">
                     </a>
                 </li>
             </th:block>
             <th:block th:if="${payEvtMontant != null}">
                 <li>
-                    <a th:href="@{'/admin/evts/' + ${payEvtMontant.evt.id}}" th:text="${payEvtMontant?.evt?.title?.labelLocales['fr'].translation}">
+                    <a th:href="@{/admin/evts/{id}(id=${payEvtMontant.evt.id})}" th:text="${payEvtMontant?.evt?.title?.labelLocales['fr'].translation}">
                     </a>
                 </li>
                 <li>
@@ -80,43 +73,15 @@
             <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER')">
                 <th:block th:if="${paytransactionlogs != null || paytransactionlog != null}">
                     <li>
-                        <a th:href="@{/admin/fees(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}">
-                            [[#{menu_txs}]]
+                        <a th:href="@{/admin/fees(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}"  th:text="#{menu_txs}">
                         </a>
                     </li>
                 </th:block>
-                <th:block th:if="${paytransactionlog != null}">
-                    <li>
-                        <span>
-                         [[${paytransactionlog.idtrans}]]
-                        </span>
-                    </li>
-                </th:block>
-                <th:block th:if="${activeMenu == 'adminstats'}">
-                    <li>
-                        <a th:href="@{/WEB-INF/views/admin/stats}">
-                            [[#{menu_stats}]]
-                        </a>
+                <th:block th:if="${paytransactionlog != null}" >
+                    <li th:text="${paytransactionlog.idtrans}">
                     </li>
                 </th:block>
             </th:block>
         </ul>
-    <script>
-        var adminevtsUrl= "[[@{'/admin/evts'(page=0, size=${param.size == '' || param.size == null ? 10 : param.size})}]]";
-        var adminTxUrl= "[[@{'/admin/fees'(page=0, size=${param.size == '' || param.size == null ? 10 : param.size})}]]";
-        var statsUrl= "[[@{/admin/stats}]]";
-        var ventilationsUrl= "[[@{/admin/ventilations}]]";
-        var adminUrl= "[[@{/admin/}]]";
-    </script>
-    <script th:if="${payEvt != null && payEvt.id != null && (payEvtMontant == null || payEvtMontant.id == null)}">
-        var evtUrl= "[[@{'/admin/evts/' + ${payEvt.id}}]]";
-    </script>
-    <script th:if="${payEvtMontant != null && payEvtMontant.id != null}">
-        var evtUrl= "[[@{'/admin/evts/' + ${payEvtMontant.evt.id}}]]";
-        var evtMntUrl= "[[@{'/admin/evts/' + ${payEvtMontant.evt.id} + '/' + ${payEvtMontant.id}}]]";
-    </script>
-    <script th:if="${paytransactionlog != null && paytransactionlog.id != null && payEvtMontant != null && payEvtMontant.id != null}">
-        var txUrl= "[[@{'/admin/fees/' + ${paytransactionlog.id} + '/' + ${payEvtMontant.id}}]]";
-    </script>
 </div>
 </html>
