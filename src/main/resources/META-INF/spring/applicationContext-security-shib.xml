@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans:beans profile="shib"
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd         
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http security="none" pattern="/resources/**" />
+
+	<http security="none" pattern="/webjars/**" />
+
+	<http security="none"  pattern="/payboxcallback**"/>
+
+	<!-- HTTP security configurations -->
+	<http auto-config="false" disable-url-rewriting="true"
+		use-expressions="true" entry-point-ref="http403EntryPoint">
+		<!-- Configure these elements to secure URIs in your application -->
+		<intercept-url pattern="/login/impersonate" access="hasRole('ROLE_SU')"/>
+		<intercept-url access="hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER') or hasRole('ROLE_STAT') or hasRole('ROLE_VENTILATION')" pattern="/admin" />
+		<intercept-url access="hasRole('ROLE_STAT')" pattern="/admin/stats" />
+		<intercept-url access="hasRole('ROLE_VENTILATION')" pattern="/admin/ventilations" />
+		<intercept-url access="hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')" pattern="/admin/**" />
+		<intercept-url access="permitAll" pattern="/" />
+		<intercept-url access="isAuthenticated()" request-matcher-ref="esupPayEvtMntAuthCasRequestMatcher"/>
+		<intercept-url access="permitAll" pattern="/evts/**" />
+		<intercept-url access="permitAll" pattern="/logo/**" />
+		<intercept-url access="isAuthenticated()" pattern="/**" />
+		<access-denied-handler error-page="/denied" />
+		<session-management
+			session-authentication-strategy-ref="sas" />
+		<custom-filter ref="concurrencyFilter" position="CONCURRENT_SESSION_FILTER" />
+		<custom-filter position="PRE_AUTH_FILTER" ref="shibFilter"/>
+    	<custom-filter ref="resourceUrlEncodingFilter" position="LAST"/>
+    	<csrf request-matcher-ref="esupPayCsrfSecurityRequestMatcher"/>
+	</http>
+
+	<beans:bean id="shibFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
+		<beans:property name="principalRequestHeader" value="REMOTE_USER"/>
+		<beans:property name="exceptionIfHeaderMissing" value="false"/>
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+	</beans:bean>
+
+	<beans:bean id="http403EntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+	
+	<authentication-manager alias="authenticationManager">
+		<!-- SHA-256 values can be produced using 'echo -n your_desired_password 
+			| sha256sum' (using normal *nix environments) -->
+		<authentication-provider ref="preauthAuthProvider" />
+	</authentication-manager>
+
+	<beans:bean id="preauthAuthProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+		<beans:property name="preAuthenticatedUserDetailsService" ref="authUserDetailsService"/>
+		<beans:property name="throwExceptionWhenTokenRejected" value="true"/>
+	</beans:bean>
+
+	<beans:bean id="authUserDetailsService"
+				class="org.esupportail.pay.security.ShibAuthenticatedUserDetailsService">
+		<beans:property name="userRoles">
+			<beans:map>
+				<beans:entry key="ROLE_ADMIN" value="admin@univ-rouen.fr"/>
+				<beans:entry key="ROLE_ALL_VIEWER" value="admin@univ-rouen.fr;comptable@univ-rouen.fr"/>
+				<beans:entry key="ROLE_VENTILATION" value="admin@univ-rouen.fr" />
+				<beans:entry key="ROLE_STAT" value="admin@univ-rouen.fr" />
+			</beans:map>
+		</beans:property>
+	</beans:bean>
+
+</beans:beans>
