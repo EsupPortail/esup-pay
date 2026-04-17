@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans:beans profile="cas"
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd         
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http security="none" pattern="/resources/**" />
+
+	<http security="none" pattern="/webjars/**" />
+
+	<http security="none"  pattern="/payboxcallback**"/>
+
+	<!-- HTTP security configurations -->
+	<http auto-config="false" disable-url-rewriting="true"
+		use-expressions="true" entry-point-ref="casEntryPoint">
+		<logout logout-success-url="/j_spring_cas_security_logout" />
+		<!-- Configure these elements to secure URIs in your application -->
+		<intercept-url pattern="/login/impersonate" access="hasRole('ROLE_SU')"/>
+		<intercept-url access="hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER') or hasRole('ROLE_STAT') or hasRole('ROLE_VENTILATION')" pattern="/admin" />
+		<intercept-url access="hasRole('ROLE_STAT')" pattern="/admin/stats" />
+		<intercept-url access="hasRole('ROLE_VENTILATION')" pattern="/admin/ventilations" />
+		<intercept-url access="hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')" pattern="/admin/**" />
+		<intercept-url access="permitAll" pattern="/" />
+		<intercept-url access="isAuthenticated()" request-matcher-ref="esupPayEvtMntAuthCasRequestMatcher"/>
+		<intercept-url access="permitAll" pattern="/evts/**" />
+		<intercept-url access="permitAll" pattern="/logo/**" />
+		<intercept-url access="isAuthenticated()" pattern="/**" />
+		<access-denied-handler error-page="/denied" />
+		<session-management
+			session-authentication-strategy-ref="sas" />
+		<custom-filter ref="concurrencyFilter" position="CONCURRENT_SESSION_FILTER" />
+		<custom-filter position="CAS_FILTER" ref="casFilter" />
+		<custom-filter position="SWITCH_USER_FILTER" ref="switchUserProcessingFilter" />
+		<custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
+    	<custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
+    	<custom-filter ref="resourceUrlEncodingFilter" position="LAST"/>
+    	<csrf request-matcher-ref="esupPayCsrfSecurityRequestMatcher"/>
+	</http>
+
+	<authentication-manager alias="authenticationManager">
+		<!-- SHA-256 values can be produced using 'echo -n your_desired_password 
+			| sha256sum' (using normal *nix environments) -->
+		<authentication-provider ref="casAuthenticationProvider" />
+	</authentication-manager>
+
+	<!-- This filter handles a Single Logout Request from the CAS Server -->
+	<beans:bean id="singleLogoutFilter" class="org.apereo.cas.client.session.SingleSignOutFilter" />
+	
+	<!-- This filter redirects to the CAS Server to signal Single Logout should 
+		be performed -->
+	<beans:bean id="requestSingleLogoutFilter"
+		class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<beans:constructor-arg value="${cas.url}/logout" />
+		<beans:constructor-arg>
+			<beans:bean
+				class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+			</beans:constructor-arg>
+		<beans:property name="filterProcessesUrl" value="/j_spring_cas_security_logout" />
+	</beans:bean>
+
+	<beans:bean id="serviceProperties"
+		class="org.springframework.security.cas.ServiceProperties">
+		<beans:property name="service"
+			value="${esup-pay.url}/login/cas" />
+		<beans:property name="sendRenew" value="false" />
+	</beans:bean>
+
+
+	<beans:bean id="casFilter"
+		class="org.springframework.security.cas.web.CasAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="sessionAuthenticationStrategy"
+			ref="sas" />
+		<beans:property name="filterProcessesUrl" value="/login/cas"/>
+	</beans:bean>
+
+	<beans:bean id="casEntryPoint"
+		class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+		<beans:property name="loginUrl" value="${cas.url}/login" />
+		<beans:property name="serviceProperties" ref="serviceProperties" />
+	</beans:bean>
+
+
+	<beans:bean id="casAuthenticationProvider"
+		class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+		<beans:property name="authenticationUserDetailsService"
+			ref="authUserDetailsService" />
+		<beans:property name="serviceProperties" ref="serviceProperties" />
+		<beans:property name="ticketValidator">
+			<beans:bean
+				class="org.apereo.cas.client.validation.Cas20ServiceTicketValidator">
+				<beans:constructor-arg index="0"
+					value="${cas.url}" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="key" value="${cas.authKey}" />
+	</beans:bean>
+
+
+	<beans:bean id="authUserDetailsService"
+		class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+		<beans:property name="userDetailsService" ref="ldapUserDetailsService" />
+	</beans:bean>
+
+	<beans:bean id="ldapUserSearch"
+		class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+		<beans:constructor-arg>
+			<beans:value>${ldap.peopleSearchBase}</beans:value>
+		</beans:constructor-arg>
+		<beans:constructor-arg>
+			<beans:value>${ldap.peopleSearchFilter}</beans:value>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="ldapContextSource" />
+	</beans:bean>
+
+	<beans:bean id="ldapUserDetailsService"
+		class="org.springframework.security.ldap.userdetails.LdapUserDetailsService">
+		<beans:constructor-arg ref="ldapUserSearch"/>
+		<beans:constructor-arg ref="payboxLdapAuthoritiesPopulator" />
+		<beans:property name="userDetailsMapper">
+			<beans:bean class="org.springframework.security.ldap.userdetails.InetOrgPersonContextMapper"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="payboxLdapAuthoritiesPopulator"
+		class="org.esupportail.pay.security.PayLdapAuthoritiesPopulator">
+		<beans:constructor-arg ref="ldapContextSource" />
+		<beans:constructor-arg value="${ldap.peopleSearchBase:}" />
+		<beans:constructor-arg value="${ldap.peopleSearchFilter:}" />
+		<beans:constructor-arg value="${ldap.groupSearchBase:}" />
+		<beans:constructor-arg value="${ldap.groupSearchFilter:}" />
+		<beans:constructor-arg>
+			<beans:map>
+				<beans:entry key="ROLE_SU" value="${ldap.groupAdmin:}" />
+				<beans:entry key="ROLE_ALL_VIEWER" value="${ldap.groupAllViewer:}" />
+				<beans:entry key="ROLE_VENTILATION" value="${ldap.groupVentilation:}" />
+				<beans:entry key="ROLE_STAT" value="${ldap.groupStatistique:}" />
+			</beans:map>
+		</beans:constructor-arg>
+		<beans:constructor-arg>
+			<beans:map>
+				<beans:entry key="ROLE_SU" value="${ldap.groupAdminFilter:}" />
+				<beans:entry key="ROLE_ALL_VIEWER" value="${ldap.groupAllViewerFilter:}" />
+				<beans:entry key="ROLE_VENTILATION" value="${ldap.groupVentilationFilter:}" />
+				<beans:entry key="ROLE_STAT" value="${ldap.groupStatistiqueFilter:}" />
+			</beans:map>
+		</beans:constructor-arg>
+	</beans:bean>
+
+
+	<beans:bean id="switchUserProcessingFilter"
+		class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter">
+		<beans:property name="userDetailsService" ref="ldapUserDetailsService" />
+		<beans:property name="switchUserUrl" value="/login/impersonate"/>
+        <beans:property name="exitUserUrl" value="/logout/impersonate"/>
+		<beans:property name="targetUrl" value="/admin"/>
+	</beans:bean>
+
+
+	<beans:bean id="ldapContextSourcePool"
+		  class="org.springframework.ldap.pool.factory.PoolingContextSource">
+		<beans:property name="contextSource" ref="ldapContextSource" />
+		<beans:property name="dirContextValidator" ref="dirContextValidator" />
+		<beans:property name="testWhileIdle" value="true" />
+		<beans:property name="testOnBorrow" value="true" />
+		<beans:property name="timeBetweenEvictionRunsMillis" value="30000" />
+		<beans:property name="minEvictableIdleTimeMillis" value="60000" />
+	</beans:bean>
+
+	<beans:bean id="dirContextValidator"
+		  class="org.springframework.ldap.pool.validation.DefaultDirContextValidator" />
+
+	<beans:bean id="ldapContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+		<beans:property name="url" value="${ldap.url}" />
+		<beans:property name="base" value="${ldap.base}" />
+		<beans:property name="userDn" value="${ldap.userDn}" />
+		<beans:property name="password" value="${ldap.password}" />
+	</beans:bean>
+
+	<beans:bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+		<beans:constructor-arg ref="ldapContextSourcePool" />
+	</beans:bean>
+
+</beans:beans>

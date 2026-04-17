@@ -24,6 +24,10 @@
     
     <description>Payments forms web application</description>
 
+    <context-param>
+        <param-name>contextInitializerClasses</param-name>
+        <param-value>org.esupportail.pay.SpringProfileInitializer</param-value>
+    </context-param>
     
     <!-- Enable escaping of form submission contents -->
     <context-param>

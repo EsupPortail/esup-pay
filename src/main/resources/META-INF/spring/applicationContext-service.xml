@@ -19,40 +19,10 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:task="http://www.springframework.org/schema/task"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-						http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-						http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
-						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
-
-	<bean id="ldapContextSourcePool"
-		class="org.springframework.ldap.pool.factory.PoolingContextSource">
-		<property name="contextSource" ref="ldapContextSource" />
-		<property name="dirContextValidator" ref="dirContextValidator" />
-		<property name="testWhileIdle" value="true" />
-		<property name="testOnBorrow" value="true" />
-		<property name="timeBetweenEvictionRunsMillis" value="30000" />
-		<property name="minEvictableIdleTimeMillis" value="60000" />
-	</bean>
-
-	<bean id="dirContextValidator"
-		class="org.springframework.ldap.pool.validation.DefaultDirContextValidator" />
-
-	<bean id="ldapContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
-		<property name="url" value="${ldap.url}" />
-		<property name="base" value="${ldap.base}" />
-		<property name="userDn" value="${ldap.userDn}" />
-		<property name="password" value="${ldap.password}" />
-	</bean>
-
-	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
-		<constructor-arg ref="ldapContextSourcePool" />
-	</bean>
+						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<task:annotation-driven executor="exceptionHandlingTaskExecutor"/>
     <task:executor id="synchroExecutorPool" pool-size="1"/>
