@@ -1,6 +1,5 @@
-version: '3.3'
-#name: esup-pay
 services:
+
   openldap:
     image: osixia/openldap:1.5.0
     environment:
@@ -10,6 +9,7 @@ services:
      - ./ldap-config:/container/service/slapd/assets/config/bootstrap/ldif/custom
     ports:
      - 3890:389
+
   db:
     image: postgres:14
     restart: always
@@ -18,9 +18,10 @@ services:
     ports:
       - 4432:5432
     volumes:
-      - ./postgres-config:/docker-entrypoint-initdb.d 
+      - ./postgres-config:/docker-entrypoint-initdb.d
+
   cas:
-    image: esupportail/apereo-cas-ldap:7.2.2
+    image: ghcr.io/esupportail/apereo-cas-ldap:7.3.6
     volumes:
       - ./cas-config:/etc/cas
       - ./cas-config/tmp-cas:/tmp/cas
@@ -28,3 +29,22 @@ services:
       - "8081:8080"
     depends_on:
       - openldap
+
+  esup-pay-run:
+    image: maven:3.9-eclipse-temurin-21
+    profiles: ["with-esup-pay"]
+    working_dir: /app
+    volumes:
+      - ..:/app
+      - maven-cache:/root/.m2
+    ports:
+      - "8080:8080"
+    network_mode: host
+    command: mvn clean jetty:run -Djetty.systemPropertiesFile=/app/docker4dev/esup-pay4docker.properties
+    depends_on:
+      - cas
+      - db
+      - openldap
+
+volumes:
+  maven-cache:

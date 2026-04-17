@@ -126,6 +126,8 @@ CF https://doc.postgresql.fr/15/lo.html
 
 ## Test / Environnement de développement avec DOCKER
 
+### Développement
+
 Pour faciliter le développement, un docker-compose est livré avec esup-pay. Celui-ci permet de monter les services requis suivants :
 * un PostgreSQL
 * un LDAP
@@ -146,5 +148,16 @@ Vous pouvez alors accéder à http://localhost:8080 et vous authentifier avec un
 * admin/esup
 * ventil/esup
 * stat/esup
+
+### Test
+
+Si vous souhaitez tester esup-pay avec docker (sans lancer esup-pay manuellement depuis une jvm en local), vous pouvez lancer le docker compose avec le profile 'with-esup-pay' :
+
+Depuis le répertoire __docker4dev__ :
+```
+docker compose --profile with-esup-pay up
+```
+Voir ci-dessus pour les comptes de test à utiliser.
+
 
 
