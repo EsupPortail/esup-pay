@@ -54,6 +54,9 @@ public class LdapService {
 	@Value("${ldap.mail:mail}")
 	private String loginMail;
 
+	@Value("${ldap.peopleSearchBase}")
+	private String peopleSearchBase;
+
 	private List<String> ldapSearchAttrs;
 	private List<String> ldapSearchEqAttrs;
 
@@ -108,7 +111,7 @@ public class LdapService {
 		filter.and(orFilter);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		List<LdapResult>  result = ldapTemplate.search("", filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
+		List<LdapResult>  result = ldapTemplate.search(peopleSearchBase, filter.encode(), SearchControls.SUBTREE_SCOPE, new String [] {loginDisplayName, ldapUidAttr, loginMail}, new SimpleLoginAttributMapper(loginDisplayName, loginMail));
 		stopWatch.stop();
 		if(stopWatch.getTime()>500) {
 			log.warn("LDAP search for " + login + " with filter " + filter.encode() + " took " + stopWatch.getTime() + " ms, " + result.size() + " results - check your indexes.");
