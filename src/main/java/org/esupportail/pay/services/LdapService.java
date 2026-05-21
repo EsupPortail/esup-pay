@@ -90,7 +90,7 @@ public class LdapService {
 		return count;
 	}
 
-	public List<LdapResult> search(String login) {
+	public List<LdapResult> searchPeople(String login) {
 		if(ldapTemplate == null) {
 			return null;
 		}
