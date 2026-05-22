@@ -163,7 +163,6 @@
         <div sec:authorize="!hasRole('ROLE_ADMIN')">
          <input name="freeAmount" type="hidden" th:value="${payEvtMontant.freeAmount}"/>
          <input name="sciencesconf" type="hidden" th:value="${payEvtMontant.sciencesconf}"/>
-         <input name="addPrefix" type="hidden" th:value="${payEvtMontant.addPrefix}"/>
         </div>
         <div class="form-group" id="c_org_esupportail_pay_domain_payEvtMontant_optionalAddedParams">
          <label class="c" for="optionalAddedParams">
