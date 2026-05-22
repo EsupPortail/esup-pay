@@ -72,7 +72,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<PayEvtMontant, String> getPayEvtMontantToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<org.esupportail.pay.domain.PayEvtMontant, java.lang.String>() {
             public String convert(PayEvtMontant payboxEvtMontant) {
-                return String.valueOf(payboxEvtMontant.getDbleMontant()) + ' ' + payboxEvtMontant.getUrlId() + ' ' + payboxEvtMontant.getAddPrefix();
+                return String.valueOf(payboxEvtMontant.getDbleMontant()) + ' ' + payboxEvtMontant.getUrlId() + ' ' + payboxEvtMontant.getAddPrefixKind() + ' ' + payboxEvtMontant.getAddFreePrefix();
             }
         };
     }

@@ -149,14 +149,17 @@ public class PayBoxService {
         PayBoxForm payBoxForm = new PayBoxForm();
         payBoxForm.setActionUrl(getPayBoxActionUrl());
         payBoxForm.setClientEmail(mail);
-        if(payEvtMontant.getAddPrefix() == null || payEvtMontant.getAddPrefix().isEmpty()) {
+        if(StringUtils.isEmpty(payEvtMontant.getAddPrefixKind())) {
             payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), mail, montantAsCents));
         } else {
+            String addPrefixKind = payEvtMontant.getAddPrefixKind();
             String addPrefix = "";
-            if("field1".equals(payEvtMontant.getAddPrefix())) {
+            if("field1".equals(addPrefixKind)) {
                 addPrefix = field1;
-            } else if("field2".equals(payEvtMontant.getAddPrefix())) {
+            } else if("field2".equals(addPrefixKind)) {
                 addPrefix = field2;
+            } else if("free".equals(addPrefixKind)) {
+                addPrefix = payEvtMontant.getAddFreePrefix();
             }
             payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), addPrefix, mail, montantAsCents));
         }

@@ -68,7 +68,7 @@ public class PayEvtMontantController {
 	
     @ModelAttribute("addPrefixList")
     public List<String> getAddPrefixList() {
-    	return Arrays.asList("", "field1", "field2");
+    	return Arrays.asList("", "field1", "field2", "free");
     }
     
     @RequestMapping(params = "form", produces = "text/html")
