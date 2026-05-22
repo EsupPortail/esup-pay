@@ -78,7 +78,10 @@ public class PayEvtMontant {
     
     Boolean authCas = false;
  
-    String addPrefix = "";
+    @Column(name = "add_prefix")
+    String addPrefixKind = "";
+    
+    String addFreePrefix = "";
     
     String optionalAddedParams = "";
     

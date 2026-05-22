@@ -150,14 +150,28 @@
            <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_addprefix}">
            </strong>
           </label>
-          <select class="form-control" id="_addPrefix_id" name="addPrefix" size="1">
+          <select class="form-control" id="_addPrefix_id" name="addPrefixKind" size="1" onchange="handle_addFreePrefix_visibility()">
            <th:block th:each="i :${addPrefixList}">
-            <option th:selected="${i == payEvtMontant.addPrefix ? 'true' : 'false'}" th:text="${i}" th:value="${i}">
+            <option th:selected="${i == payEvtMontant.addPrefixKind ? 'true' : 'false'}" th:text="#{label_org_esupportail_pay_domain_payevtmontant_addprefixkind_ + ${i}}" th:value="${i}">
             </option>
            </th:block>
           </select>
-          <span class="errors" id="_addPrefix_error_id" th:errors="*{addPrefix}" th:if="${#fields.hasErrors('addPrefix')}">
+          <span class="errors" id="_addPrefix_error_id" th:errors="*{addPrefixKind}" th:if="${#fields.hasErrors('addPrefixKind')}">
           </span>
+         </div>
+         <div class="form-group" id="c_org_esupportail_pay_domain_payevtmontant_addFreePrefix">
+             <label>
+                 <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_add_free_prefix}">
+                 </strong>
+                 <input class="form-control" name="addFreePrefix" th:value="*{addFreePrefix}">
+             </label>
+             <script>
+               function handle_addFreePrefix_visibility() {
+                 const kind = document.querySelector("[name=addPrefixKind]").value
+                 document.querySelector("#c_org_esupportail_pay_domain_payevtmontant_addFreePrefix").style.display = kind === 'free' ? '' : 'none'
+               }
+               handle_addFreePrefix_visibility()
+             </script>
          </div>
         </div>
         <div sec:authorize="!hasRole('ROLE_ADMIN')">
