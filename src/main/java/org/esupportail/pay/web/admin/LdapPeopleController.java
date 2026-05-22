@@ -49,7 +49,7 @@ public class LdapPeopleController {
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
 
-        List<LdapResult> ldapResults = ldapService.search(loginPrefix + "*");
+        List<LdapResult> ldapResults = ldapService.searchPeople(loginPrefix + "*");
         ObjectMapper objectMapper = new ObjectMapper();
 
         if(ldapResults != null) {
