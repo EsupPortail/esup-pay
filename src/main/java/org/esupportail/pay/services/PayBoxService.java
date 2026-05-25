@@ -149,11 +149,9 @@ public class PayBoxService {
         PayBoxForm payBoxForm = new PayBoxForm();
         payBoxForm.setActionUrl(getPayBoxActionUrl());
         payBoxForm.setClientEmail(mail);
-        if(StringUtils.isEmpty(payEvtMontant.getAddPrefixKind())) {
-            payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), mail, montantAsCents));
-        } else {
+        String addPrefix = null;
+        if(!StringUtils.isEmpty(payEvtMontant.getAddPrefixKind())) {
             String addPrefixKind = payEvtMontant.getAddPrefixKind();
-            String addPrefix = "";
             if("field1".equals(addPrefixKind)) {
                 addPrefix = field1;
             } else if("field2".equals(addPrefixKind)) {
@@ -161,8 +159,8 @@ public class PayBoxService {
             } else if("free".equals(addPrefixKind)) {
                 addPrefix = payEvtMontant.getAddFreePrefix();
             }
-            payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), addPrefix, mail, montantAsCents));
         }
+        payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), addPrefix, mail, montantAsCents));
         payBoxForm.setDevise(devise);
         payBoxForm.setHash(hashService.getHash());
         payBoxForm.setIdentifiant(identifiant);
@@ -211,10 +209,6 @@ public class PayBoxService {
         emailFieldsMapReferenceDaoService.persist(emailMapFirstLastName);
 
         return payBoxForm;
-    }
-
-    private String getNumCommande(String numCommandePrefix, String mail, String montantAsCents) {
-        return getNumCommande(numCommandePrefix, null, mail, montantAsCents);
     }
 
     private String getNumCommande(String numCommandePrefix, String addPrefix, String mail, String montantAsCents) {
