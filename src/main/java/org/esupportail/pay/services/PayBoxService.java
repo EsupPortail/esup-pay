@@ -214,16 +214,12 @@ public class PayBoxService {
     }
 
     private String getNumCommande(String numCommandePrefix, String mail, String montantAsCents) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S");
-        String numCommande = numCommandePrefix + mail + DELIMITER_REF + montantAsCents + "-" + df.format(new Date());
-        // on supprime les #, &, ? & co  :  caractères spéciaux dans une url (la reference == numCommande étant reprises dans l'url callback paybox)
-        numCommande = StringUtils.stripAccents(numCommande).replaceAll(NUM_COMMANDE_CHARS_NOT_AUTHORIZED_REGEX, "");
-        return numCommande;
+        return getNumCommande(numCommandePrefix, null, mail, montantAsCents);
     }
 
     private String getNumCommande(String numCommandePrefix, String addPrefix, String mail, String montantAsCents) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S");
-        String numCommande = numCommandePrefix + addPrefix + DELIMITER_REF + mail + DELIMITER_REF + montantAsCents + "-" + df.format(new Date());
+        String numCommande = numCommandePrefix + (addPrefix != null ? addPrefix + DELIMITER_REF : "") + mail + DELIMITER_REF + montantAsCents + "-" + df.format(new Date());
         // on supprime les #, &, ? & co  :  caractères spéciaux dans une url (la reference == numCommande étant reprises dans l'url callback paybox)
         numCommande = StringUtils.stripAccents(numCommande).replaceAll(NUM_COMMANDE_CHARS_NOT_AUTHORIZED_REGEX, "");
         return numCommande;
