@@ -166,6 +166,7 @@
                             &nbsp;Oui
                         </label>
                     </fieldset>
+                    <div th:replace="~{admin/evtmnts/paiementMultiple.html}"></div>
                     <div sec:authorize="hasRole('ROLE_ADMIN')">
                         <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_freeAmount_id">
                             <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">

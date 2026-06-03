@@ -257,3 +257,14 @@ dl.displayTag  {
 	}
 }
 
+.form-group:has(.hide-form-group) {
+    display: none;
+}
+
+.payevtmontant_paiementMultiple {
+    background-color: #E1E1E1;
+    padding: 0 1rem;
+    display: block;
+    border: 1px solid #999;
+    margin: 1rem 0;
+}

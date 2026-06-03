@@ -18,6 +18,7 @@
  package org.esupportail.pay.domain;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Locale;
 
 import jakarta.persistence.*;
@@ -26,6 +27,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -85,6 +87,25 @@ public class PayEvtMontant {
     
     String addFreePrefix = "";
     
+    public static String paiementMultiple_kind_datesPrecise = "datesPrecises";
+    public static String paiementMultiple_kind_simulateFrequence = "simulateFrequence";
+    transient String paiementMultiple_kind; // valeurs possibles : "" / "datesPrecises" / "simulateFrequence". Uniquement utilisé par l'UI, non stocké en base
+
+    Double paiementMultiple_montant1;
+    Double paiementMultiple_montant2;
+    Double paiementMultiple_montant3;
+    Double paiementMultiple_montant4;
+    // soit on fait des paiements échelonnés espacés de N mois :
+    Integer paiementMultiple_simulateFrequenceEnMois;
+    // sinon, on utilise des dates précises. (NB : les dates sont ignorées si paiementMultiple_simulateFrequenceEnMois est non null)
+    // (we set @DateTimeFormat to match <input type="date"> format, needed for th:field)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate paiementMultiple_date2;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate paiementMultiple_date3;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate paiementMultiple_date4;
+    
     String optionalAddedParams = "";
     
     Boolean isEnabled = true;
@@ -99,6 +120,36 @@ public class PayEvtMontant {
     Long montantTotalMax = -1L;
 
     Long nbTransactionsMax = -1L;
+    
+    public String getPaiementMultiple_kind() {
+        return 
+            // if it is set (by UI), keep it:
+            paiementMultiple_kind != null ? paiementMultiple_kind :
+            // otherwise compute it from database fields:
+            paiementMultiple_montant2 == null ? "" :
+            paiementMultiple_simulateFrequenceEnMois == null ? paiementMultiple_kind_datesPrecise : paiementMultiple_kind_simulateFrequence;
+    }
+
+    public double getPaiementMultiple_montant_total() {
+        return 
+            (paiementMultiple_montant1 != null ? paiementMultiple_montant1 : 0) +
+            (paiementMultiple_montant2 != null ? paiementMultiple_montant2 : 0) +
+            (paiementMultiple_montant3 != null ? paiementMultiple_montant3 : 0) +
+            (paiementMultiple_montant4 != null ? paiementMultiple_montant4 : 0);
+    }
+
+    public LocalDate getOrComputePaiementMultiple_date2() {
+        var freq = paiementMultiple_simulateFrequenceEnMois;
+        return freq == null ? paiementMultiple_date2 : LocalDate.now().plusMonths(freq);
+    }
+    public LocalDate getOrComputePaiementMultiple_date3() {
+        var freq = paiementMultiple_simulateFrequenceEnMois;
+        return freq == null ? paiementMultiple_date3 : LocalDate.now().plusMonths(2 * freq);
+    }
+    public LocalDate getOrComputePaiementMultiple_date4() {
+        var freq = paiementMultiple_simulateFrequenceEnMois;
+        return freq == null ? paiementMultiple_date4 : LocalDate.now().plusMonths(3 * freq);
+    }
     
     public String getDbleMontantDisplay() {
     	return String.format(Locale.FRANCE, "%,.2f€", dbleMontant);

@@ -49,9 +49,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.TreeMap;
 
 public class PayBoxService {
 
@@ -148,9 +151,6 @@ public class PayBoxService {
     public PayBoxForm getPayBoxForm(String mail, String field1, String field2, double montant, PayEvtMontant payEvtMontant,
                                     String billingFirstname, String billingLastname, String billingAddress1, String billingZipCode, String billingCity, String billingCountryCode) {
 
-
-
-        String montantAsCents = toMontantAsCents(montant);
         PayBoxForm payBoxForm = new PayBoxForm();
         payBoxForm.setActionUrl(getPayBoxActionUrl());
         payBoxForm.setClientEmail(mail);
@@ -165,7 +165,7 @@ public class PayBoxService {
                 addPrefix = payEvtMontant.getAddFreePrefix();
             }
         }
-        payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), addPrefix, mail, montantAsCents));
+        payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), addPrefix, mail, toMontantAsCents(montant)));
         payBoxForm.setDevise(devise);
         payBoxForm.setHash(hashService.getHash());
         payBoxForm.setIdentifiant(identifiant);
@@ -173,7 +173,7 @@ public class PayBoxService {
         payBoxForm.setRetourVariables(RETOUR_VARIABLES);
         payBoxForm.setSite(site);
         payBoxForm.setTime(getCurrentTime());
-        payBoxForm.setTotal(montantAsCents);
+        payBoxForm.setTotal(toMontantAsCents(payEvtMontant.getPaiementMultiple_montant1() != null ? payEvtMontant.getPaiementMultiple_montant1() : montant));
         String callbackUrl = reponseServerUrl + "/payboxcallback";
         payBoxForm.setCallbackUrl(callbackUrl);
         String forwardUrl = reponseServerUrl;
@@ -190,6 +190,7 @@ public class PayBoxService {
         payBoxForm.setBillingCity(billingCity);
         payBoxForm.setBillingCountryCode(billingCountryCode);
 
+        payBoxForm.setPaiementMultipleParams(getNumCommandePaiementMultipleSuffix(payEvtMontant));
         payBoxForm.setOptionalAddedParams(payEvtMontant.getOptionalAddedParams());
 
         String hMac = hashService.getHMac(payBoxForm.getParamsAsString());
@@ -216,6 +217,33 @@ public class PayBoxService {
         return payBoxForm;
     }
 
+    private String to_dd_MM_yyyy(LocalDate date) {
+        return DateTimeFormatter.ofPattern("dd/MM/yyyy").format(date);
+    }
+
+    private TreeMap<String, String> getNumCommandePaiementMultipleSuffix(PayEvtMontant payEvtMontant) {
+         var params = new TreeMap<String, String>();
+
+         Double montant;
+
+         montant = payEvtMontant.getPaiementMultiple_montant2();
+         if (montant != null) {
+             params.put("PBX_2MONT1", toMontantAsCents(montant));
+             params.put("PBX_DATE1", to_dd_MM_yyyy(payEvtMontant.getOrComputePaiementMultiple_date2()));
+         }
+         montant = payEvtMontant.getPaiementMultiple_montant3();
+         if (montant != null) {
+             params.put("PBX_2MONT2", toMontantAsCents(montant));
+             params.put("PBX_DATE2", to_dd_MM_yyyy(payEvtMontant.getOrComputePaiementMultiple_date3()));
+         }
+         montant = payEvtMontant.getPaiementMultiple_montant4();
+         if (montant != null) {
+             params.put("PBX_2MONT3", toMontantAsCents(montant));
+             params.put("PBX_DATE3", to_dd_MM_yyyy(payEvtMontant.getOrComputePaiementMultiple_date4()));
+         }
+         return params;
+    }
+    
     private String getNumCommande(String numCommandePrefix, String addPrefix, String mail, String montantAsCents) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S");
         String numCommande = numCommandePrefix + (addPrefix != null ? addPrefix + DELIMITER_REF : "") + mail + DELIMITER_REF + montantAsCents + "-" + df.format(new Date());
