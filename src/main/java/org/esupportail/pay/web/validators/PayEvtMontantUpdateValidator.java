@@ -41,11 +41,7 @@ public class PayEvtMontantUpdateValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 		PayEvtMontant evtMontant = (PayEvtMontant) target;
 		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf()) {
-		    if(evtMontant.getDbleMontant() == null || evtMontant.getDbleMontant() <= 0.0) {
-				errors.rejectValue("dbleMontant", "MustBePositive");
-		    } else if (!evtMontant.getDbleMontant().toString().matches("[0-9]*((\\.[0-9])?[0-9]?)")) {
-				errors.rejectValue("dbleMontant", "MustBeInCents");
-		    }
+		    validate_amount(evtMontant.getDbleMontant(), "dbleMontant", errors);
 		}
 		if(evtMontant.getTitle().getTranslation(LOCALE_IDS.en) == null || evtMontant.getTitle().getTranslation(LOCALE_IDS.en).isEmpty()) {
 			errors.rejectValue("title", "NotEmpty");
@@ -59,5 +55,13 @@ public class PayEvtMontantUpdateValidator implements Validator {
 			errors.rejectValue("dbleMontant", "dbleMontant_too_high");
 	    }
 	}
+
+    private void validate_amount(Double amount, String field, Errors errors) {
+        if (amount == null || amount <= 0.0) {
+            errors.rejectValue(field, "MustBePositive");
+        } else if (!amount.toString().matches("[0-9]*((\\.[0-9])?[0-9]?)")) {
+            errors.rejectValue(field, "MustBeInCents");
+        }
+    }
 
 }
