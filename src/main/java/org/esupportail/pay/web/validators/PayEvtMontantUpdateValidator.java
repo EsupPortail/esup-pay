@@ -40,12 +40,13 @@ public class PayEvtMontantUpdateValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		PayEvtMontant evtMontant = (PayEvtMontant) target;
-		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf() && (evtMontant.getDbleMontant() == null || evtMontant.getDbleMontant() <= 0.0)) {
-			errors.rejectValue("dbleMontant", "MustBePositive");
-	    }
-		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf() && !evtMontant.getDbleMontant().toString().matches("[0-9]*((\\.[0-9])?[0-9]?)")) {
-			errors.rejectValue("dbleMontant", "MustBeInCents");
-	    }
+		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf()) {
+		    if(evtMontant.getDbleMontant() == null || evtMontant.getDbleMontant() <= 0.0) {
+				errors.rejectValue("dbleMontant", "MustBePositive");
+		    } else if (!evtMontant.getDbleMontant().toString().matches("[0-9]*((\\.[0-9])?[0-9]?)")) {
+				errors.rejectValue("dbleMontant", "MustBeInCents");
+		    }
+		}
 		if(evtMontant.getTitle().getTranslation(LOCALE_IDS.en) == null || evtMontant.getTitle().getTranslation(LOCALE_IDS.en).isEmpty()) {
 			errors.rejectValue("title", "NotEmpty");
 	    }
