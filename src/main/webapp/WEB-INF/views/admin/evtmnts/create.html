@@ -40,7 +40,7 @@
          <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_dblemontant}">
          </strong>
         </label>
-        <input class="form-control" id="dbleMontant" name="dbleMontant" th:value="${payEvtMontant.dbleMontant}" type="text"/>
+        <input class="form-control" id="dbleMontant" name="dbleMontant" th:value="${payEvtMontant.dbleMontant}" th:placeholder="#{payevtmontant_montant_placeholder}" type="text"/>
         <span class="errors" id="_dbleMontant_error_id" th:errors="*{dbleMontant}" th:if="${#fields.hasErrors('dbleMontant')}">
         </span>
        </div>

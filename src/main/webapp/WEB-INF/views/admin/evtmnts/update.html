@@ -60,7 +60,7 @@
                         <input class="form-control" id="dbleMontant" name="dbleMontant" readonly="readonly" th:value="*{dbleMontant}" type="text"/>
                     </th:block>
                     <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
-                        <input class="form-control" id="dbleMontant" name="dbleMontant" th:value="*{dbleMontant}" type="text"/>
+                        <input class="form-control" id="dbleMontant" name="dbleMontant" th:value="*{dbleMontant}" th:placeholder="#{payevtmontant_montant_placeholder}" type="text"/>
                     </th:block>
                     <span class="errors" id="_dbleMontant_error_id" th:errors="*{dbleMontant}" th:if="${#fields.hasErrors('dbleMontant')}">
                     </span>
