@@ -57,7 +57,11 @@ public class PayEvtMontantUpdateValidator implements Validator {
 	}
 
     private void validate_amount(Double amount, String field, Errors errors) {
-        if (amount == null || amount <= 0.0) {
+        if (amount == null) {
+            errors.rejectValue(field, "NotEmpty");
+        } else if (amount.isNaN()) {
+            errors.rejectValue(field, "MustBeInCents");
+        } else if (amount <= 0.0) {
             errors.rejectValue(field, "MustBePositive");
         } else if (!amount.toString().matches("[0-9]*((\\.[0-9])?[0-9]?)")) {
             errors.rejectValue(field, "MustBeInCents");
