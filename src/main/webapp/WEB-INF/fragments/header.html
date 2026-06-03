@@ -30,16 +30,16 @@
 
             <div class="col-lg-8 col-md-9 col-sm-9 col-xs-12">
                 <h1>
-                    <th:block th:text="#{default_title(${@propertyConfigurer.getProperty('institute.name')})}"></th:block><br/>
+                    <th:block th:text="#{default_title(${instituteName})}"></th:block><br/>
                     <small th:text="${subTitle}"></small>
                 </h1>
             </div>
 
             <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12"
-                th:with="logo_url=${@propertyConfigurer.getProperty('institute.logo.url')},
+                th:with="logo_url=${instituteLogoUrl},
                         logo=${logo_url},
-                        logo_title=${@propertyConfigurer.getProperty('institute.name')},
-                        logo_href=${@propertyConfigurer.getProperty('institute.href')}">
+                        logo_title=${instituteName},
+                        logo_href=${instituteHref}">
                 <a th:href="${logo_href}">
                     <img alt="" th:src="${logo}" class="institute-logo"/>
                 </a>

@@ -17,25 +17,35 @@
  */
 package org.esupportail.pay.web;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.Vector;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
+
+import java.util.*;
 
 public class ConfigInterceptor implements HandlerInterceptor {
 
 	@Value("ESUP-PAY ${institute.name:''}")
 	private String title;
+
+	@Value("${institute.href:''}")
+	private String instituteHref;
+
+	@Value("${institute.name:''}")
+	private String instituteName;
+
+	@Value("${esup-pay.footer-html-add:''}")
+	private String esupPayFooterHtmlAdd;
+
+	@Value("${institute.logo.url:''}")
+	private String instituteLogoUrl;
+
+	@Value("${institute.logo-navbar.url:''}")
+	private  String instituteLogoNavbarUrl;
 	
 	final static SortedMap<String, String> subTitles = new TreeMap<String, String>() {
 		private static final long serialVersionUID = 1L;
@@ -86,6 +96,11 @@ public class ConfigInterceptor implements HandlerInterceptor {
 				modelAndView.addObject("title", title);
 				modelAndView.addObject("subTitle", subTitle);
 				modelAndView.addObject("activeMenu", activeMenu);
+				modelAndView.addObject("instituteHref", instituteHref);
+				modelAndView.addObject("instituteName", instituteName);
+				modelAndView.addObject("esupPayFooterHtmlAdd", esupPayFooterHtmlAdd);
+				modelAndView.addObject("instituteLogoUrl", instituteLogoUrl);
+				modelAndView.addObject("instituteLogoNavbarUrl", instituteLogoNavbarUrl);
 			}
 		} 
 	}

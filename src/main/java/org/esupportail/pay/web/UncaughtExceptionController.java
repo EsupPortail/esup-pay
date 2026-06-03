@@ -26,22 +26,43 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.esupportail.pay.exceptions.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver;
 
+@ControllerAdvice
 @Controller
-public class UncaughtExceptionController extends AbstractHandlerExceptionResolver {
+public class UncaughtExceptionController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
+
+	@Value("ESUP-PAY ${institute.name:''}")
+	private String title;
+
+	@Value("${institute.href:''}")
+	private String instituteHref;
+
+	@Value("${institute.name:''}")
+	private String instituteName;
+
+	@Value("${esup-pay.footer-html-add:''}")
+	private String esupPayFooterHtmlAdd;
+
+	@Value("${institute.logo.url:''}")
+	private String instituteLogoUrl;
+
+	@Value("${institute.logo-navbar.url:''}")
+	private  String instituteLogoNavbarUrl;
 	
-	@Override
-	protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
-			Exception ex) {
-		request.getRequestURL();
+	@ExceptionHandler(Exception.class)
+	public ModelAndView handleException(HttpServletRequest request, HttpServletResponse response, Exception ex) {
 		ModelAndView mav = new ModelAndView();
+		addCommonModelAttributes(mav);
 		mav.addObject("exceptionLocalized", ex.getLocalizedMessage());
 		mav.addObject("exceptionStackTrace", ex.getStackTrace());
 		String url = getFullRequestURL(request);
@@ -66,10 +87,10 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 	
 	@RequestMapping(value = "/uncaughtException")
     public ModelAndView uncaughtException(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		request.getRequestURL();
 		ModelAndView mav = new ModelAndView();
 		String url = getFullRequestURL(request);
 		mav.addObject("url", url);
+		addCommonModelAttributes(mav);
 		log.error("Request: " + url + " raised uncaught exception ");
 		response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		mav.setViewName("uncaughtException");
@@ -89,12 +110,21 @@ public class UncaughtExceptionController extends AbstractHandlerExceptionResolve
 	}
 	
 
+	private void addCommonModelAttributes(ModelAndView mav) {
+		mav.addObject("title", title);
+		mav.addObject("instituteHref", instituteHref);
+		mav.addObject("instituteName", instituteName);
+		mav.addObject("esupPayFooterHtmlAdd", esupPayFooterHtmlAdd);
+		mav.addObject("instituteLogoUrl", instituteLogoUrl);
+		mav.addObject("instituteLogoNavbarUrl", instituteLogoNavbarUrl);
+	}
+
 	@RequestMapping(value = "/resourceNotFound")
     public ModelAndView resourceNotFound(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		request.getRequestURL();
 		ModelAndView mav = new ModelAndView();
 		String url = getFullRequestURL(request);
 		mav.addObject("url", url);
+		addCommonModelAttributes(mav);
 		log.warn("Request: " + url + " not found");
 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		mav.setViewName("resourceNotFound");

@@ -25,8 +25,8 @@
         <!-- Main Content to be inserted into the layout's 'content' fragment -->
         <div layout:fragment="content">
                 <div th:id="${'_title_' + title + '_id'}" class="jumbotron">
-                    <th:block th:with="institute_href=${@propertyConfigurer.getProperty('institute.href')},
-                                       institute_name=${@propertyConfigurer.getProperty('institute.name')}">
+                    <th:block th:with="institute_href=${instituteHref},
+                                       institute_name=${instituteName}">
                         <h2>
                             <span th:text="#{home_msg1}"></span>
                         </h2>

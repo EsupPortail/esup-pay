@@ -22,7 +22,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="navbar">
     <div class="navbar-default navbar-inverse navbar-fixed-top">
-        <th:block th:with="logo_url=${@propertyConfigurer.getProperty('institute.logo-navbar.url')}">
+        <th:block th:with="logo_url=${instituteLogoNavbarUrl}">
             <div class="row">
                 <th:block sec:authorize="isAuthenticated()">
                     <th:block

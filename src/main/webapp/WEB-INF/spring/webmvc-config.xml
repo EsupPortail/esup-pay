@@ -58,11 +58,6 @@
     requests to the container's default Servlet -->
     <mvc:default-servlet-handler/>
 
-    <!-- Selects a static view for rendering without the need for an explicit controller -->
-    <mvc:view-controller path="/resourceNotFound" status-code="404"/>
-    <mvc:view-controller path="/dataAccessFailure"/>
-    <mvc:view-controller path="/denied" status-code="403"/>
-    
     <bean id="webExpressionHandler" 
     	class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
     		<property name="permissionEvaluator" ref="payPermissionEvaluator"/>

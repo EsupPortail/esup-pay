@@ -20,8 +20,8 @@
 -->
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <div class="container" id="footer" th:fragment="footer" style="z-index: 10">
-    <a th:href="${@propertyConfigurer.getProperty('institute.href')}"
-       th:text="${@propertyConfigurer.getProperty('institute.name')}"></a>
+    <a th:href="${instituteHref}"
+       th:text="${instituteName}"></a>
     <span> - </span>
     <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>
 
@@ -35,10 +35,10 @@
              th:with="locale='fr', label='French'"></th:block>
     </span>
 
-    <th:block th:with="footer_html_add = ${@propertyConfigurer.getProperty('esup-pay.footer-html-add')}">
+    <th:block th:with="footer_html_add = ${esupPayFooterHtmlAdd}">
         <span th:utext="${footer_html_add}"></span>
     </th:block>
-    <div th:if="${alert_msg != null}">
+    <div th:if="${alert_msg != null} and ${alert_msg != ''}">
         <script th:inline="javascript">
             var alertMsg = /*[[#{${alert_msg}}]]*/ "";
             alert(alertMsg);
