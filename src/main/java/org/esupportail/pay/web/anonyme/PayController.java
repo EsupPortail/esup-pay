@@ -171,7 +171,7 @@ public class PayController {
     @RequestMapping(value="evts/{evtUrlId}/{mntUrlId}", method=RequestMethod.POST)
     public String form(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, 
     		@RequestParam("mail") String mail, @RequestParam("field1") String field1, @RequestParam("field2") String field2, @RequestParam(required=false, value="amount") String amountString,
-    		@RequestParam(required=false, value="billingFirstName") String billingFirstname, @RequestParam(required=false, value="billingLastName") String billingLastname,
+    		@RequestParam(required=false, value="billingFirstname") String billingFirstname, @RequestParam(required=false, value="billingLastname") String billingLastname,
 		    @RequestParam(required=false, value="billingAddress1") String billingAddress1, @RequestParam(required=false, value="billingZipCode") String billingZipCode,
 	        @RequestParam(required=false, value="billingCity") String billingCity, @RequestParam(required=false, value="billingCountryCode") String billingCountryCode,
 			HttpServletRequest request
@@ -279,8 +279,8 @@ public class PayController {
     public String sciencesConfForm(Model uiModel, @PathVariable("evtUrlId") String evtUrlId, @PathVariable("mntUrlId") String mntUrlId, 
     		@RequestParam("confid") String confid, @RequestParam("uid") String uid, @RequestParam("lastname") String lastname, @RequestParam("firstname") String firstname,
 		    @RequestParam("mail") String mail, @RequestParam("fees") String fees, @RequestParam("returnurl") String returnurl,
-    		@RequestParam(required=false, name="billingFirstName") String billingFirstname,
-			@RequestParam(required=false, name="billingLastName") String billingLastname, @RequestParam(required=false, name="billingAddress1") String billingAddress1,
+    		@RequestParam(required=false, name="billingFirstname") String billingFirstname,
+			@RequestParam(required=false, name="billingLastname") String billingLastname, @RequestParam(required=false, name="billingAddress1") String billingAddress1,
     		@RequestParam(required=false, name="billingZipCode") String billingZipCode, @RequestParam(required=false, name="billingCity") String billingCity,
 			@RequestParam(required=false, name="billingCountryCode") String billingCountryCode,
 			HttpServletRequest request) {
