@@ -79,7 +79,7 @@
                                     <strong th:text="#{label_org_esupportail_pay_domain_payevt_mailsubject}">
                                     </strong>
                                 </label>
-                                <input class="form-control" id="mailSubject" name="mailSubject" th:value="${mailSubject}"
+                                <input class="form-control" id="mailSubject" name="mailSubject" th:value="${payEvt.mailSubject}"
                                        type="text"/>
                                 <span class="errors" id="_mailSubject_error_id" th:errors="*{mailSubject}" th:if="${#fields.hasErrors('mailSubject')}"></span>
                             </div>
@@ -90,11 +90,11 @@
                                     </strong>
                                 </label>
                                 <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
-                                    <input class="form-control" id="payboxCommandPrefix" th:value="${payboxCommandPrefix}"
+                                    <input class="form-control" id="payboxCommandPrefix" th:value="${payEvt.payboxCommandPrefix}"
                                            name="payboxCommandPrefix" readonly="readonly" type="text"/>
                                 </th:block>
                                 <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                                    <input class="form-control" id="payboxCommandPrefix" th:value="${payboxCommandPrefix}"
+                                    <input class="form-control" id="payboxCommandPrefix" th:value="${payEvt.payboxCommandPrefix}"
                                            name="payboxCommandPrefix" type="text"/>
                                 </th:block>
                                 <span class="errors" id="_payboxCommandPrefix_error_id" th:errors="*{payboxCommandPrefix}" th:if="${#fields.hasErrors('payboxCommandPrefix')}"></span>
