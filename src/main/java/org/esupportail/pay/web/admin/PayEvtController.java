@@ -220,6 +220,7 @@ public class PayEvtController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String create(@Valid PayEvt payEvt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+       	payEvtUpdateValidator.validate(payEvt, bindingResult);
         if (bindingResult.hasErrors()) {
             List<String> respLoginIds= List.of();
             if(httpServletRequest.getParameterValues("logins") != null) {

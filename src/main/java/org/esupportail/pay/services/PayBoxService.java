@@ -149,11 +149,9 @@ public class PayBoxService {
         PayBoxForm payBoxForm = new PayBoxForm();
         payBoxForm.setActionUrl(getPayBoxActionUrl());
         payBoxForm.setClientEmail(mail);
-        if(StringUtils.isEmpty(payEvtMontant.getAddPrefixKind())) {
-            payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), mail, montantAsCents));
-        } else {
+        String addPrefix = null;
+        if(!StringUtils.isEmpty(payEvtMontant.getAddPrefixKind())) {
             String addPrefixKind = payEvtMontant.getAddPrefixKind();
-            String addPrefix = "";
             if("field1".equals(addPrefixKind)) {
                 addPrefix = field1;
             } else if("field2".equals(addPrefixKind)) {
@@ -161,8 +159,8 @@ public class PayBoxService {
             } else if("free".equals(addPrefixKind)) {
                 addPrefix = payEvtMontant.getAddFreePrefix();
             }
-            payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), addPrefix, mail, montantAsCents));
         }
+        payBoxForm.setCommande(getNumCommande(payEvtMontant.getEvt().getPayboxCommandPrefix(), addPrefix, mail, montantAsCents));
         payBoxForm.setDevise(devise);
         payBoxForm.setHash(hashService.getHash());
         payBoxForm.setIdentifiant(identifiant);
@@ -213,17 +211,9 @@ public class PayBoxService {
         return payBoxForm;
     }
 
-    private String getNumCommande(String numCommandePrefix, String mail, String montantAsCents) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S");
-        String numCommande = numCommandePrefix + mail + DELIMITER_REF + montantAsCents + "-" + df.format(new Date());
-        // on supprime les #, &, ? & co  :  caractères spéciaux dans une url (la reference == numCommande étant reprises dans l'url callback paybox)
-        numCommande = StringUtils.stripAccents(numCommande).replaceAll(NUM_COMMANDE_CHARS_NOT_AUTHORIZED_REGEX, "");
-        return numCommande;
-    }
-
     private String getNumCommande(String numCommandePrefix, String addPrefix, String mail, String montantAsCents) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-S");
-        String numCommande = numCommandePrefix + addPrefix + DELIMITER_REF + mail + DELIMITER_REF + montantAsCents + "-" + df.format(new Date());
+        String numCommande = numCommandePrefix + (addPrefix != null ? addPrefix + DELIMITER_REF : "") + mail + DELIMITER_REF + montantAsCents + "-" + df.format(new Date());
         // on supprime les #, &, ? & co  :  caractères spéciaux dans une url (la reference == numCommande étant reprises dans l'url callback paybox)
         numCommande = StringUtils.stripAccents(numCommande).replaceAll(NUM_COMMANDE_CHARS_NOT_AUTHORIZED_REGEX, "");
         return numCommande;

@@ -40,12 +40,9 @@ public class PayEvtMontantUpdateValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		PayEvtMontant evtMontant = (PayEvtMontant) target;
-		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf() && (evtMontant.getDbleMontant() == null || evtMontant.getDbleMontant() <= 0.0)) {
-			errors.rejectValue("dbleMontant", "MustBePositive");
-	    }
-		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf() && !evtMontant.getDbleMontant().toString().matches("[0-9]*((\\.[0-9])?[0-9]?)")) {
-			errors.rejectValue("dbleMontant", "MustBeInCents");
-	    }
+		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf()) {
+		    validate_amount(evtMontant.getDbleMontant(), "dbleMontant", errors);
+		}
 		if(evtMontant.getTitle().getTranslation(LOCALE_IDS.en) == null || evtMontant.getTitle().getTranslation(LOCALE_IDS.en).isEmpty()) {
 			errors.rejectValue("title", "NotEmpty");
 	    }
@@ -58,5 +55,17 @@ public class PayEvtMontantUpdateValidator implements Validator {
 			errors.rejectValue("dbleMontant", "dbleMontant_too_high");
 	    }
 	}
+
+    private void validate_amount(Double amount, String field, Errors errors) {
+        if (amount == null) {
+            errors.rejectValue(field, "NotEmpty");
+        } else if (amount.isNaN()) {
+            errors.rejectValue(field, "MustBeInCents");
+        } else if (amount <= 0.0) {
+            errors.rejectValue(field, "MustBePositive");
+        } else if (!amount.toString().matches("[0-9]*((\\.[0-9])?[0-9]?)")) {
+            errors.rejectValue(field, "MustBeInCents");
+        }
+    }
 
 }

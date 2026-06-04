@@ -56,16 +56,15 @@ public class PayEvtUpdateValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 
 		PayEvt evt = (PayEvt) target;
-		if(evt.getUrlId() == null || evt.getUrlId().isEmpty()) {
-			errors.rejectValue("urlId", "NotEmpty.urlId");
-	    }
+		if (evt.getId() != null) {
+			// check specific to PayboxEvtController.update
+			if(evt.getUrlId() == null || evt.getUrlId().isEmpty()) {
+				errors.rejectValue("urlId", "NotEmpty.urlId");
+			}
+		}
 
 		if(evt.getManagersEmails() == null || evt.getManagersEmails().isEmpty()) {
 			errors.rejectValue("managersEmails", "NotEmpty.managersEmails");
-	    }
-
-		if(evt.getMailSubject() == null || evt.getMailSubject().isEmpty()) {
-			errors.rejectValue("mailSubject", "NotEmpty.mailSubject");
 	    }
 
 		if(evt.getLogins() != null) {
