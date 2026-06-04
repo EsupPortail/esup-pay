@@ -64,10 +64,6 @@ public class PayEvtUpdateValidator implements Validator {
 			errors.rejectValue("managersEmails", "NotEmpty.managersEmails");
 	    }
 
-		if(evt.getMailSubject() == null || evt.getMailSubject().isEmpty()) {
-			errors.rejectValue("mailSubject", "NotEmpty.mailSubject");
-	    }
-
 		if(evt.getLogins() != null) {
 			Set<String> logins = new HashSet<>(evt.getLogins());
 			if(ldapService.countSearchUids(logins) != logins.size()) {
