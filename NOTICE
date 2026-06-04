@@ -1,10 +1,10 @@
-Copyright (C) 2025 Université de Rouen Normandie https://www.univ-rouen.fr
-Copyright (C) 2025 Esup Portail https://www.esup-portail.org
-@Author (C) 2025 Vincent Bonamy <Vincent.Bonamy@univ-rouen.fr>
-@Author (C) 2025 Thomas Dargent <thomas.dargent@univ-rouen.fr>
-@Contributor (C) 2025 Jean-Pierre Tran <Jean-Pierre.Tran@univ-rouen.fr>
-@Contributor (C) 2025 Valentin Hagnéré <Valentin.Hagnere1@univ-rouen.fr>
-@Contributor (C) 2025 Pascal Rigaux <pascal.rigaux@univ-paris1.fr>
+Copyright (C) 2026 Université de Rouen Normandie https://www.univ-rouen.fr
+Copyright (C) 2026 Esup Portail https://www.esup-portail.org
+@Author (C) 2026 Vincent Bonamy <Vincent.Bonamy@univ-rouen.fr>
+@Author (C) 2026 Thomas Dargent <thomas.dargent@univ-rouen.fr>
+@Author (C) 2026 Pascal Rigaux <pascal.rigaux@univ-paris1.fr>
+@Contributor (C) 2026 Jean-Pierre Tran <Jean-Pierre.Tran@univ-rouen.fr>
+@Contributor (C) 2026 Valentin Hagnéré
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,11 +27,9 @@ This project includes:
   Apache Commons FileUpload under Apache-2.0
   Apache Commons IO under Apache-2.0
   Apache Commons Lang under Apache-2.0
-  Apache Commons Logging under The Apache Software License, Version 2.0
   Apache Commons Pool under Apache-2.0
   Apache Commons Text under Apache-2.0
   Apache Groovy under The Apache Software License, Version 2.0
-  Apache Standard Taglib Implementation under The Apache Software License, Version 2.0
   Apereo CAS Client for Java - Core under Apache License, Version 2.0
   AspectJ Weaver under Eclipse Public License - v 2.0
   attoparser under The Apache Software License, Version 2.0
@@ -40,25 +38,21 @@ This project includes:
   Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs under Bouncy Castle Licence
   Bouncy Castle Provider under Bouncy Castle Licence
   Byte Buddy (without dependencies) under Apache License, Version 2.0
-  cglib-nodep under ASF 2.0
   Chart.js under MIT
-  Checker Qual under The MIT License
   ClassGraph under The MIT License (MIT)
   ClassMate under Apache License, Version 2.0
   Commons Pool under The Apache Software License, Version 2.0
   compiler under Apache License 2.0
   esup-pay under Apache License, Version 2.0
-  flexjson under The Apache Software License, Version 2.0
   groovy-extensions under The Apache Software License, Version 2.0
-  Hibernate Commons Annotations under Apache License Version 2.0
-  Hibernate ORM - hibernate-core under GNU Library General Public License v2.1 or later
+  Hibernate Models under Apache License Version 2.0
+  Hibernate ORM - hibernate-core under Apache License, Version 2.0
   Hibernate Validator Engine under Apache License 2.0
-  hibernate-types-60 under The Apache Software License, Version 2.0
   istack common utility code runtime under Eclipse Distribution License - v 1.0
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
-  Jakarta Activation API under EDL 1.0
+  Jakarta Activation under EDL 1.0
   Jakarta Annotations API under EPL 2.0 or GPL2 w/ CPE
   Jakarta Dependency Injection under The Apache Software License, Version 2.0
   Jakarta Expression Language API under Eclipse Public License v. 2.0 or GNU General Public License, version 2 with the GNU Classpath Exception
@@ -68,25 +62,23 @@ This project includes:
   Jakarta Validation API under Apache License 2.0
   Jakarta XML Binding API under Eclipse Distribution License - v 1.0
   jakarta.transaction API under EPL 2.0 or GPL2 w/ CPE
-  Jandex: Core under Apache License, Version 2.0
   JAXB Core under Eclipse Distribution License - v 1.0
   JAXB Runtime under Eclipse Distribution License - v 1.0
-  jaxb-api under CDDL 1.1 or GPL2 w/ CPE
-  JBoss Logging 3 under Apache License, version 2.0
+  JBoss Logging 3 under Apache License 2.0
   JCIP Annotations under Apache License under Apache License, Version 2.0
   Joda-Time under Apache License, Version 2.0
   jquery under MIT License
   jQuery UI under MIT License
   jQuery UI Themes under MIT License
+  Logback Classic Module under Eclipse Public License - v 2.0 or GNU Lesser General Public License
+  Logback Core Module under Eclipse Public License - v 2.0 or GNU Lesser General Public License
   micrometer-commons under The Apache Software License, Version 2.0
   micrometer-observation under The Apache Software License, Version 2.0
   Neo Visionaries Internationalization Package under The Apache Software License, Version 2.0
   Nimbus JOSE+JWT under The Apache Software License, Version 2.0
   PostgreSQL JDBC Driver under BSD-2-Clause
   Project Lombok under The MIT License
-  reload4j under The Apache Software License, Version 2.0
-  SLF4J API Module under MIT License
-  SLF4J Reload4j Provider under MIT License
+  SLF4J API Module under MIT
   Spring AOP under Apache License, Version 2.0
   Spring Aspects under Apache License, Version 2.0
   Spring Beans under Apache License, Version 2.0
@@ -115,7 +107,6 @@ This project includes:
   thymeleaf under The Apache Software License, Version 2.0
   Thymeleaf Spring Data Dialect under Apache License, Version 2.0
   thymeleaf-expression-processor under The Apache Software License, Version 2.0
-  thymeleaf-extras-java8time under The Apache Software License, Version 2.0
   thymeleaf-extras-springsecurity6 under The Apache Software License, Version 2.0
   thymeleaf-layout-dialect under The Apache Software License, Version 2.0
   thymeleaf-spring6 under The Apache Software License, Version 2.0
