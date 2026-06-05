@@ -178,17 +178,21 @@
 
 
 	<beans:bean id="ldapContextSourcePool"
-		  class="org.springframework.ldap.pool.factory.PoolingContextSource">
+		  class="org.springframework.ldap.pool2.factory.PooledContextSource">
+		<beans:constructor-arg>
+			<beans:bean class="org.springframework.ldap.pool2.factory.PoolConfig">
+				<beans:property name="testWhileIdle" value="true"/>
+				<beans:property name="testOnBorrow" value="true"/>
+				<beans:property name="timeBetweenEvictionRunsMillis" value="30000"/>
+				<beans:property name="minEvictableIdleTimeMillis" value="60000"/>
+			</beans:bean>
+		</beans:constructor-arg>
 		<beans:property name="contextSource" ref="ldapContextSource" />
 		<beans:property name="dirContextValidator" ref="dirContextValidator" />
-		<beans:property name="testWhileIdle" value="true" />
-		<beans:property name="testOnBorrow" value="true" />
-		<beans:property name="timeBetweenEvictionRunsMillis" value="30000" />
-		<beans:property name="minEvictableIdleTimeMillis" value="60000" />
 	</beans:bean>
 
 	<beans:bean id="dirContextValidator"
-		  class="org.springframework.ldap.pool.validation.DefaultDirContextValidator" />
+		  class="org.springframework.ldap.pool2.validation.DefaultDirContextValidator" />
 
 	<beans:bean id="ldapContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
 		<beans:property name="url" value="${ldap.url}" />
