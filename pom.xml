@@ -343,7 +343,7 @@
 					<compilerArgs>
 						<arg>-parameters</arg>
 					</compilerArgs>
-					<release>11</release>
+					<release>17</release>
 				</configuration>
 			</plugin>
 			<plugin>
