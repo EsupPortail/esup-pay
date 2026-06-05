@@ -27,9 +27,8 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.annotation.Resource;
 
@@ -48,8 +47,8 @@ public class ExportService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	// 2020-09-28 11:54:20
-	SimpleDateFormat csvDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
+	private static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 	@Resource
 	ExportTransactionDaoService exportTransactionDaoService;
 	
@@ -82,7 +81,7 @@ public class ExportService {
 	Date & Heure de la remise	
 	...
 	 */
-	public void consumeExportTransactionCsvLine(String line) throws IOException, ParseException {
+	public void consumeExportTransactionCsvLine(String line) throws IOException {
 		String[] fields = line.split(";");
 		String numTransaction = fields[0];
 		String numRemise = fields[1];
@@ -96,8 +95,8 @@ public class ExportService {
 		String numContrat = fields[18];
 
 		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty() && !numRemise.isEmpty()) {
-			Date dateTransaction = csvDateFormat.parse(dateTransactionAsString);
-			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
+			LocalDateTime dateTransaction = LocalDateTime.parse(dateTransactionAsString, CSV_DATE_FORMAT);
+			LocalDateTime dateRemise = LocalDateTime.parse(dateRemiseAsString, CSV_DATE_FORMAT);
 			BigDecimal montantBG = new BigDecimal(montantAsString);
 			montantBG = montantBG.multiply( new BigDecimal(100)).setScale(0, RoundingMode.HALF_UP);
 			montantBG = montantBG.setScale(0, RoundingMode.HALF_UP);
@@ -149,7 +148,7 @@ public class ExportService {
 		Moyen de paiement	
 		Magasin
 	 */
-	public void consumeExportRemiseCsvLine(String line) throws IOException, ParseException {
+	public void consumeExportRemiseCsvLine(String line) throws IOException {
 		String[] fields = line.split(";");
 		String numRemise = fields[0];
 		String dateRemiseAsString = fields[1];
@@ -158,7 +157,7 @@ public class ExportService {
 		String nbTransactions = fields[9];
 
 		if(!numContrat.isEmpty() && !dateRemiseAsString.isEmpty() && !montantAsString.isEmpty()) {
-			Date dateRemise = csvDateFormat.parse(dateRemiseAsString);
+			LocalDateTime dateRemise = LocalDateTime.parse(dateRemiseAsString, CSV_DATE_FORMAT);
 			BigDecimal montantBG = new BigDecimal(montantAsString.replaceAll("'", ""));
 			montantBG = montantBG.multiply( new BigDecimal(100)).setScale(0, RoundingMode.HALF_UP);
 			montantBG = montantBG.setScale(0, RoundingMode.HALF_UP);
@@ -183,7 +182,7 @@ public class ExportService {
 
 	
 	//@Scheduled(fixedDelay = 3600000, initialDelay = 1000)
-	public synchronized void consumeCsvFolder() throws IOException, ParseException {
+	public synchronized void consumeCsvFolder() throws IOException {
 		// TODO : chemin en paramètre
 		File actual = new File("/opt/paybox-exports/compte-colloque");
 		for(File f : actual.listFiles()) {
@@ -206,7 +205,7 @@ public class ExportService {
 		}
 	}
 
-	public void consumeExportTransactionCsvFile(InputStream input) throws IOException, ParseException {
+	public void consumeExportTransactionCsvFile(InputStream input) throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(input, StandardCharsets.ISO_8859_1));
 		String line;
 		in.readLine(); // ignore header line;
@@ -215,7 +214,7 @@ public class ExportService {
 		}
 	}
 	
-	public void consumeExportRemiseCsvFile(InputStream input) throws IOException, ParseException {
+	public void consumeExportRemiseCsvFile(InputStream input) throws IOException {
 			BufferedReader in = new BufferedReader(new InputStreamReader(input, StandardCharsets.ISO_8859_1));
 			String line;
 			in.readLine(); // ignore header line;

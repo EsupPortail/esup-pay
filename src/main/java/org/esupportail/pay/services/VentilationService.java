@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import jakarta.annotation.Resource;
 
@@ -61,8 +63,10 @@ public class VentilationService {
 		
 		List<Ventilation> ventilations = new ArrayList<Ventilation>();
 		Date dateMonthAfter = DateUtils.addMonths(dateMonth,+1);
-		
-		for(ExportRemise remise : exportRemiseDaoService.findExportRemisesByDateRemiseBetween(dateMonth, dateMonthAfter, "dateRemise", "DESC").getResultList()) {
+		LocalDateTime dateMonthLocalDateTime = LocalDateTime.ofInstant(dateMonth.toInstant(), ZoneId.systemDefault());
+		LocalDateTime dateMonthAfterLocalDateTime = LocalDateTime.ofInstant(dateMonthAfter.toInstant(), ZoneId.systemDefault());
+
+		for(ExportRemise remise : exportRemiseDaoService.findExportRemisesByDateRemiseBetween(dateMonthLocalDateTime, dateMonthAfterLocalDateTime, "dateRemise", "DESC").getResultList()) {
 			Ventilation ventilation = new Ventilation();
 			ventilation.setRemise(remise);
 			ventilation.setDate(remise.getDateRemise());

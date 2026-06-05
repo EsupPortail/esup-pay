@@ -77,7 +77,7 @@
                             </td>
                             <td th:text="${row.payEvtMontant.title.labelLocales['fr'].translation}">
                             </td>
-                            <td th:text="${#temporals.format(row.transactionDate.toLocalDateTime(), 'MEDIUM', #locale)}">
+                                          <td th:text="${#temporals.format(row.transactionDate, 'MEDIUM', #locale)}">
                             </td>
                             <td th:text="${row.mail}">
                             </td>

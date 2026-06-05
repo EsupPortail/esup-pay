@@ -30,7 +30,7 @@
                 [[#{label_org_esupportail_pay_domain_paytransactionlog_transactiondate}]]:
             </dt>
             <dd class="box" id="_s_org_esupportail_pay_domain_PayTransactionLog_transactionDate_transactionDate_id">
-                <span th:text="${paytransactionlog.transactionDate}">
+                    <span th:text="${#temporals.format(paytransactionlog.transactionDate, 'MEDIUM', #locale)}">
                 </span>
             </dd>
         </dl>

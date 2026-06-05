@@ -17,7 +17,7 @@
  */
 package org.esupportail.pay.domain;
 import java.util.Comparator;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,7 +31,7 @@ import lombok.Setter;
 @Setter
 public class Ventilation {
 
-	private Date date;
+	private LocalDateTime date;
 
 	private ExportRemise remise;
 

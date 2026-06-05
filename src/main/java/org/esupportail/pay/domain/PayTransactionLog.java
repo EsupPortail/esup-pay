@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 package org.esupportail.pay.domain;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -47,9 +47,8 @@ public class PayTransactionLog {
     @JoinColumn(name = "pay_evt_montant")
     private PayEvtMontant payEvtMontant;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "MM")
-    private Date transactionDate;
+      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+      private LocalDateTime transactionDate;
     
     private String field1;
 

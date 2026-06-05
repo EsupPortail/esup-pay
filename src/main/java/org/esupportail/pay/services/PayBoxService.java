@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalDateTime;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -285,7 +286,7 @@ public class PayBoxService {
         txLog.setSecureauth(secureauth);
         txLog.setSecuregarantie(securegarantie);
         txLog.setSignature(signature);
-        txLog.setTransactionDate(new Date());
+            txLog.setTransactionDate(LocalDateTime.now());
 
         List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {

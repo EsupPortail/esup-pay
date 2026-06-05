@@ -18,7 +18,7 @@
 package org.esupportail.pay.dao;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
@@ -128,8 +128,8 @@ public class PayTransactionLogDaoService {
 
 	public List<PayTransactionLog> findOldPayTransactionLogs(long oldDays) {
 		Query q = em.createQuery("select log from PayTransactionLog log where log.transactionDate < :oldDate and log.mail <> 'archived'");
-		q.setParameter("oldDate", Date.from(Instant.now().minus(Duration.ofDays(oldDays))));
-		return q.getResultList();	
+    q.setParameter("oldDate", LocalDateTime.ofInstant(Instant.now().minus(Duration.ofDays(oldDays)), java.time.ZoneId.systemDefault()));
+		return q.getResultList();
 	}
 
     public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable) {

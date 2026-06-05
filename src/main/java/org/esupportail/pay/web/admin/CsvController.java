@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +50,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CsvController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	
+	private static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 	@Resource
 	PayTransactionLogDaoService payTransactionLogDaoService;
 	
@@ -87,7 +89,7 @@ public class CsvController {
         	log.debug("Build CSV Iteration - offset : " + offset);
 	    	for(PayTransactionLog txLog : txLogs) {
 	    		List<String> entries = new ArrayList<String>();
-	    		entries.add(txLog.getTransactionDate().toString());
+	    			entries.add(txLog.getTransactionDate().format(CSV_DATE_FORMAT));
 	    		entries.add(txLog.getPayEvtMontant().getEvt().getTitle().getTranslation(LOCALE_IDS.fr));
 	    		entries.add(txLog.getPayEvtMontant().getTitle().getTranslation(LOCALE_IDS.fr));
 	    		entries.add(txLog.getMail());

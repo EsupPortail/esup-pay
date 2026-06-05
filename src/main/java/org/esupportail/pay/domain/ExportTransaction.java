@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 package org.esupportail.pay.domain;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
@@ -47,14 +47,12 @@ public class ExportTransaction {
     
     private String numRemise;
     
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "MM")
-    private Date transactionDate;
+      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+      private LocalDateTime transactionDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "MM")
-    private Date dateRemise;
-    
+      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+      private LocalDateTime dateRemise;
+
     private String numContrat;
     
     private String reference;

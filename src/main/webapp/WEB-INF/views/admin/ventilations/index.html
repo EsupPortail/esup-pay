@@ -90,7 +90,7 @@
        <div class="panel-heading" role="tab">
         <h2 th:class="'panel-title alert ' + ${ventilation.consistentMontant ? 'alert-success' : 'alert-danger'}">
          <a aria-controls="collapseOne" aria-expanded="true" data-parent="#accordion" data-toggle="collapse" role="button" th:href="'#collapse-' + ${ventilationStatus.index}">
-             [[${ventilation.date}]] - [[${ventilation.remise.numContrat}]] - [[${ventilation.remise.numRemise}]]
+                [[${#temporals.format(ventilation.date, 'MEDIUM', #locale)}]] - [[${ventilation.remise.numContrat}]] - [[${ventilation.remise.numRemise}]]
          </a>
         </h2>
        </div>

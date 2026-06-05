@@ -17,7 +17,7 @@
  */
 package org.esupportail.pay.dao;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
@@ -44,7 +44,7 @@ public class ExportRemiseDaoService {
         return ((Long) q.getSingleResult());
     }
 
-	public TypedQuery<ExportRemise> findExportRemisesByDateRemiseBetween(Date minDateRemise, Date maxDateRemise, String sortFieldName, String sortOrder) {
+  public TypedQuery<ExportRemise> findExportRemisesByDateRemiseBetween(LocalDateTime minDateRemise, LocalDateTime maxDateRemise, String sortFieldName, String sortOrder) {
         if (minDateRemise == null) throw new IllegalArgumentException("The minDateRemise argument is required");
         if (maxDateRemise == null) throw new IllegalArgumentException("The maxDateRemise argument is required");
         StringBuilder queryBuilder = new StringBuilder("SELECT o FROM ExportRemise AS o WHERE o.dateRemise BETWEEN :minDateRemise AND :maxDateRemise");
