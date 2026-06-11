@@ -130,12 +130,14 @@ public class PayController {
     		log.warn("PayEvtMontant " + mntUrlId + "in " + evts.get(0) + " not found");
     		throw new EntityNotFoundException();
     	} 
+
+    	var evtMontant = evtsMnts.get(0);
     	
-    	if(evtsMnts.get(0).getSciencesconf()) {
+    	if(evtMontant.getSciencesconf()) {
     		log.warn("SciencesConf event montant form must be called from sciencesconf web site.");
             String forwardUrl = evts.get(0).getWebSiteUrl();
 			if(StringUtils.isEmpty(forwardUrl)) {
-				log.warn("No webSiteUrl found for evt " + evts.get(0) + " with sciencesconf montant " + evtsMnts.get(0) + " -> redirect to /");
+				log.warn("No webSiteUrl found for evt " + evts.get(0) + " with sciencesconf montant " + evtMontant + " -> redirect to /");
 				forwardUrl = "/";
 			} else {
 				log.warn("Redirection sur le site sciencesconf en cours ... : " + forwardUrl);
@@ -144,10 +146,10 @@ public class PayController {
     	}
 		
     	uiModel.addAttribute("payevt", evts.get(0));
-    	uiModel.addAttribute("payevtmontant", evtsMnts.get(0));
+    	uiModel.addAttribute("payevtmontant", evtMontant);
 
 		// check if the mnt event is enabled
-		if(!payEvtMontantService.checkEvtMontantEnabled(evtsMnts.get(0))) {
+		if(!payEvtMontantService.checkEvtMontantEnabled(evtMontant)) {
 			return "anonyme/amountFormDisabled";
 		}
 	
