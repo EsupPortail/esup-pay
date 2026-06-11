@@ -71,6 +71,9 @@ public class PayEvtMontant {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "field2label")
     Label field2Label; 
+
+    String field1DefaultValueFromUserAttr;
+    String field2DefaultValueFromUserAttr;
     
     Double dbleMontant;
 
