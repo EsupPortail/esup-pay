@@ -138,6 +138,13 @@ public class PayEvtMontant {
             (paiementMultiple_montant4 != null ? paiementMultiple_montant4 : 0);
     }
 
+    public LocalDate getPaiementMultiple_last_date() {
+        return 
+            paiementMultiple_montant4 != null ? getOrComputePaiementMultiple_date4() :
+            paiementMultiple_montant3 != null ? getOrComputePaiementMultiple_date3() :
+            getOrComputePaiementMultiple_date2();
+    }
+
     public LocalDate getOrComputePaiementMultiple_date2() {
         var freq = paiementMultiple_simulateFrequenceEnMois;
         return freq == null ? paiementMultiple_date2 : LocalDate.now().plusMonths(freq);
