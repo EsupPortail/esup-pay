@@ -46,13 +46,9 @@ public class PayTransactionLogDaoService {
     public TypedQuery<PayTransactionLog> findPayTransactionLogsByPayEvt(PayEvt payEvt, String sortFieldName, String sortOrder) {
         if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
         
-        String jpaQuery = "SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
+        String jpaQuery = "SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)" +
+            toOrderBy(sortFieldName, sortOrder);
+        
         TypedQuery<PayTransactionLog> q = em.createQuery(jpaQuery, PayTransactionLog.class);
         q.setParameter("payEvt", payEvt);
         return q;
@@ -64,13 +60,7 @@ public class PayTransactionLogDaoService {
         String queryCount = "SELECT COUNT(o) from PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)";
 
         Sort.Order sortFieldName = pageable.getSort().iterator().next();
-        String sortOrder = sortFieldName.getDirection().name();
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
+        queryBuilder.append(toOrderBy(sortFieldName));
 
         TypedQuery<PayTransactionLog> q = em.createQuery(queryBuilder.toString(), PayTransactionLog.class);
         TypedQuery<Long> qCount = em.createQuery(queryCount, Long.class);
@@ -116,13 +106,7 @@ public class PayTransactionLogDaoService {
     }
     
     public TypedQuery<PayTransactionLog> findAllPayTransactionLogsQuery(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM PayTransactionLog o";
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
-            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                jpaQuery = jpaQuery + " " + sortOrder;
-            }
-        }
+        String jpaQuery = "SELECT o FROM PayTransactionLog o" + toOrderBy(sortFieldName, sortOrder);
         return em.createQuery(jpaQuery, PayTransactionLog.class);
     }
 
@@ -136,13 +120,7 @@ public class PayTransactionLogDaoService {
         StringBuilder queryBuilder = new StringBuilder("FROM PayTransactionLog");
 
         Sort.Order sortFieldName = pageable.getSort().iterator().next();
-        String sortOrder = sortFieldName.getDirection().name();
-        if (fieldNames4OrderClauseFilter.contains(sortFieldName.getProperty())) {
-            queryBuilder.append(" ORDER BY ").append(sortFieldName.getProperty());
-            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
-                queryBuilder.append(" ").append(sortOrder);
-            }
-        }
+        queryBuilder.append(toOrderBy(sortFieldName));
 
         TypedQuery<PayTransactionLog> q = em.createQuery(queryBuilder.toString(), PayTransactionLog.class);
         q.setFirstResult((int) pageable.getOffset());
@@ -202,5 +180,20 @@ public class PayTransactionLogDaoService {
         } else {
             return resultList.get(0);
         }
+    }
+
+    private String toOrderBy(String sortFieldName, String sortOrder) {
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                return " ORDER BY " + sortFieldName + " " + sortOrder;
+            } else {
+                return " ORDER BY " + sortFieldName;
+            }
+        }
+        return "";
+    }
+
+    private String toOrderBy(Sort.Order sort) {
+        return toOrderBy(sort.getProperty(), sort.getDirection().name());
     }
 }
