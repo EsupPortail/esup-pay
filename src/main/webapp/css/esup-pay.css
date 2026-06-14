@@ -268,3 +268,7 @@ dl.displayTag  {
     border: 1px solid #999;
     margin: 1rem 0;
 }
+
+.comma:not(:last-child)::after {
+  content: ", ";
+}

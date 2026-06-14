@@ -183,13 +183,9 @@
               </th>
               <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_dblemontant}">
               </th>
-              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">
-              </th>
-              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_sciencesconf}">
+              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_options}">
               </th>
               <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_urlid}">
-              </th>
-              <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_authcas}">
               </th>
               <th th:text="#{label_org_esupportail_pay_domain_payevtmontant_isenabled}">
               </th>
@@ -207,9 +203,11 @@
                   </td>
                   <td th:text="${payevtmontant.dbleMontantDisplay}">
                   </td>
-                  <td th:text="${payevtmontant.freeAmount}">
-                  </td>
-                  <td th:text="${payevtmontant.sciencesconf}">
+                  <td>
+                    <span class="comma" th:if="${payevtmontant.freeAmount}" th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}"></span>
+                    <span class="comma" th:if="${payevtmontant.sciencesconf}"  th:text="#{label_org_esupportail_pay_domain_payevtmontant_sciencesconf}"></span>
+                    <span class="comma" th:if="${payevtmontant.authCas}"  th:text="#{label_org_esupportail_pay_domain_payevtmontant_authcas}"></span>
+                    <span class="comma" th:if="${payevtmontant.paiementMultiple_montant2}"  th:text="#{label_payevtmontant_paiementMultiple}"></span>
                   </td>
                     <td>
                         <a th:href="@{'/evts/' + ${payEvt.urlId} + '/' + ${payevtmontant.urlId}}" th:text="${payevtmontant.urlId}">
@@ -220,8 +218,6 @@
                             </span>
                         </a>
                     </td>
-                  <td th:text="${payevtmontant.authCas}">
-                  </td>
                   <td th:text="${payevtmontant.isEnabled}">
                   </td>
                   <td class="utilbox" th:if="${canUpdate}" th:with="update_label=#{entity_update(${typeName})}">
