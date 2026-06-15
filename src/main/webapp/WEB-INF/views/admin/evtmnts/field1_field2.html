@@ -19,7 +19,12 @@
     <div class="form-group" sec:authorize="hasRole('ROLE_ADMIN')">
         <label class="c">
             <strong th:text="#{payevtmontant_field1DefaultValueFromUserAttr}"></strong>
-            <input class="form-control" th:field="*{field1DefaultValueFromUserAttr}" type="text"/>
+            <select class="form-control" name="field1DefaultValueFromUserAttr">
+                <th:block th:each="i :${defaultValueFromUserAttrList}">
+                    <option th:selected="${i == payEvtMontant.field1DefaultValueFromUserAttr ? 'true' : 'false'}" th:text="#{payevtmontant_field1DefaultValueFromUserAttr_ + ${i}}" th:value="${i}">
+                    </option>
+                </th:block>
+            </select>
         </label>
         <span class="errors" th:errors="*{field1DefaultValueFromUserAttr}" th:if="${#fields.hasErrors('field1DefaultValueFromUserAttr')}">
     </div>
@@ -45,7 +50,12 @@
     <div class="form-group" sec:authorize="hasRole('ROLE_ADMIN')">
         <label class="c">
             <strong th:text="#{payevtmontant_field2DefaultValueFromUserAttr}"></strong>
-            <input class="form-control" th:field="*{field2DefaultValueFromUserAttr}" type="text"/>
+            <select class="form-control" name="field2DefaultValueFromUserAttr">
+                <th:block th:each="i :${defaultValueFromUserAttrList}">
+                    <option th:selected="${i == payEvtMontant.field2DefaultValueFromUserAttr ? 'true' : 'false'}" th:text="#{payevtmontant_field1DefaultValueFromUserAttr_ + ${i}}" th:value="${i}">
+                    </option>
+                </th:block>
+            </select>
         </label>
         <span class="errors" th:errors="*{field2DefaultValueFromUserAttr}" th:if="${#fields.hasErrors('field2DefaultValueFromUserAttr')}">
     </div>
