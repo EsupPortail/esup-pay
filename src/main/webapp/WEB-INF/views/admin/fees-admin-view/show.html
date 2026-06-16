@@ -78,6 +78,14 @@
                 </span>
             </dd>
         </dl>
+        <dl class="displayTag" th:if="${paytransactionlog.idAbo != null && paytransactionlog.idAbo != '0'}">
+            <dt>
+                [[#{label_org_esupportail_pay_domain_paytransactionlog_id_abo}]]:
+            </dt>
+            <dd class="box">
+                <a th:href="@{/admin/fees(idAbo=${paytransactionlog.idAbo})}" th:text="${paytransactionlog.idAbo}"></a>
+            </dd>
+        </dl>
         <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_mail_id">
             <dt>
                 [[#{label_org_esupportail_pay_domain_paytransactionlog_mail}]]:

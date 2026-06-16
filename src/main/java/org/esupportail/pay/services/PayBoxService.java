@@ -60,7 +60,7 @@ public class PayBoxService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private static final String RETOUR_VARIABLES = "montant:M;reference:R;auto:A;erreur:E;idtrans:S;securevers:v;softdecline:e;secureauth:F;securegarantie:G;signature:K";
+    private static final String RETOUR_VARIABLES = "montant:M;reference:R;auto:A;erreur:E;idtrans:S;idAbo:B;securevers:v;softdecline:e;secureauth:F;securegarantie:G;signature:K";
 
     private static final String DELIMITER_REF = "@@";
 
@@ -296,7 +296,7 @@ public class PayBoxService {
         }
     }
 
-    public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String securevers, String softdecline, String secureauth, String securegarantie, String signature, String queryString) {
+    public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String idAbo, String securevers, String softdecline, String secureauth, String securegarantie, String signature, String queryString) {
         List<PayTransactionLog> txLogs = payTransactionLogDaoService.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
         PayTransactionLog txLog = txLogs.size() > 0 ? txLogs.get(0) : null;
         if (txLog != null) {
@@ -313,6 +313,7 @@ public class PayBoxService {
         txLog.setAuto(auto);
         txLog.setErreur(erreur);
         txLog.setIdtrans(idtrans);
+        txLog.setIdAbo(idAbo);
         txLog.setSecurevers(securevers);
         txLog.setSoftdecline(softdecline);
         txLog.setSecureauth(secureauth);

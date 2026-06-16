@@ -99,7 +99,7 @@ public class PayBoxServiceManager {
 
     @Transactional
 	public boolean payboxCallback(String montant, String reference,
-			String auto, String erreur, String idtrans,
+			String auto, String erreur, String idtrans, String idAbo,
 			String securevers, String softdecline, String secureauth, String securegarantie,
 			String signature, String queryString) {
 		List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
@@ -111,7 +111,7 @@ public class PayBoxServiceManager {
                 log.error("Pas de compte paybox associé à " + payboxevt.getPayboxServiceKey() + " en configuration d'esup-pay !");
                 return false;
             }
-            return payboxServices.get(payboxevt.getPayboxServiceKey()).payboxCallback(montant, reference, auto, erreur, idtrans, securevers, softdecline, secureauth, securegarantie, signature, queryString);
+            return payboxServices.get(payboxevt.getPayboxServiceKey()).payboxCallback(montant, reference, auto, erreur, idtrans, idAbo, securevers, softdecline, secureauth, securegarantie, signature, queryString);
         }
         log.error("reference ne correspond pas à un montant/evt et donc à un service paybox !? reference : " + reference);
         return false;
