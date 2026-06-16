@@ -176,7 +176,7 @@ hr {
   border-radius: 25px; 
   display: block;
   margin-bottom: 10px;
-  padding-left: 60px;
+  padding-left: 65px; /* laisser de la place pour le ".absButton" export CSV */
 }
 
 .navbar-brand{

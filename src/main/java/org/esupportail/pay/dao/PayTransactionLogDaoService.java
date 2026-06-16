@@ -54,10 +54,25 @@ public class PayTransactionLogDaoService {
         return q;
     }
 
-    public Page<PayTransactionLog> findPagePayTransactionLogsByPayEvt(PayEvt payEvt, Pageable pageable) {
+    public Page<PayTransactionLog> findPayTransactionLogsByIdAbo(String idAbo, Pageable pageable) {
+        if (idAbo == null) throw new IllegalArgumentException("The idAbo argument is required");
+        
+        String jpaQuery = "SELECT o FROM PayTransactionLog AS o WHERE o.idAbo = :idAbo" +
+            toOrderBy(pageable.getSort().iterator().next());
+        TypedQuery<PayTransactionLog> q = em.createQuery(jpaQuery, PayTransactionLog.class);
+        q.setParameter("idAbo", idAbo);
+        return new PageImpl<>(q.getResultList());
+    }
+
+    public Page<PayTransactionLog> findPagePayTransactionLogsByPayEvt(PayEvt payEvt, String idAbo, Pageable pageable) {
         if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
         StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)");
         String queryCount = "SELECT COUNT(o) from PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)";
+
+        if (idAbo != null) {
+            queryBuilder.append("AND o.idAbo = :idAbo");
+            queryCount += "AND o.idAbo = :idAbo";
+        }
 
         Sort.Order sortFieldName = pageable.getSort().iterator().next();
         queryBuilder.append(toOrderBy(sortFieldName));
@@ -66,6 +81,10 @@ public class PayTransactionLogDaoService {
         TypedQuery<Long> qCount = em.createQuery(queryCount, Long.class);
         q.setParameter("payEvt", payEvt);
         qCount.setParameter("payEvt", payEvt);
+        if (idAbo != null) {
+            q.setParameter("idAbo", idAbo);
+            qCount.setParameter("idAbo", idAbo);
+        }
         if(pageable.isPaged()) {
             q.setFirstResult((int) pageable.getOffset());
             q.setMaxResults(pageable.getPageSize());
