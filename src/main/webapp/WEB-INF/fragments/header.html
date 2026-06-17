@@ -40,8 +40,8 @@
                         logo=${logo_url},
                         logo_title=${instituteName},
                         logo_href=${instituteHref}">
-                <a th:href="${logo_href}">
-                    <img alt="" th:src="${logo}" class="institute-logo"/>
+                <a th:href="@{${logo_href}}">
+                    <img alt="" th:src="@{${logo}}" class="institute-logo"/>
                 </a>
             </div>
         </div>

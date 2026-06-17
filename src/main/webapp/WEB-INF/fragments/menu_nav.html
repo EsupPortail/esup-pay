@@ -26,7 +26,7 @@
         <span class="icon-bar"></span>
     </button>
     <a th:href="@{'/'}" class="navbar-brand">
-        <img th:src="${logoAppUrl}"
+        <img th:src="@{${logoAppUrl}}"
              class="institute-logo-navbar"
              alt="Logo App"/>
     </a>
@@ -42,7 +42,7 @@
             >
                 <ul class="nav navbar-nav navbar-right" id="main-navigation">
                     <li>
-                        <a th:href="${urlRightButton}"
+                        <a th:href="@{${urlRightButton}}"
                             th:title="${labelRightButton}"
                             class="btn btn-sm btn-success"
                             th:utext="${button}">

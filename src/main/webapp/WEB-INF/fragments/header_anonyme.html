@@ -40,7 +40,7 @@
           <th:block th:with="logo_url=${instituteLogoUrl},
                             logo_title=${instituteName},
                             logo_href=${instituteHref} ">
-            <a th:href="${logo_href}" th:title="${logo_title}">
+            <a th:href="@{${logo_href}}" th:title="${logo_title}">
               <img alt="Logo ESUP" class="institute-logo" th:src="@{${logo_url}}"/>
             </a>
           </th:block>

@@ -31,12 +31,12 @@
                             <th:block th:fragment="content">
                                 <th:block sec:authorize="hasAnyRole('ROLE_SU', 'ROLE_ALL_VIEWER', 'ROLE_MANAGER', 'ROLE_VIEWER')">
                                     <li th:class="${actif=='notsu'} ? 'active' : ''" id="home">
-                                        <a href="/admin" th:title="#{pay_home}" th:text="#{pay_home}"></a>
+                                        <a th:href="@{/admin}" th:title="#{pay_home}" th:text="#{pay_home}"></a>
                                     </li>
                                 </th:block>
                                 <th:block sec:authorize="hasRole('ROLE_SU')">
                                     <li th:class="${actif=='su'} ? 'active' : ''" id="su">
-                                        <a href="/admin/su" title="SU">SU</a>
+                                        <a th:href="@{/admin/su}" title="SU">SU</a>
                                     </li>
                                 </th:block>
                             </th:block>

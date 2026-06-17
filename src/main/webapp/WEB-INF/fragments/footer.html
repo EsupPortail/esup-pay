@@ -20,7 +20,7 @@
 -->
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <div class="container" id="footer" th:fragment="footer" style="z-index: 10">
-    <a th:href="${instituteHref}"
+    <a th:href="@{${instituteHref}}"
        th:text="${instituteName}"></a>
     <span> - </span>
     <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>
