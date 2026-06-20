@@ -21,11 +21,7 @@
                  vous serez automatiquement prélevé par Paybox tous les [[${freq}]] mois des montants suivants :
             </span>
         </th:block>
-        <ul>
-            <li                                                   >2e paiement : [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant2, 1, 2)}]] €, le [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date2(), 'MEDIUM', #locale)}]]</li>
-            <li th:if="${payevtmontant.paiementMultiple_montant3}">3e paiement : [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant3, 1, 2)}]] €, le [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date3(), 'MEDIUM', #locale)}]]</li>
-            <li th:if="${payevtmontant.paiementMultiple_montant4}">4e paiement : [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant4, 1, 2)}]] €, le [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date4(), 'MEDIUM', #locale)}]]</li>
-        </ul>
+        <ul th:replace="this :: list-paiements"></ul>
     </p>
                 
     <p>
@@ -44,3 +40,14 @@
         </ul>
     </p>
 </div>
+
+<div th:fragment="confirm">
+    et vous serez automatiquement prélevé par Paybox des échéances suivantes :      
+    <span th:replace="~{this :: list-paiements}"></span>
+</div>
+
+<ul th:fragment="list-paiements">
+    <li                                                   >2e paiement : [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant2, 1, 2)}]] €, le [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date2(), 'MEDIUM', #locale)}]]</li>
+    <li th:if="${payevtmontant.paiementMultiple_montant3}">3e paiement : [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant3, 1, 2)}]] €, le [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date3(), 'MEDIUM', #locale)}]]</li>
+    <li th:if="${payevtmontant.paiementMultiple_montant4}">4e paiement : [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant4, 1, 2)}]] €, le [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date4(), 'MEDIUM', #locale)}]]</li>
+</ul>

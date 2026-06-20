@@ -19,11 +19,7 @@
                 you will be automatically charged by Paybox every [[${freq}]] months for the following amounts:
             </span>
         </th:block>
-        <ul>
-            <li>2nd payment: [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant2, 1, 2)}]] €, on [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date2(), 'MEDIUM', #locale)}]]</li>
-            <li th:if="${payevtmontant.paiementMultiple_montant3}">3rd payment: [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant3, 1, 2)}]] €, on [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date3(), 'MEDIUM', #locale)}]]</li>
-            <li th:if="${payevtmontant.paiementMultiple_montant4}">4th payment: [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant4, 1, 2)}]] €, on [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date4(), 'MEDIUM', #locale)}]]</li>
-        </ul>
+        <ul th:replace="~{this :: list-paiements}"></ul>
     </p>
 
     <p>
@@ -42,3 +38,14 @@
         </ul>
     </p>
 </div>
+
+<div th:fragment="confirm">
+    and you will be automatically debited by Paybox for the following installments:
+    <span th:replace="~{this :: list-paiements}"></span>
+</div>
+
+<ul th:fragment="list-paiements">
+    <li>2nd payment: [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant2, 1, 2)}]] €, on [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date2(), 'MEDIUM', #locale)}]]</li>
+    <li th:if="${payevtmontant.paiementMultiple_montant3}">3rd payment: [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant3, 1, 2)}]] €, on [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date3(), 'MEDIUM', #locale)}]]</li>
+    <li th:if="${payevtmontant.paiementMultiple_montant4}">4th payment: [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant4, 1, 2)}]] €, on [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date4(), 'MEDIUM', #locale)}]]</li>
+</ul>

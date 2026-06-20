@@ -174,6 +174,7 @@ public class PayBoxService {
         payBoxForm.setSite(site);
         payBoxForm.setTime(getCurrentTime());
         payBoxForm.setTotal(toMontantAsCents(payEvtMontant.getPaiementMultiple_montant1() != null ? payEvtMontant.getPaiementMultiple_montant1() : montant));
+        payBoxForm.setPayEvtMontant(payEvtMontant); // for display
         String callbackUrl = reponseServerUrl + "/payboxcallback";
         payBoxForm.setCallbackUrl(callbackUrl);
         String forwardUrl = reponseServerUrl;

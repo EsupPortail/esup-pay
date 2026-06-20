@@ -6,6 +6,15 @@
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h4 th:text="#{pay_confirm_transaction(${payBoxForm.montantDisplay})}"></h4>
+
+        <div class="row" th:if="${payBoxForm.payEvtMontant.paiementMultiple_montant2}"
+              th:with="payevtmontant = ${payBoxForm.payEvtMontant}"
+              th:insert="
+                      ~{${'anonyme/evtmnt-paiementMultiple_' + #locale.language} :: confirm} ?: 
+                      ~{   anonyme/evtmnt-paiementMultiple                       :: confirm}"
+        >
+        </div>
+        
       </div>
       <div class="panel-body text-center">
         <form th:action="${payBoxForm.actionUrl}" method="POST">
