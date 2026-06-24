@@ -93,6 +93,7 @@ public class PayEvtMontant {
     
     Boolean isBillingAddressRequired = false;
 
+    // montantTotalMax - en centimes
     Long montantTotalMax = -1L;
 
     Long nbTransactionsMax = -1L;

@@ -58,6 +58,7 @@ public class PayEvtMontantService {
             List<EmailFieldsMapReference> emailFieldsMapReferences = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesNotPayedByPayEvtMontantCreatedAfterDate(payEvtMontant, createdAfterDate).getResultList();
             long montantTotal = 0;
             long nbTransactions = 0;
+            long montantPayEvtAsCents = Math.round(payEvtMontant.getDbleMontant() * 100);
             for(PayTransactionLog log : logs) {
                 if("00000".equals(log.getErreur())) {
                     montantTotal += Long.parseLong(log.getMontant());
@@ -65,11 +66,10 @@ public class PayEvtMontantService {
                 }
             }
             for(EmailFieldsMapReference emailFieldsMapReference : emailFieldsMapReferences) {
-                long montantAsCents = Math.round(Double.valueOf(payEvtMontant.getDbleMontant() * 100));
-                montantTotal += montantAsCents;
+                montantTotal += montantPayEvtAsCents;
                 nbTransactions++;
             }
-            if(payEvtMontant.getMontantTotalMax()>-1 && montantTotal >= payEvtMontant.getMontantTotalMax()) {
+            if(payEvtMontant.getMontantTotalMax()>-1 && (montantTotal + montantPayEvtAsCents) > payEvtMontant.getMontantTotalMax()) {
                 log.info("PayEvtMontant {} found but reached the max amount", payEvtMontant);
                 return false;
             }
