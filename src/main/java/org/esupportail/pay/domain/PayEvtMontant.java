@@ -16,6 +16,8 @@
  * limitations under the License.
  */
  package org.esupportail.pay.domain;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Locale;
 
 import jakarta.persistence.*;
@@ -163,6 +165,22 @@ public class PayEvtMontant {
             return -1L;
         }
         return montantTotalMax;
+    }
+
+    @Transient
+    public BigDecimal getMontantTotalMaxEuros() {
+        if (montantTotalMax == null || montantTotalMax < 0) {
+            return BigDecimal.valueOf(-1);
+        }
+        return BigDecimal.valueOf(montantTotalMax, 2);
+    }
+
+    public void setMontantTotalMaxEuros(BigDecimal montantTotalMaxEuros) {
+        if (montantTotalMaxEuros == null || montantTotalMaxEuros.signum() < 0) {
+            montantTotalMax = -1L;
+            return;
+        }
+        montantTotalMax = montantTotalMaxEuros.movePointRight(2).setScale(0, RoundingMode.HALF_UP).longValue();
     }
 
     public Long getNbTransactionsMax() {
