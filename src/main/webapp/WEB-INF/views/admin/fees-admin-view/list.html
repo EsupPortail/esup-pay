@@ -90,8 +90,8 @@
                             <td th:text="${row.mailSent}">
                             </td>
                             <td class="utilbox">
-                                <a class="btn btn-success" th:alt="#{menu_item_paytransactionlog_new_label}" th:href="@{'/admin/fees/' + ${row.id}}" title="#{menu_item_paytransactionlog_new_label}">
-                                    <img class="image" th:alt="#{menu_item_paytransactionlog_new_label}" th:src="@{/resources/images/show.png}" title="#{menu_item_paytransactionlog_new_label}"/>
+                                <a class="btn btn-success" th:alt="#{menu_item_paytransactionlog_new_label}" th:href="@{'/admin/fees/' + ${row.id}}" th:title="#{menu_item_paytransactionlog_new_label}">
+                                    <img class="image" th:alt="#{menu_item_paytransactionlog_new_label}" th:src="@{/resources/images/show.png}" th:title="#{menu_item_paytransactionlog_new_label}"/>
                                 </a>
                             </td>
                         </tr>

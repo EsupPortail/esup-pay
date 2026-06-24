@@ -141,12 +141,16 @@ public class PayBoxService {
         this.mailFrom = mailFrom;
     }
 
+    private String toMontantAsCents(Double montant) {
+        return Long.toString(Math.round(Double.valueOf(montant * 100)));
+    }
+    
     public PayBoxForm getPayBoxForm(String mail, String field1, String field2, double montant, PayEvtMontant payEvtMontant,
                                     String billingFirstname, String billingLastname, String billingAddress1, String billingZipCode, String billingCity, String billingCountryCode) {
 
 
 
-        String montantAsCents = Long.toString(Math.round(Double.valueOf(montant * 100)));
+        String montantAsCents = toMontantAsCents(montant);
         PayBoxForm payBoxForm = new PayBoxForm();
         payBoxForm.setActionUrl(getPayBoxActionUrl());
         payBoxForm.setClientEmail(mail);

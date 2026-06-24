@@ -94,34 +94,9 @@
           </div>
          </div>
         </fieldset>
-        <fieldset>
-         <legend>
-          <span th:text="#{form_field1}">
-          </span>
-         </legend>
-         <div th:each="labelLocales : ${payEvtMontant.field1Label.labelLocales}">
-          <div class="form-group">
-           <label>
-            [[${labelLocales.key}]] :
-           <input class="form-control" th:name="'field1Label.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
-           </label>
-          </div>
-         </div>
-        </fieldset>
-        <fieldset>
-         <legend>
-          <span th:text="#{form_field2}">
-          </span>
-         </legend>
-         <div th:each="labelLocales : ${payEvtMontant.field2Label.labelLocales}">
-          <div class="form-group">
-           <label>
-            [[${labelLocales.key}]] :
-           <input class="form-control" th:name="'field2Label.labelLocales[' + ${labelLocales.key} + '].translation'" th:value="${labelLocales.value.translation}"/>
-           </label>
-          </div>
-         </div>
-        </fieldset>
+
+        <div th:replace="~{admin/evtmnts/field1_field2.html}"></div>       
+        
         <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_authCas_id">
          <legend>Auth CAS</legend>
          <label for="_authCas_id">

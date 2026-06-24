@@ -71,7 +71,7 @@
                 </li>
             </th:block>
             <th:block sec:authorize="hasRole('ROLE_ALL_VIEWER')">
-                <th:block th:if="${paytransactionlogs != null || paytransactionlog != null}">
+                <th:block th:if="${paytransactionlog != null}">
                     <li>
                         <a th:href="@{/admin/fees(page=0, size=${param.size == null || param.size == '' ? 10 : param.size})}"  th:text="#{menu_txs}">
                         </a>

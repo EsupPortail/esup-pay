@@ -160,10 +160,6 @@ public class PayBoxForm {
 		}
 	}
 	
-	public String getMontant() {
-		return Double.valueOf((Double.valueOf(total)/100.0)).toString();
-	}
-	
     public String getMontantDisplay() {
     	return String.format("%,.2f€", Double.valueOf(total)/100.0);
     }

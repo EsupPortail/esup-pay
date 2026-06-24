@@ -1,0 +1,38 @@
+<fieldset>
+    <legend>
+        <span th:text="#{form_field1}">
+        </span>
+    </legend>
+    <div th:each="labelLocales : *{field1Label.labelLocales}">
+        <div class="form-group">
+            <label>
+                [[${labelLocales.key}]] :
+                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">                
+                    <input class="form-control" th:name="'field1Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
+                </th:block>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
+                    <input class="form-control" th:name="'field1Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
+                </th:block>
+            </label>
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>
+        <span th:text="#{form_field2}">
+        </span>
+    </legend>
+    <div th:each="labelLocales : *{field2Label.labelLocales}">
+        <div class="form-group">
+            <label>
+                [[${labelLocales.key}]] :
+                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
+                    <input class="form-control" th:name="'field2Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
+                </th:block>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
+                    <input class="form-control" th:name="'field2Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
+                </th:block>
+            </label>
+        </div>
+    </div>
+</fieldset>
