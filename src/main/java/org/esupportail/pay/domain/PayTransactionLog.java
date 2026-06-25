@@ -65,6 +65,8 @@ public class PayTransactionLog {
     private String erreur;
 
     private String idtrans;
+
+    private String idAbo;
     
     private String securevers; 
     

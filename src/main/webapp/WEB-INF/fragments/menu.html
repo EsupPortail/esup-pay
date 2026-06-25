@@ -81,6 +81,16 @@
                     <li th:text="${paytransactionlog.idtrans}">
                     </li>
                 </th:block>
+                <th:block th:if="${idAbo != null}" >
+                    <li>
+                        <a th:href="@{fees}"  th:text="#{menu_txs}">
+                        </a>
+                    </li>
+                    <li>
+                        <span th:text="#{label_org_esupportail_pay_domain_paytransactionlog_id_abo}"></span>
+                        <span th:text="${idAbo}"></span>
+                    </li>
+                </th:block>
             </th:block>
         </ul>
 </div>

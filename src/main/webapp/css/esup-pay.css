@@ -176,7 +176,7 @@ hr {
   border-radius: 25px; 
   display: block;
   margin-bottom: 10px;
-  padding-left: 60px;
+  padding-left: 65px; /* laisser de la place pour le ".absButton" export CSV */
 }
 
 .navbar-brand{
@@ -257,3 +257,18 @@ dl.displayTag  {
 	}
 }
 
+.form-group:has(.hide-form-group) {
+    display: none;
+}
+
+.payevtmontant_paiementMultiple {
+    background-color: #E1E1E1;
+    padding: 0 1rem;
+    display: block;
+    border: 1px solid #999;
+    margin: 1rem 0;
+}
+
+.comma:not(:last-child)::after {
+  content: ", ";
+}

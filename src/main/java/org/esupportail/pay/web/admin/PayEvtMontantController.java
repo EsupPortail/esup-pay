@@ -71,6 +71,30 @@ public class PayEvtMontantController {
     	return Arrays.asList("", "field1", "field2", "free");
     }
     
+    @ModelAttribute("paiementMultiple_kind_list")
+    public List<String> getPaiementMultiple_kind_list() {
+    	return Arrays.asList("", PayEvtMontant.paiementMultiple_kind_datesPrecise, PayEvtMontant.paiementMultiple_kind_simulateFrequence);
+    }
+
+    public void payEvtMontantNormalize(PayEvtMontant mnt) {
+        // certains champs doivent être null pour certaines valeurs de paiementMultiple_kind :
+        var kind = mnt.getPaiementMultiple_kind();
+        if (!PayEvtMontant.paiementMultiple_kind_datesPrecise.equals(kind)) {
+            mnt.setPaiementMultiple_date2(null);
+            mnt.setPaiementMultiple_date3(null);
+            mnt.setPaiementMultiple_date4(null);
+        }
+        if (!PayEvtMontant.paiementMultiple_kind_simulateFrequence.equals(kind)) {
+            mnt.setPaiementMultiple_simulateFrequenceEnMois(null);
+        }
+        if ("".equals(kind)) {
+            mnt.setPaiementMultiple_montant1(null);
+            mnt.setPaiementMultiple_montant2(null);
+            mnt.setPaiementMultiple_montant3(null);
+            mnt.setPaiementMultiple_montant4(null);
+        }
+    }
+    
     @RequestMapping(params = "form", produces = "text/html")
     @PreAuthorize("hasPermission(#evtId, 'manage')")
     public String createForm(Model uiModel, @RequestParam(name="evtId", required=true) Long evtId) {
@@ -84,6 +108,7 @@ public class PayEvtMontantController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html", value="/addMontant")
     @PreAuthorize("hasPermission(#payEvtMontant, 'manage')")
     public String addMontant(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	payEvtMontantNormalize(payEvtMontant);
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
     	if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);
@@ -105,6 +130,7 @@ public class PayEvtMontantController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     @PreAuthorize("hasPermission(#payEvtMontant, 'manage')")
     public String update(@Valid PayEvtMontant payEvtMontant, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    	payEvtMontantNormalize(payEvtMontant);
     	payEvtMontantValidator.validate(payEvtMontant, bindingResult);
     	if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, payEvtMontant);

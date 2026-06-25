@@ -1,0 +1,117 @@
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+  <fieldset class="payevtmontant_paiementMultiple">
+    <legend>
+        <span th:text="#{label_payevtmontant_paiementMultiple}">
+        </span>
+    </legend>
+    <label>
+        <strong th:text="#{label_payevtmontant_paiementMultiple_kind}">
+        </strong>
+        <select class="form-control" id="_paiementMultiple_kind_id" name="paiementMultiple_kind" size="1" onchange="handle_paiementMultiple_visibility()">
+            <th:block th:each="i :${paiementMultiple_kind_list}">
+                <option th:selected="${i == payEvtMontant.paiementMultiple_kind ? 'true' : 'false'}" th:text="#{label_payevtmontant_paiementMultiple_kind_ + ${i}}" th:value="${i}">
+                </option>
+            </th:block>
+        </select>
+    </label>
+    <div class="form-group">
+        <label class="c">
+            <strong th:text="#{label_payevtmontant_paiementMultiple_simulateFrequenceEnMois}">
+            </strong>
+            <input class="form-control" name="paiementMultiple_simulateFrequenceEnMois" th:value="*{#objects.nullSafe(paiementMultiple_simulateFrequenceEnMois, 1)}" type="number" min="1" max="10" step="1"/>
+        </label>
+        <span class="errors" th:errors="*{paiementMultiple_simulateFrequenceEnMois}" th:if="${#fields.hasErrors('paiementMultiple_simulateFrequenceEnMois')}">
+        </span>
+    </div>
+
+    <div class="form-group">
+        <label class="c">
+            <strong th:text="#{label_payevtmontant_paiementMultiple_montant1}">
+            </strong>
+            <input class="form-control" th:field="*{paiementMultiple_montant1}" th:placeholder="#{payevtmontant_montant_placeholder}" inputmode="decimal"/>
+        </label>
+        <span class="errors" th:errors="*{paiementMultiple_montant1}" th:if="${#fields.hasErrors('paiementMultiple_montant1')}">
+        </span>
+    </div>
+
+    <div class="form-group">
+        <label class="c">
+            <strong th:text="#{label_payevtmontant_paiementMultiple_montant2}">
+            </strong>
+            <input class="form-control" th:field="*{paiementMultiple_montant2}" placeholder="montant en euros" inputmode="decimal"/>
+        </label>
+        <span class="errors" th:errors="*{paiementMultiple_montant2}" th:if="${#fields.hasErrors('paiementMultiple_montant2')}">
+        </span>
+    </div>
+    <div class="form-group">
+        <label class="c">
+            <strong th:text="#{label_payevtmontant_paiementMultiple_date2}">
+            </strong>
+            <input class="form-control" th:field="*{paiementMultiple_date2}" type="date"/>
+        </label>
+        <span class="errors" th:errors="*{paiementMultiple_date2}" th:if="${#fields.hasErrors('paiementMultiple_date2')}">
+        </span>
+    </div>
+    <div class="form-group">
+        <label class="c">
+            <strong th:text="#{label_payevtmontant_paiementMultiple_montant3}">
+            </strong>
+            <input class="form-control" th:field="*{paiementMultiple_montant3}" placeholder="montant en euros" inputmode="decimal"/>
+        </label>
+        <span class="errors" th:errors="*{paiementMultiple_montant3}" th:if="${#fields.hasErrors('paiementMultiple_montant3')}">
+        </span>
+    </div>
+    <div class="form-group">
+        <label class="c">
+            <strong th:text="#{label_payevtmontant_paiementMultiple_date3}">
+            </strong>
+            <input class="form-control" th:field="*{paiementMultiple_date3}" type="date"/>
+        </label>
+        <span class="errors" th:errors="*{paiementMultiple_date3}" th:if="${#fields.hasErrors('paiementMultiple_date3')}">
+        </span>
+    </div>
+    <div class="form-group">
+        <label class="c">
+            <strong th:text="#{label_payevtmontant_paiementMultiple_montant4}">
+            </strong>
+            <input class="form-control" th:field="*{paiementMultiple_montant4}" placeholder="montant en euros" inputmode="decimal"/>
+        </label>
+        <span class="errors" th:errors="*{paiementMultiple_montant4}" th:if="${#fields.hasErrors('paiementMultiple_montant4')}">
+        </span>
+    </div>
+    <div class="form-group">
+        <label class="c">
+            <strong th:text="#{label_payevtmontant_paiementMultiple_date4}">
+            </strong>
+            <input class="form-control" th:field="*{paiementMultiple_date4}" type="date"/>
+        </label>
+        <span class="errors" th:errors="*{paiementMultiple_date4}" th:if="${#fields.hasErrors('paiementMultiple_date4')}">
+        </span>
+    </div>
+    <script>
+        function handle_paiementMultiple_visibility() {
+          const kind = document.querySelector("[name=paiementMultiple_kind]").value
+          for (const elt of document.querySelectorAll("[name^=paiementMultiple_]")) {
+              const show = 
+                elt.name === 'paiementMultiple_kind' ? true :
+                kind === 'datesPrecises' ? elt.name.match(/_montant\d$|_date\d$/) :
+                kind === 'simulateFrequence' ? elt.name.match(/_montant\d$|_simulateFrequenceEnMois$/) :
+                false
+              elt.classList.toggle('hide-form-group', !show)
+          }
+        }
+        handle_paiementMultiple_visibility()
+    </script>
+  </fieldset>
+</div>
+<div sec:authorize="!hasRole('ROLE_ADMIN')">
+  <input type="hidden" th:field="*{paiementMultiple_kind}"/>
+  <input type="hidden" th:field="*{paiementMultiple_simulateFrequenceEnMois}"/>
+  <input type="hidden" th:field="*{paiementMultiple_montant1}"/>
+  <input type="hidden" th:field="*{paiementMultiple_montant2}"/>
+  <input type="hidden" th:field="*{paiementMultiple_montant3}"/>
+  <input type="hidden" th:field="*{paiementMultiple_montant4}"/>
+  <input type="hidden" th:field="*{paiementMultiple_date2}"/>
+  <input type="hidden" th:field="*{paiementMultiple_date3}"/>
+  <input type="hidden" th:field="*{paiementMultiple_date4}"/>
+</div>

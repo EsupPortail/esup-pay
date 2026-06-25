@@ -1,0 +1,53 @@
+<div th:fragment="before-form" 
+    th:with="freq = ${payevtmontant.paiementMultiple_simulateFrequenceEnMois}">
+
+    <h3>Paiement échelonné</h3>
+             
+    <p>
+        En remplissant ce formulaire, <b>vous vous engagez sur le montant total de [[${payevtmontant.dbleMontantDisplay}]], dont le paiement sera échelonné</b>. 
+        La prise en compte de votre inscription ne sera définitive qu'après la réussite de l'intégralité des transactions.
+    </p>
+    
+    <p>
+        À la suite du premier paiement immédiat de [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant1, 1, 2)}]] €,
+        <th:block th:switch="${freq}">
+            <span th:case="null">
+                 vous serez automatiquement prélevé par Paybox :
+            </span>
+            <span th:case="1">
+                 vous serez automatiquement prélevé par Paybox tous les mois des montants suivants :
+            </span>
+            <span th:case="*">
+                 vous serez automatiquement prélevé par Paybox tous les [[${freq}]] mois des montants suivants :
+            </span>
+        </th:block>
+        <ul th:replace="this :: list-paiements"></ul>
+    </p>
+                
+    <p>
+        Pour que les transactions réussissent <b>vous devez impérativement</b> :
+        <ul>
+            <li>
+                Utiliser une carte bancaire <b>dont la date d’expiration est postérieure au dernier paiement</b>, 
+                soit le [[${#temporals.format(payevtmontant.paiementMultiple_last_date, 'MEDIUM', #locale)}]]
+            </li>
+            <li>
+                Vous assurez que <b>vous disposez des fonds suffisants sur votre compte bancaire à la date des différentes échéances</b>. 
+                <span th:if="${freq}">
+                    Vous serez prélevé à la même date que le premier paiement. (Par exemple, si vous faites votre premier paiement, le 23 juin, la deuxième échéance sera programmée le 23 du mois suivant et ainsi de suite ou selon la fréquence des échéances).
+                </span>
+            </li>
+        </ul>
+    </p>
+</div>
+
+<div th:fragment="confirm">
+    et vous serez automatiquement prélevé par Paybox des échéances suivantes :      
+    <span th:replace="~{this :: list-paiements}"></span>
+</div>
+
+<ul th:fragment="list-paiements">
+    <li                                                   >2e paiement : [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant2, 1, 2)}]] €, le [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date2(), 'MEDIUM', #locale)}]]</li>
+    <li th:if="${payevtmontant.paiementMultiple_montant3}">3e paiement : [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant3, 1, 2)}]] €, le [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date3(), 'MEDIUM', #locale)}]]</li>
+    <li th:if="${payevtmontant.paiementMultiple_montant4}">4e paiement : [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant4, 1, 2)}]] €, le [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date4(), 'MEDIUM', #locale)}]]</li>
+</ul>

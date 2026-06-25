@@ -47,11 +47,17 @@ public class PayTransactionLogController {
 	
     @RequestMapping(produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER')")
-    public String list(Model uiModel,@PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPageAllPayTransactionLogs(pageable);
+    public String list(Model uiModel,
+        @RequestParam(name="idAbo", required = false) String idAbo,
+        @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
+        Page<PayTransactionLog> payTxLogPage = idAbo != null ?
+            payTransactionLogDaoService.findPayTransactionLogsByIdAbo(idAbo, pageable) :
+            payTransactionLogDaoService.findPageAllPayTransactionLogs(pageable);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("listAllTxEvts", true);
         uiModel.addAttribute("page", payTxLogPage);
+        uiModel.addAttribute("page_hasAbo", page_hasAbo(payTxLogPage));
+        uiModel.addAttribute("idAbo", idAbo);
         return "admin/fees-admin-view/list";
     }
     
@@ -67,5 +73,12 @@ public class PayTransactionLogController {
 
 	void addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("payTransactionLog_transactiondate_date_format", DateTimeFormat.patternForStyle("MM", LocaleContextHolder.getLocale()));
+    }
+
+    public static boolean page_hasAbo(Page<PayTransactionLog> payTxLogPage) {
+        for (PayTransactionLog log : payTxLogPage) {
+            if (log.getIdAbo() != null) return true;
+        }
+        return false;
     }
 }

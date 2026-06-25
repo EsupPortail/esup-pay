@@ -100,7 +100,11 @@ public class PayBoxForm {
 	
 	private String billingCountryCode;
 	
+	private SortedMap<String, String> paiementMultipleParams = new TreeMap<String, String>();
+	
 	private SortedMap<String, String> optionalAddedParams = new TreeMap<String, String>();	
+	
+	private PayEvtMontant payEvtMontant; // pour affichage
 	
 	public SortedMap<String, String> getOrderedParams() {
 		SortedMap<String, String> params = new TreeMap<String, String>();
@@ -134,6 +138,8 @@ public class PayBoxForm {
 					billingCountryCode);
 			params.put("PBX_BILLING", pbxBillingXml);
 		}
+		
+		params.putAll(paiementMultipleParams);
 		
 		params.putAll(optionalAddedParams);
 		

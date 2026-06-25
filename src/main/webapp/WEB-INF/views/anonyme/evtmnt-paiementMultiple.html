@@ -1,0 +1,51 @@
+<div th:fragment="before-form" th:with="freq = ${payevtmontant.paiementMultiple_simulateFrequenceEnMois}" >
+    <h3>Installment Payment</h3>
+
+    <p>
+        By completing this form, <b>you commit to the total amount of [[${payevtmontant.dbleMontantDisplay}]], which will be paid in installments</b>.
+        Your registration will only be considered final once all transactions have been successfully completed.
+    </p>
+
+    <p>
+        Following the first immediate payment of [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant1, 1, 2)}]] €,        
+        <th:block th:switch="${freq}">
+            <span th:case="null">
+                you will be automatically charged by Paybox:
+            </span>
+            <span th:case="1">
+                you will be automatically charged by Paybox every month for the following amounts:
+            </span>
+            <span th:case="*">
+                you will be automatically charged by Paybox every [[${freq}]] months for the following amounts:
+            </span>
+        </th:block>
+        <ul th:replace="~{this :: list-paiements}"></ul>
+    </p>
+
+    <p>
+        In order for the transactions to be successful, <b>you must</b>:
+        <ul>
+            <li>
+                Use a credit/debit card <b>whose expiration date is later than the final payment date</b>,
+                i.e. [[${#temporals.format(payevtmontant.paiementMultiple_last_date, 'MEDIUM', #locale)}]]
+            </li>
+            <li>
+                Ensure that <b>you have sufficient funds in your bank account on each payment due date</b>.
+                <span th:if="${freq}">
+                    You will be charged on the same day of the month as the first payment. (For example, if you make your first payment on June 23, the second installment will be scheduled for the 23rd of the following month, and so on, or according to the installment frequency.)
+                </span>
+            </li>
+        </ul>
+    </p>
+</div>
+
+<div th:fragment="confirm">
+    and you will be automatically debited by Paybox for the following installments:
+    <span th:replace="~{this :: list-paiements}"></span>
+</div>
+
+<ul th:fragment="list-paiements">
+    <li>2nd payment: [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant2, 1, 2)}]] €, on [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date2(), 'MEDIUM', #locale)}]]</li>
+    <li th:if="${payevtmontant.paiementMultiple_montant3}">3rd payment: [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant3, 1, 2)}]] €, on [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date3(), 'MEDIUM', #locale)}]]</li>
+    <li th:if="${payevtmontant.paiementMultiple_montant4}">4th payment: [[${#numbers.formatDecimal(payevtmontant.paiementMultiple_montant4, 1, 2)}]] €, on [[${#temporals.format(payevtmontant.getOrComputePaiementMultiple_date4(), 'MEDIUM', #locale)}]]</li>
+</ul>

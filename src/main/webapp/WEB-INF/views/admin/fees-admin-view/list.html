@@ -66,6 +66,9 @@
                             </th>
                             <th th:text="#{label_org_esupportail_pay_domain_paytransactionlog_mailsent}">
                             </th>
+                            <th th:if="${page_hasAbo && idAbo == null}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_idAbo_filter}">
+                                Voir
+                            </th>
                             <th class="btnCrudTable" th:text="#{entity_show(${typeName})}">
                                 Voir
                             </th>
@@ -89,9 +92,14 @@
                             </td>
                             <td th:text="${row.mailSent}">
                             </td>
+                            <td class="utilbox" th:if="${page_hasAbo && idAbo == null}">
+                                <a th:if="${row.idAbo != null && row.idAbo != '0'}" class="btn btn-success" th:alt="#{menu_item_paytransactionlog_idAbo_filter}" th:href="@{fees(idAbo=${row.idAbo})}" th:title="#{label_org_esupportail_pay_domain_paytransactionlog_idAbo_filter}">
+                                    <img class="image" th:alt="#{label_org_esupportail_pay_domain_paytransactionlog_idAbo_filter}" th:src="@{/resources/images/calendar.svg}" th:title="#{label_org_esupportail_pay_domain_paytransactionlog_idAbo_filter}"/>
+                                </a>
+                            </td>
                             <td class="utilbox">
                                 <a class="btn btn-success" th:alt="#{menu_item_paytransactionlog_new_label}" th:href="@{'/admin/fees/' + ${row.id}}" th:title="#{menu_item_paytransactionlog_new_label}">
-                                    <img class="image" th:alt="#{menu_item_paytransactionlog_new_label}" th:src="@{/resources/images/show.png}" th:title="#{menu_item_paytransactionlog_new_label}"/>
+                                    <img class="image" th:alt="#{menu_item_paytransactionlog_new_label}" th:src="@{/resources/images/repository.svg}" th:title="#{menu_item_paytransactionlog_new_label}"/>
                                 </a>
                             </td>
                         </tr>
