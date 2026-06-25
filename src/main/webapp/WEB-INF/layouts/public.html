@@ -51,8 +51,8 @@
   <script th:src="@{/resources/js/esup-pay.js}"></script>
   <script th:src="@{/webjars/chartjs/dist/chart.umd.js}"></script>
   <script th:src="@{/resources/js/footable.min.js}"></script>
-  <script type="text/javascript">
-    var searchLoginsJsonUrl = '/admin/searchLoginsJson';
+  <script th:inline="javascript">
+	var searchLoginsJsonUrl = /*[[@{/admin/searchLoginsJson}]]*/ '';
   </script>
 
 
