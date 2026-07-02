@@ -71,6 +71,11 @@ public class PayEvtMontantController {
     	return Arrays.asList("", "field1", "field2", "free");
     }
     
+    @ModelAttribute("defaultValueFromUserAttrList")
+    public List<String> getDefaultValueFromUserAttrList() {
+        return Arrays.asList("", "sn", "givenName", "displayName", "supannEtuId");
+    }
+
     @ModelAttribute("paiementMultiple_kind_list")
     public List<String> getPaiementMultiple_kind_list() {
     	return Arrays.asList("", PayEvtMontant.paiementMultiple_kind_datesPrecise, PayEvtMontant.paiementMultiple_kind_simulateFrequence);

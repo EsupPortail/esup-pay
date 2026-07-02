@@ -65,13 +65,13 @@
                         <label class="control-label" for="field1">
                             [[${payevtmontant.field1Label.getTranslation(locale)}]]
                         </label>
-                        <input class="form-control" name="field1" id="field1" type="text"/>
+                        <input class="form-control" name="field1" id="field1" type="text" th:value="${field1}"/>
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="field2">
                             [[${payevtmontant.field2Label.getTranslation(locale)}]]
                         </label>
-                        <input class="form-control" name="field2" id="field2" type="text"/>
+                        <input class="form-control" name="field2" id="field2" type="text" th:value="${field2}"/>
                     </div>
                     <th:block th:if="${payevtmontant.isBillingAddressRequired}">
                         <div class="panel panel-default">
