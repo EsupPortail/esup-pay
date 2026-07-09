@@ -31,6 +31,7 @@ import org.esupportail.pay.domain.*;
 import org.esupportail.pay.exceptions.EntityNotFoundException;
 import org.esupportail.pay.services.PayBoxServiceManager;
 import org.esupportail.pay.services.PayEvtMontantService;
+import org.esupportail.pay.services.LdapUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.security.core.Authentication;
@@ -154,10 +155,18 @@ public class PayController {
 		}
 	
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    	if(auth!=null && auth.isAuthenticated() && auth.getPrincipal() instanceof InetOrgPerson) {
-    		InetOrgPerson person = (InetOrgPerson)auth.getPrincipal();
+    	if(auth!=null && auth.isAuthenticated() && auth.getPrincipal() instanceof LdapUserDetails) {
+    		var person = (LdapUserDetails)auth.getPrincipal();
     		if(person != null) {
-    			uiModel.addAttribute("mail", person.getMail());
+    			uiModel.addAttribute("mail", person.getAttr("mail"));
+    			var field1Attr = evtMontant.getField1DefaultValueFromUserAttr();
+    			if (StringUtils.isNotEmpty(field1Attr)) {
+    			    uiModel.addAttribute("field1", person.getAttr(field1Attr));
+    			}
+    			var field2Attr = evtMontant.getField2DefaultValueFromUserAttr();
+    			if (StringUtils.isNotEmpty(field2Attr)) {
+    			    uiModel.addAttribute("field2", person.getAttr(field2Attr));
+    			}
     		}
     	}
     	

@@ -16,6 +16,18 @@
             </label>
         </div>
     </div>
+    <div class="form-group" sec:authorize="hasRole('ROLE_ADMIN')">
+        <label class="c">
+            <strong th:text="#{payevtmontant_field1DefaultValueFromUserAttr}"></strong>
+            <select class="form-control" name="field1DefaultValueFromUserAttr">
+                <th:block th:each="i :${defaultValueFromUserAttrList}">
+                    <option th:selected="${i == payEvtMontant.field1DefaultValueFromUserAttr ? 'true' : 'false'}" th:text="#{payevtmontant_field1DefaultValueFromUserAttr_ + ${i}}" th:value="${i}">
+                    </option>
+                </th:block>
+            </select>
+        </label>
+        <span class="errors" th:errors="*{field1DefaultValueFromUserAttr}" th:if="${#fields.hasErrors('field1DefaultValueFromUserAttr')}">
+    </div>
 </fieldset>
 <fieldset>
     <legend>
@@ -35,4 +47,28 @@
             </label>
         </div>
     </div>
+    <div class="form-group" sec:authorize="hasRole('ROLE_ADMIN')">
+        <label class="c">
+            <strong th:text="#{payevtmontant_field2DefaultValueFromUserAttr}"></strong>
+            <select class="form-control" name="field2DefaultValueFromUserAttr">
+                <th:block th:each="i :${defaultValueFromUserAttrList}">
+                    <option th:selected="${i == payEvtMontant.field2DefaultValueFromUserAttr ? 'true' : 'false'}" th:text="#{payevtmontant_field1DefaultValueFromUserAttr_ + ${i}}" th:value="${i}">
+                    </option>
+                </th:block>
+            </select>
+        </label>
+        <span class="errors" th:errors="*{field2DefaultValueFromUserAttr}" th:if="${#fields.hasErrors('field2DefaultValueFromUserAttr')}">
+    </div>
 </fieldset>
+<script>
+    function handle_fieldDefaultValueFromUserAttr_visibility(authCasElt) {
+      for (const elt of document.querySelectorAll("[name^=field][name$=DefaultValueFromUserAttr]")) {
+          elt.classList.toggle('hide-form-group', !authCasElt.checked)
+      }
+    }
+    window.addEventListener("load", _ => {
+      const authCasElt = document.querySelector("[name=authCas]")
+      handle_fieldDefaultValueFromUserAttr_visibility(authCasElt)
+      authCasElt.addEventListener('change', _ => handle_fieldDefaultValueFromUserAttr_visibility(authCasElt))
+    })
+</script>
