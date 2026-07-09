@@ -17,36 +17,80 @@
  */
 package org.esupportail.pay.services;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.naming.NamingException;
-
+import org.slf4j.Logger;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper;
 
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import java.util.*;
+
 class LdapUserContextMapper extends LdapUserDetailsMapper {
+
+    Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
 
     @Override
     public LdapUserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<? extends GrantedAuthority> authorities){
-        return new LdapUserDetails(username, authorities, toMap(ctx));
-    }    
-
-    private Map<String, String> toMap(DirContextOperations ctx) {
-        var map = new TreeMap<String, String>();
-        var attrs = ctx.getAttributes().getAll();
         try {
-            while (attrs.hasMore()) {
-                var attr = attrs.next();
-                if (attr.size() == 1) {
-                    map.put(attr.getID(), (String) attr.get());
-                }
-            }
+            return new LdapUserDetails(username, authorities, toMap(ctx));
         } catch (NamingException e) {
-            throw new RuntimeException("unexpected", e);
+            throw new RuntimeException("Unable to map LDAP user for " + username, e);
+        }
+    }
+
+    Map<String, String> toMap(DirContextOperations ctx) throws NamingException {
+        var map = new TreeMap<String, String>();
+        if (ctx == null || ctx.getAttributes() == null) {
+            return map;
+        }
+        var attrs = ctx.getAttributes().getAll();
+        while (attrs.hasMore()) {
+            var attr = attrs.next();
+            var value = toStringValue(attr);
+            if (value != null) {
+                map.put(attr.getID(), value);
+            }
         }
         return map;
-    }    
-}
+    }
+
+    String toStringValue(Attribute attr) {
+        if (attr == null || attr.size() == 0) {
+            return null;
+        }
+        try {
+            if (attr.size() == 1) {
+                return toStringValue(attr.get());
+            }
+            var values = new ArrayList<String>(attr.size());
+            var allValues = attr.getAll();
+            while (allValues.hasMore()) {
+                var value = toStringValue(allValues.next());
+                if (value != null) {
+                    values.add(value);
+                }
+            }
+            return values.isEmpty() ? null : String.join(", ", values);
+        } catch (NamingException e) {
+            log.error("Unable to read LDAP attribute {}", attr.getID(), e);
+            return null;
+        }
+    }
+
+    String toStringValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof byte[] bytes) {
+            return Base64.getEncoder().encodeToString(bytes);
+        }
+        if (value instanceof CharSequence || value instanceof Number || value instanceof Boolean) {
+            return value.toString();
+        }
+        if (value instanceof byte[]) {
+            return Base64.getEncoder().encodeToString((byte[]) value);
+        }
+        return Objects.toString(value);
+    }
+}    
