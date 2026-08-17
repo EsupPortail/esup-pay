@@ -17,11 +17,16 @@
  */
 package org.esupportail.pay.services;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.annotation.Resource;
 import jakarta.persistence.TypedQuery;
 
+import org.esupportail.pay.domain.PayEvtMontant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
@@ -66,13 +71,29 @@ public class ArchiveService {
 		if(enabled) {
 			log.debug("removeOldTmpEmailFieldsMapReference called");
 			List<EmailFieldsMapReference> emailFieldsMapReferences2remove = emailFieldsMapReferenceDaoService.findOldEmailFieldsMapReferences(oldDays4emailFieldsMapReference);
+			Set<EmailFieldsMapReference> emailFieldsMapReferences2notRemoveBecausePaimentMultiple = new HashSet<>();
 			for(EmailFieldsMapReference emailFieldsMapReference : emailFieldsMapReferences2remove) {
-				TypedQuery<ScienceConfReference> q = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference);
-				if(!q.getResultList().isEmpty()) {
-					scienceConfReferenceDaoService.remove(q.getSingleResult());
+				PayEvtMontant payEvtMontant = emailFieldsMapReference.getPayEvtMontant();
+				if(payEvtMontant.getPaiementMultiple_kind().isEmpty()) {
+					TypedQuery<ScienceConfReference> q = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference);
+					if (!q.getResultList().isEmpty()) {
+						scienceConfReferenceDaoService.remove(q.getSingleResult());
+					}
+					emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
+				} else {
+					// multiple paiement : emailFieldsMapReference should not be removed before all paiement is OK
+					LocalDate lastDate = payEvtMontant.getPaiementMultiple_last_date();
+					if(lastDate.plusDays(oldDays4emailFieldsMapReference).isAfter(LocalDate.now())) {
+						emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
+					}  else {
+						emailFieldsMapReferences2notRemoveBecausePaimentMultiple.add(emailFieldsMapReference);
+					}
 				}
-				emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
 			}
+			if(emailFieldsMapReferences2notRemoveBecausePaimentMultiple.size()>0) {
+				log.debug(emailFieldsMapReferences2notRemoveBecausePaimentMultiple.size() + " old emailFieldsMapReferences not removed because used in multiple paiements");
+			}
+			emailFieldsMapReferences2remove.removeAll(emailFieldsMapReferences2notRemoveBecausePaimentMultiple);
 			if(emailFieldsMapReferences2remove.size()>0) {
 				log.info(emailFieldsMapReferences2remove.size() + " old emailFieldsMapReferences removed");
 			}
