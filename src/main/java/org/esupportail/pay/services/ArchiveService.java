@@ -83,7 +83,7 @@ public class ArchiveService {
 				} else {
 					// multiple paiement : emailFieldsMapReference should not be removed before all paiement is OK
 					LocalDate lastDate = payEvtMontant.getPaiementMultiple_last_date();
-					if(lastDate.plusDays(oldDays4emailFieldsMapReference).isAfter(LocalDate.now())) {
+					if(LocalDate.now().isAfter(lastDate.plusDays(oldDays4emailFieldsMapReference))) {
 						emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
 					}  else {
 						emailFieldsMapReferences2notRemoveBecausePaimentMultiple.add(emailFieldsMapReference);
