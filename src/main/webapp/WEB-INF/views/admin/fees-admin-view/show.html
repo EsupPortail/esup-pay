@@ -28,6 +28,9 @@
          id="_title_ps_org_esupportail_pay_domain_PayTransactionLog_id"
          th:title="#{entity_show(label_org_esupportail_pay_domain_paytransactionlog)}"
          th:classappend="${paytransactionlog.erreur != '00000' ? 'alert-danger' : 'alert-success'}">
+
+        <h2 th:text="#{|paybox_error_code_${paytransactionlog.erreur}|}"/>
+
         <dl class="displayTag" id="_s_org_esupportail_pay_domain_PayTransactionLog_transactionDate_id">
             <dt>
                 [[#{label_org_esupportail_pay_domain_paytransactionlog_transactiondate}]]:
