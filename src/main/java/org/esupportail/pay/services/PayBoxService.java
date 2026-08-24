@@ -381,7 +381,9 @@ public class PayBoxService {
                     emailFieldsMapReference.setIsPayed(true);
                     payTransactionLogDaoService.persist(txLog);
                 } else {
-                    log.info("'Erreur' " + erreur + "  (annulation) lors de la transaction paybox : " + reference + " pour un montant de " + montant);
+                    log.info("'Erreur' " + erreur + "  lors de la transaction paybox : " + reference + " pour un montant de " + montant);
+                    txLog.setMailSent(false);
+                    payTransactionLogDaoService.persist(txLog);
                 }
             } else {
                 log.error("signature checking of paybox failed, transaction " + txLog + " canceled.");

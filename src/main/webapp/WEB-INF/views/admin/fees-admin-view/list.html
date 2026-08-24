@@ -75,7 +75,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="row : ${page}">
+                        <tr th:each="row : ${page}" th:classappend="${row.erreur != '00000' ? 'danger' : 'success'}">
                             <td th:text="${row.payEvtMontant.evt.title.labelLocales['fr'].translation}">
                             </td>
                             <td th:text="${row.payEvtMontant.title.labelLocales['fr'].translation}">
