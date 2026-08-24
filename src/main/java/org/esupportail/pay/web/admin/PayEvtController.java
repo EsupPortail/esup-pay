@@ -44,6 +44,7 @@ import org.esupportail.pay.domain.RespLogin;
 import org.esupportail.pay.domain.UploadFile;
 import org.esupportail.pay.security.PayPermissionEvaluator;
 import org.esupportail.pay.services.EvtService;
+import org.esupportail.pay.services.PayBoxAbonnementService;
 import org.esupportail.pay.services.PayBoxServiceManager;
 import org.esupportail.pay.web.validators.PayEvtUpdateValidator;
 import org.joda.time.format.DateTimeFormat;
@@ -93,6 +94,9 @@ public class PayEvtController {
 
     @Resource
     EvtService evtService;
+
+    @Resource
+    PayBoxAbonnementService payBoxAbonnementService;
     
     @Resource
     BigFileDaoService bigFileDaoService;
@@ -325,11 +329,27 @@ public class PayEvtController {
     }
     
     @PreAuthorize("hasPermission(#id, 'view')")
-    @RequestMapping(value = "/{id}/fees", produces = "text/html")
-    public String fees(@PathVariable("id") Long id, Model uiModel,
-        @RequestParam(name="idAbo", required = false) String idAbo) {
+    @RequestMapping(value = "/{id}/fees", params = "idAbo", produces = "text/html")
+    public String feesSubscription(@PathVariable("id") Long id, Model uiModel,
+        @RequestParam(name="idAbo") String idAbo) {
+        PayEvt payEvt = payEvtDaoService.findPayEvt(id);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(
+            payEvt,
+            idAbo,
+            Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate"))
+        );
+        List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
+        uiModel.addAttribute("payEvt", payEvt);
+        uiModel.addAttribute("idAbo", idAbo);
+        uiModel.addAttribute("subscriptionTimeline", payBoxAbonnementService.computeSubscriptionTimeline(paytransactionlogs));
+        return "admin/fees-admin-view/subscription";
+    }
+
+    @PreAuthorize("hasPermission(#id, 'view')")
+    @RequestMapping(value = "/{id}/fees", params = "!idAbo", produces = "text/html")
+    public String fees(@PathVariable("id") Long id, Model uiModel) {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, idAbo, Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate")));
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate")));
         List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
         long total = 0L;
         for(PayTransactionLog ptl : paytransactionlogs) {
@@ -339,7 +359,7 @@ public class PayEvtController {
         uiModel.addAttribute("payEvt", payEvt);
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", PayTransactionLogController.page_hasAbo(payTxLogPage));
-        uiModel.addAttribute("idAbo", idAbo);
+        uiModel.addAttribute("idAbo", null);
         return "admin/fees-admin-view/list";
     }
     
@@ -361,4 +381,5 @@ public class PayEvtController {
         } catch (Exception uee) {}
         return pathSegment;
     }
+
 }

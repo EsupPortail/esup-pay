@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html layout:decorate="~{../layouts/admin.html}"
+      th:lang="${#locale}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div layout:fragment="content">
+    <div class="col-md-12">
+        <h4>
+            <span th:text="#{label_org_esupportail_pay_domain_paytransactionlog_id_abo}"></span> :
+            <span th:text="${idAbo}"></span>
+        </h4>
+        <table class="table table-bordered" th:if="${!subscriptionTimeline.isEmpty()}">
+            <thead>
+            <tr>
+                <th th:text="#{label_org_esupportail_pay_domain_paytransactionlog_transactiondate}"></th>
+                <th th:text="#{label_subscription_transactions_kind}"></th>
+                <th>Montant (€)</th>
+                <th th:text="#{label_org_esupportail_pay_domain_paytransactionlog_idtrans}"></th>
+                <th th:text="#{label_org_esupportail_pay_domain_paytransactionlog_reference}"></th>
+                <th th:text="#{label_org_esupportail_pay_domain_paytransactionlog_erreur}"></th>
+                <th class="btnCrudTable" th:with="typeName=#{menu_item_paytransactionlog_new_label}" th:text="#{entity_show(${typeName})}">
+                    Voir
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="row : ${subscriptionTimeline}" th:class="${row.cssClass}">
+                <td th:text="${row.transactionDate != null ? #temporals.format(row.transactionDate, 'MEDIUM', #locale) : (row.expectedDate != null ? #temporals.format(row.expectedDate, 'MEDIUM', #locale) : '-')}"></td>
+                <td>
+                    <span th:if="${row.kind == 'done'}" th:text="#{label_subscription_transactions_done}"></span>
+                    <span th:if="${row.kind == 'expected'}" th:text="#{label_subscription_transactions_expected}"></span>
+                    <span th:if="${row.kind == 'failed'}" th:text="#{label_subscription_transactions_failed}"></span>
+                </td>
+                <td th:text="${row.amountDisplay}"></td>
+                <td th:text="${row.idtrans != null ? row.idtrans : '-'}"></td>
+                <td>
+                    <span th:if="${row.reference != null}" th:text="${row.reference}"></span>
+                    <span th:if="${row.reference == null && row.installmentNumber != null}">
+                        <span th:text="#{label_subscription_transactions_installment}"></span>
+                        <span th:text="' ' + ${row.installmentNumber}"></span>
+                    </span>
+                    <span th:if="${row.reference == null && row.installmentNumber == null}">-</span>
+                </td>
+                <td>
+                    <span th:if="${row.errorCode != null}">
+                        <span th:text="${row.errorCode}"></span> -
+                        <span th:text="#{|paybox_error_code_${row.errorCode}|}"></span>
+                    </span>
+                    <span th:if="${row.errorCode == null}">-</span>
+                </td>
+                <td class="utilbox">
+                    <a th:if="${row.logId != null}" th:class="btn" th:classappend="${'btn-' + row.cssClass}" th:alt="#{menu_item_paytransactionlog_new_label}" th:href="@{'/admin/fees/' + ${row.logId}}" th:title="#{menu_item_paytransactionlog_new_label}">
+                        <img class="image" th:alt="#{menu_item_paytransactionlog_new_label}" th:src="@{/resources/images/repository.svg}" th:title="#{menu_item_paytransactionlog_new_label}"/>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${subscriptionTimeline.isEmpty()}" th:text="#{label_subscription_transactions_none}"></p>
+    </div>
+</div>
+</body>
+</html>

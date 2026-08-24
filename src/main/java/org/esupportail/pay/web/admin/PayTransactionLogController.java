@@ -19,8 +19,11 @@ package org.esupportail.pay.web.admin;
 
 import jakarta.annotation.Resource;
 
+import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayTransactionLog;
+import org.esupportail.pay.services.PayBoxAbonnementService;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -44,23 +47,33 @@ public class PayTransactionLogController {
 	
 	@Resource
 	PayTransactionLogDaoService payTransactionLogDaoService;
+
+    @Resource
+    PayBoxAbonnementService payBoxAbonnementService;
 	
     @RequestMapping(produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER')")
     public String list(Model uiModel,
-        @RequestParam(name="idAbo", required = false) String idAbo,
         @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
-        Page<PayTransactionLog> payTxLogPage = idAbo != null ?
-            payTransactionLogDaoService.findPayTransactionLogsByIdAbo(idAbo, pageable) :
-            payTransactionLogDaoService.findPageAllPayTransactionLogs(pageable);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPageAllPayTransactionLogs(pageable);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("listAllTxEvts", true);
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", page_hasAbo(payTxLogPage));
-        uiModel.addAttribute("idAbo", idAbo);
         return "admin/fees-admin-view/list";
     }
-    
+
+    @RequestMapping(params = "idAbo", produces = "text/html")
+    @PreAuthorize("hasRole('ROLE_ALL_VIEWER')")
+    public String list(Model uiModel, @RequestParam(name="idAbo") String idAbo,
+                       @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPayTransactionLogsByIdAbo(idAbo, pageable);
+        List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
+        uiModel.addAttribute("idAbo", idAbo);
+        uiModel.addAttribute("subscriptionTimeline", payBoxAbonnementService.computeSubscriptionTimeline(paytransactionlogs));
+        return "admin/fees-admin-view/subscription";
+    }
+
 
 	@RequestMapping(value = "/{id}", produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'view-txlog')")
