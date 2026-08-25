@@ -369,7 +369,7 @@ public class PayEvtController {
     @RequestMapping(value = "/{id}/fees/csv", produces = "text/html")
     public void csvFees(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-    	TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc");
+    	TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc", true);
     	csvController.generateAndReturnCsv(response, txLogsQuery);
     }
 

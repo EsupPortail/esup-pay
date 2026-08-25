@@ -61,7 +61,7 @@ public class CsvController {
 	@RequestMapping
     public void getCsv(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc");
+		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc", true);
 		
 		generateAndReturnCsv(response, txLogsQuery);
 

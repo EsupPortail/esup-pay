@@ -44,14 +44,15 @@ public class PayTransactionLogDaoService {
 	@PersistenceContext
     EntityManager em;
 
-    public TypedQuery<PayTransactionLog> findPayTransactionLogsByPayEvt(PayEvt payEvt, String sortFieldName, String sortOrder) {
+    public TypedQuery<PayTransactionLog> findPayTransactionLogsByPayEvt(PayEvt payEvt, String sortFieldName, String sortOrder, Boolean successfulOnly) {
         if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
         
-        String jpaQuery = "SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)" +
+        String jpaQuery = "SELECT o FROM PayTransactionLog AS o WHERE o.erreur " + (successfulOnly ? "=" : "!=") + " :successErrorCode AND o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)" +
             toOrderBy(sortFieldName, sortOrder);
         
         TypedQuery<PayTransactionLog> q = em.createQuery(jpaQuery, PayTransactionLog.class);
         q.setParameter("payEvt", payEvt);
+        q.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
         return q;
     }
 
@@ -138,9 +139,9 @@ public class PayTransactionLogDaoService {
         return q.getResultList();
     }
     
-    public TypedQuery<PayTransactionLog> findAllPayTransactionLogsQuery(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM PayTransactionLog o" + toOrderBy(sortFieldName, sortOrder);
-        return em.createQuery(jpaQuery, PayTransactionLog.class);
+    public TypedQuery<PayTransactionLog> findAllPayTransactionLogsQuery(String sortFieldName, String sortOrder, Boolean successfulOnly) {
+        String jpaQuery = "SELECT o FROM PayTransactionLog o WHERE o.erreur" + (successfulOnly ? "=" : "!=") + " :successErrorCode" + toOrderBy(sortFieldName, sortOrder);
+        return em.createQuery(jpaQuery, PayTransactionLog.class).setParameter("successErrorCode", SUCCESS_ERROR_CODE);
     }
 
 	public List<PayTransactionLog> findOldPayTransactionLogs(long oldDays) {
