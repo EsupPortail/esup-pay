@@ -160,4 +160,15 @@ docker compose --profile with-esup-pay up
 Voir ci-dessus pour les comptes de test à utiliser.
 
 
+### Récupération des transactions en erreur
+
+À partir de la 2.3.0, esup-pay conserve également les transactions marquées en erreur par paybox, cela est notamment intéressant pour les paiements en n fois (notion d'abonnement).
+
+Si vous souhaitez récupérer ces erreurs non persistées avant cette 2.3.0 en reprenant vos fichiers logs apache/nginx,
+vous pouvez rejouer les appels de paybox via des commandes curl.
+
+Exemple qui rejoue uniquement les transsactions liées à des abonnements et qui sont tombés en erreur : 
+```
+bzgrep 'GET /payboxcallback' /var/log/archives/esup-pay-access.log-202*.bz2  | fgrep idAbo | fgrep -v 'idAbo=0' | fgrep -v 'erreur=00000' | sed 's$.*GET $curl "http://localhost:8080$' | sed 's/ HTTP.*/"/' | sh 
+```
 
