@@ -39,6 +39,17 @@
                         [[${page.getContent().size()}]] transactions pour un total de [[${total}]]
                     </i>
                 </th:block>
+                <div class="form-inline" style="margin: 12px 0 16px;" th:with="feesListUrl=${listAllTxEvts != null && listAllTxEvts ? '/admin/fees' : '/admin/evts/' + payEvt.id + '/fees'}">
+                   <label class="control-label" style="margin-right: 8px; font-weight: 600;" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status}">Filtre</label>
+                   <div class="btn-group btn-group-sm" role="group" aria-label="status-filter">
+                       <a class="btn" th:classappend="${successfulOnly ? ' btn-success active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=true)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_success}">
+                           Succès
+                       </a>
+                       <a class="btn" th:classappend="${!successfulOnly ? ' btn-danger active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=false)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_error}">
+                           Erreur
+                       </a>
+                   </div>
+                </div>
                 <div th:id="${listAllTxEvts != null && listAllTxEvts ? listFees : listFees2}">
                     <table class="table table-bordered" th:with="typeName=#{menu_item_paytransactionlog_new_label}">
                         <thead>

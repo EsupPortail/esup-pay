@@ -37,7 +37,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PayTransactionLogDaoService {
-	
+    private static final String SUCCESS_ERROR_CODE = "00000";
+
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("payEvtMontant", "transactionDate", "field1", "field2", "mail", "reference", "montant", "auto", "erreur", "idtrans", "signature", "mailSent");
 
 	@PersistenceContext
@@ -65,13 +66,22 @@ public class PayTransactionLogDaoService {
     }
 
     public Page<PayTransactionLog> findPagePayTransactionLogsByPayEvt(PayEvt payEvt, String idAbo, Pageable pageable) {
+        return findPagePayTransactionLogsByPayEvt(payEvt, idAbo, pageable, null);
+    }
+
+    public Page<PayTransactionLog> findPagePayTransactionLogsByPayEvt(PayEvt payEvt, String idAbo, Pageable pageable, Boolean successfulOnly) {
         if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)");
-        String queryCount = "SELECT COUNT(o) from PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt)";
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt) ");
+        String queryCount = "SELECT COUNT(o) from PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt) ";
 
         if (idAbo != null) {
-            queryBuilder.append("AND o.idAbo = :idAbo");
-            queryCount += "AND o.idAbo = :idAbo";
+            queryBuilder.append("AND o.idAbo = :idAbo ");
+            queryCount += "AND o.idAbo = :idAbo ";
+        }
+
+        if (successfulOnly != null) {
+            queryBuilder.append(successfulOnly ? "AND o.erreur = :successErrorCode " : "AND o.erreur <> :successErrorCode ");
+            queryCount += successfulOnly ? "AND o.erreur = :successErrorCode " : "AND o.erreur <> :successErrorCode ";
         }
 
         Sort.Order sortFieldName = pageable.getSort().iterator().next();
@@ -84,6 +94,10 @@ public class PayTransactionLogDaoService {
         if (idAbo != null) {
             q.setParameter("idAbo", idAbo);
             qCount.setParameter("idAbo", idAbo);
+        }
+        if (successfulOnly != null) {
+            q.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
+            qCount.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
         }
         if(pageable.isPaged()) {
             q.setFirstResult((int) pageable.getOffset());
@@ -136,15 +150,31 @@ public class PayTransactionLogDaoService {
 	}
 
     public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable) {
-        StringBuilder queryBuilder = new StringBuilder("FROM PayTransactionLog");
+        return findPageAllPayTransactionLogs(pageable, null);
+    }
+
+    public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable, Boolean successfulOnly) {
+        StringBuilder queryBuilder = new StringBuilder("FROM PayTransactionLog o ");
+        String queryCount = "SELECT COUNT(o) FROM PayTransactionLog AS o ";
+
+        if (successfulOnly != null) {
+            queryBuilder.append(successfulOnly ? "WHERE o.erreur = :successErrorCode " : "WHERE o.erreur <> :successErrorCode ");
+            queryCount += successfulOnly ? "WHERE o.erreur = :successErrorCode " : "WHERE o.erreur <> :successErrorCode ";
+        }
 
         Sort.Order sortFieldName = pageable.getSort().iterator().next();
         queryBuilder.append(toOrderBy(sortFieldName));
 
         TypedQuery<PayTransactionLog> q = em.createQuery(queryBuilder.toString(), PayTransactionLog.class);
-        q.setFirstResult((int) pageable.getOffset());
-        q.setMaxResults(pageable.getPageSize());
-        TypedQuery<Long> qCount = em.createQuery("SELECT COUNT(o) FROM PayTransactionLog AS o", Long.class);
+        TypedQuery<Long> qCount = em.createQuery(queryCount, Long.class);
+        if (successfulOnly != null) {
+            q.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
+            qCount.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
+        }
+        if (pageable.isPaged()) {
+            q.setFirstResult((int) pageable.getOffset());
+            q.setMaxResults(pageable.getPageSize());
+        }
         return new PageImpl<>(q.getResultList(), pageable, qCount.getSingleResult());
     }
 

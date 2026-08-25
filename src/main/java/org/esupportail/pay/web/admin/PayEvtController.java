@@ -347,9 +347,10 @@ public class PayEvtController {
 
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees", params = "!idAbo", produces = "text/html")
-    public String fees(@PathVariable("id") Long id, Model uiModel) {
+    public String fees(@PathVariable("id") Long id, Model uiModel,
+                       @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly) {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate")));
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate")), successfulOnly);
         List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
         long total = 0L;
         for(PayTransactionLog ptl : paytransactionlogs) {
@@ -359,6 +360,7 @@ public class PayEvtController {
         uiModel.addAttribute("payEvt", payEvt);
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", PayTransactionLogController.page_hasAbo(payTxLogPage));
+        uiModel.addAttribute("successfulOnly", successfulOnly);
         uiModel.addAttribute("idAbo", null);
         return "admin/fees-admin-view/list";
     }

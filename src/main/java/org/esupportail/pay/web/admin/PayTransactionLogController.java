@@ -54,10 +54,12 @@ public class PayTransactionLogController {
     @RequestMapping(produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER')")
     public String list(Model uiModel,
+        @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly,
         @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPageAllPayTransactionLogs(pageable);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPageAllPayTransactionLogs(pageable, successfulOnly);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("listAllTxEvts", true);
+        uiModel.addAttribute("successfulOnly", successfulOnly);
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", page_hasAbo(payTxLogPage));
         return "admin/fees-admin-view/list";
