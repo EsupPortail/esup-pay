@@ -36,7 +36,7 @@
                 </th:block>
                 <th:block th:if="${total != null}">
                     <i>
-                        [[${page.getContent().size()}]] transactions pour un total de [[${total}]]
+                        [[${page.getTotalElements()}]] transactions pour un total de [[${total}]]
                     </i>
                 </th:block>
                 <div th:with="feesListUrl=${listAllTxEvts != null && listAllTxEvts ? '/admin/fees' : '/admin/evts/' + payEvt.id + '/fees'}">
@@ -148,7 +148,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="col-md-4 col-md-offset-5"  th:if="${listAllTxEvts}">
+                    <div class="col-md-4 col-md-offset-5">
                         <nav class="center-block btn-toolbar" th:fragment="pagination">
                             <div class="btn-group">
                                 <div class="btn-group dropup" sd:page-size-selector="dropdown" style="margin-top: 20px">

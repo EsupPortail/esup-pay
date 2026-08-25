@@ -352,10 +352,20 @@ public class PayEvtController {
                        @RequestParam(name = "field1", required = false) String field1,
                        @RequestParam(name = "field2", required = false) String field2,
                        @RequestParam(name = "mail", required = false) String mail,
-                       @RequestParam(name = "hasAbo", required = false) Boolean hasAbo) {
+                       @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,
+                       @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate")), successfulOnly, field1, field2, mail, hasAbo);
-        List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, pageable, successfulOnly, field1, field2, mail, hasAbo);
+        List<PayTransactionLog> paytransactionlogs = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(
+            payEvt,
+            null,
+            Pageable.unpaged(pageable.getSort()),
+            successfulOnly,
+            field1,
+            field2,
+            mail,
+            hasAbo
+        ).getContent();
         long total = 0L;
         for(PayTransactionLog ptl : paytransactionlogs) {
             total += Long.valueOf(ptl.getMontant());
