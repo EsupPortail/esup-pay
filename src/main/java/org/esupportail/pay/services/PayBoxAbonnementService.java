@@ -17,6 +17,8 @@
  */
 package org.esupportail.pay.services;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -54,7 +56,7 @@ public class PayBoxAbonnementService {
         if (!paytransactionlogs.isEmpty()) {
             PayEvtMontant payEvtMontant = paytransactionlogs.get(0).getPayEvtMontant();
             if (payEvtMontant != null && payEvtMontant.getPaiementMultiple_montant2() != null) {
-                List<ExpectedTransaction> expectedTransactions = computeExpectedTransactions(payEvtMontant);
+                List<ExpectedTransaction> expectedTransactions = computeExpectedTransactions(payEvtMontant, paytransactionlogs, attemptedTransactionsCount);
                 for (ExpectedTransaction expectedTransaction : expectedTransactions) {
                     if (expectedTransaction.getInstallmentNumber() > attemptedTransactionsCount) {
                         timeline.add(SubscriptionTimelineEntry.expected(expectedTransaction));
@@ -99,18 +101,48 @@ public class PayBoxAbonnementService {
         return map;
     }
 
-    private List<ExpectedTransaction> computeExpectedTransactions(PayEvtMontant payEvtMontant) {
+    private List<ExpectedTransaction> computeExpectedTransactions(
+        PayEvtMontant payEvtMontant,
+        List<PayTransactionLog> paytransactionlogs,
+        int attemptedTransactionsCount
+    ) {
         if (payEvtMontant.getPaiementMultiple_montant2() == null) {
             return List.of();
         }
-        List<ExpectedTransaction> expectedTransactions = new ArrayList<ExpectedTransaction>();
-        expectedTransactions.add(new ExpectedTransaction(2, payEvtMontant.getPaiementMultiple_montant2(), payEvtMontant.getOrComputePaiementMultiple_date2()));
+        List<ExpectedTransaction> expectedTransactions = new ArrayList<>();
+        expectedTransactions.add(new ExpectedTransaction(2, payEvtMontant.getPaiementMultiple_montant2(), computeExpectedDate(payEvtMontant, paytransactionlogs, attemptedTransactionsCount, 2)));
         if (payEvtMontant.getPaiementMultiple_montant3() != null) {
-            expectedTransactions.add(new ExpectedTransaction(3, payEvtMontant.getPaiementMultiple_montant3(), payEvtMontant.getOrComputePaiementMultiple_date3()));
+            expectedTransactions.add(new ExpectedTransaction(3, payEvtMontant.getPaiementMultiple_montant3(), computeExpectedDate(payEvtMontant, paytransactionlogs, attemptedTransactionsCount, 3)));
         }
         if (payEvtMontant.getPaiementMultiple_montant4() != null) {
-            expectedTransactions.add(new ExpectedTransaction(4, payEvtMontant.getPaiementMultiple_montant4(), payEvtMontant.getOrComputePaiementMultiple_date4()));
+            expectedTransactions.add(new ExpectedTransaction(4, payEvtMontant.getPaiementMultiple_montant4(), computeExpectedDate(payEvtMontant, paytransactionlogs, attemptedTransactionsCount, 4)));
         }
         return expectedTransactions;
+    }
+
+    private LocalDate computeExpectedDate(
+        PayEvtMontant payEvtMontant,
+        List<PayTransactionLog> paytransactionlogs,
+        int attemptedTransactionsCount,
+        int installmentNumber
+    ) {
+        Integer frequencyInMonths = payEvtMontant.getPaiementMultiple_simulateFrequenceEnMois();
+        if (frequencyInMonths == null) {
+            return switch (installmentNumber) {
+                case 2 -> payEvtMontant.getOrComputePaiementMultiple_date2();
+                case 3 -> payEvtMontant.getOrComputePaiementMultiple_date3();
+                case 4 -> payEvtMontant.getOrComputePaiementMultiple_date4();
+                default -> null;
+            };
+        }
+
+        LocalDate lastTransactionDate = paytransactionlogs.stream()
+            .map(PayTransactionLog::getTransactionDate)
+            .filter(java.util.Objects::nonNull)
+            .max(LocalDateTime::compareTo)
+            .map(LocalDateTime::toLocalDate)
+            .orElse(LocalDate.now());
+
+        return lastTransactionDate.plusMonths((long) (installmentNumber - attemptedTransactionsCount) * frequencyInMonths);
     }
 }
