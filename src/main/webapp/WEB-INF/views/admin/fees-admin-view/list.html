@@ -39,17 +39,49 @@
                         [[${page.getContent().size()}]] transactions pour un total de [[${total}]]
                     </i>
                 </th:block>
-                <div class="form-inline" style="margin: 12px 0 16px;" th:with="feesListUrl=${listAllTxEvts != null && listAllTxEvts ? '/admin/fees' : '/admin/evts/' + payEvt.id + '/fees'}">
-                   <label class="control-label" style="margin-right: 8px; font-weight: 600;" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status}">Filtre</label>
-                   <div class="btn-group btn-group-sm" role="group" aria-label="status-filter">
-                       <a class="btn" th:classappend="${successfulOnly ? ' btn-success active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=true)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_success}">
-                           Succès
-                       </a>
-                       <a class="btn" th:classappend="${!successfulOnly ? ' btn-danger active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=false)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_error}">
-                           Erreur
-                       </a>
-                   </div>
+                <div th:with="feesListUrl=${listAllTxEvts != null && listAllTxEvts ? '/admin/fees' : '/admin/evts/' + payEvt.id + '/fees'}">
+                <div class="form-inline" style="margin: 12px 0 8px;">
+                  <label class="control-label" style="margin-right: 8px; font-weight: 600;" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status}">Filtre</label>
+                  <div class="btn-group btn-group-sm" role="group" aria-label="status-filter">
+                      <a class="btn status-filter-btn" th:classappend="${successfulOnly ? ' btn-success active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=true)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_success}">
+                          Succès
+                      </a>
+                      <a class="btn status-filter-btn" th:classappend="${!successfulOnly ? ' btn-danger active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=false)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_error}">
+                          Erreur
+                      </a>
+                  </div>
                 </div>
+                <form method="get" th:action="@{${feesListUrl}}" class="form-inline" style="margin: 0 0 16px;" id="searchFilterForm">
+                   <input type="hidden" name="successfulOnly" th:value="${successfulOnly}"/>
+                   <div class="form-group" style="margin-right: 8px;">
+                       <label class="control-label sr-only" th:for="filter_field1" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_field1}">Champ1</label>
+                       <input id="filter_field1" type="text" name="field1" class="form-control input-sm"
+                              th:placeholder="#{label_org_esupportail_pay_domain_paytransactionlog_field1}"
+                              th:value="${field1}"/>
+                   </div>
+                   <div class="form-group" style="margin-right: 8px;">
+                       <label class="control-label sr-only" th:for="filter_field2" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_field2}">Champ2</label>
+                       <input id="filter_field2" type="text" name="field2" class="form-control input-sm"
+                              th:placeholder="#{label_org_esupportail_pay_domain_paytransactionlog_field2}"
+                              th:value="${field2}"/>
+                   </div>
+                   <div class="form-group" style="margin-right: 8px;">
+                       <label class="control-label sr-only" th:for="filter_mail" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_mail}">Email</label>
+                       <input id="filter_mail" type="text" name="mail" class="form-control input-sm"
+                              th:placeholder="#{label_org_esupportail_pay_domain_paytransactionlog_mail}"
+                              th:value="${mail}"/>
+                   </div>
+                   <div class="form-group" style="margin-right: 8px;">
+                       <label class="control-label sr-only" th:for="filter_hasAbo" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_hasAbo}">Abonnement</label>
+                       <select id="filter_hasAbo" name="hasAbo" class="form-control input-sm">
+                           <option value="" th:selected="${hasAbo == null}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_hasAbo_all}">Tous</option>
+                           <option value="true" th:selected="${hasAbo != null && hasAbo}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_hasAbo_with}">Avec abonnement</option>
+                           <option value="false" th:selected="${hasAbo != null && !hasAbo}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_hasAbo_without}">Sans abonnement</option>
+                       </select>
+                   </div>
+                   <button type="submit" class="btn btn-primary btn-sm" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_search}">Rechercher</button>
+                   <a class="btn btn-default btn-sm" style="margin-left: 4px;" th:href="@{${feesListUrl}(successfulOnly=${successfulOnly})}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_reset}">Réinitialiser</a>
+                </form>
                 <div th:id="${listAllTxEvts != null && listAllTxEvts ? listFees : listFees2}">
                     <table class="table table-bordered" th:with="typeName=#{menu_item_paytransactionlog_new_label}">
                         <thead>
@@ -127,6 +159,7 @@
                         </nav>
                     </div>
                 </div>
+                </div>
         </div>
     </div>
     <script>
@@ -135,6 +168,46 @@
     </script>
     <script th:if="${payEvt != null && payEvt.id != null}">
         var csvUrl= "[[@{'/admin/evts/' + ${payEvt.id} + '/fees/csv'}]]";
+    </script>
+    <script>
+        (function() {
+            var filterParams = ['field1', 'field2', 'mail', 'hasAbo', 'successfulOnly'];
+            var urlParams = new URLSearchParams(window.location.search);
+
+            function applyFiltersToLink(link) {
+                var href = link.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('javascript')) return;
+                try {
+                    var url = new URL(href, window.location.origin);
+                    filterParams.forEach(function(param) {
+                        if (urlParams.has(param) && !url.searchParams.has(param)) {
+                            url.searchParams.set(param, urlParams.get(param));
+                        }
+                    });
+                    link.setAttribute('href', url.pathname + url.search);
+                } catch(e) {}
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Preserve filters in pagination and page-size links
+                document.querySelectorAll('ul.pagination a, .btn-group.dropup a').forEach(applyFiltersToLink);
+
+                // Preserve search filters in status filter buttons (keep current field1/field2/mail/hasAbo)
+                document.querySelectorAll('a.status-filter-btn').forEach(function(link) {
+                    var href = link.getAttribute('href');
+                    if (!href) return;
+                    try {
+                        var url = new URL(href, window.location.origin);
+                        ['field1', 'field2', 'mail', 'hasAbo'].forEach(function(param) {
+                            if (urlParams.has(param) && urlParams.get(param) !== '') {
+                                url.searchParams.set(param, urlParams.get(param));
+                            }
+                        });
+                        link.setAttribute('href', url.pathname + url.search);
+                    } catch(e) {}
+                });
+            });
+        })();
     </script>
 </div>
 </html>

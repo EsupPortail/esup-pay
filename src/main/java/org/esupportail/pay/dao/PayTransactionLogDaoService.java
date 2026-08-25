@@ -71,6 +71,10 @@ public class PayTransactionLogDaoService {
     }
 
     public Page<PayTransactionLog> findPagePayTransactionLogsByPayEvt(PayEvt payEvt, String idAbo, Pageable pageable, Boolean successfulOnly) {
+        return findPagePayTransactionLogsByPayEvt(payEvt, idAbo, pageable, successfulOnly, null, null, null, null);
+    }
+
+    public Page<PayTransactionLog> findPagePayTransactionLogsByPayEvt(PayEvt payEvt, String idAbo, Pageable pageable, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
         if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
         StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt) ");
         String queryCount = "SELECT COUNT(o) from PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt) ";
@@ -83,6 +87,31 @@ public class PayTransactionLogDaoService {
         if (successfulOnly != null) {
             queryBuilder.append(successfulOnly ? "AND o.erreur = :successErrorCode " : "AND o.erreur <> :successErrorCode ");
             queryCount += successfulOnly ? "AND o.erreur = :successErrorCode " : "AND o.erreur <> :successErrorCode ";
+        }
+
+        if (field1 != null && !field1.isEmpty()) {
+            queryBuilder.append("AND lower(o.field1) LIKE lower(:field1) ");
+            queryCount += "AND lower(o.field1) LIKE lower(:field1) ";
+        }
+
+        if (field2 != null && !field2.isEmpty()) {
+            queryBuilder.append("AND lower(o.field2) LIKE lower(:field2) ");
+            queryCount += "AND lower(o.field2) LIKE lower(:field2) ";
+        }
+
+        if (mail != null && !mail.isEmpty()) {
+            queryBuilder.append("AND lower(o.mail) LIKE lower(:mail) ");
+            queryCount += "AND lower(o.mail) LIKE lower(:mail) ";
+        }
+
+        if (hasAbo != null) {
+            if (hasAbo) {
+                queryBuilder.append("AND (o.idAbo IS NOT NULL AND o.idAbo <> '0') ");
+                queryCount += "AND (o.idAbo IS NOT NULL AND o.idAbo <> '0') ";
+            } else {
+                queryBuilder.append("AND (o.idAbo IS NULL OR o.idAbo = '0') ");
+                queryCount += "AND (o.idAbo IS NULL OR o.idAbo = '0') ";
+            }
         }
 
         Sort.Order sortFieldName = pageable.getSort().iterator().next();
@@ -99,6 +128,18 @@ public class PayTransactionLogDaoService {
         if (successfulOnly != null) {
             q.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
             qCount.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
+        }
+        if (field1 != null && !field1.isEmpty()) {
+            q.setParameter("field1", "%" + field1 + "%");
+            qCount.setParameter("field1", "%" + field1 + "%");
+        }
+        if (field2 != null && !field2.isEmpty()) {
+            q.setParameter("field2", "%" + field2 + "%");
+            qCount.setParameter("field2", "%" + field2 + "%");
+        }
+        if (mail != null && !mail.isEmpty()) {
+            q.setParameter("mail", "%" + mail + "%");
+            qCount.setParameter("mail", "%" + mail + "%");
         }
         if(pageable.isPaged()) {
             q.setFirstResult((int) pageable.getOffset());
@@ -155,22 +196,61 @@ public class PayTransactionLogDaoService {
     }
 
     public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable, Boolean successfulOnly) {
-        StringBuilder queryBuilder = new StringBuilder("FROM PayTransactionLog o ");
-        String queryCount = "SELECT COUNT(o) FROM PayTransactionLog AS o ";
+        return findPageAllPayTransactionLogs(pageable, successfulOnly, null, null, null, null);
+    }
+
+    public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
+        StringBuilder conditions = new StringBuilder();
 
         if (successfulOnly != null) {
-            queryBuilder.append(successfulOnly ? "WHERE o.erreur = :successErrorCode " : "WHERE o.erreur <> :successErrorCode ");
-            queryCount += successfulOnly ? "WHERE o.erreur = :successErrorCode " : "WHERE o.erreur <> :successErrorCode ";
+            conditions.append(successfulOnly ? "o.erreur = :successErrorCode " : "o.erreur <> :successErrorCode ");
+        }
+        if (field1 != null && !field1.isEmpty()) {
+            if (conditions.length() > 0) conditions.append("AND ");
+            conditions.append("lower(o.field1) LIKE lower(:field1) ");
+        }
+        if (field2 != null && !field2.isEmpty()) {
+            if (conditions.length() > 0) conditions.append("AND ");
+            conditions.append("lower(o.field2) LIKE lower(:field2) ");
+        }
+        if (mail != null && !mail.isEmpty()) {
+            if (conditions.length() > 0) conditions.append("AND ");
+            conditions.append("lower(o.mail) LIKE lower(:mail) ");
+        }
+        if (hasAbo != null) {
+            if (conditions.length() > 0) conditions.append("AND ");
+            if (hasAbo) {
+                conditions.append("(o.idAbo IS NOT NULL AND o.idAbo <> '0') ");
+            } else {
+                conditions.append("(o.idAbo IS NULL OR o.idAbo = '0') ");
+            }
         }
 
-        Sort.Order sortFieldName = pageable.getSort().iterator().next();
-        queryBuilder.append(toOrderBy(sortFieldName));
+        String whereClause = conditions.length() > 0 ? "WHERE " + conditions : "";
+        String queryStr = "FROM PayTransactionLog o " + whereClause;
+        String queryCount = "SELECT COUNT(o) FROM PayTransactionLog o " + whereClause;
 
-        TypedQuery<PayTransactionLog> q = em.createQuery(queryBuilder.toString(), PayTransactionLog.class);
+        Sort.Order sortOrder = pageable.getSort().iterator().next();
+        queryStr += toOrderBy(sortOrder);
+
+        TypedQuery<PayTransactionLog> q = em.createQuery(queryStr, PayTransactionLog.class);
         TypedQuery<Long> qCount = em.createQuery(queryCount, Long.class);
+
         if (successfulOnly != null) {
             q.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
             qCount.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
+        }
+        if (field1 != null && !field1.isEmpty()) {
+            q.setParameter("field1", "%" + field1 + "%");
+            qCount.setParameter("field1", "%" + field1 + "%");
+        }
+        if (field2 != null && !field2.isEmpty()) {
+            q.setParameter("field2", "%" + field2 + "%");
+            qCount.setParameter("field2", "%" + field2 + "%");
+        }
+        if (mail != null && !mail.isEmpty()) {
+            q.setParameter("mail", "%" + mail + "%");
+            qCount.setParameter("mail", "%" + mail + "%");
         }
         if (pageable.isPaged()) {
             q.setFirstResult((int) pageable.getOffset());

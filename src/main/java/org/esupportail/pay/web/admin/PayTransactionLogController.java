@@ -55,11 +55,19 @@ public class PayTransactionLogController {
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER')")
     public String list(Model uiModel,
         @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly,
+        @RequestParam(name = "field1", required = false) String field1,
+        @RequestParam(name = "field2", required = false) String field2,
+        @RequestParam(name = "mail", required = false) String mail,
+        @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,
         @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPageAllPayTransactionLogs(pageable, successfulOnly);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPageAllPayTransactionLogs(pageable, successfulOnly, field1, field2, mail, hasAbo);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("listAllTxEvts", true);
         uiModel.addAttribute("successfulOnly", successfulOnly);
+        uiModel.addAttribute("field1", field1);
+        uiModel.addAttribute("field2", field2);
+        uiModel.addAttribute("mail", mail);
+        uiModel.addAttribute("hasAbo", hasAbo);
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", page_hasAbo(payTxLogPage));
         return "admin/fees-admin-view/list";

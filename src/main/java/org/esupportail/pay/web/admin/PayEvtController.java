@@ -348,9 +348,13 @@ public class PayEvtController {
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees", params = "!idAbo", produces = "text/html")
     public String fees(@PathVariable("id") Long id, Model uiModel,
-                       @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly) {
+                       @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly,
+                       @RequestParam(name = "field1", required = false) String field1,
+                       @RequestParam(name = "field2", required = false) String field2,
+                       @RequestParam(name = "mail", required = false) String mail,
+                       @RequestParam(name = "hasAbo", required = false) Boolean hasAbo) {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate")), successfulOnly);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate")), successfulOnly, field1, field2, mail, hasAbo);
         List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
         long total = 0L;
         for(PayTransactionLog ptl : paytransactionlogs) {
@@ -361,6 +365,10 @@ public class PayEvtController {
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", PayTransactionLogController.page_hasAbo(payTxLogPage));
         uiModel.addAttribute("successfulOnly", successfulOnly);
+        uiModel.addAttribute("field1", field1);
+        uiModel.addAttribute("field2", field2);
+        uiModel.addAttribute("mail", mail);
+        uiModel.addAttribute("hasAbo", hasAbo);
         uiModel.addAttribute("idAbo", null);
         return "admin/fees-admin-view/list";
     }
