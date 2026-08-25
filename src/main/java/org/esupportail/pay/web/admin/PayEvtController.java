@@ -364,6 +364,7 @@ public class PayEvtController {
         uiModel.addAttribute("payEvt", payEvt);
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", PayTransactionLogController.page_hasAbo(payTxLogPage));
+        uiModel.addAttribute("aboStatusMap", payBoxAbonnementService.buildAboStatusMap(payTxLogPage));
         uiModel.addAttribute("successfulOnly", successfulOnly);
         uiModel.addAttribute("field1", field1);
         uiModel.addAttribute("field2", field2);

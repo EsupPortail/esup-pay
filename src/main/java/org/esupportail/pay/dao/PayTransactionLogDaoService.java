@@ -60,7 +60,7 @@ public class PayTransactionLogDaoService {
         if (idAbo == null) throw new IllegalArgumentException("The idAbo argument is required");
         
         String jpaQuery = "SELECT o FROM PayTransactionLog AS o WHERE o.idAbo = :idAbo" +
-            toOrderBy(pageable.getSort().iterator().next());
+            (pageable.getSort().iterator().hasNext() ? toOrderBy(pageable.getSort().iterator().next()) : "");
         TypedQuery<PayTransactionLog> q = em.createQuery(jpaQuery, PayTransactionLog.class);
         q.setParameter("idAbo", idAbo);
         return new PageImpl<>(q.getResultList());

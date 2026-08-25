@@ -70,6 +70,7 @@ public class PayTransactionLogController {
         uiModel.addAttribute("hasAbo", hasAbo);
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", page_hasAbo(payTxLogPage));
+        uiModel.addAttribute("aboStatusMap", payBoxAbonnementService.buildAboStatusMap(payTxLogPage));
         return "admin/fees-admin-view/list";
     }
 
