@@ -96,7 +96,7 @@ public class PayEvtDaoService {
     public List<Object[]> findSumMontantGroupByEvt(String year){
         
         String sql = "SELECT mail_subject || '(' || pay_evt.id || ')' as title, SUM(cast(montant AS INTEGER)/100) as total, pay_evt.id FROM pay_transaction_log, pay_evt_montant, pay_evt "
-        		+ "WHERE pay_transaction_log.pay_evt_montant = pay_evt_montant.id AND pay_evt_montant.evt = pay_evt.id  ";
+        		+ "WHERE pay_transaction_log.pay_evt_montant = pay_evt_montant.id AND pay_evt_montant.evt = pay_evt.id AND pay_transaction_log.erreur = '00000' ";
         if(StringUtils.isNotEmpty(year)) {
             sql += " AND CAST(date_part('year',transaction_date) AS varchar) = :year ";
         }
@@ -111,7 +111,7 @@ public class PayEvtDaoService {
     public List<Object[]> findNbParticipantsByEvt(String year){
         
         String sql = "SELECT mail_subject || '(' || pay_evt.id || ')' as title, COUNT(evt) AS totalCount, pay_evt.id FROM pay_transaction_log, pay_evt_montant, pay_evt "
-        		+ "WHERE pay_transaction_log.pay_evt_montant = pay_evt_montant.id AND pay_evt_montant.evt = pay_evt.id  ";
+        		+ "WHERE pay_transaction_log.pay_evt_montant = pay_evt_montant.id AND pay_evt_montant.evt = pay_evt.id AND pay_transaction_log.erreur = '00000' ";
         if(StringUtils.isNotEmpty(year)) {
             sql += " AND CAST(date_part('year',transaction_date) AS varchar) = :year ";
         }

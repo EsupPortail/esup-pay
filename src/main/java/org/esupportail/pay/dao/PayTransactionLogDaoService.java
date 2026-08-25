@@ -109,7 +109,7 @@ public class PayTransactionLogDaoService {
 
     public List<Object[]> findNbTransactionByYear (){
         
-        String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year, COUNT(TO_CHAR(transaction_date, 'YYYY')) FROM pay_transaction_log GROUP BY year"
+        String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year, COUNT(TO_CHAR(transaction_date, 'YYYY')) FROM pay_transaction_log WHERE erreur = '00000' GROUP BY year"
         		+ " ORDER BY year DESC";
         Query q = em.createNativeQuery(sql);
         return q.getResultList();
@@ -117,7 +117,7 @@ public class PayTransactionLogDaoService {
     
     public List<Object[]> findMontantByYear (){
         
-        String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year, SUM(cast(montant AS INTEGER)/100) FROM pay_transaction_log GROUP BY year"
+        String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year, SUM(cast(montant AS INTEGER)/100) FROM pay_transaction_log WHERE erreur = '00000' GROUP BY year"
         		+ " ORDER BY year DESC";
         Query q = em.createNativeQuery(sql);
         return q.getResultList();
@@ -125,7 +125,7 @@ public class PayTransactionLogDaoService {
     
     public List<Object[]> findNbTransactionByMonth (){
         
-        String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year, CAST(date_part('month',transaction_date) AS integer) as month, COUNT(TO_CHAR(transaction_date, 'YYYY')) FROM pay_transaction_log GROUP BY year, month"
+        String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year, CAST(date_part('month',transaction_date) AS integer) as month, COUNT(TO_CHAR(transaction_date, 'YYYY')) FROM pay_transaction_log WHERE erreur = '00000' GROUP BY year, month"
         		+ " ORDER BY year, month DESC";
         Query q = em.createNativeQuery(sql);
         return q.getResultList();
@@ -133,7 +133,7 @@ public class PayTransactionLogDaoService {
     
     public List<Object[]> findMontantByMonth (){
         
-        String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year, CAST(date_part('month',transaction_date) AS integer) as month, SUM(cast(montant AS INTEGER)/100) FROM pay_transaction_log GROUP BY year, month"
+        String sql = "SELECT CAST(date_part('year',transaction_date) AS integer) AS year, CAST(date_part('month',transaction_date) AS integer) as month, SUM(cast(montant AS INTEGER)/100) FROM pay_transaction_log WHERE erreur = '00000' GROUP BY year, month"
         		+ " ORDER BY year, month DESC";
         Query q = em.createNativeQuery(sql);
         return q.getResultList();
