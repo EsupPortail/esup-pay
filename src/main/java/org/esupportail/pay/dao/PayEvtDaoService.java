@@ -41,31 +41,45 @@ public class PayEvtDaoService {
 	@PersistenceContext
     EntityManager em;
 
+    private String getOrderProperty(String property) {
+        if ("title".equals(property)) {
+            return "titleFr.translation";
+        }
+        return "o." + property;
+    }
+
     /**
      * Select PayEvts for logins in RespLogins or ViewerLogins in a Pageable.
      * Not just a wrapper to findPayEvtsByRespLoginsOrByViewerLogins, because it
      * only selects the current page of Pageable.
      */
-    public Page<PayEvt> findPagePayEvtsByRespLoginsOrByViewerLogins(List<RespLogin> logins, Pageable pageable, List<Sort.Order> orders) {
+    public Page<PayEvt> findPagePayEvtsByRespLoginsOrByViewerLogins(List<RespLogin> logins, Pageable pageable, List<Sort.Order> orders, String title) {
         if (logins == null) throw new IllegalArgumentException("The logins argument is required");
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o WHERE");
-        StringBuilder countBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o WHERE");
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o JOIN o.title t JOIN t.labelLocales titleFr WHERE key(titleFr) = 'fr' AND (");
+        StringBuilder countBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o JOIN o.title t JOIN t.labelLocales titleFr WHERE key(titleFr) = 'fr' AND (");
 
         StringBuilder whereBuilder = new StringBuilder();
         for (int i = 0; i < logins.size(); i++) {
-            if (i > 0) whereBuilder.append(" AND");
+            if (i > 0) whereBuilder.append(" AND ");
             whereBuilder.append(" :logins_item").append(i).append(" MEMBER OF o.respLogins")
                         .append(" OR :logins_item").append(i).append(" MEMBER OF o.viewerLogins");
         }
         queryBuilder.append(whereBuilder);
         countBuilder.append(whereBuilder);
+        queryBuilder.append(") ");
+        countBuilder.append(") ");
+
+        if (title != null && !title.isEmpty()) {
+            queryBuilder.append("AND lower(titleFr.translation) LIKE lower(:title) ");
+            countBuilder.append("AND lower(titleFr.translation) LIKE lower(:title) ");
+        }
 
         if (orders != null && !orders.isEmpty()) {
             queryBuilder.append(" ORDER BY ");
             for (int i = 0; i<orders.size();  i++) {
                 String sortOrder = orders.get(i).getDirection().name();
                 if (fieldNames4OrderClauseFilter.contains(orders.get(i).getProperty())) {
-                    queryBuilder.append(orders.get(i).getProperty());
+                    queryBuilder.append(getOrderProperty(orders.get(i).getProperty()));
                     if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                         queryBuilder.append(" ").append(sortOrder);
                     }
@@ -82,6 +96,10 @@ public class PayEvtDaoService {
             q.setParameter("logins_item" + respLoginsIndex, _login);
             qCount.setParameter("logins_item" + respLoginsIndex, _login);
             respLoginsIndex++;
+        }
+        if (title != null && !title.isEmpty()) {
+            q.setParameter("title", "%" + title + "%");
+            qCount.setParameter("title", "%" + title + "%");
         }
 
         q.setFirstResult((int) pageable.getOffset());
@@ -167,16 +185,21 @@ public class PayEvtDaoService {
         return em.createQuery("SELECT o FROM PayEvt o", PayEvt.class).getResultList();
     }
 
-    public Page<PayEvt> findPagePayEvts(Pageable pageable, List<Sort.Order> orders) {
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o");
-        String countBuilder = "SELECT COUNT(o) FROM PayEvt AS o";
+    public Page<PayEvt> findPagePayEvts(Pageable pageable, List<Sort.Order> orders, String title) {
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayEvt AS o JOIN o.title t JOIN t.labelLocales titleFr WHERE key(titleFr) = 'fr'");
+        StringBuilder countBuilder = new StringBuilder("SELECT COUNT(o) FROM PayEvt AS o JOIN o.title t JOIN t.labelLocales titleFr WHERE key(titleFr) = 'fr'");
+
+        if (title != null && !title.isEmpty()) {
+            queryBuilder.append(" AND lower(titleFr.translation) LIKE lower(:title)");
+            countBuilder.append(" AND lower(titleFr.translation) LIKE lower(:title)");
+        }
 
         if (orders != null && !orders.isEmpty()) {
             queryBuilder.append(" ORDER BY ");
             for (int i = 0; i<orders.size();  i++) {
                 String sortOrder = orders.get(i).getDirection().name();
                 if (fieldNames4OrderClauseFilter.contains(orders.get(i).getProperty())) {
-                    queryBuilder.append(orders.get(i).getProperty());
+                    queryBuilder.append(getOrderProperty(orders.get(i).getProperty()));
                     if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                         queryBuilder.append(" ").append(sortOrder);
                     }
@@ -186,7 +209,12 @@ public class PayEvtDaoService {
         }
 
         TypedQuery<PayEvt> q = em.createQuery(queryBuilder.toString(), PayEvt.class);
-        TypedQuery<Long> qCount = em.createQuery(countBuilder, Long.class);
+        TypedQuery<Long> qCount = em.createQuery(countBuilder.toString(), Long.class);
+
+        if (title != null && !title.isEmpty()) {
+            q.setParameter("title", "%" + title + "%");
+            qCount.setParameter("title", "%" + title + "%");
+        }
 
         q.setFirstResult((int) pageable.getOffset());
         q.setMaxResults(pageable.getPageSize());

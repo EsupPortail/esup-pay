@@ -260,8 +260,13 @@ public class PayEvtController {
     
     @RequestMapping(produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')")
-    public String list(Model uiModel, @PageableDefault(size = 10) Pageable pageable) {
+    public String list(
+            Model uiModel,
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam(value = "searchTitle", required = false) String searchTitle
+    ) {
         List<Sort.Order> orders = new ArrayList<Sort.Order>();
+        pageable.getSort().forEach(orders::add);
         orders.add(new Sort.Order(Sort.Direction.ASC, "archived"));
         orders.add(new Sort.Order(Sort.Direction.DESC, "id"));
 
@@ -275,7 +280,7 @@ public class PayEvtController {
         String currentUser = auth.getName();
 
         if(isAllViewer) {
-            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvts(pageable, orders);
+            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvts(pageable, orders, searchTitle);
             List<PayEvt> payEvts = payEvtPage.getContent();
             evtService.computeRespLogin(payEvts);
         	uiModel.addAttribute("payevts", payEvts);
@@ -285,7 +290,8 @@ public class PayEvtController {
             Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvtsByRespLoginsOrByViewerLogins(
                     loginList,
                     pageable,
-                    orders
+                    orders,
+                    searchTitle
             );
             List<PayEvt> payEvts = payEvtPage.getContent();
             evtService.computeRespLogin(payEvts);
@@ -294,6 +300,7 @@ public class PayEvtController {
 
         }
         uiModel.addAttribute("isAdmin", isAdmin);
+        uiModel.addAttribute("searchTitle", searchTitle);
         
         return "admin/evts/list";
     }

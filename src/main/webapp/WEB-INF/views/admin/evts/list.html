@@ -32,10 +32,22 @@
         </a>
     </th:block>
     <div class="row" id="title_pl_org_esupportail_pay_domain_PayEvt">
+        <form method="get" th:action="@{/admin/evts}" class="form-inline" style="margin: 0 0 16px;" id="searchFilterForm">
+            <div class="form-group" style="margin-right: 8px;">
+                <label class="control-label sr-only" th:for="filter_title" th:text="#{label_org_esupportail_pay_domain_payevt_title}">Titre</label>
+                <input id="filter_title" type="text" name="searchTitle" class="form-control input-sm"
+                       th:placeholder="#{label_org_esupportail_pay_domain_payevt_title}"
+                       th:value="${searchTitle}"/>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Rechercher</button>
+            <a class="btn btn-default btn-sm" style="margin-left: 4px;" th:href="@{/admin/evts}">Réinitialiser</a>
+        </form>
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th th:text="#{label_org_esupportail_pay_domain_payevt_title}">
+                <th>
+                    <a class="sorting" sd:pagination-sort="title" th:text="#{label_org_esupportail_pay_domain_payevt_title}">
+                    </a>
                 </th>
                 <th th:text="#{evts_url}">
                 </th>
