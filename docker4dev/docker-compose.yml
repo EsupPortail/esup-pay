@@ -21,7 +21,7 @@ services:
       - ./postgres-config:/docker-entrypoint-initdb.d
 
   cas:
-    image: ghcr.io/esupportail/apereo-cas-ldap:7.3.6
+    image: ghcr.io/esupportail/apereo-cas-ldap:8.0.1.2
     volumes:
       - ./cas-config:/etc/cas
       - ./cas-config/tmp-cas:/tmp/cas
