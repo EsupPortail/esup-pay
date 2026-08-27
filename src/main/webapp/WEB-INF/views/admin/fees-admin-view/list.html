@@ -40,38 +40,47 @@
                     </i>
                 </th:block>
                 <div th:with="feesListUrl=${listAllTxEvts != null && listAllTxEvts ? '/admin/fees' : '/admin/evts/' + payEvt.id + '/fees'}">
-                <div class="form-inline" style="margin: 12px 0 8px;">
-                  <label class="control-label" style="margin-right: 8px; font-weight: 600;" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status}">Filtre</label>
-                  <div class="btn-group btn-group-sm" role="group" aria-label="status-filter">
-                      <a class="btn status-filter-btn" th:classappend="${successfulOnly ? ' btn-success active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=true)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_success}">
-                          Succès
-                      </a>
-                      <a class="btn status-filter-btn" th:classappend="${!successfulOnly ? ' btn-danger active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=false)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_error}">
-                          Erreur
-                      </a>
-                  </div>
-                </div>
-                <form method="get" th:action="@{${feesListUrl}}" class="form-inline" style="margin: 0 0 16px;" id="searchFilterForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                          <label class="control-label" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status}">Filtre</label>
+                          <div class="btn-group btn-group-sm" role="group" aria-label="status-filter">
+                              <a class="btn status-filter-btn" th:classappend="${successfulOnly ? ' btn-success active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=true)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_success}">
+                                  Succès
+                              </a>
+                              <a class="btn status-filter-btn" th:classappend="${!successfulOnly ? ' btn-danger active' : ' btn-default'}" th:href="@{${feesListUrl}(successfulOnly=false)}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_status_error}">
+                                  Erreur
+                              </a>
+                          </div>
+                        </div>
+                        <div class="col-md-8 well">
+                                <strong th:text="#{label_org_esupportail_pay_domain_paytransactionlog_legend_title}">Légende :</strong>
+                                <span class="label label-success" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_legend_success}">Transaction ou abonnement OK</span>
+                                <span class="label label-danger" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_legend_error}">Transaction ou abonnement en erreur</span>
+                                <span class="label label-info" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_legend_pending}">Abonnement en cours</span>
+                          </div>
+                        </div>
+                    </div>
+                <form method="get" th:action="@{${feesListUrl}}" class="form-inline" id="searchFilterForm">
                    <input type="hidden" name="successfulOnly" th:value="${successfulOnly}"/>
-                   <div class="form-group" style="margin-right: 8px;">
+                   <div class="form-group" >
                        <label class="control-label sr-only" th:for="filter_field1" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_field1}">Champ1</label>
                        <input id="filter_field1" type="text" name="field1" class="form-control input-sm"
                               th:placeholder="#{label_org_esupportail_pay_domain_paytransactionlog_field1}"
                               th:value="${field1}"/>
                    </div>
-                   <div class="form-group" style="margin-right: 8px;">
+                   <div class="form-group">
                        <label class="control-label sr-only" th:for="filter_field2" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_field2}">Champ2</label>
                        <input id="filter_field2" type="text" name="field2" class="form-control input-sm"
                               th:placeholder="#{label_org_esupportail_pay_domain_paytransactionlog_field2}"
                               th:value="${field2}"/>
                    </div>
-                   <div class="form-group" style="margin-right: 8px;">
+                   <div class="form-group">
                        <label class="control-label sr-only" th:for="filter_mail" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_mail}">Email</label>
                        <input id="filter_mail" type="text" name="mail" class="form-control input-sm"
                               th:placeholder="#{label_org_esupportail_pay_domain_paytransactionlog_mail}"
                               th:value="${mail}"/>
                    </div>
-                   <div class="form-group" style="margin-right: 8px;">
+                   <div class="form-group">
                        <label class="control-label sr-only" th:for="filter_hasAbo" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_hasAbo}">Abonnement</label>
                        <select id="filter_hasAbo" name="hasAbo" class="form-control input-sm">
                            <option value="" th:selected="${hasAbo == null}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_hasAbo_all}">Tous</option>
@@ -80,8 +89,9 @@
                        </select>
                    </div>
                    <button type="submit" class="btn btn-primary btn-sm" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_search}">Rechercher</button>
-                   <a class="btn btn-default btn-sm" style="margin-left: 4px;" th:href="@{${feesListUrl}(successfulOnly=${successfulOnly})}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_reset}">Réinitialiser</a>
+                   <a class="btn btn-default btn-sm" th:href="@{${feesListUrl}(successfulOnly=${successfulOnly})}" th:text="#{label_org_esupportail_pay_domain_paytransactionlog_filter_reset}">Réinitialiser</a>
                 </form>
+                <hr/>
                 <div th:id="${listAllTxEvts != null && listAllTxEvts ? listFees : listFees2}">
                     <table class="table table-bordered" th:with="typeName=#{menu_item_paytransactionlog_new_label}">
                         <thead>
