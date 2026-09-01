@@ -289,8 +289,11 @@
                                     <legend th:text="#{label_org_esupportail_pay_domain_payevt_freeamountallowed}">
                                     </legend>
                                     <label for="_freeAmountAllowed_id">
-                                        <input id="_freeAmountAllowed_id" th:field="*{freeAmountAllowed}" type="checkbox"/>
+                                        <input id="_freeAmountAllowed_id" th:field="*{freeAmountAllowed}" type="checkbox" th:attr="disabled=${!#authorization.expression('hasRole(''ROLE_ADMIN'')')}"/>
                                         &nbsp;Oui
+                                        <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+                                            <input type="hidden" th:field="*{freeAmountAllowed}"/>
+                                        </th:block>
                                     </label>
                                 </fieldset>
                             </div>
