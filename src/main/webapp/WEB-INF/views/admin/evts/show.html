@@ -123,10 +123,19 @@
          </span>
             </dd>
           </dl>
-          <h4>
+         <dl class="displayTag" id="_s_org_esupportail_pay_domain_payEvt_freeAmountAllowed_id">
+           <dt>
+             [[#{label_org_esupportail_pay_domain_payevt_freeamountallowed}]]:
+           </dt>
+           <dd class="box" id="_s_org_esupportail_pay_domain_payEvt_freeAmountAllowed_freeAmountAllowed_id">
+         <span th:text="${payEvt.freeAmountAllowed}">
+         </span>
+           </dd>
+         </dl>
+         <h4>
         <span th:text="#{form_title}">
         </span>
-          </h4>
+         </h4>
           <div th:each="labelLocales : ${payEvt.title.labelLocales}">
             <div>
               <label>

@@ -164,6 +164,17 @@ public class PayEvtMontant {
     public String getDbleMontantDisplay() {
     	return String.format(Locale.FRANCE, "%,.2f€", dbleMontant);
     }
+
+    public Boolean getFreeAmount() {
+        return freeAmount != null && freeAmount;
+    }
+
+    public void setFreeAmount(Boolean freeAmount) {
+        this.freeAmount = freeAmount != null && freeAmount;
+        if(Boolean.TRUE.equals(this.freeAmount)) {
+            this.dbleMontant = null;
+        }
+    }
     
     public Boolean getIsEnabled() {
         return this.isEnabled == null || this.isEnabled;
@@ -203,18 +214,15 @@ public class PayEvtMontant {
 	}
 
 
-	public void setFreeAmount(Boolean freeAmount) {
-		this.freeAmount = freeAmount;
-		if(freeAmount) {
+	public void setSciencesconf(Boolean sciencesconf) {
+		this.sciencesconf = sciencesconf != null && sciencesconf;
+		if(Boolean.TRUE.equals(this.sciencesconf)) {
 			this.dbleMontant = null;
 		}
 	}
-	
-	public void setSciencesconf(Boolean sciencesconf) {
-		this.sciencesconf = sciencesconf;
-		if(sciencesconf) {
-			this.dbleMontant = null;
-		}
+
+	public Boolean getSciencesconf() {
+		return sciencesconf != null && sciencesconf;
 	}
 	
 	public Boolean getAuthCas() {

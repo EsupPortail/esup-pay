@@ -104,6 +104,21 @@
           &nbsp;Oui
          </label>
         </fieldset>
+        <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
+         <th:block th:if="${payEvtMontant.evt.freeAmountAllowed}">
+         <fieldset id="_c_org_esupportail_pay_domain_payEvtMontant_freeAmount_id">
+          <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">
+          </legend>
+          <label for="_freeAmount_id">
+           <input id="_freeAmount_id" th:field="${payEvtMontant.freeAmount}" type="checkbox"/>
+           &nbsp;Oui
+          </label>
+         </fieldset>
+         </th:block>
+         <th:block th:unless="${payEvtMontant.evt.freeAmountAllowed}">
+         <input name="freeAmount" type="hidden" th:value="${payEvtMontant.freeAmount}"/>
+         </th:block>
+        </th:block>
         <div sec:authorize="hasRole('ROLE_ADMIN')">
          <fieldset id="_c_org_esupportail_pay_domain_payEvtMontant_freeAmount_id">
           <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">
@@ -150,7 +165,6 @@
          </div>
         </div>
         <div sec:authorize="!hasRole('ROLE_ADMIN')">
-         <input name="freeAmount" type="hidden" th:value="${payEvtMontant.freeAmount}"/>
          <input name="sciencesconf" type="hidden" th:value="${payEvtMontant.sciencesconf}"/>
         </div>
         <div class="form-group" id="c_org_esupportail_pay_domain_payEvtMontant_optionalAddedParams">

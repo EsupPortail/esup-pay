@@ -160,6 +160,14 @@
                                 </th:block>
                                 <span class="errors" id="_dbleMontantMax_error_id" th:errors="*{dbleMontantMax}" th:if="${#fields.hasErrors('dbleMontantMax')}"></span>
                             </div>
+                            <fieldset id="_c_org_esupportail_pay_domain_payevt_freeAmountAllowed_id">
+                                <legend th:text="#{label_org_esupportail_pay_domain_payevt_freeamountallowed}">
+                                </legend>
+                                <label for="_freeAmountAllowed_id">
+                                    <input id="_freeAmountAllowed_id" th:field="*{freeAmountAllowed}" type="checkbox"/>
+                                    &nbsp;Oui
+                                </label>
+                            </fieldset>
                         </div>
                     </div>
                     <div class="col-lg-6">

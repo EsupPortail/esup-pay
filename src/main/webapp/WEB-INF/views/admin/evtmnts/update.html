@@ -213,7 +213,9 @@
                         </div>
                     </div>
                     <div sec:authorize="!hasRole('ROLE_ADMIN')">
-                        <input name="freeAmount" type="hidden" th:value="*{freeAmount}"/>
+                        <th:block th:unless="${payEvtMontant.evt.freeAmountAllowed}">
+                            <input name="freeAmount" type="hidden" th:value="*{freeAmount}"/>
+                        </th:block>
                         <input name="sciencesconf" type="hidden" th:value="*{sciencesconf}"/>
                         <input name="addPrefixKind" type="hidden" th:value="*{addPrefixKind}"/>
                         <input name="addFreePrefix" type="hidden" th:value="*{addFreePrefix}"/>

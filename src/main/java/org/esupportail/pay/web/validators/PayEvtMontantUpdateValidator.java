@@ -21,6 +21,8 @@ import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -41,6 +43,11 @@ public class PayEvtMontantUpdateValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		PayEvtMontant evtMontant = (PayEvtMontant) target;
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth != null && auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if (Boolean.TRUE.equals(evtMontant.getFreeAmount()) && !isAdmin && !evtMontant.getEvt().getFreeAmountAllowed()) {
+            errors.rejectValue("freeAmount", "freeAmount_not_allowed");
+        }
 		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf()) {
 		    validate_amount(evtMontant.getDbleMontant(), "dbleMontant", errors);
 		}

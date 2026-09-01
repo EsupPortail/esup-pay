@@ -76,6 +76,9 @@ public class PayEvt {
     @Column(columnDefinition = "boolean default false")
     Boolean archived = false;
 
+    @Column(columnDefinition = "boolean default false")
+    Boolean freeAmountAllowed = false;
+
     @ManyToMany
     @JoinTable(name = "pay_evt_resp_logins",
     	joinColumns = @JoinColumn(
@@ -181,6 +184,14 @@ public class PayEvt {
     
     public String getDbleMontantMaxDisplay() {
     	return String.format("%,.2f€", dbleMontantMax);
+    }
+
+    public Boolean getFreeAmountAllowed() {
+        return freeAmountAllowed != null && freeAmountAllowed;
+    }
+
+    public void setFreeAmountAllowed(Boolean freeAmountAllowed) {
+        this.freeAmountAllowed = freeAmountAllowed != null && freeAmountAllowed;
     }
 
     public void setPayboxCommandPrefix(String payboxCommandPrefix) {
