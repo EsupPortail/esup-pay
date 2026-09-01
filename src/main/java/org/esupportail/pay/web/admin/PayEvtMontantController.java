@@ -152,7 +152,7 @@ public class PayEvtMontantController {
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    @PreAuthorize("hasPermission(#id, 'manage')")
+    @PreAuthorize("hasPermission(#id, 'manage-montant')")
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, RedirectAttributes uiModel) {
         PayEvtMontant payEvtMontant = payEvtMontantDaoService.findPayEvtMontant(id);
     	Long evtId = payEvtMontant.getEvt().getId();
