@@ -23,7 +23,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
-<div layout:fragment="content">
+<div layout:fragment="content" th:with="isAdmin=${#authorization.expression('hasRole(''ROLE_ADMIN'')')},isManager=${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
     <div class="container">
         <div class="jumbotron" id="_title_fu_org_esupportail_pay_domain_PayEvtMontant_id" th:title="#{entity_create(#{label_org_esupportail_pay_domain_payevtmontant})}">
             <form enctype="application/x-www-form-urlencoded" id="payEvt" th:method="PUT" th:action="@{/admin/evtmnts}" th:object="${payEvtMontant}">
@@ -56,12 +56,7 @@
                         <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_dblemontant}">
                         </strong>
                     </label>
-                    <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
-                        <input class="form-control" id="dbleMontant" name="dbleMontant" readonly="readonly" th:value="*{dbleMontant}" type="text"/>
-                    </th:block>
-                    <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
-                        <input class="form-control" id="dbleMontant" name="dbleMontant" th:value="*{dbleMontant}" th:placeholder="#{payevtmontant_montant_placeholder}" type="text"/>
-                    </th:block>
+                    <input class="form-control" id="dbleMontant" name="dbleMontant" th:readonly="${!isAdmin && !isManager}" th:value="*{dbleMontant}" th:placeholder="#{payevtmontant_montant_placeholder}" type="text"/>
                     <span class="errors" id="_dbleMontant_error_id" th:errors="*{dbleMontant}" th:if="${#fields.hasErrors('dbleMontant')}">
                     </span>
                 </div>
@@ -86,12 +81,7 @@
                             <label>
                                 [[${labelLocales.key}]] :
                             </label>
-                            <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
-                                <input class="form-control" th:name="'title.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
-                            </th:block>
-                            <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
-                                <input class="form-control" th:name="'title.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
-                            </th:block>
+                            <input class="form-control" th:name="'title.labelLocales[' + ${labelLocales.key} + '].translation'" th:readonly="${!isAdmin && !isManager}" th:value="${labelLocales.value.translation}"/>
                         </div>
                     </div>
                 </fieldset>
@@ -112,12 +102,21 @@
                         &nbsp;
                     </label>
                 </fieldset>
-                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
                     <button th:text="#{button_param}" type="button" class="btn btn-danger" data-toggle="collapse" data-target="#advanced">
                     </button>
                 </th:block>
                 <hr/>
                 <div class="collapse" id="advanced">
+                    <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_freeAmount_id">
+                        <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">
+                        </legend>
+                        <label for="_freeAmount_id" th:with="freeAmountAllowed=${payEvtMontant.evt.freeAmountAllowed || isAdmin}">
+                            <input id="_freeAmount_id" th:field="*{freeAmount}" type="checkbox" th:disabled="${!freeAmountAllowed}" th:readonly="${!freeAmountAllowed}"/>
+                            &nbsp;Oui
+                            <input name="freeAmount" type="hidden" th:value="*{freeAmount}" th:if="${!freeAmountAllowed}"/>
+                        </label>
+                    </fieldset>
                     <fieldset>
                         <legend>
                            <span th:text="#{form_description}">
@@ -128,12 +127,7 @@
                                 <label>
                                     [[${labelLocales.key}]] :
                                 </label>
-                                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
-                                    <input class="form-control" th:name="'description.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
-                                </th:block>
-                                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
-                                    <input class="form-control" th:name="'description.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
-                                </th:block>
+                                <input class="form-control" th:name="'description.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}" th:readonly="${!isAdmin}" />
                             </div>
                         </div>
                     </fieldset>
@@ -147,40 +141,31 @@
                                 <label>
                                     [[${labelLocales.key}]] :
                                 </label>
-                                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
-                                    <input class="form-control" th:name="'help.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
-                                </th:block>
-                                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
-                                    <input class="form-control" th:name="'help.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
-                                </th:block>
+                                <input class="form-control" th:name="'help.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}" th:readonly="${!isAdmin}"/>
                             </div>
                         </div>
                     </fieldset>
 
                     <div th:replace="~{admin/evtmnts/field1_field2.html}"></div>
-                    
-                    <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_authCas_id">
-                        <legend>Auth CAS</legend>
-                        <label for="_authCas_id">
-                            <input id="_authCas_id" th:field="*{authCas}"  type="checkbox"/>
-                            &nbsp;Oui
-                        </label>
-                    </fieldset>
-                    <div th:replace="~{admin/evtmnts/paiementMultiple.html}"></div>
-                    <div sec:authorize="hasRole('ROLE_ADMIN')">
-                        <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_freeAmount_id">
-                            <legend th:text="#{label_org_esupportail_pay_domain_payevtmontant_freeamount}">
-                            </legend>
-                            <label for="_freeAmount_id">
-                                <input id="_freeAmount_id" th:field="*{freeAmount}" type="checkbox"/>
+
+                    <div>
+                        <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_authCas_id">
+                            <legend>Auth CAS</legend>
+                            <label for="_authCas_id">
+                                <input id="_authCas_id" th:field="*{authCas}"  type="checkbox" th:disabled="${!isAdmin}" th:readonly="${!isAdmin}"/>
                                 &nbsp;Oui
+                                <input name="authCas" type="hidden" th:value="*{authCas}" th:if="${!isAdmin}"/>
                             </label>
                         </fieldset>
+                    </div>
+                    <div th:replace="~{admin/evtmnts/paiementMultiple.html}"></div>
+                    <div>
                         <fieldset id="_c_org_esupportail_pay_domain_payevtmontant_sciencesconf_id">
                             <legend>Sciencesconf</legend>
                             <label for="_sciencesconf_id">
-                                <input id="_sciencesconf_id" th:field="*{sciencesconf}" type="checkbox"/>
+                                <input id="_sciencesconf_id" th:field="*{sciencesconf}" type="checkbox" th:disabled="${!isAdmin}" th:readonly="${!isAdmin}"/>
                                 &nbsp;Oui
+                                <input name="sciencesconf" type="hidden" th:value="*{sciencesconf}" th:if="${!isAdmin}"/>
                             </label>
                         </fieldset>
                         <div class="form-group" id="c_org_esupportail_pay_domain_payevtmontant_addPrefix">
@@ -188,7 +173,7 @@
                                 <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_addprefix}">
                                 </strong>
                             </label>
-                            <select class="form-control" id="_addPrefix_id" name="addPrefixKind" size="1" onchange="handle_addFreePrefix_visibility()">
+                            <select class="form-control" id="_addPrefix_id" name="addPrefixKind" size="1" onchange="handle_addFreePrefix_visibility()" th:readonly="${!isAdmin}">
                                 <th:block th:each="i :${addPrefixList}">
                                     <option th:selected="${i == payEvtMontant.addPrefixKind ? 'true' : 'false'}" th:text="#{label_org_esupportail_pay_domain_payevtmontant_addprefixkind_ + ${i}}" th:value="${i}">
                                     </option>
@@ -212,25 +197,12 @@
                             </script>
                         </div>
                     </div>
-                    <div sec:authorize="!hasRole('ROLE_ADMIN')">
-                        <th:block th:unless="${payEvtMontant.evt.freeAmountAllowed}">
-                            <input name="freeAmount" type="hidden" th:value="*{freeAmount}"/>
-                        </th:block>
-                        <input name="sciencesconf" type="hidden" th:value="*{sciencesconf}"/>
-                        <input name="addPrefixKind" type="hidden" th:value="*{addPrefixKind}"/>
-                        <input name="addFreePrefix" type="hidden" th:value="*{addFreePrefix}"/>
-                    </div>
                     <div class="form-group" id="c_org_esupportail_pay_domain_payEvtMontant_optionalAddedParams">
                         <label class="c" for="optionalAddedParams">
                             <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_optionaladdedparams}">
                             </strong>
                         </label>
-                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                            <input class="form-control" id="optionalAddedParams" name="optionalAddedParams" th:value="*{optionalAddedParams}" type="text"/>
-                        </th:block>
-                        <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
-                            <input class="form-control" id="optionalAddedParams" name="optionalAddedParams" readonly="readonly" th:value="*{optionalAddedParams}" type="text"/>
-                        </th:block>
+                        <input class="form-control" id="optionalAddedParams" name="optionalAddedParams" th:value="*{optionalAddedParams}" type="text" th:readonly="${!isAdmin}"/>
                         <span class="errors" id="_optionalAddedParams_error_id" th:errors="*{optionalAddedParams}" th:if="${#fields.hasErrors('optionalAddedParams')}">
                         </span>
                     </div>
@@ -239,25 +211,15 @@
                             <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_disableautomatic_montanttotalmax}">
                             </strong>
                         </label>
-                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                            <input class="form-control" th:field="*{montantTotalMaxEuros}" type="text"/>
-                        </th:block>
-                        <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
-                            <input class="form-control" readonly="readonly" th:field="*{montantTotalMaxEuros}" type="text"/>
-                        </th:block>
-                        <span class="errors" id="_montantTotalMax_error_id" th:errors="*{montantTotalMaxEuros}" th:if="${#fields.hasErrors('montantTotalMaxEuros')}">
+                        <input class="form-control" th:field="*{montantTotalMaxEuros}" type="text" th:readonly="${!isAdmin}"/>
+                        <span class="errors" id="_montantTotalMax_error_id" th:errors="*{montantTotalMaxEuros}" th:if="${#fields.hasErrors('montantTotalMaxEuros')}"/>
                     </div>
                     <div class="form-group">
                         <label class="c" for="nbTransactionsMax">
                             <strong th:text="#{label_org_esupportail_pay_domain_payevtmontant_disableautomatic_nbtransmax}">
                             </strong>
                         </label>
-                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                            <input class="form-control" th:field="*{nbTransactionsMax}" type="text"/>
-                        </th:block>
-                        <th:block sec:authorize="!hasRole('ROLE_ADMIN')">
-                            <input class="form-control" th:field="*{nbTransactionsMax}" readonly="readonly" type="text"/>
-                        </th:block>
+                        <input class="form-control" th:field="*{nbTransactionsMax}" type="text" th:readonly="${!isAdmin}"/>
                         <span class="errors" id="_nbTransactionsMax_error_id" th:errors="*{nbTransactionsMax}" th:if="${#fields.hasErrors('nbTransactionsMax')}">
                     </div>
                 </div>

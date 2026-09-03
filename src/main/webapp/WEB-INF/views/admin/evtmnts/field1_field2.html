@@ -7,19 +7,14 @@
         <div class="form-group">
             <label>
                 [[${labelLocales.key}]] :
-                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">                
-                    <input class="form-control" th:name="'field1Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
-                </th:block>
-                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
-                    <input class="form-control" th:name="'field1Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
-                </th:block>
+                <input class="form-control" th:name="'field1Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}" th:readonly="${!isAdmin}"/>
             </label>
         </div>
     </div>
-    <div class="form-group" sec:authorize="hasRole('ROLE_ADMIN')">
+    <div class="form-group">
         <label class="c">
             <strong th:text="#{payevtmontant_field1DefaultValueFromUserAttr}"></strong>
-            <select class="form-control" name="field1DefaultValueFromUserAttr">
+            <select class="form-control" name="field1DefaultValueFromUserAttr" th:readonly="${!isAdmin}">
                 <th:block th:each="i :${defaultValueFromUserAttrList}">
                     <option th:selected="${i == payEvtMontant.field1DefaultValueFromUserAttr ? 'true' : 'false'}" th:text="#{payevtmontant_field1DefaultValueFromUserAttr_ + ${i}}" th:value="${i}">
                     </option>
@@ -38,26 +33,21 @@
         <div class="form-group">
             <label>
                 [[${labelLocales.key}]] :
-                <th:block sec:authorize="!hasRole('ROLE_ADMIN') && !hasRole('ROLE_MANAGER')">
-                    <input class="form-control" th:name="'field2Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="hidden" th:value="${labelLocales.value.translation}"/>
-                </th:block>
-                <th:block sec:authorize="hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')">
-                    <input class="form-control" th:name="'field2Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}"/>
-                </th:block>
+                <input class="form-control" th:name="'field2Label.labelLocales[' + ${labelLocales.key} + '].translation'" type="text" th:value="${labelLocales.value.translation}" th:readonly="${!isAdmin}"/>
             </label>
         </div>
     </div>
-    <div class="form-group" sec:authorize="hasRole('ROLE_ADMIN')">
+    <div class="form-group">
         <label class="c">
             <strong th:text="#{payevtmontant_field2DefaultValueFromUserAttr}"></strong>
-            <select class="form-control" name="field2DefaultValueFromUserAttr">
+            <select class="form-control" name="field2DefaultValueFromUserAttr" th:readonly="${!isAdmin}">
                 <th:block th:each="i :${defaultValueFromUserAttrList}">
                     <option th:selected="${i == payEvtMontant.field2DefaultValueFromUserAttr ? 'true' : 'false'}" th:text="#{payevtmontant_field1DefaultValueFromUserAttr_ + ${i}}" th:value="${i}">
                     </option>
                 </th:block>
             </select>
         </label>
-        <span class="errors" th:errors="*{field2DefaultValueFromUserAttr}" th:if="${#fields.hasErrors('field2DefaultValueFromUserAttr')}">
+        <span class="errors" th:errors="*{field2DefaultValueFromUserAttr}" th:if="${#fields.hasErrors('field2DefaultValueFromUserAttr')}"/>
     </div>
 </fieldset>
 <script>

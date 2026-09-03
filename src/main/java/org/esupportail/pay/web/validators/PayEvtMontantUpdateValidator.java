@@ -17,6 +17,8 @@
  */
 package org.esupportail.pay.web.validators;
 
+import jakarta.annotation.Resource;
+import org.esupportail.pay.dao.PayEvtMontantDaoService;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.PayEvt;
@@ -29,6 +31,9 @@ import org.springframework.validation.Validator;
 
 @Service
 public class PayEvtMontantUpdateValidator implements Validator {
+
+    @Resource
+    PayEvtMontantDaoService payEvtMontantDaoService;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -46,7 +51,10 @@ public class PayEvtMontantUpdateValidator implements Validator {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = auth != null && auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         if (Boolean.TRUE.equals(evtMontant.getFreeAmount()) && !isAdmin && !evtMontant.getEvt().getFreeAmountAllowed()) {
-            errors.rejectValue("freeAmount", "freeAmount_not_allowed");
+            PayEvtMontant currentEvtMontantInDb = payEvtMontantDaoService.findPayEvtMontant(evtMontant.getId());
+            if (currentEvtMontantInDb == null || !Boolean.TRUE.equals(currentEvtMontantInDb.getFreeAmount())) {
+                errors.rejectValue("freeAmount", "freeAmount_not_allowed");
+            }
         }
 		if(!evtMontant.getFreeAmount() && !evtMontant.getSciencesconf()) {
 		    validate_amount(evtMontant.getDbleMontant(), "dbleMontant", errors);
