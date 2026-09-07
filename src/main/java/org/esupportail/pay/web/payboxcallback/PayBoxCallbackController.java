@@ -22,6 +22,12 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
+
 import org.esupportail.pay.services.PayBoxServiceManager;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,9 +55,10 @@ public class PayBoxCallbackController {
     		@RequestParam(required = false) String secureauth, @RequestParam(required = false) String securegarantie,
     		@RequestParam String signature, HttpServletRequest request) {
         String ip = request.getRemoteAddr();
+        LocalDateTime transactionDate = requestDate(request.getHeader("Date"));
         String queryString = request.getQueryString();
         synchronized (idtrans.intern()) {
-             if (payBoxServiceManager.payboxCallback(montant, reference, auto, erreur, idtrans, idAbo, securevers, softdecline, secureauth, securegarantie, signature, queryString)) {
+             if (payBoxServiceManager.payboxCallback(montant, reference, auto, erreur, idtrans, idAbo, securevers, softdecline, secureauth, securegarantie, signature, queryString, transactionDate)) {
                  HttpHeaders headers = new HttpHeaders();
                  headers.add("Content-Type", "text/html; charset=utf-8");
                  return new ResponseEntity<String>("", headers, HttpStatus.OK);
@@ -61,6 +68,18 @@ public class PayBoxCallbackController {
                  return new ResponseEntity<String>("", headers, HttpStatus.INTERNAL_SERVER_ERROR);
              }
         }
+    }
+
+    private LocalDateTime requestDate(String httpDate) {
+        if (httpDate != null) {
+            try {
+                return LocalDateTime.parse(httpDate, DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z", Locale.US));
+            } catch (DateTimeParseException e) {
+                // will fallback
+            }
+        }
+        // fallback
+        return LocalDateTime.now();
     }
     
 }

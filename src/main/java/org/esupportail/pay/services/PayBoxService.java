@@ -297,7 +297,7 @@ public class PayBoxService {
         }
     }
 
-    public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String idAbo, String securevers, String softdecline, String secureauth, String securegarantie, String signature, String queryString) {
+    public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String idAbo, String securevers, String softdecline, String secureauth, String securegarantie, String signature, String queryString, LocalDateTime transactionDate) {
         List<PayTransactionLog> txLogs = payTransactionLogDaoService.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
         PayTransactionLog txLog = txLogs.size() > 0 ? txLogs.get(0) : null;
         if (txLog != null) {
@@ -320,7 +320,7 @@ public class PayBoxService {
         txLog.setSecureauth(secureauth);
         txLog.setSecuregarantie(securegarantie);
         txLog.setSignature(signature);
-            txLog.setTransactionDate(LocalDateTime.now());
+            txLog.setTransactionDate(transactionDate);
 
         List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {
