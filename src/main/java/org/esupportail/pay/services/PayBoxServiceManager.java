@@ -37,7 +37,12 @@ import java.util.Map;
 public class PayBoxServiceManager {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    
+
+    // codes retour Paybox : cf https://www.paybox.com/espace-integrateur-documentation/dictionnaire-des-donnees/paybox-system/
+    private static final String ERREUR_CONNEXION_CENTRE_AUTORISATION = "00001";
+    private static final String ERREUR_PLATEFORME_PAYBOX = "00003";
+    public static final String  ERREUR_PAIEMENT_DEJA_EFFECTUE = "00015";
+
     @Resource
     EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
 
@@ -46,7 +51,10 @@ public class PayBoxServiceManager {
     
     @Value("${institute.href}")
     String instituteHref;
-    
+
+    @Value("${paybox.retry.on.secondary.enabled:false}")
+    boolean retryOnSecondaryEnabled;
+
     @Resource
     Map<String,PayBoxService> payboxServices;
 
@@ -96,6 +104,76 @@ public class PayBoxServiceManager {
             return emailMapFirstLastNames.get(0);
         }
         return null;
+	}
+
+	/**
+	 * Appelée sur le retour navigateur (redirect user, pas le callback serveur à serveur) de paybox.
+	 * Si le code retour est "00001" (échec connexion centre d'autorisation) ou "00003" (erreur Paybox),
+	 * et qu'aucun rejeu n'a déjà eu lieu pour ce paiement, déclenche un rejeu (une seule tentative max)
+	 * vers le site paybox secondaire (tpeweb <-> tpeweb1), en réutilisant strictement le même payload signé.
+	 *
+	 * Cas particulier "00015" (paiement déjà effectué) reçu lors du rejeu : ce n'est pas traité comme un
+	 * nouvel échec, ni rejoué à nouveau.
+	 *
+	 * @return le formulaire de rejeu à soumettre vers le site secondaire, ou null si aucun rejeu ne doit avoir lieu
+	 *         (auquel cas l'appelant doit poursuivre le comportement de redirection habituel).
+	 */
+	@Transactional
+	public PayBoxRetryForm getRetryOnSecondarySiteForward(String reference, String erreur, String signature, String queryString) {
+		EmailFieldsMapReference emailFieldsMapReference = getEmailFieldsMapReference(reference);
+		if (emailFieldsMapReference == null) {
+			// pas (ou plus) de paiement en attente pour cette reference (déjà traité/archivé) : pas de rejeu possible
+			return null;
+		}
+
+		PayEvtMontant evtMontant = emailFieldsMapReference.getPayEvtMontant();
+		PayEvt payboxevt = evtMontant.getEvt();
+		PayBoxService payBoxService = payboxServices.get(payboxevt.getPayboxServiceKey());
+		if (payBoxService == null) {
+			log.error("Pas de compte paybox associé à " + payboxevt.getPayboxServiceKey() + " en configuration d'esup-pay !");
+			return null;
+		}
+
+		boolean alreadyRetried = Boolean.TRUE.equals(emailFieldsMapReference.getPayboxRetried());
+		log.info("Retour paybox pour reference {} : tentative {}, site utilisé {}, code erreur {}",
+				reference, alreadyRetried ? "2 (rejeu)" : "1 (initiale)", emailFieldsMapReference.getPayboxActionUrl(), erreur);
+
+		if (alreadyRetried && ERREUR_PAIEMENT_DEJA_EFFECTUE.equals(erreur)) {
+			log.warn("Transaction {} (PBX_CMD) déjà ok : le rejeu sur le site secondaire {} a renvoyé le code {} " +
+					"(paiement déjà effectué), alors que la 1ère tentative avait échoué avec une erreur de connexion/plateforme. " +
+					"La 1ère tentative a donc abouti côté banque.",
+					reference, emailFieldsMapReference.getPayboxActionUrl(), erreur);
+			return null;
+		}
+
+		if (!retryOnSecondaryEnabled) {
+			return null;
+		}
+		if (alreadyRetried) {
+			log.warn("Transaction {} (PBX_CMD) : un rejeu a déjà été effectué vers le site secondaire {}, aucun nouveau rejeu ne sera tenté.",
+					reference, emailFieldsMapReference.getPayboxActionUrl());
+			return null;
+		}
+		if (!ERREUR_CONNEXION_CENTRE_AUTORISATION.equals(erreur) && !ERREUR_PLATEFORME_PAYBOX.equals(erreur)) {
+			return null;
+		}
+		if (!payBoxService.checkPayboxSignature(queryString, signature)) {
+			log.error("Signature paybox invalide pour la reference {}, rejeu vers le site secondaire annulé.", reference);
+			return null;
+		}
+
+		String currentActionUrl = emailFieldsMapReference.getPayboxActionUrl();
+		String alternateActionUrl = payBoxService.getAlternatePayBoxActionUrl(currentActionUrl);
+		if (alternateActionUrl == null) {
+			log.warn("Aucun site paybox secondaire disponible pour rejouer la transaction {} (erreur {}, site initial {}).",
+					reference, erreur, currentActionUrl);
+			return null;
+		}
+
+		emailFieldsMapReference.setPayboxRetried(true);
+		log.warn("Rejeu de la transaction {} (PBX_CMD) suite à l'erreur {} : bascule du site {} vers le site secondaire {}.",
+				reference, erreur, currentActionUrl, alternateActionUrl);
+		return payBoxService.buildRetryForm(emailFieldsMapReference, alternateActionUrl);
 	}
 
     @Transactional

@@ -52,7 +52,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
@@ -198,6 +200,10 @@ public class PayBoxService {
         payBoxForm.setHmac(hMac);
 
         EmailFieldsMapReference emailMapFirstLastName = new EmailFieldsMapReference();
+        // conservés pour permettre un rejeu à l'identique vers le site secondaire (cf PayBoxServiceManager), sans régénérer PBX_TIME/PBX_HMAC
+        emailMapFirstLastName.setPayboxActionUrl(payBoxForm.getActionUrl());
+        emailMapFirstLastName.setPayboxRawParams(payBoxForm.getParamsAsString() + "&PBX_HMAC=" + hMac);
+        emailMapFirstLastName.setPayboxRetried(false);
         emailMapFirstLastName.setReference(payBoxForm.getCommande());
         emailMapFirstLastName.setField1(field1);
         emailMapFirstLastName.setField2(field2);
@@ -254,19 +260,65 @@ public class PayBoxService {
     }
 
     protected String getPayBoxActionUrl() {
+        return findAvailablePayboxActionUrl(null)
+                .orElseThrow(() -> new RuntimeException("No paybox action url is available at the moment !"));
+    }
+
+    /**
+     * Recherche, parmi les sites paybox configurés (payboxActionUrls), un site disponible autre que celui
+     * utilisé lors de la 1ère tentative (excludedActionUrl), en utilisant le même mécanisme de test
+     * (disponibilité de load.html) que lors du choix initial. Utilisé pour le rejeu après une erreur
+     * "00001"/"00003" renvoyée par Paybox.
+     *
+     * @return le site secondaire à utiliser, ou null si aucun autre site n'est disponible.
+     */
+    protected String getAlternatePayBoxActionUrl(String excludedActionUrl) {
+        return findAvailablePayboxActionUrl(excludedActionUrl).orElse(null);
+    }
+
+    private Optional<String> findAvailablePayboxActionUrl(String excludedActionUrl) {
         for (String payboxActionUrl : payboxActionUrls) {
-            try {
-                URL url = new URL(payboxActionUrl);
-                URL url2test = new URL(String.format("%s://%s/load.html", url.getProtocol(), url.getHost()));
-                URLConnection connection = url2test.openConnection();
-                connection.connect();
-                connection.getInputStream().read();
-                return payboxActionUrl;
-            } catch (Exception e) {
-                log.warn("Pb with " + payboxActionUrl, e);
+            if (payboxActionUrl.equals(excludedActionUrl)) {
+                continue;
+            }
+            if (isPayboxActionUrlAvailable(payboxActionUrl)) {
+                return Optional.of(payboxActionUrl);
             }
         }
-        throw new RuntimeException("No paybox action url is available at the moment !");
+        return Optional.empty();
+    }
+
+    private boolean isPayboxActionUrlAvailable(String payboxActionUrl) {
+        try {
+            URL url = new URL(payboxActionUrl);
+            URL url2test = new URL(String.format("%s://%s/load.html", url.getProtocol(), url.getHost()));
+            URLConnection connection = url2test.openConnection();
+            connection.connect();
+            connection.getInputStream().read();
+            return true;
+        } catch (Exception e) {
+            log.warn("Pb with " + payboxActionUrl, e);
+            return false;
+        }
+    }
+
+    /**
+     * Construit le formulaire de rejeu vers le site secondaire, en réutilisant strictement le même payload
+     * signé (PBX_SITE/PBX_RANG/PBX_IDENTIFIANT/PBX_CMD/PBX_TOTAL/PBX_TIME/PBX_HMAC...) que la 1ère tentative :
+     * seule l'url cible du POST change.
+     */
+    protected PayBoxRetryForm buildRetryForm(EmailFieldsMapReference emailFieldsMapReference, String alternateActionUrl) {
+        PayBoxRetryForm retryForm = new PayBoxRetryForm();
+        retryForm.setActionUrl(alternateActionUrl);
+        LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
+        for (String param : emailFieldsMapReference.getPayboxRawParams().split("&")) {
+            int idx = param.indexOf('=');
+            if (idx > 0) {
+                params.put(param.substring(0, idx), param.substring(idx + 1));
+            }
+        }
+        retryForm.setParams(params);
+        return retryForm;
     }
 
     protected String getCurrentTime() {
@@ -301,14 +353,15 @@ public class PayBoxService {
         List<PayTransactionLog> txLogs = payTransactionLogDaoService.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
         PayTransactionLog txLog = txLogs.size() > 0 ? txLogs.get(0) : null;
         if (txLog != null) {
-            if ("00000".equals(txLog.getErreur())) {
-                log.info("This transaction + " + idtrans + " is already OK");
+            if (erreur.equals(txLog.getErreur())) {
+                log.info("This transaction + " + idtrans + " is already processed, ignoring it.");
+                return true;
             } else {
-                log.info("This transaction + " + idtrans + " is already KO : " + txLog.getErreur());
+                log.warn("Transaction " + idtrans + " already processed with a different 'erreur' value : " + txLog.getErreur() + " vs " + erreur + ", processing it anyway.");
             }
-            return true;
+        } else {
+            txLog = new PayTransactionLog();
         }
-        txLog = new PayTransactionLog();
         txLog.setMontant(montant);
         txLog.setReference(reference);
         txLog.setAuto(auto);
@@ -320,7 +373,7 @@ public class PayBoxService {
         txLog.setSecureauth(secureauth);
         txLog.setSecuregarantie(securegarantie);
         txLog.setSignature(signature);
-            txLog.setTransactionDate(transactionDate);
+        txLog.setTransactionDate(transactionDate);
 
         List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
         if (!emailMapFirstLastNames.isEmpty()) {

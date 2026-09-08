@@ -70,4 +70,22 @@ public class EmailFieldsMapReference {
 
     private Boolean isPayed = false;
 
+    /**
+     * Url du site Paybox (tpeweb ou tpeweb1) utilisée pour la 1ère tentative de paiement.
+     */
+    private String payboxActionUrl;
+
+    /**
+     * Payload signé (paramètres PBX_* + PBX_HMAC) de la 1ère tentative de paiement, conservé tel quel
+     * pour permettre un rejeu à l'identique vers le site secondaire, sans recalculer PBX_TIME/PBX_HMAC.
+     */
+    @Column(columnDefinition = "TEXT")
+    private String payboxRawParams;
+
+    /**
+     * Indique qu'un rejeu vers le site secondaire a déjà été tenté pour ce paiement (une seule tentative de bascule maximum).
+     */
+    @Column(columnDefinition = "boolean default false")
+    private Boolean payboxRetried = false;
+
 }

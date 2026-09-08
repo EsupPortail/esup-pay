@@ -266,6 +266,13 @@ public class PayController {
     @RequestMapping(value="/", params = "reference")
     public String payboxForward(Model uiModel, @RequestParam("reference") String reference, @RequestParam(required = false, name="erreur") String erreur,
 								@RequestParam(required = false, name="signature") String signature, HttpServletRequest request, HttpServletResponse response) {
+    	if (erreur != null && signature != null) {
+    		PayBoxRetryForm retryForm = payBoxServiceManager.getRetryOnSecondarySiteForward(reference, erreur, signature, request.getQueryString());
+    		if (retryForm != null) {
+    			uiModel.addAttribute("payBoxRetryForm", retryForm);
+    			return "anonyme/payboxRetryForward";
+    		}
+    	}
     	EmailFieldsMapReference emailFieldsMapReference = payBoxServiceManager.getEmailFieldsMapReference(reference);
     	String forwardUrl = payBoxServiceManager.getWebSite(reference);
     	if(emailFieldsMapReference!=null && emailFieldsMapReference.getPayEvtMontant().getSciencesconf()) {

@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body onload="document.forms[0].submit();">
+  <p th:text="#{pay_retry_redirect_message_title}"></p>
+  <p th:text="#{pay_retry_redirect_message_detail}"></p>
+  <form th:action="${payBoxRetryForm.actionUrl}" method="POST">
+    <th:block th:each="payBoxRetryParam : ${payBoxRetryForm.params}">
+      <input th:name="${payBoxRetryParam.key}" type="hidden" th:value="${payBoxRetryParam.value}"/>
+    </th:block>
+    <noscript>
+      <input class="btn btn-success btn-lg" type="submit" th:value="#{pay_confirm_transaction_button}"/>
+    </noscript>
+  </form>
+</body>
+</html>
