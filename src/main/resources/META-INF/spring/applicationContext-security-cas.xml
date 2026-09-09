@@ -44,6 +44,7 @@
 		<intercept-url access="isAuthenticated()" request-matcher-ref="esupPayEvtMntAuthCasRequestMatcher"/>
 		<intercept-url access="permitAll" pattern="/evts/**" />
 		<intercept-url access="permitAll" pattern="/logo/**" />
+		<intercept-url access="permitAll" pattern="/favicon.ico" />
 		<intercept-url access="isAuthenticated()" pattern="/**" />
 		<access-denied-handler error-page="/denied" />
 		<session-management
