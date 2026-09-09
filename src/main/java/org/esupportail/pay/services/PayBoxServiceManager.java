@@ -171,6 +171,7 @@ public class PayBoxServiceManager {
 		}
 
 		emailFieldsMapReference.setPayboxRetried(true);
+		emailFieldsMapReference.setPayboxActionUrl(alternateActionUrl);
 		log.warn("Rejeu de la transaction {} (PBX_CMD) suite à l'erreur {} : bascule du site {} vers le site secondaire {}.",
 				reference, erreur, currentActionUrl, alternateActionUrl);
 		return payBoxService.buildRetryForm(emailFieldsMapReference, alternateActionUrl);
