@@ -18,6 +18,7 @@
 package org.esupportail.pay.web.validators;
 
 import jakarta.annotation.Resource;
+import org.esupportail.pay.dao.PayEvtDaoService;
 import org.esupportail.pay.dao.PayEvtMontantDaoService;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,9 @@ public class PayEvtMontantUpdateValidator implements Validator {
     @Resource
     PayEvtMontantDaoService payEvtMontantDaoService;
 
+    @Resource
+    PayEvtDaoService payEvtDaoService;
+
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return PayEvt.class.equals(clazz);
@@ -48,9 +52,10 @@ public class PayEvtMontantUpdateValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		PayEvtMontant evtMontant = (PayEvtMontant) target;
+        PayEvt evt = payEvtDaoService.findPayEvt(evtMontant.getEvt().getId());
         var auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = auth != null && auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        if (Boolean.TRUE.equals(evtMontant.getFreeAmount()) && !isAdmin && !evtMontant.getEvt().getFreeAmountAllowed()) {
+        if (Boolean.TRUE.equals(evtMontant.getFreeAmount()) && !isAdmin && !evt.getFreeAmountAllowed()) {
             PayEvtMontant currentEvtMontantInDb = payEvtMontantDaoService.findPayEvtMontant(evtMontant.getId());
             if (currentEvtMontantInDb == null || !Boolean.TRUE.equals(currentEvtMontantInDb.getFreeAmount())) {
                 errors.rejectValue("freeAmount", "freeAmount_not_allowed");
@@ -67,7 +72,7 @@ public class PayEvtMontantUpdateValidator implements Validator {
 				errors.rejectValue("optionalAddedParams", "optionalAddedParams_not_well_formed");
 	        }
 	    }
-		if(evtMontant.getEvt().getDbleMontantMax() != null && evtMontant.getDbleMontant() != null && evtMontant.getDbleMontant() > evtMontant.getEvt().getDbleMontantMax()) {
+		if(evt.getDbleMontantMax() != null && evtMontant.getDbleMontant() != null && evtMontant.getDbleMontant() > evt.getDbleMontantMax()) {
 			errors.rejectValue("dbleMontant", "dbleMontant_too_high");
 	    }
 	    validate_paiementMultiple(evtMontant, errors);
@@ -86,6 +91,7 @@ public class PayEvtMontantUpdateValidator implements Validator {
     }
 
     private void validate_paiementMultiple(PayEvtMontant evtMontant, Errors errors) {
+        PayEvt evt = payEvtDaoService.findPayEvt(evtMontant.getEvt().getId());
         var kind = evtMontant.getPaiementMultiple_kind();
         if (StringUtils.isEmpty(kind)) return;
 
@@ -107,14 +113,14 @@ public class PayEvtMontantUpdateValidator implements Validator {
                 "paiementMultiple_montant_total_not_equal");
         }
 
-        if (evtMontant.getEvt().getDbleMontantMax() != null) {
-              if(evtMontant.getPaiementMultiple_montant2() > evtMontant.getEvt().getDbleMontantMax()) {
+        if (evt.getDbleMontantMax() != null) {
+              if(evtMontant.getPaiementMultiple_montant2() > evt.getDbleMontantMax()) {
                   errors.rejectValue("paiementMultiple_montant2", "dbleMontant_too_high");
               }
-              if(evtMontant.getPaiementMultiple_montant3() != null && evtMontant.getPaiementMultiple_montant3() > evtMontant.getEvt().getDbleMontantMax()) {
+              if(evtMontant.getPaiementMultiple_montant3() != null && evtMontant.getPaiementMultiple_montant3() > evt.getDbleMontantMax()) {
                   errors.rejectValue("paiementMultiple_montant3", "dbleMontant_too_high");
               }
-              if(evtMontant.getPaiementMultiple_montant4() != null && evtMontant.getPaiementMultiple_montant4() > evtMontant.getEvt().getDbleMontantMax()) {
+              if(evtMontant.getPaiementMultiple_montant4() != null && evtMontant.getPaiementMultiple_montant4() > evt.getDbleMontantMax()) {
                   errors.rejectValue("paiementMultiple_montant4", "dbleMontant_too_high");
               }
         }
