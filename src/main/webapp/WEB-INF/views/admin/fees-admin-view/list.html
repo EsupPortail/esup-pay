@@ -24,6 +24,7 @@
       xmlns:sd="http://www.thymeleaf.org/spring-data"
       xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content">
+  <div>
     <div class="col-md-12">
         <a class="absButton" data-role="button" th:href="@{${listAllTxEvts != null && listAllTxEvts ? '/admin/csv' : '/admin/evts/' + payEvt.id + '/fees/csv'}}">
             <img alt="CSV" th:src="@{'/resources/images/csv_text.png'}"/>
@@ -212,5 +213,6 @@
             });
         })();
     </script>
+  </div>
 </div>
 </html>
