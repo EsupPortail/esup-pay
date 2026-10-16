@@ -199,7 +199,7 @@ public class PayTransactionLogDaoService {
         return findPageAllPayTransactionLogs(pageable, successfulOnly, null, null, null, null);
     }
 
-    public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
+    String buildTransactionsWhereClause(Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
         StringBuilder conditions = new StringBuilder();
 
         if (successfulOnly != null) {
@@ -226,6 +226,11 @@ public class PayTransactionLogDaoService {
             }
         }
 
+        return conditions.toString();
+    }
+    
+    public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
+        String conditions = buildTransactionsWhereClause(successfulOnly, field1, field2, mail, hasAbo);
         String whereClause = conditions.length() > 0 ? "WHERE " + conditions : "";
         String queryStr = "FROM PayTransactionLog o " + whereClause;
         String queryCount = "SELECT COUNT(o) FROM PayTransactionLog o " + whereClause;
