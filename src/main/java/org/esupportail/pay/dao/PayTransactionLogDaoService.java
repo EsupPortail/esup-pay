@@ -180,9 +180,11 @@ public class PayTransactionLogDaoService {
         return q.getResultList();
     }
     
-    public TypedQuery<PayTransactionLog> findAllPayTransactionLogsQuery(String sortFieldName, String sortOrder, Boolean successfulOnly) {
-        String jpaQuery = "SELECT o FROM PayTransactionLog o WHERE o.erreur" + (successfulOnly ? "=" : "!=") + " :successErrorCode" + toOrderBy(sortFieldName, sortOrder);
-        return em.createQuery(jpaQuery, PayTransactionLog.class).setParameter("successErrorCode", SUCCESS_ERROR_CODE);
+    public TypedQuery<PayTransactionLog> findAllPayTransactionLogsQuery(String sortFieldName, String sortOrder, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
+        String jpaQuery = "SELECT o FROM PayTransactionLog o WHERE " + 
+            buildTransactionsWhereClause(successfulOnly, field1, field2, mail, hasAbo) + 
+            toOrderBy(sortFieldName, sortOrder);
+        return createTransactionsQuery(jpaQuery, PayTransactionLog.class, successfulOnly, field1, field2, mail);
     }
 
 	public List<PayTransactionLog> findOldPayTransactionLogs(long oldDays) {

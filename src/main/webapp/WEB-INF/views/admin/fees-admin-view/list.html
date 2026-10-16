@@ -194,7 +194,7 @@
 
             document.addEventListener('DOMContentLoaded', function() {
                 // Preserve filters in pagination and page-size links
-                document.querySelectorAll('ul.pagination a, .btn-group.dropup a').forEach(applyFiltersToLink);
+                document.querySelectorAll('ul.pagination a, .btn-group.dropup a, .absButton').forEach(applyFiltersToLink);
 
                 // Preserve search filters in status filter buttons (keep current field1/field2/mail/hasAbo)
                 document.querySelectorAll('a.status-filter-btn').forEach(function(link) {

@@ -43,6 +43,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/admin/csv")
 @Controller
@@ -59,9 +60,15 @@ public class CsvController {
 	private String separator;
 	
 	@RequestMapping
-    public void getCsv(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void getCsv(
+        @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly,
+        @RequestParam(name = "field1", required = false) String field1,
+        @RequestParam(name = "field2", required = false) String field2,
+        @RequestParam(name = "mail", required = false) String mail,
+        @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,        
+        HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc", true);
+		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc", successfulOnly, field1, field2, mail, hasAbo);
 		
 		generateAndReturnCsv(response, txLogsQuery);
 
