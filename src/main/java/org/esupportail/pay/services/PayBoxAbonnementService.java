@@ -27,7 +27,7 @@ import java.util.Map;
 
 import jakarta.annotation.Resource;
 
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
 import org.esupportail.pay.domain.ExpectedTransaction;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
@@ -39,7 +39,7 @@ import org.springframework.stereotype.Service;
 public class PayBoxAbonnementService {
 
     @Resource
-    PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 
     public List<SubscriptionTimelineEntry> computeSubscriptionTimeline(List<PayTransactionLog> paytransactionlogs) {
         List<SubscriptionTimelineEntry> timeline = new ArrayList<>();
@@ -78,7 +78,7 @@ public class PayBoxAbonnementService {
      * - "success" if all expected transactions were completed successfully
      */
     public String computeSubscriptionStatus(String idAbo) {
-        List<PayTransactionLog> logs = payTransactionLogDaoService.findPayTransactionLogsByIdAbo(idAbo, org.springframework.data.domain.Pageable.unpaged()).getContent();
+        List<PayTransactionLog> logs = payTransactionLogRepository.findByIdAbo(idAbo, org.springframework.data.domain.Pageable.unpaged()).getContent();
         List<SubscriptionTimelineEntry> timeline = computeSubscriptionTimeline(logs);
         boolean hasFailed = timeline.stream().anyMatch(e -> "failed".equals(e.getKind()));
         if (hasFailed) return "danger";

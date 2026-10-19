@@ -15,23 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package org.esupportail.pay.dao;
+package org.esupportail.pay.repository;
+
 import java.util.List;
+import org.esupportail.pay.domain.PayEvt;
+import org.esupportail.pay.domain.RespLogin;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
-import org.esupportail.pay.domain.Label;
-import org.springframework.stereotype.Service;
-
-@Service
-public class LabelDaoService {
-
-	@PersistenceContext
-    transient EntityManager em;
-
-	public List<Label> findAllLabels() {
-        return em.createQuery("SELECT o FROM Label o", Label.class).getResultList();
-    }
-
+public interface PayEvtQueries {
+    Page<PayEvt> search(String title, Pageable pageable);
+    Page<PayEvt> searchVisible(List<RespLogin> logins, String title, Pageable pageable);
+    List<PayEvt> findPayEvtsByRespLogins(List<RespLogin> logins);
+    List<PayEvt> findPayEvtsByViewerLogins(List<RespLogin> logins);
+    List<Object[]> findSumMontantGroupByEvt(String year);
+    List<Object[]> findNbParticipantsByEvt(String year);
 }

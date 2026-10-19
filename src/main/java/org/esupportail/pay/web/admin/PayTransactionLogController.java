@@ -17,11 +17,12 @@
  */
 package org.esupportail.pay.web.admin;
 
+import org.springframework.web.bind.annotation.ModelAttribute;
 import jakarta.annotation.Resource;
 
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
-import org.esupportail.pay.domain.PayEvt;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
+import org.esupportail.pay.repository.PayTransactionLogFilter;
+import org.esupportail.pay.repository.PayTransactionLogSpecifications;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.services.PayBoxAbonnementService;
 import org.joda.time.format.DateTimeFormat;
@@ -44,9 +45,15 @@ import java.util.List;
 @Controller
 @Transactional
 public class PayTransactionLogController {
-	
+
+    @ModelAttribute("filter")
+    public PayTransactionLogFilter transactionFilter() {
+        return PayTransactionLogFilter.builder().successfulOnly(true).build();
+    }
+
+
 	@Resource
-	PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 
     @Resource
     PayBoxAbonnementService payBoxAbonnementService;
@@ -54,22 +61,17 @@ public class PayTransactionLogController {
     @RequestMapping(produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER')")
     public String list(Model uiModel,
-        @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly,
-        @RequestParam(name = "field1", required = false) String field1,
-        @RequestParam(name = "field2", required = false) String field2,
-        @RequestParam(name = "mail", required = false) String mail,
-        @RequestParam(name = "evtMnt", required = false) String evtMnt,
-        @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,
+        @ModelAttribute("filter") PayTransactionLogFilter filter,
         @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPageAllPayTransactionLogs(pageable, successfulOnly, field1, field2, mail, hasAbo, evtMnt);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogRepository.findAll(PayTransactionLogSpecifications.matching(filter), pageable);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("listAllTxEvts", true);
-        uiModel.addAttribute("successfulOnly", successfulOnly);
-        uiModel.addAttribute("field1", field1);
-        uiModel.addAttribute("field2", field2);
-        uiModel.addAttribute("mail", mail);
-        uiModel.addAttribute("hasAbo", hasAbo);
-        uiModel.addAttribute("evtMnt", evtMnt);
+        uiModel.addAttribute("successfulOnly", filter.getSuccessfulOnly());
+        uiModel.addAttribute("field1", filter.getField1());
+        uiModel.addAttribute("field2", filter.getField2());
+        uiModel.addAttribute("mail", filter.getMail());
+        uiModel.addAttribute("hasAbo", filter.getHasAbo());
+        uiModel.addAttribute("evtMnt", filter.getEvtMnt());
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", page_hasAbo(payTxLogPage));
         uiModel.addAttribute("aboStatusMap", payBoxAbonnementService.buildAboStatusMap(payTxLogPage));
@@ -80,7 +82,7 @@ public class PayTransactionLogController {
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER')")
     public String list(Model uiModel, @RequestParam(name="idAbo") String idAbo,
                        @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPayTransactionLogsByIdAbo(idAbo, pageable);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogRepository.findByIdAbo(idAbo, Pageable.unpaged(pageable.getSort()));
         List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
         uiModel.addAttribute("idAbo", idAbo);
         uiModel.addAttribute("subscriptionTimeline", payBoxAbonnementService.computeSubscriptionTimeline(paytransactionlogs));
@@ -92,7 +94,7 @@ public class PayTransactionLogController {
     @PreAuthorize("hasPermission(#id, 'view-txlog')")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("paytransactionlog", payTransactionLogDaoService.findPayTransactionLog(id));
+        uiModel.addAttribute("paytransactionlog", payTransactionLogRepository.findById(id).orElse(null));
         uiModel.addAttribute("itemId", id);
         return "admin/fees-admin-view/show";
     }

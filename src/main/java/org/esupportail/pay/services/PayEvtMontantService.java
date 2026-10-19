@@ -18,8 +18,8 @@
 package org.esupportail.pay.services;
 
 import jakarta.annotation.Resource;
-import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.repository.EmailFieldsMapReferenceRepository;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
@@ -40,10 +40,15 @@ public class PayEvtMontantService {
     private Long transactionLockSecondsPeriodForLimit;
 
     @Resource
-    PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 
     @Resource
-    EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
+    EmailFieldsMapReferenceRepository emailFieldsMapReferenceRepository;
+
+    public boolean isDeletable(PayEvtMontant montant) {
+        return !payTransactionLogRepository.existsByPayEvtMontant(montant)
+            && !emailFieldsMapReferenceRepository.existsByPayEvtMontant(montant);
+    }
 
     public boolean checkEvtMontantEnabled(PayEvtMontant payEvtMontant) {
         if(!payEvtMontant.getIsEnabled()) {
@@ -52,10 +57,10 @@ public class PayEvtMontantService {
         }
         // check if the mvnt evt reached the max amount or max number of transactions
         if(payEvtMontant.getMontantTotalMax()>-1 || payEvtMontant.getNbTransactionsMax()>-1) {
-            List<PayTransactionLog> logs = payTransactionLogDaoService.findPayTransactionLogsByPayEvtMontant(payEvtMontant).getResultList();
+            List<PayTransactionLog> logs = payTransactionLogRepository.findByPayEvtMontant(payEvtMontant);
             Date today = new Date();
             Date createdAfterDate = new Date(today.getTime() - transactionLockSecondsPeriodForLimit * 1000);
-            List<EmailFieldsMapReference> emailFieldsMapReferences = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesNotPayedByPayEvtMontantCreatedAfterDate(payEvtMontant, createdAfterDate).getResultList();
+            List<EmailFieldsMapReference> emailFieldsMapReferences = emailFieldsMapReferenceRepository.findUnpaidAfter(payEvtMontant, createdAfterDate);
             long montantTotal = 0;
             long nbTransactions = 0;
             long montantPayEvtAsCents = Math.round(payEvtMontant.getDbleMontant() * 100);

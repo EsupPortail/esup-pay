@@ -24,14 +24,13 @@ import java.util.List;
 import java.util.Set;
 
 import jakarta.annotation.Resource;
-import jakarta.persistence.TypedQuery;
 
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
-import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
+import org.esupportail.pay.repository.EmailFieldsMapReferenceRepository;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
+import org.esupportail.pay.repository.ScienceConfReferenceRepository;
 import org.esupportail.pay.domain.EmailFieldsMapReference;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.esupportail.pay.domain.ScienceConfReference;
@@ -49,7 +48,7 @@ public class ArchiveService {
 	static final String ARCHIVED = "archived";
 	
 	@Resource
-	EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
+    EmailFieldsMapReferenceRepository emailFieldsMapReferenceRepository;
 	
 	@Value("${archive.enabled:false}")
 	private Boolean enabled;
@@ -61,30 +60,31 @@ public class ArchiveService {
 	private Long oldDays4transactionsLogs;
 	
 	@Resource
-	ScienceConfReferenceDaoService scienceConfReferenceDaoService;
+    ScienceConfReferenceRepository scienceConfReferenceRepository;
 	
 	@Resource
-	PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 
 	@Scheduled(fixedDelay=3600000)
 	public void removeOldTmpEmailFieldsMapReference() {		
 		if(enabled) {
 			log.debug("removeOldTmpEmailFieldsMapReference called");
-			List<EmailFieldsMapReference> emailFieldsMapReferences2remove = emailFieldsMapReferenceDaoService.findOldEmailFieldsMapReferences(oldDays4emailFieldsMapReference);
+            var oldDate = java.util.Date.from(java.time.Instant.now().minus(java.time.Duration.ofDays(oldDays4emailFieldsMapReference)));
+            List<EmailFieldsMapReference> emailFieldsMapReferences2remove = emailFieldsMapReferenceRepository.findOlderThan(oldDate);
 			Set<EmailFieldsMapReference> emailFieldsMapReferences2notRemoveBecausePaimentMultiple = new HashSet<>();
 			for(EmailFieldsMapReference emailFieldsMapReference : emailFieldsMapReferences2remove) {
 				PayEvtMontant payEvtMontant = emailFieldsMapReference.getPayEvtMontant();
 				if(payEvtMontant.getPaiementMultiple_kind().isEmpty()) {
-					TypedQuery<ScienceConfReference> q = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference);
-					if (!q.getResultList().isEmpty()) {
-						scienceConfReferenceDaoService.remove(q.getSingleResult());
+                    ScienceConfReference reference = scienceConfReferenceRepository.findByEmailFieldsMapReference(emailFieldsMapReference);
+                    if (reference != null) {
+                        scienceConfReferenceRepository.delete(reference);
 					}
-					emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
+                    emailFieldsMapReferenceRepository.delete(emailFieldsMapReference);
 				} else {
 					// multiple paiement : emailFieldsMapReference should not be removed before all paiement is OK
 					LocalDate lastDate = payEvtMontant.getPaiementMultiple_last_date();
 					if(LocalDate.now().isAfter(lastDate.plusDays(oldDays4emailFieldsMapReference))) {
-						emailFieldsMapReferenceDaoService.remove(emailFieldsMapReference);
+                        emailFieldsMapReferenceRepository.delete(emailFieldsMapReference);
 					}  else {
 						emailFieldsMapReferences2notRemoveBecausePaimentMultiple.add(emailFieldsMapReference);
 					}
@@ -104,7 +104,9 @@ public class ArchiveService {
 	public void anonymiseOldTransactions() {	
 		if(enabled) {
 			log.debug("anonymiseOldTransactions called");
-			List<PayTransactionLog> transactionLogs = payTransactionLogDaoService.findOldPayTransactionLogs(oldDays4transactionsLogs);
+            var oldDate = java.time.LocalDateTime.ofInstant(
+                java.time.Instant.now().minus(java.time.Duration.ofDays(oldDays4transactionsLogs)), java.time.ZoneId.systemDefault());
+            List<PayTransactionLog> transactionLogs = payTransactionLogRepository.findOlderThan(oldDate);
 			for(PayTransactionLog transactionLog : transactionLogs) {
 				anonymise(transactionLog);
 			}

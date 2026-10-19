@@ -23,12 +23,11 @@ import java.util.List;
 
 import jakarta.annotation.Resource;
 
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.RespLoginDaoService;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.services.RespLoginService;
 import org.esupportail.pay.domain.Label;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.RespLogin;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,21 +41,21 @@ public class EvtService {
     LdapService ldapService;
 	
 	@Resource
-	PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
 	
 	@Resource
-	RespLoginDaoService respLoginDaoService;
+    RespLoginService respLoginService;
 
     public void updateEvt(PayEvt payEvt) {
         // Hack : don't override logoFile !!
-        PayEvt payEvtCurrent = payEvtDaoService.findPayEvt(payEvt.getId());
+        PayEvt payEvtCurrent = payEvtRepository.findById(payEvt.getId()).orElse(null);
         payEvt.setLogoFile(payEvtCurrent.getLogoFile());
         // Hack end
 
         computeLogins(payEvt, payEvt.getLogins(), payEvt.getViewerLogins2Add());
         computeRespLogin(payEvt);
         
-        payEvtDaoService.merge(payEvt);
+        payEvtRepository.save(payEvt);
     }
 
     public void createEvt(PayEvt payEvt, List<String> respLoginIds, List<String> viewerLoginIds) {
@@ -68,7 +67,7 @@ public class EvtService {
             payEvt.setUrlId(urlId);
         }
 
-        payEvtDaoService.persist(payEvt);
+        payEvtRepository.save(payEvt);
     }
 
 	public void computeLogins(PayEvt payEvt, List<String> respLoginIds, List<String> viewerLoginIds) {
@@ -76,7 +75,7 @@ public class EvtService {
         if(respLoginIds!=null && !respLoginIds.isEmpty()) {
             for(String login: respLoginIds) {
             	if(login != null && !login.isEmpty() && !respLogins.stream().anyMatch(r -> r.getLogin().equals(login))) {
-	                RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(login);
+                    RespLogin respLogin = respLoginService.findOrCreateRespLogin(login);
 	                respLogins.add(respLogin);
             	}
             }
@@ -87,7 +86,7 @@ public class EvtService {
         if(viewerLoginIds!=null && !viewerLoginIds.isEmpty()) {
             for(String login: viewerLoginIds) {
             	if(login != null && !login.isEmpty() && !viewerLogins.stream().anyMatch(r -> r.getLogin().equals(login))) {
-            		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(login);
+                    RespLogin respLogin = respLoginService.findOrCreateRespLogin(login);
             		viewerLogins.add(respLogin);
             	}
             }
@@ -96,7 +95,7 @@ public class EvtService {
 	}
 
     public List<RespLogin> listEvt(String currentUser) {
-        RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(currentUser);
+        RespLogin respLogin = respLoginService.findOrCreateRespLogin(currentUser);
         return Arrays.asList(respLogin);
     }
 

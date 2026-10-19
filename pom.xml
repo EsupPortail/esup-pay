@@ -62,12 +62,25 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>6.2.19</spring.version>
 		<spring-security.version>6.5.11</spring-security.version>
-		<hibernate.version>7.4.0.Final</hibernate.version>
+		<!-- Spring Data JPA 3.5 targets Hibernate 6.6 (Hibernate 7 moved BindableType). -->
+		<hibernate.version>6.6.53.Final</hibernate.version>
         <thymeleaf.version>3.1.5.RELEASE</thymeleaf.version>
         <jackson.version>2.22.3</jackson.version>
         <postgresql.version>42.7.13</postgresql.version>
 	</properties>
 	<dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.3.232</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>

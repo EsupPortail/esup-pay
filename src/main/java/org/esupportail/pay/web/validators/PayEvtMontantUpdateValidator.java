@@ -18,8 +18,8 @@
 package org.esupportail.pay.web.validators;
 
 import jakarta.annotation.Resource;
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.repository.PayEvtMontantRepository;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.apache.commons.lang3.StringUtils;
 import org.esupportail.pay.domain.PayEvt;
@@ -34,10 +34,10 @@ import org.springframework.validation.Validator;
 public class PayEvtMontantUpdateValidator implements Validator {
 
     @Resource
-    PayEvtMontantDaoService payEvtMontantDaoService;
+    PayEvtMontantRepository payEvtMontantRepository;
 
     @Resource
-    PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -52,11 +52,12 @@ public class PayEvtMontantUpdateValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		PayEvtMontant evtMontant = (PayEvtMontant) target;
-        PayEvt evt = payEvtDaoService.findPayEvt(evtMontant.getEvt().getId());
+        PayEvt evt = payEvtRepository.findById(evtMontant.getEvt().getId()).orElse(null);
         var auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = auth != null && auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         if (Boolean.TRUE.equals(evtMontant.getFreeAmount()) && !isAdmin && !evt.getFreeAmountAllowed()) {
-            PayEvtMontant currentEvtMontantInDb = payEvtMontantDaoService.findPayEvtMontant(evtMontant.getId());
+            PayEvtMontant currentEvtMontantInDb = evtMontant.getId() == null ? null
+                : payEvtMontantRepository.findById(evtMontant.getId()).orElse(null);
             if (currentEvtMontantInDb == null || !Boolean.TRUE.equals(currentEvtMontantInDb.getFreeAmount())) {
                 errors.rejectValue("freeAmount", "freeAmount_not_allowed");
             }
@@ -91,7 +92,7 @@ public class PayEvtMontantUpdateValidator implements Validator {
     }
 
     private void validate_paiementMultiple(PayEvtMontant evtMontant, Errors errors) {
-        PayEvt evt = payEvtDaoService.findPayEvt(evtMontant.getEvt().getId());
+        PayEvt evt = payEvtRepository.findById(evtMontant.getEvt().getId()).orElse(null);
         var kind = evtMontant.getPaiementMultiple_kind();
         if (StringUtils.isEmpty(kind)) return;
 

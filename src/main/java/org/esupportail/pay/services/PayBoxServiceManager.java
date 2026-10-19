@@ -18,8 +18,8 @@
 package org.esupportail.pay.services;
 
 import jakarta.annotation.Resource;
-import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.repository.EmailFieldsMapReferenceRepository;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
 import org.esupportail.pay.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +44,10 @@ public class PayBoxServiceManager {
     public static final String  ERREUR_PAIEMENT_DEJA_EFFECTUE = "00015";
 
     @Resource
-    EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
+    EmailFieldsMapReferenceRepository emailFieldsMapReferenceRepository;
 
     @Resource
-    PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
     
     @Value("${institute.href}")
     String instituteHref;
@@ -81,14 +81,14 @@ public class PayBoxServiceManager {
     @Transactional(readOnly = true)
 	public String getWebSite(String reference) {
         String webSite = instituteHref;
-        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceRepository.findByReference(reference);
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt evt = evtMontant.getEvt();
             webSite = evt.getWebSiteUrl();
         } else {
             // Paiement déjà ok par paybox -> transactionLog
-            PayTransactionLog transactionLog = payTransactionLogDaoService.findPayTransactionLogByReference(reference);
+            PayTransactionLog transactionLog = payTransactionLogRepository.findFirstByReference(reference);
             if (transactionLog != null) {
                 PayEvt evt = transactionLog.getPayEvtMontant().getEvt();
                 webSite = evt.getWebSiteUrl();
@@ -99,7 +99,7 @@ public class PayBoxServiceManager {
 	}
 	
 	public EmailFieldsMapReference getEmailFieldsMapReference(String reference) {
-        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceRepository.findByReference(reference);
         if (!emailMapFirstLastNames.isEmpty()) {
             return emailMapFirstLastNames.get(0);
         }
@@ -182,7 +182,7 @@ public class PayBoxServiceManager {
 			String auto, String erreur, String idtrans, String idAbo,
 			String securevers, String softdecline, String secureauth, String securegarantie,
 			String signature, String queryString, LocalDateTime transactionDate) {
-		List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceRepository.findByReference(reference);
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt payboxevt = evtMontant.getEvt();
@@ -205,7 +205,7 @@ public class PayBoxServiceManager {
 	}
 	
 	public boolean checkPayboxSignature(String reference, String queryString, String signature) {
-		List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceRepository.findByReference(reference);
         if (!emailMapFirstLastNames.isEmpty()) {
             PayEvtMontant evtMontant = emailMapFirstLastNames.get(0).getPayEvtMontant();
             PayEvt payboxevt = evtMontant.getEvt();

@@ -17,9 +17,13 @@
  */
 package org.esupportail.pay.web.admin;
 
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import java.util.function.Function;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
@@ -28,14 +32,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.persistence.TypedQuery;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
+import org.esupportail.pay.repository.PayTransactionLogFilter;
+import org.esupportail.pay.repository.PayTransactionLogSpecifications;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,39 +48,41 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/admin/csv")
 @Controller
 @Transactional
 public class CsvController {
 
+    @ModelAttribute("filter")
+    public PayTransactionLogFilter transactionFilter() {
+        return PayTransactionLogFilter.builder().successfulOnly(true).build();
+    }
+
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	@Resource
-	PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 	
 	@Value("${csv.separator:;}")
 	private String separator;
 	
 	@RequestMapping
     public void getCsv(
-        @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly,
-        @RequestParam(name = "field1", required = false) String field1,
-        @RequestParam(name = "field2", required = false) String field2,
-        @RequestParam(name = "mail", required = false) String mail,
-        @RequestParam(name = "evtMnt", required = false) String evtMnt,
-        @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,        
+        @ModelAttribute("filter") PayTransactionLogFilter filter,
         HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc", successfulOnly, field1, field2, mail, hasAbo, evtMnt);
+        var specification = PayTransactionLogSpecifications.matching(filter);
+        Function<Pageable, List<PayTransactionLog>> loadBatch =
+            batch -> payTransactionLogRepository.findBy(specification, query -> query.slice(batch)).getContent();
 		
-		generateAndReturnCsv(response, txLogsQuery);
+        generateAndReturnCsv(response, loadBatch);
 
     }
 
-	public void generateAndReturnCsv(HttpServletResponse response, TypedQuery<PayTransactionLog> txLogsQuery)
+    public void generateAndReturnCsv(HttpServletResponse response, Function<Pageable, List<PayTransactionLog>> loadBatch)
 			throws IOException {
 		StopWatch stopWatch = new StopWatch("Stream - build CSV and send it");
 		stopWatch.start();
@@ -91,9 +98,10 @@ public class CsvController {
 		writer.write(csv);
 
         int offset = 0;
+        int pageNumber = 0;
         int nbLine = 0;
         List<PayTransactionLog> txLogs;
-        while ((txLogs = txLogsQuery.setFirstResult(offset).setMaxResults(100000).getResultList()).size() > 0) {
+        while ((txLogs = loadBatch.apply(PageRequest.of(pageNumber++, 100000, Sort.by("transactionDate", "id")))).size() > 0) {
         	log.debug("Build CSV Iteration - offset : " + offset);
 	    	for(PayTransactionLog txLog : txLogs) {
 	    		List<String> entries = new ArrayList<String>();

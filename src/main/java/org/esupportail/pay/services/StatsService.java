@@ -23,8 +23,8 @@ import java.util.List;
 
 import jakarta.annotation.Resource;
 
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
 import org.esupportail.pay.domain.StatsForm;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +32,10 @@ import org.springframework.stereotype.Service;
 public class StatsService {
 	
 	@Resource
-	PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
 	
 	@Resource
-	PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 
 	public List<StatsForm> findListeStats(List<Object[]> listeStats){
 		 List<StatsForm> listeObjets= new ArrayList<>();
@@ -95,12 +95,12 @@ public class StatsService {
     	
 		LinkedHashMap<String, Object> results = new LinkedHashMap<String, Object>() {
 	        {
-	            put("montants",mapField(findListeStats(payEvtDaoService.findSumMontantGroupByEvt(year)), 2));
-	            put("participants",mapField(findListeStats(payEvtDaoService.findNbParticipantsByEvt(year)), 2));
-	            put("transactions",mapField(findListeStats(payTransactionLogDaoService.findNbTransactionByYear()), 2));
-	            put("cumul",mapField(findListeStats(payTransactionLogDaoService.findMontantByYear()), 2));
-	            put("transactionsMonth",mapField(findListeStats(payTransactionLogDaoService.findNbTransactionByMonth()), 3));
-	            put("cumulMonth",mapField(findListeStats(payTransactionLogDaoService.findMontantByMonth()), 3));
+                put("montants",mapField(findListeStats(payEvtRepository.findSumMontantGroupByEvt(year)), 2));
+                put("participants",mapField(findListeStats(payEvtRepository.findNbParticipantsByEvt(year)), 2));
+                put("transactions",mapField(findListeStats(payTransactionLogRepository.findNbTransactionByYear()), 2));
+                put("cumul",mapField(findListeStats(payTransactionLogRepository.findMontantByYear()), 2));
+                put("transactionsMonth",mapField(findListeStats(payTransactionLogRepository.findNbTransactionByMonth()), 3));
+                put("cumulMonth",mapField(findListeStats(payTransactionLogRepository.findMontantByMonth()), 3));
 	        }
 
 	    };
@@ -108,6 +108,6 @@ public class StatsService {
     }
 
 	public List<String> getDistinctYears() {
-		return payTransactionLogDaoService.findDistinctYears();
+        return payTransactionLogRepository.findDistinctYears();
 	}
 }

@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 package org.esupportail.pay.web.admin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import java.util.function.Function;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.persistence.TypedQuery;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,10 +33,12 @@ import jakarta.validation.Valid;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.esupportail.pay.dao.BigFileDaoService;
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.repository.BigFileRepository;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.repository.PayEvtMontantRepository;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
+import org.esupportail.pay.repository.PayTransactionLogFilter;
+import org.esupportail.pay.repository.PayTransactionLogSpecifications;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
@@ -47,10 +49,8 @@ import org.esupportail.pay.services.EvtService;
 import org.esupportail.pay.services.PayBoxAbonnementService;
 import org.esupportail.pay.services.PayBoxServiceManager;
 import org.esupportail.pay.web.validators.PayEvtUpdateValidator;
-import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -78,6 +78,12 @@ import org.springframework.web.util.WebUtils;
 @Transactional
 public class PayEvtController {
 
+    @ModelAttribute("filter")
+    public PayTransactionLogFilter transactionFilter() {
+        return PayTransactionLogFilter.builder().successfulOnly(true).build();
+    }
+
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -99,16 +105,16 @@ public class PayEvtController {
     PayBoxAbonnementService payBoxAbonnementService;
     
     @Resource
-    BigFileDaoService bigFileDaoService;
+    BigFileRepository bigFileRepository;
     
     @Resource
-    PayEvtMontantDaoService payEvtMontantDaoService;
+    PayEvtMontantRepository payEvtMontantRepository;
     
 	@Resource
-    PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
 	
 	@Resource
-	PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 
     @Resource
     PayPermissionEvaluator payPermissionEvaluator;
@@ -132,7 +138,7 @@ public class PayEvtController {
 		uiModel.asMap().clear();
 
 		// get PosteCandidature from id                                                                                                                                                                                               
-		PayEvt evt = payEvtDaoService.findPayEvt(id);
+        PayEvt evt = payEvtRepository.findById(id).orElse(null);
 
 		MultipartFile file = uploadFile.getLogoFile();
 
@@ -145,8 +151,8 @@ public class PayEvtController {
 			InputStream inputStream = file.getInputStream();
 			//byte[] bytes = IOUtils.toByteArray(inputStream);                                                                                                                                            
 
-			bigFileDaoService.setBinaryFileStream(evt.getLogoFile(), inputStream, fileSize);
-			bigFileDaoService.persist(evt.getLogoFile());
+            bigFileRepository.setBinaryFileStream(evt.getLogoFile(), inputStream, fileSize);
+            bigFileRepository.save(evt.getLogoFile());
 		}
 
 		return "redirect:/admin/evts/" + id.toString();
@@ -155,7 +161,7 @@ public class PayEvtController {
 	@RequestMapping(value = "/{id}/logo")
 	public void getLogoFile(@PathVariable("id") Long id, HttpServletRequest request, HttpServletResponse response) {
 		try {
-			PayEvt evt = payEvtDaoService.findPayEvt(id);               
+            PayEvt evt = payEvtRepository.findById(id).orElse(null);
 			if(evt.getLogoFile().getBinaryFile() != null) {
 				IOUtils.copy(evt.getLogoFile().getBinaryFile().getBinaryStream(), response.getOutputStream());
 			} else {
@@ -206,12 +212,12 @@ public class PayEvtController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-    	PayEvt evt = payEvtDaoService.findPayEvt(id);
+        PayEvt evt = payEvtRepository.findById(id).orElse(null);
     	evtService.computeRespLogin(evt);
         uiModel.addAttribute("payEvt", evt);
         uiModel.addAttribute("itemId", id);    
         if(evt!=null) {
-            Page<PayEvtMontant> payEvtMontantsPage = payEvtMontantDaoService.findPagePayEvtMontantsByEvt(evt, Pageable.unpaged());
+            Page<PayEvtMontant> payEvtMontantsPage = payEvtMontantRepository.findByEvt(evt, Pageable.unpaged());
             List<PayEvtMontant> payEvtsMontants = payEvtMontantsPage.getContent();
             uiModel.addAttribute("payevtmontants", payEvtsMontants);
         }
@@ -255,9 +261,8 @@ public class PayEvtController {
 
         return "redirect:/admin/evts/" + encodeUrlPathSegment(payEvt.getId().toString(), httpServletRequest);
     } 
-    
-    
-    
+
+
     @RequestMapping(produces = "text/html")
     @PreAuthorize("hasRole('ROLE_ALL_VIEWER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_VIEWER')")
     public String list(
@@ -269,6 +274,9 @@ public class PayEvtController {
         pageable.getSort().forEach(orders::add);
         orders.add(new Sort.Order(Sort.Direction.ASC, "archived"));
         orders.add(new Sort.Order(Sort.Direction.DESC, "id"));
+        Pageable searchPageable = pageable.isPaged()
+            ? org.springframework.data.domain.PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(orders))
+            : Pageable.unpaged(Sort.by(orders));
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -280,19 +288,14 @@ public class PayEvtController {
         String currentUser = auth.getName();
 
         if(isAllViewer) {
-            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvts(pageable, orders, searchTitle);
+            Page<PayEvt> payEvtPage = payEvtRepository.search(searchTitle, searchPageable);
             List<PayEvt> payEvts = payEvtPage.getContent();
             evtService.computeRespLogin(payEvts);
         	uiModel.addAttribute("payevts", payEvts);
             uiModel.addAttribute("page", payEvtPage);
         } else if(isManager || isViewer) {
             List<RespLogin> loginList = evtService.listEvt(currentUser);
-            Page<PayEvt> payEvtPage = payEvtDaoService.findPagePayEvtsByRespLoginsOrByViewerLogins(
-                    loginList,
-                    pageable,
-                    orders,
-                    searchTitle
-            );
+            Page<PayEvt> payEvtPage = payEvtRepository.searchVisible(loginList, searchTitle, searchPageable);
             List<PayEvt> payEvts = payEvtPage.getContent();
             evtService.computeRespLogin(payEvts);
     		uiModel.addAttribute("payevts", payEvts);
@@ -318,7 +321,7 @@ public class PayEvtController {
     @PreAuthorize("hasPermission(#id, 'manage')")
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        PayEvt payEvt = payEvtDaoService.findPayEvt(id);
+        PayEvt payEvt = payEvtRepository.findById(id).orElse(null);
         evtService.computeRespLogin(payEvt);
         populateEditForm(uiModel, payEvt);
         return "admin/evts/update";
@@ -327,8 +330,8 @@ public class PayEvtController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        payEvtDaoService.remove(payEvt);
+        PayEvt payEvt = payEvtRepository.findById(id).orElse(null);
+        payEvtRepository.delete(payEvt);
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "0" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
@@ -339,12 +342,8 @@ public class PayEvtController {
     @RequestMapping(value = "/{id}/fees", params = "idAbo", produces = "text/html")
     public String feesSubscription(@PathVariable("id") Long id, Model uiModel,
         @RequestParam(name="idAbo") String idAbo) {
-        PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(
-            payEvt,
-            idAbo,
-            Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate"))
-        );
+        PayEvt payEvt = payEvtRepository.findById(id).orElse(null);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogRepository.findAll(PayTransactionLogSpecifications.forEvent(payEvt, idAbo, PayTransactionLogFilter.builder().build()), Pageable.unpaged(Sort.by(Sort.Direction.DESC, "transactionDate")));
         List<PayTransactionLog> paytransactionlogs = payTxLogPage.getContent();
         uiModel.addAttribute("payEvt", payEvt);
         uiModel.addAttribute("idAbo", idAbo);
@@ -355,26 +354,12 @@ public class PayEvtController {
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees", params = "!idAbo", produces = "text/html")
     public String fees(@PathVariable("id") Long id, Model uiModel,
-                       @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly,
-                       @RequestParam(name = "field1", required = false) String field1,
-                       @RequestParam(name = "field2", required = false) String field2,
-                       @RequestParam(name = "mail", required = false) String mail,
-                       @RequestParam(name = "evtMnt", required = false) String evtMnt,
-                       @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,
-                       @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
-    	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, pageable, successfulOnly, field1, field2, mail, hasAbo, evtMnt);
-        List<PayTransactionLog> paytransactionlogs = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(
-            payEvt,
-            null,
-            Pageable.unpaged(pageable.getSort()),
-            successfulOnly,
-            field1,
-            field2,
-            mail,
-            hasAbo,
-            evtMnt
-        ).getContent();
+                       @ModelAttribute("filter") PayTransactionLogFilter filter,
+        @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
+        PayEvt payEvt = payEvtRepository.findById(id).orElse(null);
+        var specification = PayTransactionLogSpecifications.forEvent(payEvt, null, filter);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogRepository.findAll(specification, pageable);
+        List<PayTransactionLog> paytransactionlogs = payTransactionLogRepository.findAll(specification);
         long total = 0L;
         for(PayTransactionLog ptl : paytransactionlogs) {
             total += Long.valueOf(ptl.getMontant());
@@ -384,12 +369,12 @@ public class PayEvtController {
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", PayTransactionLogController.page_hasAbo(payTxLogPage));
         uiModel.addAttribute("aboStatusMap", payBoxAbonnementService.buildAboStatusMap(payTxLogPage));
-        uiModel.addAttribute("successfulOnly", successfulOnly);
-        uiModel.addAttribute("field1", field1);
-        uiModel.addAttribute("field2", field2);
-        uiModel.addAttribute("mail", mail);
-        uiModel.addAttribute("hasAbo", hasAbo);
-        uiModel.addAttribute("evtMnt", evtMnt);
+        uiModel.addAttribute("successfulOnly", filter.getSuccessfulOnly());
+        uiModel.addAttribute("field1", filter.getField1());
+        uiModel.addAttribute("field2", filter.getField2());
+        uiModel.addAttribute("mail", filter.getMail());
+        uiModel.addAttribute("hasAbo", filter.getHasAbo());
+        uiModel.addAttribute("evtMnt", filter.getEvtMnt());
         uiModel.addAttribute("idAbo", null);
         return "admin/fees-admin-view/list";
     }
@@ -397,16 +382,13 @@ public class PayEvtController {
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees/csv", produces = "text/html")
     public void csvFees(@PathVariable("id") Long id,
-                        @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly,
-                        @RequestParam(name = "field1", required = false) String field1,
-                        @RequestParam(name = "field2", required = false) String field2,
-                        @RequestParam(name = "mail", required = false) String mail,
-                        @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,
-                        @RequestParam(name = "evtMnt", required = false) String evtMnt,
-                        HttpServletResponse response) throws IOException {
-    	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc", successfulOnly, field1, field2, mail, hasAbo, evtMnt);
-    	csvController.generateAndReturnCsv(response, txLogsQuery);
+                        @ModelAttribute("filter") PayTransactionLogFilter filter,
+        HttpServletResponse response) throws IOException {
+        PayEvt payEvt = payEvtRepository.findById(id).orElse(null);
+        var specification = PayTransactionLogSpecifications.forEvent(payEvt, null, filter);
+        Function<Pageable, List<PayTransactionLog>> loadBatch =
+            batch -> payTransactionLogRepository.findBy(specification, query -> query.slice(batch)).getContent();
+        csvController.generateAndReturnCsv(response, loadBatch);
     }
 
 	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

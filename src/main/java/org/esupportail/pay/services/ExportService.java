@@ -20,7 +20,6 @@ package org.esupportail.pay.services;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,8 +31,8 @@ import java.time.format.DateTimeFormatter;
 
 import jakarta.annotation.Resource;
 
-import org.esupportail.pay.dao.ExportRemiseDaoService;
-import org.esupportail.pay.dao.ExportTransactionDaoService;
+import org.esupportail.pay.repository.ExportRemiseRepository;
+import org.esupportail.pay.repository.ExportTransactionRepository;
 import org.esupportail.pay.domain.ExportRemise;
 import org.esupportail.pay.domain.ExportTransaction;
 import org.esupportail.pay.domain.ExportTransaction.TypeTransaction;
@@ -50,10 +49,10 @@ public class ExportService {
 	private static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	@Resource
-	ExportTransactionDaoService exportTransactionDaoService;
+    ExportTransactionRepository exportTransactionRepository;
 	
 	@Resource
-	ExportRemiseDaoService exportRemiseDaoService;
+    ExportRemiseRepository exportRemiseRepository;
 	
 	/*
 	Num. transaction	
@@ -104,8 +103,8 @@ public class ExportService {
 	
 			ExportTransaction exportTransaction = new ExportTransaction();	
 			
-			if(exportTransactionDaoService.countFindExportTransactionsByNumTransactionEqualsAndNumContratEquals(numTransaction, numContrat)>0) {
-				exportTransaction = exportTransactionDaoService.findExportTransactionsByNumTransactionEqualsAndNumContratEquals(numTransaction, numContrat).getSingleResult();
+            if(exportTransactionRepository.countByNumTransactionAndNumContrat(numTransaction, numContrat)>0) {
+                exportTransaction = exportTransactionRepository.findByNumTransactionAndNumContrat(numTransaction, numContrat);
 			}
 	
 			exportTransaction.setNumRemise(numRemise);
@@ -127,7 +126,7 @@ public class ExportService {
 				exportTransaction.setTypeTransaction(TypeTransaction.ANNULATION);
 			} 
 			if(exportTransaction.getId()==null) {
-				exportTransactionDaoService.persist(exportTransaction);
+                exportTransactionRepository.save(exportTransaction);
 			}
 		}
 	}
@@ -165,8 +164,8 @@ public class ExportService {
 	
 			ExportRemise exportRemise = new ExportRemise();
 			
-			if(exportRemiseDaoService.countFindExportRemisesByNumRemiseEqualsAndNumContratEquals(numRemise, numContrat)>0) {
-				exportRemise = exportRemiseDaoService.findExportRemisesByNumRemiseEqualsAndNumContratEquals(numRemise, numContrat).getSingleResult();
+            if(exportRemiseRepository.countByNumRemiseAndNumContrat(numRemise, numContrat)>0) {
+                exportRemise = exportRemiseRepository.findByNumRemiseAndNumContrat(numRemise, numContrat);
 			}
 	
 			exportRemise.setNumRemise(numRemise);
@@ -175,7 +174,7 @@ public class ExportService {
 			exportRemise.setDateRemise(dateRemise);
 			exportRemise.setNbTransactions(Long.valueOf(nbTransactions));
 			if(exportRemise.getId()==null) {
-				exportRemiseDaoService.persist(exportRemise);
+                exportRemiseRepository.save(exportRemise);
 			}
 		}
 	}

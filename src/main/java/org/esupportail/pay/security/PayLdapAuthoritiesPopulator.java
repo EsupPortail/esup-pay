@@ -28,10 +28,9 @@ import jakarta.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.RespLoginDaoService;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.services.RespLoginService;
 import org.esupportail.pay.domain.RespLogin;
-import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.core.GrantedAuthority;
@@ -52,10 +51,10 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 	protected Map<String, String> groupFilters;
 	
 	@Resource
-	PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
 	
 	@Resource
-	RespLoginDaoService respLoginDaoService;
+    RespLoginService respLoginService;
 	
 	public void setMappingGroupesRoles(Map<String, String> mappingGroupesRoles) {
 		// for case insensitive ...
@@ -138,15 +137,15 @@ public class PayLdapAuthoritiesPopulator extends DefaultLdapAuthoritiesPopulator
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_ALL_VIEWER"));
 		}
 		
-		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(username);
+        RespLogin respLogin = respLoginService.findOrCreateRespLogin(username);
 		List<RespLogin> respLoginList = Arrays.asList(respLogin);
-		if(!payEvtDaoService.findPayEvtsByRespLogins(respLoginList).getResultList().isEmpty()) {
+        if(!payEvtRepository.findPayEvtsByRespLogins(respLoginList).isEmpty()) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_MANAGER"));
 		}
 		
-		RespLogin viewerLogin = respLoginDaoService.findOrCreateRespLogin(username);
+        RespLogin viewerLogin = respLoginService.findOrCreateRespLogin(username);
 		List<RespLogin> viewerLoginList = Arrays.asList(viewerLogin);
-		if(!payEvtDaoService.findPayEvtsByViewerLogins(viewerLoginList).getResultList().isEmpty()) {
+        if(!payEvtRepository.findPayEvtsByViewerLogins(viewerLoginList).isEmpty()) {
 			extraRoles.add(new SimpleGrantedAuthority("ROLE_VIEWER"));
 		}
 		

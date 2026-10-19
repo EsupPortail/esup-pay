@@ -30,9 +30,9 @@ import java.time.ZoneId;
 import jakarta.annotation.Resource;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.esupportail.pay.dao.ExportRemiseDaoService;
-import org.esupportail.pay.dao.ExportTransactionDaoService;
-import org.esupportail.pay.dao.PayEvtDaoService;
+import org.esupportail.pay.repository.ExportRemiseRepository;
+import org.esupportail.pay.repository.ExportTransactionRepository;
+import org.esupportail.pay.repository.PayEvtRepository;
 import org.esupportail.pay.domain.ExportRemise;
 import org.esupportail.pay.domain.ExportTransaction;
 import org.esupportail.pay.domain.PayEvt;
@@ -48,13 +48,13 @@ public class VentilationService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Resource
-	ExportRemiseDaoService exportRemiseDaoService;
+    ExportRemiseRepository exportRemiseRepository;
 	
 	@Resource
-	ExportTransactionDaoService exportTransactionDaoService;
+    ExportTransactionRepository exportTransactionRepository;
 	
 	@Resource
-	PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
 	
 	public List<Ventilation> getVentilations(Date dateMonth) {
 		
@@ -66,11 +66,11 @@ public class VentilationService {
 		LocalDateTime dateMonthLocalDateTime = LocalDateTime.ofInstant(dateMonth.toInstant(), ZoneId.systemDefault());
 		LocalDateTime dateMonthAfterLocalDateTime = LocalDateTime.ofInstant(dateMonthAfter.toInstant(), ZoneId.systemDefault());
 
-		for(ExportRemise remise : exportRemiseDaoService.findExportRemisesByDateRemiseBetween(dateMonthLocalDateTime, dateMonthAfterLocalDateTime, "dateRemise", "DESC").getResultList()) {
+        for(ExportRemise remise : exportRemiseRepository.findByDateRemiseBetween(dateMonthLocalDateTime, dateMonthAfterLocalDateTime, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "dateRemise"))) {
 			Ventilation ventilation = new Ventilation();
 			ventilation.setRemise(remise);
 			ventilation.setDate(remise.getDateRemise());
-			List<ExportTransaction> transactions = exportTransactionDaoService.findExportTransactionsByNumRemiseAndStatutEqualsAndNumContratEquals(remise.getNumRemise(), "Acceptée", remise.getNumContrat()).getResultList();			
+            List<ExportTransaction> transactions = exportTransactionRepository.findByNumRemiseAndStatutAndNumContrat(remise.getNumRemise(), "Acceptée", remise.getNumContrat());
 		
 			Map<PayEvt, List<ExportTransaction>> transactionsEvts = new HashMap<PayEvt, List<ExportTransaction>>();
 			for(ExportTransaction t : transactions) {
@@ -115,7 +115,7 @@ public class VentilationService {
 			            }
 			        }
 		});			
-		for(PayEvt evt : payEvtDaoService.findAllPayEvts()) {
+        for(PayEvt evt : payEvtRepository.findAll()) {
 			evenementsPrefix.put(evt.getPayboxCommandPrefix(), evt);
 		}		
 		return evenementsPrefix;

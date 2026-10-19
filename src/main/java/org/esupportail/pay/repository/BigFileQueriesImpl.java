@@ -15,36 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.esupportail.pay.dao;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.util.List;
+package org.esupportail.pay.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-
+import java.io.InputStream;
 import org.esupportail.pay.domain.BigFile;
-import org.hibernate.LobHelper;
 import org.hibernate.Session;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class BigFileDaoService {
+@Transactional(readOnly = true)
+public class BigFileQueriesImpl implements BigFileQueries {
+    @PersistenceContext
+    private EntityManager em;
 
-	@PersistenceContext
-    transient EntityManager em;
-	
-	// Here we have to use directly Hibernate and no "just" JPA, because we want to use stream to read and write big files
-	// @see http://stackoverflow.com/questions/10042766/jpa-analog-of-lobcreator-from-hibernate
-    public void setBinaryFileStream(BigFile bigFile, InputStream inputStream, long length) {		
-        Session session = (Session) em.getDelegate(); 
-        LobHelper helper = session.getLobHelper(); 
-        Blob binaryFile = helper.createBlob(inputStream, length);
-        bigFile.setBinaryFile(binaryFile);
+    @Override
+    public void setBinaryFileStream(BigFile bigFile, InputStream inputStream, long length) {
+        bigFile.setBinaryFile(em.unwrap(Session.class).getLobHelper().createBlob(inputStream, length));
     }
-
-	public void persist(BigFile bigFile) {
-		em.persist(bigFile);
-	}
-	
 }

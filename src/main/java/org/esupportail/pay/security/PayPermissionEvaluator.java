@@ -23,10 +23,10 @@ import java.util.List;
 
 import jakarta.annotation.Resource;
 
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
-import org.esupportail.pay.dao.RespLoginDaoService;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.repository.PayEvtMontantRepository;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
+import org.esupportail.pay.services.RespLoginService;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
@@ -39,16 +39,16 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 
 	
 	@Resource
-	PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
 
 	@Resource
-	PayEvtMontantDaoService payEvtMontantDaoService;
+    PayEvtMontantRepository payEvtMontantRepository;
 	
 	@Resource
-	RespLoginDaoService respLoginDaoService;
+    RespLoginService respLoginService;
 	
 	@Resource
-	PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 	
 	@Override
 	public boolean hasPermission(Authentication auth, Object targetDomainObject, Object permission) {
@@ -66,7 +66,7 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 
 		if ("view-txlog".equals(permissionKey)) {
 		    if(targetDomainObject instanceof Long) {
-		        PayTransactionLog txLog = payTransactionLogDaoService.findPayTransactionLog((Long)targetDomainObject);
+                PayTransactionLog txLog = payTransactionLogRepository.findById((Long)targetDomainObject).orElse(null);
 		        if (txLog != null) {
 		            return hasPermission(auth, txLog.getPayEvtMontant().getEvt().getId(), "view");
 		        }
@@ -76,7 +76,7 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 
 		if ("manage-montant".equals(permissionKey)) {
 			if(targetDomainObject instanceof Long) {
-				PayEvtMontant payEvtMontant = payEvtMontantDaoService.findPayEvtMontant((Long)targetDomainObject);
+                PayEvtMontant payEvtMontant = payEvtMontantRepository.findById((Long)targetDomainObject).orElse(null);
 				if (payEvtMontant != null) {
 					return hasPermission(auth, payEvtMontant.getEvt().getId(), "manage");
 				}
@@ -100,20 +100,20 @@ public class PayPermissionEvaluator implements PermissionEvaluator {
 	}
 
 	private boolean hasPermissionOnEvt(Authentication auth, Long evtId, String permissionKey) {
-		PayEvt evt = payEvtDaoService.findPayEvt(evtId);
-		RespLogin respLogin = respLoginDaoService.findOrCreateRespLogin(auth.getName());
+        PayEvt evt = payEvtRepository.findById(evtId).orElse(null);
+        RespLogin respLogin = respLoginService.findOrCreateRespLogin(auth.getName());
 		List<RespLogin> respLoginList = Arrays.asList(respLogin);
 
 		boolean accessAuth = false;
 
 		if("view".equals(permissionKey) || "manage".equals(permissionKey)) {
-			accessAuth = payEvtDaoService.findPayEvtsByRespLogins(respLoginList).getResultList().contains(evt);
+            accessAuth = payEvtRepository.findPayEvtsByRespLogins(respLoginList).contains(evt);
 		}
 		
 		if("view".equals(permissionKey)) {
 			accessAuth = accessAuth 
                 || auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ALL_VIEWER"))
-                || payEvtDaoService.findPayEvtsByViewerLogins(respLoginList).getResultList().contains(evt);
+                || payEvtRepository.findPayEvtsByViewerLogins(respLoginList).contains(evt);
 		}
 
 		return accessAuth;

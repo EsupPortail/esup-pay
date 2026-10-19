@@ -25,8 +25,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.repository.PayEvtMontantRepository;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -38,10 +38,10 @@ public class EsupPayEvtMntAuthCasRequestMatcher implements RequestMatcher {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	  
 	@Resource
-    PayEvtMontantDaoService payEvtMontantDaoService;
+    PayEvtMontantRepository payEvtMontantRepository;
 	
 	@Resource
-	PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
     
 	@Override
 	public boolean matches(HttpServletRequest request) {
@@ -52,11 +52,11 @@ public class EsupPayEvtMntAuthCasRequestMatcher implements RequestMatcher {
         
         if(StringUtils.isNoneEmpty(evtUrlId) && StringUtils.isNoneEmpty(mntUrlId)) {
 	        log.debug("Evt " + evtUrlId + " - mnt " + mntUrlId);
-	    	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
+            List<PayEvt> evts = payEvtRepository.findByUrlId(evtUrlId);
 	    	if(evts.size() == 0) {
 	    		 return false;
 	    	} 
-	    	List<PayEvtMontant> evtsMnts = payEvtMontantDaoService.findPayEvtMontantsByEvtAndUrlIdEquals(evts.get(0), mntUrlId).getResultList();
+            List<PayEvtMontant> evtsMnts = payEvtMontantRepository.findByEvtAndUrlId(evts.get(0), mntUrlId);
 	    	if(evtsMnts.size() == 0) {
 	    		 return false;
 	    	} 

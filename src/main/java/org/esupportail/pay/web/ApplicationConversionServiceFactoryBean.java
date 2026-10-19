@@ -19,14 +19,13 @@ package org.esupportail.pay.web;
 
 import jakarta.annotation.Resource;
 
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.repository.PayEvtMontantRepository;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
@@ -37,13 +36,13 @@ import org.springframework.format.support.FormattingConversionServiceFactoryBean
 public class ApplicationConversionServiceFactoryBean extends FormattingConversionServiceFactoryBean implements InitializingBean {
    
 	@Resource
-    PayEvtMontantDaoService payEvtMontantDaoService;
+    PayEvtMontantRepository payEvtMontantRepository;
 	
 	@Resource
-    PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
 	
 	@Resource
-	PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 	
 	public Converter<PayEvt, String> getPayEvtToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<org.esupportail.pay.domain.PayEvt, java.lang.String>() {
@@ -56,7 +55,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<Long, PayEvt> getIdToPayEvtConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, org.esupportail.pay.domain.PayEvt>() {
             public org.esupportail.pay.domain.PayEvt convert(java.lang.Long id) {
-                return payEvtDaoService.findPayEvt(id);
+                return payEvtRepository.findById(id).orElse(null);
             }
         };
     }
@@ -80,7 +79,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<Long, PayEvtMontant> getIdToPayEvtMontantConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, org.esupportail.pay.domain.PayEvtMontant>() {
             public org.esupportail.pay.domain.PayEvtMontant convert(java.lang.Long id) {
-                return payEvtMontantDaoService.findPayEvtMontant(id);
+                return payEvtMontantRepository.findById(id).orElse(null);
             }
         };
     }
@@ -104,7 +103,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 	public Converter<Long, PayTransactionLog> getIdToPayTransactionLogConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, org.esupportail.pay.domain.PayTransactionLog>() {
             public org.esupportail.pay.domain.PayTransactionLog convert(java.lang.Long id) {
-                return payTransactionLogDaoService.findPayTransactionLog(id);
+                return payTransactionLogRepository.findById(id).orElse(null);
             }
         };
     }

@@ -26,8 +26,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.repository.PayEvtMontantRepository;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -41,10 +41,10 @@ public class EsupPayCsrfSecurityRequestMatcher implements RequestMatcher {
 	private final Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
     
 	@Resource
-    PayEvtMontantDaoService payEvtMontantDaoService;
+    PayEvtMontantRepository payEvtMontantRepository;
 	
 	@Resource
-	PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
     
 	@Override
 	public boolean matches(HttpServletRequest request) {
@@ -59,9 +59,9 @@ public class EsupPayCsrfSecurityRequestMatcher implements RequestMatcher {
 	        	List<String> pathes = Arrays.asList(servletPath.split("/"));
 	        	String mntUrlId = pathes.get(pathes.size()-1);
 	        	String evtUrlId = pathes.get(pathes.size()-2);
-	        	List<PayEvt> evts = payEvtDaoService.findPayEvtsByUrlIdEquals(evtUrlId).getResultList();
+                List<PayEvt> evts = payEvtRepository.findByUrlId(evtUrlId);
 	        	PayEvt payevt = evts.get(0);
-	        	List<PayEvtMontant> evtsMnts = payEvtMontantDaoService.findPayEvtMontantsByEvtAndUrlIdEquals(payevt, mntUrlId).getResultList();
+                List<PayEvtMontant> evtsMnts = payEvtMontantRepository.findByEvtAndUrlId(payevt, mntUrlId);
 	        	PayEvtMontant payevtmontant = evtsMnts.get(0);
 	        	if(payevtmontant.getSciencesconf()) {
 	        		log.info("sciencesconf 'redirect post' request -> we don't use csrf here");      	

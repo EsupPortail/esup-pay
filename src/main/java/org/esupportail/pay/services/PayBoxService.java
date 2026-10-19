@@ -22,9 +22,9 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.esupportail.pay.dao.EmailFieldsMapReferenceDaoService;
-import org.esupportail.pay.dao.PayTransactionLogDaoService;
-import org.esupportail.pay.dao.ScienceConfReferenceDaoService;
+import org.esupportail.pay.repository.EmailFieldsMapReferenceRepository;
+import org.esupportail.pay.repository.PayTransactionLogRepository;
+import org.esupportail.pay.repository.ScienceConfReferenceRepository;
 import org.esupportail.pay.domain.*;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,13 +67,13 @@ public class PayBoxService {
     private static final String DELIMITER_REF = "@@";
 
     @Resource
-    EmailFieldsMapReferenceDaoService emailFieldsMapReferenceDaoService;
+    EmailFieldsMapReferenceRepository emailFieldsMapReferenceRepository;
 
     @Resource
-    PayTransactionLogDaoService payTransactionLogDaoService;
+    PayTransactionLogRepository payTransactionLogRepository;
 
     @Resource
-    ScienceConfReferenceDaoService scienceConfReferenceDaoService;
+    ScienceConfReferenceRepository scienceConfReferenceRepository;
 
     @Resource
     RestTemplate restTemplate;
@@ -219,7 +219,7 @@ public class PayBoxService {
         emailMapFirstLastName.setBillingCity(billingCity);
         emailMapFirstLastName.setBillingCountryCode(billingCountryCode);
 
-        emailFieldsMapReferenceDaoService.persist(emailMapFirstLastName);
+        emailFieldsMapReferenceRepository.save(emailMapFirstLastName);
 
         return payBoxForm;
     }
@@ -350,7 +350,7 @@ public class PayBoxService {
     }
 
     public boolean payboxCallback(String montant, String reference, String auto, String erreur, String idtrans, String idAbo, String securevers, String softdecline, String secureauth, String securegarantie, String signature, String queryString, LocalDateTime transactionDate) {
-        List<PayTransactionLog> txLogs = payTransactionLogDaoService.findPayTransactionLogsByIdtransEquals(idtrans).getResultList();
+        List<PayTransactionLog> txLogs = payTransactionLogRepository.findByIdtrans(idtrans);
         PayTransactionLog txLog = txLogs.size() > 0 ? txLogs.get(0) : null;
         if (txLog != null) {
             if (erreur.equals(txLog.getErreur())) {
@@ -375,7 +375,7 @@ public class PayBoxService {
         txLog.setSignature(signature);
         txLog.setTransactionDate(transactionDate);
 
-        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceDaoService.findEmailFieldsMapReferencesByReferenceEquals(reference).getResultList();
+        List<EmailFieldsMapReference> emailMapFirstLastNames = emailFieldsMapReferenceRepository.findByReference(reference);
         if (!emailMapFirstLastNames.isEmpty()) {
             EmailFieldsMapReference emailFieldsMapReference = emailMapFirstLastNames.get(0);
             txLog.setField1(emailFieldsMapReference.getField1());
@@ -414,7 +414,7 @@ public class PayBoxService {
                         txLog.setMailSent(false);
                     }
                     if(emailFieldsMapReference.getPayEvtMontant().getSciencesconf()) {
-                        ScienceConfReference scienceConfReference = scienceConfReferenceDaoService.findScienceConfReferencesByEmailFieldsMapReference(emailFieldsMapReference).getSingleResult();
+                        ScienceConfReference scienceConfReference = scienceConfReferenceRepository.findByEmailFieldsMapReference(emailFieldsMapReference);
                         HttpHeaders headers = new HttpHeaders();
                         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
                         MultiValueMap<String, String> formVars = new LinkedMultiValueMap<String, String>();
@@ -432,11 +432,11 @@ public class PayBoxService {
                         }
                     }
                     emailFieldsMapReference.setIsPayed(true);
-                    payTransactionLogDaoService.persist(txLog);
+                    payTransactionLogRepository.save(txLog);
                 } else {
                     log.info("'Erreur' " + erreur + "  lors de la transaction paybox : " + reference + " pour un montant de " + montant);
                     txLog.setMailSent(false);
-                    payTransactionLogDaoService.persist(txLog);
+                    payTransactionLogRepository.save(txLog);
                 }
             } else {
                 log.error("signature checking of paybox failed, transaction " + txLog + " canceled.");

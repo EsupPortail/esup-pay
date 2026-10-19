@@ -23,10 +23,9 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-import org.esupportail.pay.dao.LabelDaoService;
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
-import org.esupportail.pay.domain.Label;
+import org.esupportail.pay.repository.LabelRepository;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.repository.PayEvtMontantRepository;
 import org.esupportail.pay.domain.Label.LOCALE_IDS;
 import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
@@ -52,16 +51,19 @@ import org.springframework.web.util.WebUtils;
 public class PayEvtMontantController {
 	
     @Resource
+    org.esupportail.pay.services.PayEvtMontantService payEvtMontantService;
+
+    @Resource
     UrlIdService urlIdService;
     
     @Resource
-    PayEvtMontantDaoService payEvtMontantDaoService;
+    PayEvtMontantRepository payEvtMontantRepository;
     
 	@Resource
-    PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
     
 	@Resource
-	LabelDaoService labelDaoService;
+    LabelRepository labelRepository;
 
     @Resource
     PayEvtMontantUpdateValidator payEvtMontantValidator;
@@ -104,7 +106,7 @@ public class PayEvtMontantController {
     @PreAuthorize("hasPermission(#evtId, 'manage')")
     public String createForm(Model uiModel, @RequestParam(name="evtId", required=true) Long evtId) {
     	PayEvtMontant payEvtMontant = new PayEvtMontant();
-    	PayEvt evt =  payEvtDaoService.findPayEvt(evtId);
+        PayEvt evt =  payEvtRepository.findById(evtId).orElse(null);
     	payEvtMontant.setEvtWithDefaultParametersIfNeeded(evt);
         uiModel.addAttribute("payEvtMontant", payEvtMontant);
         return "admin/evtmnts/create";
@@ -120,7 +122,7 @@ public class PayEvtMontantController {
             return "admin/evtmnts/create";
         }
         uiModel.asMap().clear();
-        PayEvt evt = payEvtDaoService.findPayEvt(payEvtMontant.getEvt().getId());
+        PayEvt evt = payEvtRepository.findById(payEvtMontant.getEvt().getId()).orElse(null);
         payEvtMontant.setEvtWithDefaultParametersIfNeeded(evt);
         
         if(payEvtMontant.getUrlId() == null || payEvtMontant.getUrlId().isEmpty()) {
@@ -128,7 +130,7 @@ public class PayEvtMontantController {
         	payEvtMontant.setUrlId(urlId);
         }
         
-        payEvtMontantDaoService.persist(payEvtMontant);
+        payEvtMontantRepository.save(payEvtMontant);
         return "redirect:/admin/evtmnts/" + encodeUrlPathSegment(payEvtMontant.getId().toString(), httpServletRequest);
     }
     
@@ -141,7 +143,7 @@ public class PayEvtMontantController {
             populateEditForm(uiModel, payEvtMontant);
             return "admin/evtmnts/update";
         }
-    	payEvtMontantDaoService.merge(payEvtMontant);
+        payEvtMontantRepository.save(payEvtMontant);
         uiModel.asMap().clear();
         return "redirect:/admin/evtmnts/" + encodeUrlPathSegment(payEvtMontant.getId().toString(), httpServletRequest);
     }
@@ -154,10 +156,10 @@ public class PayEvtMontantController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'manage-montant')")
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, RedirectAttributes uiModel) {
-        PayEvtMontant payEvtMontant = payEvtMontantDaoService.findPayEvtMontant(id);
+        PayEvtMontant payEvtMontant = payEvtMontantRepository.findById(id).orElse(null);
     	Long evtId = payEvtMontant.getEvt().getId();
-    	if(payEvtMontantDaoService.isDeletable(payEvtMontant)) {
-    		payEvtMontantDaoService.remove(payEvtMontant);
+        if(payEvtMontantService.isDeletable(payEvtMontant)) {
+            payEvtMontantRepository.delete(payEvtMontant);
     	} else {
     		uiModel.addFlashAttribute("alert_msg", "pay_admin_evtmontant_delete_abort");
     	}
@@ -173,21 +175,21 @@ public class PayEvtMontantController {
             return "admin/evtmnts/create";
         }
         uiModel.asMap().clear();
-        payEvtMontantDaoService.persist(payEvtMontant);
+        payEvtMontantRepository.save(payEvtMontant);
         return "redirect:/admin/evtmnts/" + encodeUrlPathSegment(payEvtMontant.getId().toString(), httpServletRequest);
     }
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     @PreAuthorize("hasPermission(#id, 'manage-montant')")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, payEvtMontantDaoService.findPayEvtMontant(id));
+        populateEditForm(uiModel, payEvtMontantRepository.findById(id).orElse(null));
         return "admin/evtmnts/update";
     }
 
 	void populateEditForm(Model uiModel, PayEvtMontant payEvtMontant) {
         uiModel.addAttribute("payEvtMontant", payEvtMontant);
-        uiModel.addAttribute("labels", labelDaoService.findAllLabels());
-        uiModel.addAttribute("payevts", payEvtDaoService.findAllPayEvts());
+        uiModel.addAttribute("labels", labelRepository.findAll());
+        uiModel.addAttribute("payevts", payEvtRepository.findAll());
     }
 
 	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

@@ -17,7 +17,6 @@
  */
 package org.esupportail.pay.services;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -26,8 +25,8 @@ import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.esupportail.pay.dao.PayEvtDaoService;
-import org.esupportail.pay.dao.PayEvtMontantDaoService;
+import org.esupportail.pay.repository.PayEvtRepository;
+import org.esupportail.pay.repository.PayEvtMontantRepository;
 import org.esupportail.pay.domain.PayEvt;
 import org.springframework.stereotype.Service;
 
@@ -37,17 +36,17 @@ public class UrlIdService {
     private final Logger log = LoggerFactory.getLogger(getClass());
 	
     @Resource
-	PayEvtDaoService payEvtDaoService;
+    PayEvtRepository payEvtRepository;
 	
     @Resource
-    PayEvtMontantDaoService payEvtMontantDaoService;
+    PayEvtMontantRepository payEvtMontantRepository;
 
 	public String generateUrlId4PayEvt(String title) {
 		String urlId = title.replaceAll("[^\\p{L}\\p{Nd}]+", "");
 		urlId = StringUtils.stripAccents(urlId);
         urlId = URLEncoder.encode(urlId, StandardCharsets.UTF_8);
         int i = 1;
-		while(!payEvtDaoService.findPayEvtsByUrlIdEquals(urlId).getResultList().isEmpty()) {
+        while(!payEvtRepository.findByUrlId(urlId).isEmpty()) {
 			urlId = urlId + i++;
 		}
 		return urlId;
@@ -58,7 +57,7 @@ public class UrlIdService {
 		urlId = StringUtils.stripAccents(urlId);
         urlId = URLEncoder.encode(urlId, StandardCharsets.UTF_8);
         int i = 1;
-		while(!payEvtMontantDaoService.findPayEvtMontantsByEvtAndUrlIdEquals(payboxEvt, urlId).getResultList().isEmpty()) {
+        while(!payEvtMontantRepository.findByEvtAndUrlId(payboxEvt, urlId).isEmpty()) {
 			urlId = urlId + i++;
 		}
 		return urlId;
