@@ -75,77 +75,40 @@ public class PayTransactionLogDaoService {
     }
 
     public Page<PayTransactionLog> findPagePayTransactionLogsByPayEvt(PayEvt payEvt, String idAbo, Pageable pageable, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
+        return findPagePayTransactionLogsByPayEvt(payEvt, idAbo, pageable, successfulOnly, field1, field2, mail, hasAbo, null);
+    }
+
+    public Page<PayTransactionLog> findPagePayTransactionLogsByPayEvt(PayEvt payEvt, String idAbo, Pageable pageable, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo, String evtMnt) {
         if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt) ");
-        String queryCount = "SELECT COUNT(o) from PayTransactionLog AS o WHERE o.payEvtMontant in (select m FROM PayEvtMontant AS m WHERE m.evt = :payEvt) ";
-
-        if (idAbo != null) {
-            queryBuilder.append("AND o.idAbo = :idAbo ");
-            queryCount += "AND o.idAbo = :idAbo ";
-        }
-
-        if (successfulOnly != null) {
-            queryBuilder.append(successfulOnly ? "AND o.erreur = :successErrorCode " : "AND o.erreur <> :successErrorCode ");
-            queryCount += successfulOnly ? "AND o.erreur = :successErrorCode " : "AND o.erreur <> :successErrorCode ";
-        }
-
-        if (field1 != null && !field1.isEmpty()) {
-            queryBuilder.append("AND lower(o.field1) LIKE lower(:field1) ");
-            queryCount += "AND lower(o.field1) LIKE lower(:field1) ";
-        }
-
-        if (field2 != null && !field2.isEmpty()) {
-            queryBuilder.append("AND lower(o.field2) LIKE lower(:field2) ");
-            queryCount += "AND lower(o.field2) LIKE lower(:field2) ";
-        }
-
-        if (mail != null && !mail.isEmpty()) {
-            queryBuilder.append("AND lower(o.mail) LIKE lower(:mail) ");
-            queryCount += "AND lower(o.mail) LIKE lower(:mail) ";
-        }
-
-        if (hasAbo != null) {
-            if (hasAbo) {
-                queryBuilder.append("AND (o.idAbo IS NOT NULL AND o.idAbo <> '0') ");
-                queryCount += "AND (o.idAbo IS NOT NULL AND o.idAbo <> '0') ";
-            } else {
-                queryBuilder.append("AND (o.idAbo IS NULL OR o.idAbo = '0') ");
-                queryCount += "AND (o.idAbo IS NULL OR o.idAbo = '0') ";
-            }
-        }
-
-        Sort.Order sortFieldName = pageable.getSort().iterator().next();
-        queryBuilder.append(toOrderBy(sortFieldName));
-
-        TypedQuery<PayTransactionLog> q = em.createQuery(queryBuilder.toString(), PayTransactionLog.class);
-        TypedQuery<Long> qCount = em.createQuery(queryCount, Long.class);
+        String conditions = buildTransactionsWhereClause(successfulOnly, field1, field2, mail, hasAbo, evtMnt);
+        String whereClause = "WHERE o.payEvtMontant.evt = :payEvt "
+            + (conditions.isEmpty() ? "" : "AND " + conditions)
+            + (idAbo == null ? "" : "AND o.idAbo = :idAbo ");
+        String orderBy = pageable.getSort().isSorted() ? toOrderBy(pageable.getSort().iterator().next()) : "";
+        TypedQuery<PayTransactionLog> q = createTransactionsQuery("SELECT o FROM PayTransactionLog o " + whereClause + orderBy,
+            PayTransactionLog.class, successfulOnly, field1, field2, mail, evtMnt);
+        TypedQuery<Long> qCount = createTransactionsQuery("SELECT COUNT(o) FROM PayTransactionLog o " + whereClause,
+            Long.class, successfulOnly, field1, field2, mail, evtMnt);
         q.setParameter("payEvt", payEvt);
         qCount.setParameter("payEvt", payEvt);
         if (idAbo != null) {
             q.setParameter("idAbo", idAbo);
             qCount.setParameter("idAbo", idAbo);
         }
-        if (successfulOnly != null) {
-            q.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
-            qCount.setParameter("successErrorCode", SUCCESS_ERROR_CODE);
-        }
-        if (field1 != null && !field1.isEmpty()) {
-            q.setParameter("field1", "%" + field1 + "%");
-            qCount.setParameter("field1", "%" + field1 + "%");
-        }
-        if (field2 != null && !field2.isEmpty()) {
-            q.setParameter("field2", "%" + field2 + "%");
-            qCount.setParameter("field2", "%" + field2 + "%");
-        }
-        if (mail != null && !mail.isEmpty()) {
-            q.setParameter("mail", "%" + mail + "%");
-            qCount.setParameter("mail", "%" + mail + "%");
-        }
-        if(pageable.isPaged()) {
+        if (pageable.isPaged()) {
             q.setFirstResult((int) pageable.getOffset());
             q.setMaxResults(pageable.getPageSize());
         }
         return new PageImpl<>(q.getResultList(), pageable, qCount.getSingleResult());
+    }
+
+    public TypedQuery<PayTransactionLog> findPayTransactionLogsByPayEvt(PayEvt payEvt, String sortFieldName, String sortOrder, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo, String evtMnt) {
+        if (payEvt == null) throw new IllegalArgumentException("The payEvt argument is required");
+        String conditions = buildTransactionsWhereClause(successfulOnly, field1, field2, mail, hasAbo, evtMnt);
+        String jpql = "SELECT o FROM PayTransactionLog o WHERE o.payEvtMontant.evt = :payEvt "
+            + (conditions.isEmpty() ? "" : "AND " + conditions) + toOrderBy(sortFieldName, sortOrder);
+        return createTransactionsQuery(jpql, PayTransactionLog.class, successfulOnly, field1, field2, mail, evtMnt)
+            .setParameter("payEvt", payEvt);
     }
 
     public List<Object[]> findNbTransactionByYear (){
@@ -181,10 +144,14 @@ public class PayTransactionLogDaoService {
     }
     
     public TypedQuery<PayTransactionLog> findAllPayTransactionLogsQuery(String sortFieldName, String sortOrder, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
-        String jpaQuery = "SELECT o FROM PayTransactionLog o WHERE " + 
-            buildTransactionsWhereClause(successfulOnly, field1, field2, mail, hasAbo) + 
-            toOrderBy(sortFieldName, sortOrder);
-        return createTransactionsQuery(jpaQuery, PayTransactionLog.class, successfulOnly, field1, field2, mail);
+        return findAllPayTransactionLogsQuery(sortFieldName, sortOrder, successfulOnly, field1, field2, mail, hasAbo, null);
+    }
+
+    public TypedQuery<PayTransactionLog> findAllPayTransactionLogsQuery(String sortFieldName, String sortOrder, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo, String evtMnt) {
+        String conditions = buildTransactionsWhereClause(successfulOnly, field1, field2, mail, hasAbo, evtMnt);
+        String jpaQuery = "SELECT o FROM PayTransactionLog o "
+            + (conditions.isEmpty() ? "" : "WHERE " + conditions) + toOrderBy(sortFieldName, sortOrder);
+        return createTransactionsQuery(jpaQuery, PayTransactionLog.class, successfulOnly, field1, field2, mail, evtMnt);
     }
 
 	public List<PayTransactionLog> findOldPayTransactionLogs(long oldDays) {
@@ -202,6 +169,10 @@ public class PayTransactionLogDaoService {
     }
 
     String buildTransactionsWhereClause(Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
+        return buildTransactionsWhereClause(successfulOnly, field1, field2, mail, hasAbo, null);
+    }
+
+    String buildTransactionsWhereClause(Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo, String evtMnt) {
         StringBuilder conditions = new StringBuilder();
 
         if (successfulOnly != null) {
@@ -228,10 +199,16 @@ public class PayTransactionLogDaoService {
             }
         }
 
+        if (evtMnt != null && !evtMnt.isEmpty()) {
+            if (conditions.length() > 0) conditions.append("AND ");
+            conditions.append("EXISTS (SELECT titleFr FROM PayEvtMontant m JOIN m.title.labelLocales titleFr "
+                + "WHERE m = o.payEvtMontant AND KEY(titleFr) = 'fr' "
+                + "AND lower(titleFr.translation) LIKE lower(:evtMnt)) ");
+        }
         return conditions.toString();
     }
 
-    private <T> TypedQuery<T> createTransactionsQuery(String jpql, Class<T> resultType, Boolean successfulOnly, String field1, String field2, String mail) {
+    private <T> TypedQuery<T> createTransactionsQuery(String jpql, Class<T> resultType, Boolean successfulOnly, String field1, String field2, String mail, String evtMnt) {
     
         TypedQuery<T> q = em.createQuery(jpql, resultType);
     
@@ -247,11 +224,18 @@ public class PayTransactionLogDaoService {
         if (mail != null && !mail.isEmpty()) {
             q.setParameter("mail", "%" + mail + "%");
         }
+        if (evtMnt != null && !evtMnt.isEmpty()) {
+            q.setParameter("evtMnt", "%" + evtMnt + "%");
+        }
         return q;
     }    
     
     public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo) {
-        String conditions = buildTransactionsWhereClause(successfulOnly, field1, field2, mail, hasAbo);
+        return findPageAllPayTransactionLogs(pageable, successfulOnly, field1, field2, mail, hasAbo, null);
+    }
+
+    public Page<PayTransactionLog> findPageAllPayTransactionLogs(Pageable pageable, Boolean successfulOnly, String field1, String field2, String mail, Boolean hasAbo, String evtMnt) {
+        String conditions = buildTransactionsWhereClause(successfulOnly, field1, field2, mail, hasAbo, evtMnt);
         String whereClause = conditions.length() > 0 ? "WHERE " + conditions : "";
         String queryStr = "FROM PayTransactionLog o " + whereClause;
         String queryCount = "SELECT COUNT(o) FROM PayTransactionLog o " + whereClause;
@@ -259,8 +243,8 @@ public class PayTransactionLogDaoService {
         Sort.Order sortOrder = pageable.getSort().iterator().next();
         queryStr += toOrderBy(sortOrder);
 
-        TypedQuery<PayTransactionLog> q = createTransactionsQuery(queryStr, PayTransactionLog.class, successfulOnly, field1, field2, mail);
-        TypedQuery<Long> qCount = createTransactionsQuery(queryCount, Long.class, successfulOnly, field1, field2, mail);
+        TypedQuery<PayTransactionLog> q = createTransactionsQuery(queryStr, PayTransactionLog.class, successfulOnly, field1, field2, mail, evtMnt);
+        TypedQuery<Long> qCount = createTransactionsQuery(queryCount, Long.class, successfulOnly, field1, field2, mail, evtMnt);
         
         if (pageable.isPaged()) {
             q.setFirstResult((int) pageable.getOffset());

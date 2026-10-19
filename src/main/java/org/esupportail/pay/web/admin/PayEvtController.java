@@ -359,10 +359,11 @@ public class PayEvtController {
                        @RequestParam(name = "field1", required = false) String field1,
                        @RequestParam(name = "field2", required = false) String field2,
                        @RequestParam(name = "mail", required = false) String mail,
+                       @RequestParam(name = "evtMnt", required = false) String evtMnt,
                        @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,
                        @PageableDefault(size=10, sort="transactionDate", direction= Sort.Direction.DESC) Pageable pageable) {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, pageable, successfulOnly, field1, field2, mail, hasAbo);
+        Page<PayTransactionLog> payTxLogPage = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(payEvt, null, pageable, successfulOnly, field1, field2, mail, hasAbo, evtMnt);
         List<PayTransactionLog> paytransactionlogs = payTransactionLogDaoService.findPagePayTransactionLogsByPayEvt(
             payEvt,
             null,
@@ -371,7 +372,8 @@ public class PayEvtController {
             field1,
             field2,
             mail,
-            hasAbo
+            hasAbo,
+            evtMnt
         ).getContent();
         long total = 0L;
         for(PayTransactionLog ptl : paytransactionlogs) {
@@ -387,15 +389,23 @@ public class PayEvtController {
         uiModel.addAttribute("field2", field2);
         uiModel.addAttribute("mail", mail);
         uiModel.addAttribute("hasAbo", hasAbo);
+        uiModel.addAttribute("evtMnt", evtMnt);
         uiModel.addAttribute("idAbo", null);
         return "admin/fees-admin-view/list";
     }
     
     @PreAuthorize("hasPermission(#id, 'view')")
     @RequestMapping(value = "/{id}/fees/csv", produces = "text/html")
-    public void csvFees(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
+    public void csvFees(@PathVariable("id") Long id,
+                        @RequestParam(name = "successfulOnly", defaultValue = "true") boolean successfulOnly,
+                        @RequestParam(name = "field1", required = false) String field1,
+                        @RequestParam(name = "field2", required = false) String field2,
+                        @RequestParam(name = "mail", required = false) String mail,
+                        @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,
+                        @RequestParam(name = "evtMnt", required = false) String evtMnt,
+                        HttpServletResponse response) throws IOException {
     	PayEvt payEvt = payEvtDaoService.findPayEvt(id);
-    	TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc", true);
+        TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findPayTransactionLogsByPayEvt(payEvt, "transactionDate", "asc", successfulOnly, field1, field2, mail, hasAbo, evtMnt);
     	csvController.generateAndReturnCsv(response, txLogsQuery);
     }
 

@@ -65,10 +65,11 @@ public class CsvController {
         @RequestParam(name = "field1", required = false) String field1,
         @RequestParam(name = "field2", required = false) String field2,
         @RequestParam(name = "mail", required = false) String mail,
+        @RequestParam(name = "evtMnt", required = false) String evtMnt,
         @RequestParam(name = "hasAbo", required = false) Boolean hasAbo,        
         HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc", successfulOnly, field1, field2, mail, hasAbo);
+		TypedQuery<PayTransactionLog> txLogsQuery = payTransactionLogDaoService.findAllPayTransactionLogsQuery("transactionDate", "asc", successfulOnly, field1, field2, mail, hasAbo, evtMnt);
 		
 		generateAndReturnCsv(response, txLogsQuery);
 
