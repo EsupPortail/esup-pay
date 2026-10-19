@@ -24,6 +24,7 @@
       xmlns:sd="http://www.thymeleaf.org/spring-data"
       xmlns:th="http://www.thymeleaf.org">
 <div layout:fragment="content">
+  <div>
     <div class="col-md-12">
         <a class="absButton" data-role="button" th:href="@{${listAllTxEvts != null && listAllTxEvts ? '/admin/csv' : '/admin/evts/' + payEvt.id + '/fees/csv'}}">
             <img alt="CSV" th:src="@{'/resources/images/csv_text.png'}"/>
@@ -173,13 +174,6 @@
         </div>
     </div>
     <script>
-        var csvImgUrl= "[[@{'/resources/images/csv_text.png'}]]";
-        var csvUrl= "[[@{'/admin/csv'}]]";
-    </script>
-    <script th:if="${payEvt != null && payEvt.id != null}">
-        var csvUrl= "[[@{'/admin/evts/' + ${payEvt.id} + '/fees/csv'}]]";
-    </script>
-    <script>
         (function() {
             var filterParams = ['field1', 'field2', 'mail', 'hasAbo', 'successfulOnly'];
             var urlParams = new URLSearchParams(window.location.search);
@@ -200,7 +194,7 @@
 
             document.addEventListener('DOMContentLoaded', function() {
                 // Preserve filters in pagination and page-size links
-                document.querySelectorAll('ul.pagination a, .btn-group.dropup a').forEach(applyFiltersToLink);
+                document.querySelectorAll('ul.pagination a, .btn-group.dropup a, .absButton').forEach(applyFiltersToLink);
 
                 // Preserve search filters in status filter buttons (keep current field1/field2/mail/hasAbo)
                 document.querySelectorAll('a.status-filter-btn').forEach(function(link) {
@@ -219,5 +213,6 @@
             });
         })();
     </script>
+  </div>
 </div>
 </html>
