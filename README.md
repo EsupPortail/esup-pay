@@ -101,6 +101,14 @@ Testcontainers pour démarrer un PostgreSQL 14 isolé sur un port disponible, pu
 le supprimer en fin de suite. L'image `postgres:14` est téléchargée au premier
 lancement si nécessaire. La base configurée pour l'application n'est pas utilisée.
 
+La suite couvre les filtres, la pagination, le cloisonnement par événement, les
+permissions métier, les statistiques SQL PostgreSQL, les réservations et limites
+de paiement, les requêtes d'archivage, les logos BLOB et les conflits de version.
+Les tests MockMvc vérifient les paramètres HTTP et le contenu des exports CSV ;
+ils ne chargent pas la chaîne de sécurité et ne rendent pas les vues Thymeleaf.
+Le rendu navigateur, le JavaScript, CAS et les échanges réels avec Paybox restent
+à valider séparément.
+
 ## POSTGRESQL
 
 Pour une bonne gestion des blob de cette application (utilisés pour stocker les logos des formulaires de paiement), il faut ajouter dans PostgreSQL un trigger sur la base de données sur la table big_file.

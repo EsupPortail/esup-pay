@@ -60,7 +60,8 @@ public class RepositoryMigrationTest {
     @Configuration
     @EnableTransactionManagement
     @EnableJpaRepositories(basePackageClasses = PayEvtRepository.class, considerNestedRepositories = true)
-    @Import({PayEvtMontantService.class, RespLoginService.class})
+    @Import({PayEvtMontantService.class, RespLoginService.class,
+        org.esupportail.pay.security.PayPermissionEvaluator.class, org.esupportail.pay.services.StatsService.class, org.esupportail.pay.services.PayBoxAbonnementService.class})
     static class Config {
         @Bean
         DataSource dataSource() {
@@ -341,4 +342,441 @@ public class RepositoryMigrationTest {
         new WebDataBinder(defaults).bind(new MutablePropertyValues());
         assertEquals(Boolean.TRUE, defaults.getSuccessfulOnly());
     }
+    @Test
+    public void nativeStatisticsCountOnlySuccessfulPaymentsAndKeepYearScope() {
+        inTransaction(() -> {
+            var first = event("First");
+            var fee = amount(first, "Fee");
+            var january = log(fee, "00000", null);
+            january.setTransactionDate(LocalDateTime.of(2025, 1, 10, 12, 0));
+            var february = log(fee, "00000", null);
+            february.setTransactionDate(LocalDateTime.of(2026, 2, 10, 12, 0));
+            var failed = log(fee, "00001", null);
+            failed.setTransactionDate(LocalDateTime.of(2026, 2, 11, 12, 0));
+            log(amount(event("Second"), "Fee"), "00000", null)
+                .setTransactionDate(LocalDateTime.of(2026, 2, 12, 12, 0));
+            logs.flush();
+            assertEquals(List.of("2026", "2025"), logs.findDistinctYears());
+            assertEquals(2, ((Number) logs.findNbTransactionByYear().get(0)[1]).intValue());
+            assertEquals(20, ((Number) logs.findMontantByYear().get(0)[1]).intValue());
+            assertEquals(2, logs.findNbTransactionByMonth().size());
+            assertEquals(10, ((Number) logs.findMontantByMonth().get(0)[2]).intValue());
+            var totals = events.findSumMontantGroupByEvt("2025");
+            assertEquals(1, totals.size());
+            assertEquals(first.getId().longValue(), ((Number) totals.get(0)[2]).longValue());
+            assertEquals(10, ((Number) totals.get(0)[1]).intValue());
+            assertEquals(1, ((Number) events.findNbParticipantsByEvt("2025").get(0)[1]).intValue());
+            assertEquals(2, events.findSumMontantGroupByEvt(null).size());
+            assertEquals(2, events.findNbParticipantsByEvt("").size());
+            assertTrue(events.findSumMontantGroupByEvt("1900").isEmpty());
+            var stats = context.getBean(org.esupportail.pay.services.StatsService.class).getStats("2026");
+            assertEquals(6, stats.size());
+            assertEquals("2", ((java.util.Map<?, ?>) stats.get("transactions")).get("2026"));
+        });
+    }
+
+    @Test
+    public void searchTreatsQuotesAsDataAndKeepsStablePages() {
+        inTransaction(() -> {
+            event("L'été à Paris");
+            event("Other");
+            assertEquals(1, events.search("L'ÉTÉ", Pageable.unpaged()).getTotalElements());
+            assertTrue(events.search("' OR 1=1 --", Pageable.unpaged()).isEmpty());
+            var sort = Sort.by("archived").ascending().and(Sort.by("id").descending());
+            var first = events.search(null, PageRequest.of(0, 1, sort));
+            var second = events.search(null, PageRequest.of(1, 1, sort));
+            assertEquals(2, first.getTotalElements());
+            assertNotEquals(first.getContent(), second.getContent());
+            assertTrue(events.search(null, PageRequest.of(2, 1, sort)).isEmpty());
+        });
+    }
+
+    @Test
+    public void eventUrlsAndAmountUrlsRemainScoped() {
+        inTransaction(() -> {
+            var a = event("A");
+            a.setUrlId("event-a");
+            var b = event("B");
+            var first = amount(a, "Shared");
+            var second = amount(b, "Shared");
+            assertEquals(List.of(a), events.findByUrlId("event-a"));
+            assertTrue(events.findByUrlId("missing").isEmpty());
+            assertEquals(List.of(first), amounts.findByEvtAndUrlId(a, second.getUrlId()));
+            assertTrue(amounts.findByEvtAndUrlId(a, "missing").isEmpty());
+        });
+    }
+
+    @Test
+    public void transactionFiltersAreIndependentAndCaseInsensitive() {
+        inTransaction(() -> {
+            var fee = amount(event("Event"), "ÉTUDIANT");
+            var match = log(fee, "00000", "sub");
+            log(fee, "00001", "0").setField1("Different");
+            for (String field : List.of("mail", "field1", "field2", "evtMnt")) {
+                var filter = new PayTransactionLogFilter();
+                switch (field) {
+                    case "mail" -> filter.setMail("example.ORG");
+                    case "field1" -> filter.setField1("lPh");
+                    case "field2" -> filter.setField2("eTa");
+                    case "evtMnt" -> filter.setEvtMnt("étudiant");
+                }
+                int expected = field.equals("field1") ? 1 : 2;
+                assertEquals(field, expected, logs.findAll(PayTransactionLogSpecifications.matching(filter)).size());
+            }
+            var filter = PayTransactionLogFilter.builder().mail("' OR 1=1 --").build();
+            assertTrue(logs.findAll(PayTransactionLogSpecifications.matching(filter)).isEmpty());
+            filter.setMail("");
+            filter.setHasAbo(true);
+            assertEquals(List.of(match), logs.findAll(PayTransactionLogSpecifications.matching(filter)));
+        });
+    }
+
+    @Test
+    public void subscriptionScopeCannotLeakAcrossEvents() {
+        inTransaction(() -> {
+            var a = event("A");
+            var own = log(amount(a, "Fee"), "00000", "shared");
+            log(amount(event("B"), "Fee"), "00000", "shared");
+            log(own.getPayEvtMontant(), "00000", "other");
+            assertEquals(List.of(own), logs.findAll(PayTransactionLogSpecifications.forEvent(
+                a, "shared", new PayTransactionLogFilter())));
+        });
+    }
+
+    @Test
+    public void archiveQueryExcludesRecentAndAlreadyArchivedTransactions() {
+        inTransaction(() -> {
+            var fee = amount(event("Event"), "Fee");
+            var cutoff = LocalDateTime.of(2026, 1, 1, 0, 0);
+            var old = log(fee, "00000", null);
+            old.setTransactionDate(cutoff.minusSeconds(1));
+            log(fee, "00000", null).setTransactionDate(cutoff);
+            var archived = log(fee, "00000", null);
+            archived.setTransactionDate(cutoff.minusDays(1));
+            archived.setMail("archived");
+            assertEquals(List.of(old), logs.findOlderThan(cutoff));
+        });
+    }
+
+    private EmailFieldsMapReference reference(PayEvtMontant fee, Date date, Boolean paid) {
+        var ref = new EmailFieldsMapReference();
+        ref.setPayEvtMontant(fee);
+        ref.setDateCreated(date);
+        ref.setIsPayed(paid);
+        return context.getBean(EmailFieldsMapReferenceRepository.class).save(ref);
+    }
+
+    @Test
+    public void reservationQueryExcludesExpiredPaidAndOtherAmounts() {
+        inTransaction(() -> {
+            var fee = amount(event("Event"), "Fee");
+            Date cutoff = new Date(100000);
+            var pending = reference(fee, new Date(100001), false);
+            var unknown = reference(fee, new Date(100002), null);
+            reference(fee, cutoff, false);
+            reference(fee, new Date(99999), false);
+            reference(fee, new Date(100003), true);
+            reference(amount(fee.getEvt(), "Other"), new Date(100003), false);
+            assertEquals(java.util.Set.of(pending, unknown), new java.util.HashSet<>(
+                context.getBean(EmailFieldsMapReferenceRepository.class).findUnpaidAfter(fee, cutoff)));
+        });
+    }
+
+    @Test
+    public void expiredReferencesExcludeScienceConfAndRecentRows() {
+        inTransaction(() -> {
+            var fee = amount(event("Event"), "Fee");
+            var expired = reference(fee, new Date(1), false);
+            reference(fee, new Date(100000), false);
+            var protectedRef = reference(fee, new Date(2), false);
+            var science = new ScienceConfReference();
+            science.setEmailFieldsMapReference(protectedRef);
+            context.getBean(ScienceConfReferenceRepository.class).save(science);
+            assertEquals(List.of(expired), context.getBean(EmailFieldsMapReferenceRepository.class)
+                .findOlderThan(new Date(100000)));
+        });
+    }
+
+    @Test
+    public void transactionLookupFindsCallbackAndReturnReferences() {
+        inTransaction(() -> {
+            var fee = amount(event("Event"), "Fee");
+            var payment = log(fee, "00000", null);
+            payment.setIdtrans("callback-id");
+            payment.setReference("return-ref");
+            assertEquals(List.of(payment), logs.findByIdtrans("callback-id"));
+            assertEquals(payment, logs.findFirstByReference("return-ref"));
+            assertTrue(logs.findByIdtrans("missing").isEmpty());
+            assertNull(logs.findFirstByReference("missing"));
+        });
+    }
+
+    @Test
+    public void logoBlobSurvivesFlushAndReload() {
+        inTransaction(() -> {
+            var evt = event("Logo");
+            byte[] bytes = new byte[]{0, 1, 2, -1, 42};
+            var files = context.getBean(BigFileRepository.class);
+            files.setBinaryFileStream(evt.getLogoFile(), new java.io.ByteArrayInputStream(bytes), bytes.length);
+            events.flush();
+            var em = SharedEntityManagerCreator.createSharedEntityManager(context.getBean(EntityManagerFactory.class));
+            em.clear();
+            try {
+                var blob = events.findById(evt.getId()).orElseThrow().getLogoFile().getBinaryFile();
+                assertArrayEquals(bytes, blob.getBytes(1, (int) blob.length()));
+            } catch (java.sql.SQLException e) {
+                throw new AssertionError(e);
+            }
+        });
+    }
+
+    @Test
+    public void staleDetachedUpdateIsRejected() {
+        var id = new Long[1];
+        var tx = new TransactionTemplate(context.getBean(PlatformTransactionManager.class));
+        PayEvtMontant stale = tx.execute(status -> {
+            var fee = amount(event("Concurrent"), "Fee");
+            amounts.flush();
+            id[0] = fee.getId();
+            return fee;
+        });
+        try {
+            tx.execute(status -> {
+                amounts.findById(id[0]).orElseThrow().setUrlId("newer");
+                return null;
+            });
+            assertThrows(org.springframework.orm.ObjectOptimisticLockingFailureException.class,
+                () -> tx.execute(status -> amounts.saveAndFlush(stale)));
+        } finally {
+            tx.execute(status -> {
+                var fee = amounts.findById(id[0]).orElseThrow();
+                var evt = fee.getEvt();
+                amounts.delete(fee);
+                amounts.flush();
+                events.delete(evt);
+                return null;
+            });
+        }
+    }
+
+    @Test
+    public void permissionsDistinguishManagerViewerAndUnrelatedUsers() {
+        inTransaction(() -> {
+            var evt = event("Restricted");
+            var service = context.getBean(RespLoginService.class);
+            evt.setRespLogins(List.of(service.findOrCreateRespLogin("owner")));
+            evt.setViewerLogins(List.of(service.findOrCreateRespLogin("reader")));
+            var fee = amount(evt, "Fee");
+            var payment = log(fee, "00000", null);
+            var permissions = context.getBean(org.esupportail.pay.security.PayPermissionEvaluator.class);
+            var owner = org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated("owner", "", List.of());
+            var reader = org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated("reader", "", List.of());
+            var outsider = org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated("outsider", "", List.of());
+            assertTrue(permissions.hasPermission(owner, evt.getId(), "manage"));
+            assertTrue(permissions.hasPermission(owner, fee.getId(), "manage-montant"));
+            assertTrue(permissions.hasPermission(reader, payment.getId(), "view-txlog"));
+            assertFalse(permissions.hasPermission(reader, evt.getId(), "manage"));
+            assertFalse(permissions.hasPermission(outsider, evt.getId(), "view"));
+            assertFalse(permissions.hasPermission(outsider, payment.getId(), "view-txlog"));
+            assertFalse(permissions.hasPermission(outsider, Long.MAX_VALUE, "manage-montant"));
+        });
+    }
+
+    @Test
+    public void paymentCapacityCountsSuccessfulPaymentsAndActiveReservations() {
+        inTransaction(() -> {
+            var fee = amount(event("Capacity"), "Fee");
+            fee.setDbleMontant(10.0);
+            fee.setNbTransactionsMax(2L);
+            var service = context.getBean(PayEvtMontantService.class);
+            assertTrue(service.checkEvtMontantEnabled(fee));
+            log(fee, "00001", null);
+            assertTrue(service.checkEvtMontantEnabled(fee));
+            log(fee, "00000", null);
+            assertTrue(service.checkEvtMontantEnabled(fee));
+            reference(fee, new Date(), false);
+            assertFalse(service.checkEvtMontantEnabled(fee));
+        });
+    }
+
+    @Test
+    public void amountCapacityAcceptsExactLimitAndRejectsNextPayment() {
+        inTransaction(() -> {
+            var fee = amount(event("Capacity"), "Fee");
+            fee.setDbleMontant(10.0);
+            fee.setMontantTotalMax(2000L);
+            var service = context.getBean(PayEvtMontantService.class);
+            log(fee, "00000", null);
+            assertTrue(service.checkEvtMontantEnabled(fee));
+            log(fee, "00000", null);
+            assertFalse(service.checkEvtMontantEnabled(fee));
+            fee.setMontantTotalMax(-1L);
+            fee.setIsEnabled(false);
+            assertFalse(service.checkEvtMontantEnabled(fee));
+        });
+    }
+
+    private org.springframework.test.web.servlet.MockMvc csvEndpoint() {
+        var controller = new org.esupportail.pay.web.admin.CsvController();
+        org.springframework.test.util.ReflectionTestUtils.setField(controller, "payTransactionLogRepository", logs);
+        org.springframework.test.util.ReflectionTestUtils.setField(controller, "separator", ";");
+        // Standalone MVC exercises routing and binding; authorization is tested separately.
+        return org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(controller).build();
+    }
+
+    private String export(org.springframework.test.web.servlet.MockMvc mvc, String... parameters) {
+        try {
+            var request = org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/admin/csv");
+            for (int i = 0; i < parameters.length; i += 2) request.param(parameters[i], parameters[i + 1]);
+            var response = mvc.perform(request).andReturn().getResponse();
+            assertEquals(200, response.getStatus());
+            assertEquals("text/csv;charset=utf-8", response.getContentType());
+            assertEquals("attachment; filename=\"esup-pay-transaction-log.csv\"", response.getHeader("Content-Disposition"));
+            return response.getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    @Test
+    public void csvHttpDefaultsExportOnlySuccessfulPayments() {
+        inTransaction(() -> {
+            var fee = amount(event("Event"), "Fee");
+            log(fee, "00000", null).setIdtrans("success");
+            log(fee, "00001", null).setIdtrans("failure");
+            String csv = export(csvEndpoint());
+            assertEquals(2, csv.split("\r\n").length);
+            assertTrue(csv.contains(";success"));
+            assertFalse(csv.contains(";failure"));
+        });
+    }
+
+    @Test
+    public void csvHttpBindsCombinedFiltersAndErrorStatus() {
+        inTransaction(() -> {
+            var fee = amount(event("Événement"), "Étudiant");
+            log(fee, "00001", "sub").setIdtrans("selected");
+            log(fee, "00000", "sub").setIdtrans("success");
+            log(fee, "00001", "0").setIdtrans("no-subscription");
+            log(amount(event("Other"), "Other"), "00001", "sub").setIdtrans("other-fee");
+            String csv = export(csvEndpoint(), "successfulOnly", "false", "hasAbo", "true",
+                "mail", "ALICE@", "field1", "LPH", "field2", "ETA", "evtMnt", "étudiant");
+            assertEquals(2, csv.split("\r\n").length);
+            assertTrue(csv.contains(";selected"));
+            assertTrue(csv.contains("Événement;Étudiant"));
+        });
+    }
+
+    @Test
+    public void csvHttpEmptyOptionalFiltersDoNotDiscardRowsAndOrderIsDeterministic() {
+        inTransaction(() -> {
+            var fee = amount(event("Event"), "Fee");
+            var first = log(fee, "00000", null);
+            first.setIdtrans("first");
+            var second = log(fee, "00000", "0");
+            second.setIdtrans("second");
+            second.setTransactionDate(first.getTransactionDate());
+            String csv = export(csvEndpoint(), "hasAbo", "", "mail", "", "evtMnt", "");
+            assertEquals(3, csv.split("\r\n").length);
+            assertTrue(csv.indexOf(";first") < csv.indexOf(";second"));
+            assertEquals(1, export(csvEndpoint(), "mail", "missing").split("\r\n").length);
+        });
+    }
+
+    @Test
+    public void csvHttpInvalidBooleanReturnsClientError() {
+        inTransaction(() -> {
+            try {
+                var response = csvEndpoint().perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                    .get("/admin/csv").param("hasAbo", "invalid")).andReturn().getResponse();
+                assertEquals(400, response.getStatus());
+            } catch (Exception e) {
+                throw new AssertionError(e);
+            }
+        });
+    }
+
+    @Test
+    public void expiredAndPaidReservationsDoNotBlockCapacity() {
+        inTransaction(() -> {
+            var fee = amount(event("Capacity"), "Fee");
+            fee.setDbleMontant(10.0);
+            fee.setNbTransactionsMax(1L);
+            reference(fee, new Date(0), false);
+            reference(fee, new Date(), true);
+            reference(amount(fee.getEvt(), "Other"), new Date(), false);
+            assertTrue(context.getBean(PayEvtMontantService.class).checkEvtMontantEnabled(fee));
+        });
+    }
+
+    @Test
+    public void globalViewerCanReadButCannotManageAndAdminCanManage() {
+        inTransaction(() -> {
+            var evt = event("Event");
+            var permissions = context.getBean(org.esupportail.pay.security.PayPermissionEvaluator.class);
+            var viewer = org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated(
+                "global", "", List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ALL_VIEWER")));
+            var admin = org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated(
+                "admin", "", List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ADMIN")));
+            assertTrue(permissions.hasPermission(viewer, evt.getId(), "view"));
+            assertFalse(permissions.hasPermission(viewer, evt.getId(), "manage"));
+            assertTrue(permissions.hasPermission(admin, evt.getId(), "manage"));
+        });
+    }
+
+    @Test
+    public void eventFeesTotalUsesAllFilteredPagesAndExcludesOtherEvents() {
+        inTransaction(() -> {
+            var evt = event("Event");
+            var fee = amount(evt, "Fee");
+            log(fee, "00000", null);
+            log(fee, "00000", "0");
+            log(fee, "00001", null).setMontant("9000");
+            log(amount(event("Other"), "Fee"), "00000", null).setMontant("8000");
+            var controller = new org.esupportail.pay.web.admin.PayEvtController();
+            org.springframework.test.util.ReflectionTestUtils.setField(controller, "payEvtRepository", events);
+            org.springframework.test.util.ReflectionTestUtils.setField(controller, "payTransactionLogRepository", logs);
+            org.springframework.test.util.ReflectionTestUtils.setField(controller, "payBoxAbonnementService",
+                context.getBean(org.esupportail.pay.services.PayBoxAbonnementService.class));
+            var model = new org.springframework.ui.ExtendedModelMap();
+            var filter = controller.transactionFilter();
+            assertEquals("admin/fees-admin-view/list", controller.fees(evt.getId(), model, filter,
+                PageRequest.of(0, 1, Sort.by("id"))));
+            var page = (Page<?>) model.get("page");
+            assertEquals(1, page.getContent().size());
+            assertEquals(2, page.getTotalElements());
+            assertEquals(String.format("%,.2f€", 20.0), model.get("total"));
+            assertEquals(Boolean.TRUE, model.get("successfulOnly"));
+        });
+    }
+
+    @Test
+    public void subscriptionStatusIncludesFailuresOutsideDisplayedPage() {
+        inTransaction(() -> {
+            var fee = amount(event("Event"), "Fee");
+            log(fee, "00001", "sub");
+            var latest = log(fee, "00000", "sub");
+            var page = logs.findByIdAbo("sub", PageRequest.of(0, 1, Sort.by("id").descending()));
+            assertEquals(List.of(latest), page.getContent());
+            var service = context.getBean(org.esupportail.pay.services.PayBoxAbonnementService.class);
+            assertEquals("danger", service.buildAboStatusMap(page).get("sub"));
+            log(fee, "00000", "complete");
+            assertEquals("success", service.computeSubscriptionStatus("complete"));
+            assertTrue(service.buildAboStatusMap(Page.empty()).isEmpty());
+        });
+    }
+
+    @Test
+    public void nativeStatisticsHandleEmptyDatabase() {
+        inTransaction(() -> {
+            assertTrue(logs.findNbTransactionByYear().isEmpty());
+            assertTrue(logs.findMontantByYear().isEmpty());
+            assertTrue(logs.findNbTransactionByMonth().isEmpty());
+            assertTrue(logs.findMontantByMonth().isEmpty());
+            assertTrue(logs.findDistinctYears().isEmpty());
+            assertTrue(events.findSumMontantGroupByEvt(null).isEmpty());
+            assertTrue(events.findNbParticipantsByEvt(null).isEmpty());
+        });
+    }
+
 }
