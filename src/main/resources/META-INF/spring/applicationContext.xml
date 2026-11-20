@@ -63,6 +63,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
         <property name="persistenceUnitName" value="persistenceUnit"/>
         <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
 	</bean>
     
     <bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="mailSender">

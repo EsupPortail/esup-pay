@@ -738,15 +738,26 @@ public class RepositoryMigrationTest {
             org.springframework.test.util.ReflectionTestUtils.setField(controller, "payTransactionLogRepository", logs);
             org.springframework.test.util.ReflectionTestUtils.setField(controller, "payBoxAbonnementService",
                 context.getBean(org.esupportail.pay.services.PayBoxAbonnementService.class));
+            org.springframework.test.util.ReflectionTestUtils.setField(controller, "payPermissionEvaluator",
+                context.getBean(org.esupportail.pay.security.PayPermissionEvaluator.class));
             var model = new org.springframework.ui.ExtendedModelMap();
             var filter = controller.transactionFilter();
-            assertEquals("admin/fees-admin-view/list", controller.fees(evt.getId(), model, filter,
-                PageRequest.of(0, 1, Sort.by("id"))));
+            var security = org.springframework.security.core.context.SecurityContextHolder.getContext();
+            security.setAuthentication(org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+                .authenticated("admin", "", List.of(
+                    new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ADMIN"))));
+            try {
+                assertEquals("admin/fees-admin-view/list", controller.fees(evt.getId(), model, filter,
+                    PageRequest.of(0, 1, Sort.by("id"))));
+            } finally {
+                org.springframework.security.core.context.SecurityContextHolder.clearContext();
+            }
             var page = (Page<?>) model.get("page");
             assertEquals(1, page.getContent().size());
             assertEquals(2, page.getTotalElements());
             assertEquals(String.format("%,.2f€", 20.0), model.get("total"));
             assertEquals(Boolean.TRUE, model.get("successfulOnly"));
+            assertEquals(Boolean.TRUE, model.get("canManagePaymentExport"));
         });
     }
 

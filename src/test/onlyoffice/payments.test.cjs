@@ -49,9 +49,24 @@ function worksheet() {
 
 test("refresh keeps checks by ID through reordering, removal and return", () => {
     const sheets = new Map();
+    const created = [];
     const Api = {
         GetSheet: name => sheets.get(name),
         GetAllPivotTables: () => [],
+        InsertPivotNewWorksheet(range, name) {
+            this.AddSheet(name);
+            created.push([range.address, name]);
+            return {
+                AddFields: options => created.push([...options.rows]),
+                AddDataField(field) {
+                    created.push(field);
+                    return {
+                        SetFunction: aggregation => created.push(aggregation),
+                        SetName: caption => created.push(caption)
+                    };
+                }
+            };
+        },
         AddSheet(name) {
             const sheet = worksheet();
             sheets.set(name, sheet);
@@ -65,7 +80,12 @@ test("refresh keeps checks by ID through reordering, removal and return", () => 
         return vm.runInContext("updateWorkbook()", context);
     };
     const source = "https://pay.example.org/api/payment-exports/1/payments.csv";
-    assert.equal(sync(source, "0001", "1234567890123456789").added, 2);
+    assert.equal(sync(source).pivots, 0);
+    const firstImport = sync(source, "0001", "1234567890123456789");
+    assert.equal(firstImport.added, 2);
+    assert.equal(firstImport.pivots, 1);
+    assert.deepEqual(created, [["A1:H3", "Sommes esup-pay"],
+        ["payEvt", "payEvtMontant"], "montant", "Sum", "Total (centimes)"]);
     const tracking = sheets.get("Suivi esup-pay");
     const payments = sheets.get("Paiements esup-pay");
     tracking.GetRange("B2").SetValue("☑");
@@ -110,6 +130,7 @@ test("refresh keeps checks by ID through reordering, removal and return", () => 
     assert.equal(sync(source, "0001").added, 0);
     assert.equal(tracking.GetRange("B2").GetValue(), "☑");
     assert.ok(sync(source.replace("/1/", "/2/"), "0001").error);
+    assert.equal(created.length, 5);
 });
 
 test("CSV parser validates the format before the workbook is touched", () => {

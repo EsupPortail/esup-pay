@@ -91,7 +91,7 @@ Au premier import, cocher **Garder le jeton dans ce navigateur pour actualiser �
 
 En coédition, activer cette option sur un seul profil chargé des actualisations. Lorsque le navigateur fournit les Web Locks, le plugin sérialise les actualisations entre les onglets de ce profil. Les collaborateurs peuvent continuer à modifier les coches depuis leur propre session.
 
-**Tableaux croisés dynamiques.** Créer les TCD sur une feuille de synthèse et utiliser comme source `'Paiements esup-pay'!A1:H<n>`, avec les huit en-têtes et au moins une ligne dessous. Après chaque import, le plugin ajuste cette plage à la taille du CSV et rafraîchit le TCD. Une plage personnalisée sur cette feuille est rafraîchie à taille fixe. Pour un export vide, le plugin conserve les en-têtes et une ligne vide comme source du TCD.
+**Tableaux croisés dynamiques.** Dès le premier import qui contient des paiements, le plugin crée la feuille **Sommes esup-pay** si elle est disponible. Le TCD regroupe par événement et par tarif (`payEvtMontant`) et additionne les montants effectivement payés, en centimes. Pour créer d’autres TCD, utiliser une feuille de synthèse distincte et prendre comme source `'Paiements esup-pay'!A1:H<n>`, avec les huit en-têtes et au moins une ligne dessous. Après chaque import, le plugin ajuste cette plage à la taille du CSV et rafraîchit le TCD. Une plage personnalisée sur cette feuille est rafraîchie à taille fixe. Pour un export vide, le plugin conserve les en-têtes et une ligne vide comme source du TCD.
 
 Utiliser un classeur par événement et réserver les deux feuilles au plugin et au suivi.
 
