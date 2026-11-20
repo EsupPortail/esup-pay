@@ -94,6 +94,13 @@ mvn clean package
 ```
 
 
+### Tests automatisés
+
+Exécuter `mvn test` avec un démon Docker accessible. Les tests des dépôts utilisent
+Testcontainers pour démarrer un PostgreSQL 14 isolé sur un port disponible, puis
+le supprimer en fin de suite. L'image `postgres:14` est téléchargée au premier
+lancement si nécessaire. La base configurée pour l'application n'est pas utilisée.
+
 ## POSTGRESQL
 
 Pour une bonne gestion des blob de cette application (utilisés pour stocker les logos des formulaires de paiement), il faut ajouter dans PostgreSQL un trigger sur la base de données sur la table big_file.

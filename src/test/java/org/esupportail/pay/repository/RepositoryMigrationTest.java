@@ -26,8 +26,9 @@ import jakarta.persistence.EntityManagerFactory;
 import org.esupportail.pay.domain.*;
 import org.esupportail.pay.services.PayEvtMontantService;
 import org.esupportail.pay.services.RespLoginService;
-import org.h2.jdbcx.JdbcDataSource;
 import org.junit.*;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.springframework.context.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -42,6 +43,9 @@ import static org.junit.Assert.*;
 
 /** Boots every repository against an isolated database; never uses the application datasource. */
 public class RepositoryMigrationTest {
+    @ClassRule
+    public static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:14");
+
     private static AnnotationConfigApplicationContext context;
     private PayEvtRepository events;
     private PayEvtMontantRepository amounts;
@@ -60,9 +64,7 @@ public class RepositoryMigrationTest {
     static class Config {
         @Bean
         DataSource dataSource() {
-            JdbcDataSource ds = new JdbcDataSource();
-            ds.setURL("jdbc:h2:mem:repository-migration;DB_CLOSE_DELAY=-1");
-            return ds;
+            return new DriverManagerDataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
         }
 
         @Bean
@@ -73,6 +75,8 @@ public class RepositoryMigrationTest {
             factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
             Properties properties = new Properties();
             properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+            properties.setProperty("hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
             factory.setJpaProperties(properties);
             factory.getJpaPropertyMap().put("jakarta.persistence.validation.factory",
                 jakarta.validation.Validation.byDefaultProvider().configure()
