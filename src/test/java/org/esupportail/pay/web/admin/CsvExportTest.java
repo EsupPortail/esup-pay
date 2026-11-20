@@ -30,9 +30,26 @@ import org.esupportail.pay.domain.PayEvt;
 import org.esupportail.pay.domain.PayEvtMontant;
 import org.esupportail.pay.domain.PayTransactionLog;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletResponse;
 import static org.junit.Assert.*;
 
 public class CsvExportTest {
+    @Test
+    public void spreadsheetCsvEscapesFieldsAndProtectsFormulaPrefixes() throws Exception {
+        var response = new MockHttpServletResponse();
+        var transaction = log("0000123");
+        transaction.setField1("Équipe; \"A\"\nParis");
+        transaction.setField2(" =1+2");
+        transaction.setMontant("1200");
+
+        new CsvController().generateSpreadsheetCsv(response,
+            page -> page.getPageNumber() == 0 ? List.of(transaction) : List.of());
+
+        assertEquals(StandardCharsets.UTF_8, java.nio.charset.Charset.forName(response.getCharacterEncoding()));
+        assertTrue(response.getContentAsString().endsWith(
+            "\"Équipe; \"\"A\"\"\nParis\";' =1+2;1200;0000123"));
+    }
+
     @Test
     public void partialBatchesAreWrittenOnceAndPaginationAdvances() throws Exception {
         CsvController controller = new CsvController();

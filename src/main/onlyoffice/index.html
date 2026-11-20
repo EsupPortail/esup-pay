@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paiements esup-pay</title>
+  <link rel="stylesheet" href="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.css">
+  <style>
+    body { padding: 14px; }
+    label, input:not([type="checkbox"]) { display: block; width: 100%; box-sizing: border-box; }
+    input:not([type="checkbox"]) { margin: 4px 0 12px; }
+    #refresh { margin: 12px 0; }
+    #status { overflow-wrap: anywhere; line-height: 1.4; }
+  </style>
+  <script src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.js"></script>
+  <script defer src="payments.js"></script>
+  <script defer src="plugin.js"></script>
+</head>
+<body>
+  <form id="export-form" autocomplete="off">
+    <label for="export-url">URL d’export esup-pay</label>
+    <input class="form-control" id="export-url" type="url" required>
+    <label for="export-token">Jeton Bearer</label>
+    <input class="form-control" id="export-token" type="password">
+    <label for="remember-token"><input id="remember-token" type="checkbox">
+      Garder le jeton dans ce navigateur pour actualiser à l’ouverture
+    </label>
+    <button class="btn-text-default" id="forget-token" type="button" hidden>Oublier le jeton enregistré</button>
+    <button class="btn-text-default" id="refresh" type="submit" disabled>Actualiser les paiements</button>
+  </form>
+  <p id="status" role="status" aria-live="polite"></p>
+</body>
+</html>

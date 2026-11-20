@@ -1,0 +1,54 @@
+<!--
+
+    Licensed to ESUP-Portail under one or more contributor license
+    agreements. See the NOTICE file distributed with this work for
+    additional information regarding copyright ownership.
+
+    ESUP-Portail licenses this file to you under the Apache License,
+    Version 2.0 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html>
+<html layout:decorate="~{../layouts/admin.html}"
+      th:lang="${#locale}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<div layout:fragment="content">
+    <h3 th:text="#{payment_export_title}"></h3>
+    <p th:text="${payEvt.title.labelLocales['fr'].translation}"></p>
+    <p th:text="#{payment_export_help}"></p>
+
+    <div class="form-group">
+        <label for="payment-export-url" th:text="#{payment_export_url}"></label>
+        <input class="form-control" id="payment-export-url" type="text" readonly th:value="${exportUrl}"/>
+    </div>
+    <div th:if="${authorization}" class="form-group">
+        <label for="payment-export-authorization">Authorization</label>
+        <input class="form-control" id="payment-export-authorization" type="text" readonly
+               autocomplete="off" spellcheck="false" th:value="${authorization}"/>
+        <p class="help-block" th:text="#{payment_export_secret}"></p>
+    </div>
+    <p th:if="${expiresOn}" th:text="#{payment_export_expires(${expiresOn})}"></p>
+
+    <form method="post" class="form-inline"
+          th:action="@{/admin/evts/{id}/fees/payment-export(id=${payEvt.id})}">
+        <p th:if="${expiresOn}" th:text="#{payment_export_replace_help}"></p>
+        <button type="submit" class="btn btn-primary"
+                th:text="${expiresOn} ? #{payment_export_replace} : #{payment_export_generate}"></button>
+    </form>
+    <form th:if="${expiresOn}" method="post" class="form-inline"
+          th:action="@{/admin/evts/{id}/fees/payment-export/revoke(id=${payEvt.id})}">
+        <button type="submit" class="btn btn-default" th:text="#{payment_export_revoke}"></button>
+    </form>
+    <a th:href="@{/admin/evts/{id}/fees(id=${payEvt.id})}" th:text="#{payment_export_back}"></a>
+</div>
+</html>

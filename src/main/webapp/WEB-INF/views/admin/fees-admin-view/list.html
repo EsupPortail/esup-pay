@@ -29,6 +29,9 @@
         <a class="absButton" data-role="button" th:href="@{${listAllTxEvts != null && listAllTxEvts ? '/admin/csv' : '/admin/evts/' + payEvt.id + '/fees/csv'}(successfulOnly=${successfulOnly},field1=${field1},field2=${field2},mail=${mail},hasAbo=${hasAbo},evtMnt=${evtMnt})}">
             <img alt="CSV" th:src="@{'/resources/images/csv_text.png'}"/>
         </a>
+        <a th:if="${canManagePaymentExport}" class="btn btn-default"
+           th:href="@{/admin/evts/{id}/fees/payment-export(id=${payEvt.id})}"
+           th:text="#{payment_export_title}"></a>
         <div class="row" id="pl_org_esupportail_pay_domain_PayTransactionLog">
                 <th:block th:if="${listAllTxEvts == null || !listAllTxEvts}">
                     <h3>

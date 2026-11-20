@@ -30,6 +30,7 @@
         <class>org.esupportail.pay.domain.LabelLocale</class>
         <class>org.esupportail.pay.domain.ExportTransaction</class>
         <class>org.esupportail.pay.domain.PayEvt</class>
+        <class>org.esupportail.pay.domain.PaymentExportToken</class>
         <class>org.esupportail.pay.domain.ExportRemise</class>
         <class>org.esupportail.pay.domain.RespLogin</class>
         <properties>

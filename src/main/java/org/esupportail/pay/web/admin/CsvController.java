@@ -22,6 +22,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -62,6 +64,8 @@ public class CsvController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final String SPREADSHEET_SEPARATOR = ";";
+    private static final Pattern FORMULA_PREFIX = Pattern.compile("^[\\s\\p{Cntrl}]*[=+@-]");
 
 	@Resource
     PayTransactionLogRepository payTransactionLogRepository;
@@ -84,6 +88,17 @@ public class CsvController {
 
     public void generateAndReturnCsv(HttpServletResponse response, Function<Pageable, List<PayTransactionLog>> loadBatch)
 			throws IOException {
+        writeCsv(response, loadBatch, false);
+    }
+
+    public void generateSpreadsheetCsv(HttpServletResponse response,
+                                       Function<Pageable, List<PayTransactionLog>> loadBatch) throws IOException {
+        writeCsv(response, loadBatch, true);
+    }
+
+    private void writeCsv(HttpServletResponse response, Function<Pageable, List<PayTransactionLog>> loadBatch,
+                          boolean spreadsheet) throws IOException {
+        String delimiter = spreadsheet ? SPREADSHEET_SEPARATOR : separator;
 		StopWatch stopWatch = new StopWatch("Stream - build CSV and send it");
 		stopWatch.start();
 		
@@ -94,7 +109,7 @@ public class CsvController {
 		Writer writer = new OutputStreamWriter(response.getOutputStream(), StandardCharsets.UTF_8);
 		
 		List<String> headers = Arrays.asList("Date transaction", "payEvt", "payEvtMontant", "mail", "field1", "field2", "montant", "ID transaction");
-		String csv = StringUtils.join(headers, separator);
+		String csv = StringUtils.join(headers, delimiter);
 		writer.write(csv);
 
         int offset = 0;
@@ -113,7 +128,9 @@ public class CsvController {
 	    		entries.add(txLog.getField2());
 	    		entries.add(txLog.getMontant());
 	    		entries.add(txLog.getIdtrans());
-	    		csv = "\r\n" + StringUtils.join(entries, separator);
+                    csv = "\r\n" + (spreadsheet
+                        ? entries.stream().map(CsvController::spreadsheetCell).collect(Collectors.joining(delimiter))
+                        : StringUtils.join(entries, delimiter));
 	    		writer.write(csv);
 	    		nbLine++;
 	    	} 
@@ -125,4 +142,17 @@ public class CsvController {
         writer.close();
 	}
 
+    private static String spreadsheetCell(String value) {
+        if (value == null) {
+            return "";
+        }
+        if (FORMULA_PREFIX.matcher(value).find()) {
+            value = "'" + value;
+        }
+        if (value.contains(SPREADSHEET_SEPARATOR) || value.contains("\"")
+                || value.contains("\r") || value.contains("\n")) {
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        }
+        return value;
+    }
 }

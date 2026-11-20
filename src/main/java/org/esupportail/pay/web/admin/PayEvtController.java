@@ -368,6 +368,8 @@ public class PayEvtController {
         uiModel.addAttribute("payEvt", payEvt);
         uiModel.addAttribute("page", payTxLogPage);
         uiModel.addAttribute("page_hasAbo", PayTransactionLogController.page_hasAbo(payTxLogPage));
+        uiModel.addAttribute("canManagePaymentExport", payPermissionEvaluator.hasPermission(
+            SecurityContextHolder.getContext().getAuthentication(), payEvt, "manage"));
         uiModel.addAttribute("aboStatusMap", payBoxAbonnementService.buildAboStatusMap(payTxLogPage));
         uiModel.addAttribute("successfulOnly", filter.getSuccessfulOnly());
         uiModel.addAttribute("field1", filter.getField1());

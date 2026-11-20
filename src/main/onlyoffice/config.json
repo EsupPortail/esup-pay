@@ -1,0 +1,16 @@
+{
+  "name": "esup-pay",
+  "guid": "asc.{D6A6E8CB-8351-4A58-9C00-F08E2FC43AB2}",
+  "version": "0.3.0",
+  "variations": [
+    {
+      "description": "Actualiser les paiements esup-pay",
+      "url": "index.html",
+      "type": "panel",
+      "EditorsSupport": ["cell"],
+      "isDisplayedInViewer": false,
+      "initDataType": "none",
+      "initData": ""
+    }
+  ]
+}
